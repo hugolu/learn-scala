@@ -77,7 +77,7 @@ list2: List[String] = List(durian, eggfruit, fig)
 scala> list1 ::: list2
 res11: List[String] = List(apple, banana, carrot, durian, eggfruit, fig)
 
-// 使用 .:::() => 不直覺
+// 使用 .:::(), 在列表开头添加指定列表的元素 => 不直覺
 scala> list1.:::(list2)
 res12: List[String] = List(durian, eggfruit, fig, apple, banana, carrot)
 
@@ -105,4 +105,53 @@ res17: List[Int] = List(0, 1, 4, 9, 16, 25)
 // 二為列表
 scala> List.tabulate(3,3)((x,y) => (x+1)*(y+1))
 res18: List[List[Int]] = List(List(1, 2, 3), List(2, 4, 6), List(3, 6, 9))
+```
+___
+# 進階內容
+
+參考[scala.collection.immutable List](http://www.scala-lang.org/api/current/index.html#scala.collection.immutable.List)
+
+| def | explanation |
+|-----|-------------|
+|```+:(elem: A): List[A]```| A copy of the list with an element prepended. |
+|```:+(elem: A): List[A]```| A copy of this list with an element appended. |
+```scala
+scala> val list = List(1,2,3)
+list: List[Int] = List(1, 2, 3)
+
+scala> 0 +: list
+res0: List[Int] = List(0, 1, 2, 3)
+
+scala> list :+ 4
+res1: List[Int] = List(1, 2, 3, 4)
+```
+
+| def | explanation |
+|-----|-------------|
+|```++[B](that: GenTraversableOnce[B]): List[B]```| Returns a new list containing the elements from the left hand operand followed by the elements from the right hand operand. |
+|```++:[B >: A, That](that: collection.Traversable[B]): That```|As with ++, returns a new collection containing the elements from the left operand followed by the elements from the right operand.|
+|```++:[B](that: TraversableOnce[B]): List[B]```|As with ++, returns a new collection containing the elements from the left operand followed by the elements from the right operand.|
+```scala
+scala> List(1,2) ++ List(3,4)
+res8: List[Int] = List(1, 2, 3, 4)
+
+scala> List(1,2) ++: Array(3,4)
+res9: Array[Int] = Array(1, 2, 3, 4)
+
+scala> Array(1,2) ++: List(3,4)
+res10: List[Int] = List(1, 2, 3, 4)
+```
+
+| def | explanation |
+|-----|-------------|
+|```/:[B](z: B)(op: (B, A) ⇒ B): B```|Applies a binary operator to a start value and all elements of this traversable or iterator, going left to right. Process: ```op(...op(op(z, x_1), x_2), ..., x_n)```|
+|```:\[B](z: B)(op: (A, B) ⇒ B): B```|Applies a binary operator to all elements of this traversable or iterator and a start value, going right to left. Process: ```op(x_1, op(x_2, ... op(x_n, z)...))```|
+```scala
+// initValue=0, (((0 + 1) + 2) + 3) = 6
+scala> (0 /: List(1,2,3))(_+_)
+res19: Int = 6
+
+// initValue=4, (1 + (2 + (3 + 4))) = 10
+scala> (List(1,2,3) :\ 4)(_+_)
+res20: Int = 10
 ```
