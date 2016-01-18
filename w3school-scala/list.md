@@ -159,6 +159,8 @@ res20: Int = 10
 | def | explanation |
 |-----|-------------|
 |```addString(b: StringBuilder): StringBuilder``` | Appends all elements of this traversable or iterator to a string builder. |
+|```addString(b: StringBuilder, sep: String): StringBuilder```|Appends all elements of this traversable or iterator to a string builder using a separator string.|
+|```addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder```|Appends all elements of this traversable or iterator to a string builder using start, end, and separator strings.|
 ```
 scala> val a = List(1,2,3,4)
 a: List[Int] = List(1, 2, 3, 4)
@@ -170,5 +172,17 @@ scala> val c = a.addString(b)
 c: StringBuilder = 1234
 
 scala> c.toString
-res22: String = 1234
+res0: String = 1234
+
+scala> val d = a.addString(b, ", ")
+d: StringBuilder = 1, 2, 3, 4
+
+scala> d.toString
+res1: String = 1, 2, 3, 4
+
+scala> val e = a.addString(b, "List(", ", ", ")")
+e: StringBuilder = List(1, 2, 3, 4)
+
+scala> e.toString
+res2: String = List(1, 2, 3, 4)
 ```
