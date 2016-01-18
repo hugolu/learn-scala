@@ -63,3 +63,46 @@ res7: Boolean = false
 scala> Nil.isEmpty
 res8: Boolean = true
 ```
+
+## 連接列表
+
+```scala
+scala> val list1 = List("apple", "banana", "carrot")
+list1: List[String] = List(apple, banana, carrot)
+
+scala> val list2 = List("durian", "eggfruit", "fig")
+list2: List[String] = List(durian, eggfruit, fig)
+
+// 使用 :::
+scala> list1 ::: list2
+res11: List[String] = List(apple, banana, carrot, durian, eggfruit, fig)
+
+// 使用 .:::() => 不直覺
+scala> list1.:::(list2)
+res12: List[String] = List(durian, eggfruit, fig, apple, banana, carrot)
+
+scala> list2.:::(list1)
+res13: List[String] = List(apple, banana, carrot, durian, eggfruit, fig)
+
+// 使用 List.concat() 方法
+scala> List.concat(list1, list2)
+res14: List[String] = List(apple, banana, carrot, durian, eggfruit, fig)
+```
+
+## 創建列表
+```scala
+val list = List("apple", "banana", "carrot")
+
+// 使用 List.fill() 創建重複數量的元素列表
+scala> List.fill(3)("hello")
+res16: List[String] = List(hello, hello, hello)
+
+// 使用 List.tabulate() 給定函式來創建列表
+// 一維列表
+scala> List.tabulate(6)(n => n * n)
+res17: List[Int] = List(0, 1, 4, 9, 16, 25)
+
+// 二為列表
+scala> List.tabulate(3,3)((x,y) => (x+1)*(y+1))
+res18: List[List[Int]] = List(List(1, 2, 3), List(2, 4, 6), List(3, 6, 9))
+```
