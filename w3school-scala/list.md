@@ -155,3 +155,20 @@ res19: Int = 6
 scala> (List(1,2,3) :\ 4)(_+_)
 res20: Int = 10
 ```
+
+| def | explanation |
+|-----|-------------|
+|```addString(b: StringBuilder): StringBuilder``` | Appends all elements of this traversable or iterator to a string builder. |
+```
+scala> val a = List(1,2,3,4)
+a: List[Int] = List(1, 2, 3, 4)
+
+scala> val b = new StringBuilder()
+b: StringBuilder =
+
+scala> val c = a.addString(b)
+c: StringBuilder = 1234
+
+scala> c.toString
+res22: String = 1234
+```
