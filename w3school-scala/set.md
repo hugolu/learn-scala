@@ -148,3 +148,31 @@ b: StringBuilder =
 scala> a.addString(b)
 res2: StringBuilder = 123
 ```
+
+## 測試是否包含
+```scala
+scala> val a = Set(1,2,3)
+
+scala> a.apply(2)
+res5: Boolean = true
+
+scala> a.apply(5)
+res6: Boolean = false
+
+scala> a.contains(2)
+res8: Boolean = true
+
+scala> a.contains(5)
+res9: Boolean = false
+```
+
+## 迭代器
+```scala
+scala> val a = Set(1,2,3)
+scala> val iter = set.iterator
+
+scala> while (iter.hasNext) { println(iter.next) }
+1
+2
+3
+```
