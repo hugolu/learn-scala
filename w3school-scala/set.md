@@ -82,6 +82,7 @@ ___
 參考連結
 - [scala.collection.immutable Set](http://www.scala-lang.org/api/current/index.html#scala.collection.immutable.Set)
 
+## 添加、移除
 ```scala
 scala> val set = Set(1,2,3,4)
 
@@ -93,6 +94,8 @@ res0: scala.collection.immutable.Set[Int] = Set(5, 1, 2, 3, 4)
 scala> set - 1
 res1: scala.collection.immutable.Set[Int] = Set(2, 3, 4)
 ```
+
+## reduce
 
 - ```/:[B](z: B)(op: (B, A) ⇒ B): B```
        - Applies a binary operator to a start value and all elements of this traversable or iterator, going left to right.
@@ -118,4 +121,30 @@ res2: String = 01234
 
 scala> (set :\ "5")((a,b) => a+b.toString)
 res3: String = 12345
+```
+
+## ```++:```
+```scala
+scala> val set1 = Set(1,2,3)
+scala> val set2 = Set(3,4,5)
+scala> val list1 = List(1,2,3)
+scala> val list2 = List(3,4,5)
+
+scala> set1 ++: list2
+res0: List[Int] = List(1, 2, 3, 3, 4, 5)
+
+scala> list1 ++: set2
+res1: scala.collection.immutable.Set[Int] = Set(5, 1, 2, 3, 4)
+```
+
+## ```addString()```
+```scala
+scala> val a = Set(1,2,3)
+a: scala.collection.immutable.Set[Int] = Set(1, 2, 3)
+
+scala> val b = new StringBuilder()
+b: StringBuilder =
+
+scala> a.addString(b)
+res2: StringBuilder = 123
 ```
