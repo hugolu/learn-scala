@@ -69,9 +69,27 @@ res7: scala.collection.immutable.Set[Int] = Set(1, 2)
 
 scala> set2 &~ set1
 res9: scala.collection.immutable.Set[Int] = Set(4, 5)
+
+scala> set1 -- set2
+res10: scala.collection.immutable.Set[Int] = Set(1, 2)
+
+scala> set1.diff(set2)
+res11: scala.collection.immutable.Set[Int] = Set(1, 2)
 ```
 ___
 # 進階內容
  
 參考連結
 - [scala.collection.immutable Set](http://www.scala-lang.org/api/current/index.html#scala.collection.immutable.Set)
+
+```scala
+scala> val set = Set(1,2,3,4)
+
+// +: 添加元素，結果產生新集合
+scala> set + 5
+res0: scala.collection.immutable.Set[Int] = Set(5, 1, 2, 3, 4)
+
+// -: 移除元素，結果產生新集合
+scala> set - 1
+res1: scala.collection.immutable.Set[Int] = Set(2, 3, 4)
+```
