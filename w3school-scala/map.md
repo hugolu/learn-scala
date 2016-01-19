@@ -35,4 +35,43 @@ res7: Boolean = false
 scala> Map().isEmpty
 res8: Boolean = true
 ```
+
+## 合併
+```scala
+scala> val colors1 = Map("red" -> "#FF0000",  "azure" -> "#F0FFFF", "peru" -> "#CD853F")
+scala> val colors2 = Map("blue" -> "#0033FF", "yellow" -> "#FFFF00", "red" -> "#FF0000")
+
+// ++ as an operator
+scala> color1 ++ color2
+res9: scala.collection.immutable.Map[String,String] = Map(blue -> #0033FF, azure -> #F0FFFF, peru -> #CD853F, yellow -> #FFFF00, red -> #FF0000)
+
+// ++ as a method
+scala> color1.++(color2)
+res10: scala.collection.immutable.Map[String,String] = Map(blue -> #0033FF, azure -> #F0FFFF, peru -> #CD853F, yellow -> #FFFF00, red -> #FF0000)
+```
+
+## ```foreach```
+```scala
+scala> val colors = Map("red" -> "#FF0000",  "azure" -> "#F0FFFF", "peru" -> "#CD853F")
+
+scala> colors.foreach(println)
+(red,#FF0000)
+(azure,#F0FFFF)
+(peru,#CD853F)
+
+scala> colors.foreach(color => println("colors[" + color._1 + "]:" + color._2))
+colors[red]:#FF0000
+colors[azure]:#F0FFFF
+colors[peru]:#CD853F
+```
+
+## ```contains```
+```scala
+scala> val colors = Map("red" -> "#FF0000",  "azure" -> "#F0FFFF", "peru" -> "#CD853F")
+
+scala> colors.contains("red")
+res16: Boolean = true
+
+scala> colors.contains("black")
+res17: Boolean = false
 ```
