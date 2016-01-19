@@ -93,3 +93,29 @@ res0: scala.collection.immutable.Set[Int] = Set(5, 1, 2, 3, 4)
 scala> set - 1
 res1: scala.collection.immutable.Set[Int] = Set(2, 3, 4)
 ```
+
+- ```/:[B](z: B)(op: (B, A) ⇒ B): B```
+       - Applies a binary operator to a start value and all elements of this traversable or iterator, going left to right.
+       - ```op(...op(op(z, x_1), x_2), ..., x_n)```|
+- ```:\[B](z: B)(op: (A, B) ⇒ B): B```
+       - Applies a binary operator to all elements of this traversable or iterator and a start value, going right to left.
+       - ```op(x_1, op(x_2, ... op(x_n, z)...))```|
+
+```scala
+scala> val set = List(1,2,3,4)
+set: List[Int] = List(1, 2, 3, 4)
+
+// 操作 number
+scala> (5 /: set)(_+_)
+res0: Int = 15
+
+scala> (set :\ 5)(_+_)
+res1: Int = 15
+
+// 操作 string
+scala> ("0" /: set)((a,b) => a+b.toString)
+res2: String = 01234
+
+scala> (set :\ "5")((a,b) => a+b.toString)
+res3: String = 12345
+```
