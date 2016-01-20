@@ -195,16 +195,36 @@ res10: scala.collection.immutable.Map[String,String] = Map(peru -> #CD853F)
   - ```:\``` is alternate syntax for foldRight, ```op(x_1, op(x_2, ... op(x_n, z)...))```
 - 注意 ```op()``` 裡面 A, B 的位置
 
+- ```foldLeft[B](z: B)(op: (B, (A, B)) ⇒ B): B```
+ - Applies a binary operator to a start value and all elements of this traversable or iterator, going left to right.
+- ```foldRight[B](z: B)(op: ((A, B), B) ⇒ B): B```
+ - Applies a binary operator to all elements of this iterable collection and a start value, going right to left.
+
+- left to right: ```/:```, ```foldLeft```
+- right to left: ```:\```, ```foldRight```
+
+計算水果總
 ```scala
 scala> val fruits = Map("apple" -> 100, "banana" -> 150, "carrot" -> 50)
 
-// 計算水果總數
-scala> (fruits :\ 0)((fruit, total) => fruit._2 + total)
-res10: Int = 300
-
+// fold left to right
 scala> (0 /: fruits)((total, fruit) => total + fruit._2)
-res12: Int = 300
+res0: Int = 300
+
+scala> fruits.foldLeft(0)((total, fruit) => total + fruit._2)
+res2: Int = 300
+
+// fold right to left
+scala> (fruits :\ 0)((fruit, total) => fruit._2 + total)
+res3: Int = 300
+
+scala> fruits.foldRight(0)((fruit, total) => fruit._2 + total)
+res4: Int = 300
 ```
+
+- ```fold[A1 >: (A, B)](z: A1)(op: (A1, A1) ⇒ A1): A1```
+ - Folds the elements of this traversable or iterator using the specified associative binary operator.
+ - 不會用 :(
 
 ## ```addString```
 ```scala
