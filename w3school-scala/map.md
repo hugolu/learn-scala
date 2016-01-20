@@ -205,3 +205,27 @@ res10: Int = 300
 scala> (0 /: fruits)((total, fruit) => total + fruit._2)
 res12: Int = 300
 ```
+
+## ```addString```
+```scala
+scala> val colors = Map("red" -> "#FF0000",  "azure" -> "#F0FFFF", "peru" -> "#CD853F")
+scala> val b = new StringBuilder()
+scala> colors.addString(b)
+res3: StringBuilder = red -> #FF0000azure -> #F0FFFFperu -> #CD853F
+```
+
+## ```aggregate```
+- ```aggregate[B](z: ⇒ B)(seqop: (B, (A, B)) ⇒ B, combop: (B, B) ⇒ B): B```
+ -  Aggregates the results of applying an operator to subsequent elements.
+
+```scala
+scala> val fruits = Map("apple" -> 100, "banana" -> 150, "carrot" -> 50)
+
+// 找出有哪些水果
+scala> fruits.aggregate(Set[String]())((set, fruit) => set + fruit._1, _ ++ _)
+res7: scala.collection.immutable.Set[String] = Set(apple, banana, carrot)
+```
+- ```z``` = ```Set[String]()``` 空集合
+- ```seqop``` = ```(set, fruit) => set + fruit._1``` set插入fruit的名字
+- ```combop``` = ```_ ++ _``` 合併所有partition裡面的set (這個範例中只有一個partition)
+- 這個範例很蠢，因為只要用```fruits.keys```就能得到一樣的答案 XD
