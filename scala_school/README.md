@@ -8,7 +8,7 @@
 - [ ] [Basics](basics.md)
 - [ ] [Basics continued](basics2.md)
 - [ ] [Collections](collections.md)
-- [ ] [Pattern matching & functional composition]pattern-matching-and-functional-composition.md()
+- [ ] [Pattern matching & functional composition](pattern-matching-and-functional-composition.md)
 - [ ] [Type & polymorphism basics](type-basics.md)
 - [ ] [Advanced types](advanced-types.md)
 - [ ] [Simple Build Tool](sbt.md)
