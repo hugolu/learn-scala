@@ -112,3 +112,74 @@ times match {
 // catch 1
 // res1: String = one
 ```
+
+## Matching on type
+```scala
+def addOne(n: Any): Any = {
+  n match {
+    case i: Int => i + 1
+    case d: Double => d + 1.0
+    case _ => "??"
+  }
+}
+// addOne: (n: Any)Any
+
+addOne(2)
+// res2: Any = 3
+addOne(2.0)
+// res3: Any = 3.0
+addOne("two")
+// res4: Any = ??
+```
+
+## Case Classes
+```scala
+cass class Calculator(brand: String, model: String)
+// defined class Calculator
+
+val hp20b = Calculator("hp", "20b")
+val hp20B = Calculator("hp", "20b")
+hp20b == hp20B
+// res9: Boolean = true
+
+def calcType(calc: Calculator) = calc match {
+  case Calculator("hp", "20b") => "hp-20b"
+  case Calculator("hp", "30b") => "hp-30b"
+  case Calculator(brand, model) => brand + "-" + model
+}
+// calcType: (calc: Calculator)String
+
+val ti40b = Calculator("ti", "40b")
+
+calcType(hp20b)
+// res14: String = hp-20b
+calcType(ti40b)
+// res15: String = ti-40b
+```
+
+## Exceptions
+```shell
+$ echo -n "hello world" > present.txt
+$ rm -f absent.txt
+```
+```scala
+val lines = try {
+  scala.io.Source.fromFile("absent.txt").mkString
+} catch {
+  case e: java.io.FileNotFoundException => "??"
+} finally {
+  println("finally...")
+}
+// finally...
+// lines: String = hello world
+
+val lines = try {
+  scala.io.Source.fromFile("present.txt").mkString
+} catch {
+  case e: java.io.FileNotFoundException => ""
+} finally {
+  println("finally...")
+}
+// finally...
+// lines: String = ??
+```
