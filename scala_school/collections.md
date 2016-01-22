@@ -68,7 +68,7 @@ getValue(none)
 // res6: String = nothing
 ```
 
-## Functional Combinators
+# Functional Combinators
 ```List(1, 2, 3) map squared``` applies the function ```squared``` to the elements of the list, returning a new list, perhaps ```List(1, 4, 9)```. We call operations like ```map``` combinators.
 
 ## ```map```
@@ -226,4 +226,51 @@ val aMap = myMap[Int]_
 //aMap: (List[Int], Int => Int) => List[Int] = <function2>
 aMap(numbers, _*2)
 // res41: List[Int] = List(2, 4, 6, 8, 10, 12, 14, 16, 18, 20)
+```
+
+# Map?
+All of the functional combinators shown work on Maps, too. Maps can be thought of as a list of pairs so the functions you write work on a pair of the keys and values in the Map.
+
+```scala
+val students = Map(("Steve"->80), ("Bob"->90), ("Joe"->100))
+
+students.map(student => student._1)
+// res0: scala.collection.immutable.Iterable[String] = List(Steve, Bob, Joe)
+students.map({case (name, score) => name})
+// res1: scala.collection.immutable.Iterable[String] = List(Steve, Bob, Joe)
+
+students.foreach(println)
+// (Steve,80)
+// (Bob,90)
+// (Joe,100)
+
+students.filter(student => student._2 > 95)
+// res3: scala.collection.immutable.Map[String,Int] = Map(Joe -> 100)
+
+students.partition(student => student._2 > 95)
+// res4: (scala.collection.immutable.Map[String,Int], scala.collection.immutable.Map[String,Int]) = (Map(Joe -> 100),Map(Steve -> 80, Bob -> 90))
+
+students.find(student => student._2 > 85)
+// res5: Option[(String, Int)] = Some((Bob,90))
+
+students.drop(1)
+// res6: scala.collection.immutable.Map[String,Int] = Map(Bob -> 90, Joe -> 100)
+
+students.dropWhile({case (name, score) => score > 85})
+res7: scala.collection.immutable.Map[String,Int] = Map(Steve -> 80, Bob -> 90, Joe -> 100)
+// ???
+
+students.foldLeft(0)({(acc: Int, student: (String, Int)) => acc + student._2})
+// res13: Int = 270
+
+students.foldRight(0)({case ((name, score), acc) => acc + score})
+// res14: Int = 270
+
+val group1 = Map("AAA"->10, "BBB"->30, "CCC"->50)
+val group2 = Map("DDD"->20, "EEE"->40, "FFF"->60)
+val groups = List(group1, group2)
+groups.flatMap(group => group.map(_._2))
+// res20: List[Int] = List(10, 30, 50, 20, 40, 60)
+groups.flatMap(_.values)
+// res22: List[Int] = List(10, 30, 50, 20, 40, 60)
 ```
