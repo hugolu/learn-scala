@@ -34,3 +34,38 @@ one(1)
 one(2)
 // scala.MatchError: 2 (of class java.lang.Integer)
 ```
+
+```scala
+val one: PartialFunction[Int, String] = { case 1 => "one" }
+val two: PartialFunction[Int, String] = { case 2 => "two" }
+val three: PartialFunction[Int, String] = { case 3 => "three" }
+val wildcard: PartialFunction[Int, String] = { case _ => "something else" }
+
+val partial = one orElse two orElse three orElse wildcard
+// partial: PartialFunction[Int,String] = <function1>
+
+scala> partial(1)
+// res17: String = one
+
+scala> partial(2)
+// res18: String = two
+
+scala> partial(3)
+// res19: String = three
+
+scala> partial(0)
+// res20: String = something else
+```
+- where to apply?
+
+## The mystery of ```case```
+```scala
+case class PhoneExt(name: String, ext: Int)
+
+val extensions = List(PhoneExt("steve", 100), PhoneExt("robey", 200))
+// extensions: List[PhoneExt] = List(PhoneExt(steve,100), PhoneExt(robey,200))
+
+extensions.filter { case PhoneExt(name, extension) => extension < 200 }
+// res21: List[PhoneExt] = List(PhoneExt(steve,100))
+```
+- filter takes a function. In this case a **predicate** function of (PhoneExt) => Boolean.
