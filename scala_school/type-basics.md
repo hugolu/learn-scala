@@ -117,7 +117,14 @@ val b: Bird = hatch()
 ## Bounds
 
 ### ```<:``` Upper Type Bounds
+[A Tour of Scala: Upper Type Bounds](http://www.scala-lang.org/old/node/136)
+- An upper type bound ```T <: A``` declares that type variable ```T``` refers to a subtype of type ```A```. 
+
 ```scala
+class Animal { val sound = "rustle" }
+class Bird extends Animal { override val sound = "call" }
+class Chicken extends Bird { override val sound = "cluck" }
+
 def cacophony[T](things: Seq[T]) = things map (_.sound)
 // <console>:10: error: value sound is not a member of type parameter T
 //       def cacophony[T](things: Seq[T]) = things map (_.sound)
@@ -126,17 +133,18 @@ def cacophony[T](things: Seq[T]) = things map (_.sound)
 def biophony[T <: Animal](things: Seq[T]) = things map (_.sound)
 // biophony: [T <: Animal](things: Seq[T])Seq[String]
 
-class Animal { val sound = "rustle" }
-class Bird extends Animal { override val sound = "call" }
-class Chicken extends Bird { override val sound = "cluck" }
-
-biophony(Seq(new Chicken, new Bird))
-// res3: Seq[String] = List(cluck, call)
+biophony(Seq(new Chicken, new Bird, new Animal))
+// res3: Seq[String] = List(cluck, call, rustle)
 ```
-- [A Tour of Scala: Upper Type Bounds](http://www.scala-lang.org/old/node/136)
+- ```T``` is a subtype of ```Animal```, with the upper type bound annotation ```biophony()``` can access the variable ```sound```
 
 ### ```>:``` Lower Type Bounds
-List defines ```::[B >: T](x: B)``` which returns a ```List[B]```. Notice the ```B >: T```. That specifies type ```B``` as a superclass of ```T```. That lets us do the right thing when prepending an Animal to a ```List[Bird]```:
+[A Tour of Scala: Lower Type Bounds](http://www.scala-lang.org/old/node/137)
+- The term ```T >: A``` expresses that the type parameter ```T``` or the abstract type ```T``` refer to a supertype of type ```A```.
+
+List defines ```::[B >: T](x: B)``` which returns a ```List[B]```. 
+- Notice the ```B >: T```. That specifies type ```B``` as a superclass of ```T```. 
+- That lets us do the right thing when prepending an Animal to a ```List[Bird]```:
 ```scala
 val flock = List(new Bird, new Bird)
 // flock: List[Bird] = List(Bird@3b7c306a, Bird@564e9da8)
@@ -148,4 +156,3 @@ new Animal :: flock
 res6: List[Animal] = List(Animal@6b8d773, Bird@3b7c306a, Bird@564e9da8)
 ```
 
-- [A Tour of Scala: Lower Type Bounds](http://www.scala-lang.org/old/node/137)
