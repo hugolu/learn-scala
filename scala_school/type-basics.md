@@ -20,23 +20,64 @@ Types are now preserved, The Scala compiler infers the type parameter for us. No
 ## Variance
 A central question that comes up when mixing OO with polymorphism is: if T’ is a subclass of T, is Container[T’] considered a subclass of Container[T]?
 
-The subtype relationship really means: for a given type T, if T’ is a subtype, can you substitute it?
+### ```[T]``` - invariant: C[T] and C[T’] are not related
+```scala
+class Invariant[T]
+
+val iv: Invariant[String] = new Invariant[String]
+// iv: Invariant[String] = Invariant@3fa76a13
+
+val iv: Invariant[AnyRef] = new Invariant[String]
+// <console>:11: error: type mismatch;
+
+val iv: Invariant[String] = new Invariant[AnyRef]
+// <console>:11: error: type mismatch;
+```
+
+### ```[+T]``` - covariant: C[T’] is a subclass of C[T]
 ```scala
 class Covariant[+T]
 // defined class Covariant
 
+val cv: Covariant[String] = new Covariant[String]
+// cv: Covariant[String] = Covariant@3f44dbd0
+
 val cv: Covariant[AnyRef] = new Covariant[String]
-// cv: Covariant[AnyRef] = Covariant@17e7c123
+// cv: Covariant[AnyRef] = Covariant@48f7b4f7
+
+val cv: Covariant[String] = new Covariant[AnyRef]
+// <console>:11: error: type mismatch;
 ```
 
+### ```[-T]``` - contravariant: C[T] is a subclass of C[T’]
 ```scala
 class Contravariant[-T]
 // defined class Contravariant
 
+val cv: Contravariant[String] = new Contravariant[String]
+// cv: Contravariant[String] = Contravariant@121b121a
+
+val cv: Contravariant[AnyRef] = new Contravariant[String]
+// <console>:11: error: type mismatch;
+
 val cv: Contravariant[String] = new Contravariant[AnyRef]
-// cv: Contravariant[String] = Contravariant@47283198
+// cv: Contravariant[String] = Contravariant@35011e72
 ```
 
+The subtype relationship really means: for a given type T, if T’ is a subtype, can you substitute T with T'?
+```scala
+class Base { val name = "base" }
+class Sub extends Base { override val name = "sub" }
+
+def showName(o: Base) = o.name
+// showName: (o: Base)String
+
+showName(new Sub)
+//res1: String = sub
+// subsitute Base with Sub
+```
+
+### Function parameters are contravariant
 ```scala
 class Animal { val sound = "rustle" }
 class Bird extends Animal { override val sound = "call" }
@@ -49,6 +90,7 @@ val c = new Chicken
 val getTweet: (Bird => String) = ((a: Animal) => a.sound )
 // getTweet: Bird => String = <function1>
 // "I need an Animal, I have a subclass of Bird." => it's ok
+// If you need a function that takes a Bird and you have a function that takes an Animal, that's OK.
 
 getTweet(a)
 // <console>:15: error: type mismatch;
@@ -56,4 +98,18 @@ getTweet(b)
 // res1: String = call
 getTweet(c)
 // res2: String = cluck
+```
+
+### A function’s return value type is covariant.
+```scala
+class Animal { val sound = "rustle" }
+class Bird extends Animal { override val sound = "call" }
+class Chicken extends Bird { override val sound = "cluck" }
+
+def hatch: ()=>Bird = () => new Chicken
+// hatch: () => Bird
+// If you need a function that returns a Bird but have a function that returns a Chicken, that’s great.
+
+val b: Bird = hatch()
+// b: Bird = Chicken@7315e196
 ```
