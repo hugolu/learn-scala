@@ -23,3 +23,10 @@ Function0[String]
 Function1[Int, Int]
 Function2[Int, Int, String]
 ```
+
+## definitions
+```scala
+trait Function0[+R] extends AnyRef
+trait Function1[-T1, +R] extends AnyRef
+trait Function2[-T1, -T2, +R] extends AnyRef
+```
