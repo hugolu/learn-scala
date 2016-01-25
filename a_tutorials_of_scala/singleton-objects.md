@@ -42,5 +42,19 @@ class MyString(val jString:String) {
 }
 
 println(MyString("hello"," world"))
+//hello world
 println(MyString("hello"))
+//hello
+```
+
+My practice:
+```scala
+case class MyString(val str: String*) { override def toString = str.toList.reduce(_+ " " +_) }
+
+println(MyString("hello"))
+//hello
+println(MyString("hello", "world"))
+//hello world
+println(MyString("hello", "world", "scala"))
+//hello world scala
 ```
