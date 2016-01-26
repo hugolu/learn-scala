@@ -123,7 +123,7 @@ scala> val contravariantClass: Contravariant[Animal] = new Contravariant[Dog]
 
 # Variance and type safety (變型與型別安全)
 
-When defining a generic class with a var field we can get compile time errors:
+使用```var```欄位定義通用類別，會發生編譯錯誤：
 
 ```scala
 scala> class Invariant[T](var t: T)
@@ -139,7 +139,7 @@ scala> class Contravariant[-T](var t: T)
        class Contravariant[-T](var t: T)
 ```
 
-Let’s break it down a little. Why doesn’t the compiler allow getters in the Covariant class?
+來拆解一下。為什麼編譯器不允許協變類別中有讀取器(getter)？
 
 ```scala
 scala> abstract trait Covariant[+T] {
@@ -155,7 +155,7 @@ scala> abstract trait Contravariant[-T] {
 defined trait Contravariant
 ```
 
-Why? Let’s think about usages of covariance let’s say that we have a class:
+為什麼？想想有關協變的用法，假設有個類別：
 
 ```scala
 class Printer[+T] {
@@ -165,9 +165,9 @@ class Printer[+T] {
           def print(t: T): Unit = ???
 ```
 
-If the print method can print Dogs does it make sense (in general) that it should also print Animals? Maybe sometimes but in the general sense if we want to generalize the Printer class we should use contravariance. The compiler is smart enough to check this type of usage for us.
+如果```print```方法可以列印```Dog```，通常它也應該印出```Animal```，這說得過去嗎？或許有時可以，但通常如果我們想通用化```Printer```類別，我們應該使用逆變。編譯器會聰明地幫忙檢查使用的型別。
 
-Let’s think about the second use case: returning a generic parameter:
+想想有關第二個例子，回傳一個通用參數：
 
 ```scala
 scala> class Create[-T] {
@@ -177,4 +177,4 @@ scala> class Create[-T] {
          def create: T = ???
 ```
 
-And again - does it make sense that Create should generalize by contravariance? If Create returns instances of the Animal class should we be able to use it in every place that expects Create[Dog]? The scala compiler is smart enough that it explodes in our face if we try it.
+再一次 - ```Create```用逆變來通用化，這說得過去嗎？如果```Create```回傳```Animal```類別的實例，我們能在每個期望出現```Create[Dog]```的地方使用嗎？Scala編譯器聰明的很，如果我們這麼試，它會在我們面前炸掉。
