@@ -6,11 +6,11 @@ Variance ([wikipedia](http://en.wikipedia.org/wiki/Variance_%28computer_science%
 
 # Variance (可變)
 
-In scala generic parameters of classes can be annotated with additional variance annotations. Those annotations impose further bounds on how the declared class can be used.
+在 Scala 中，類別的通用化參數可額外加註 variance 註記。那些註記進一步約束宣告的類別如何使用。
 
-Variance is somewhat akin to the [Liskov Substitution Principle](http://en.wikipedia.org/wiki/Liskov_substitution_principle). LSP states that subclasses should be used transparently in place of their superclasses.
+Variance 有點像 [Liskov Substitution Principle](http://en.wikipedia.org/wiki/Liskov_substitution_principle)。LSP 描述子類能夠替換其超類被使用。
 
-Variances imposes some additional limitations on how we can correctly use a generic class in terms of sub- and super- typing.
+Variance 施加額外限制讓我們從子型別 (sub-typing) 與超型別 (super-typing) 的角度使用通用類別。
 
 ## Covariance (協變)
 
