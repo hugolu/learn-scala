@@ -2,9 +2,9 @@
 - 專有名詞除第一次出現時給予中文翻譯，其餘文章皆沿用原文，避免歧義。
 
 ___
-Variance ([wikipedia](http://en.wikipedia.org/wiki/Variance_%28computer_science%29), [scala-lang](http://www.scala-lang.org/node/129)) 乍看瑣碎，卻是保證型別安全的有用工具。我花了一點時間弄懂它隱含的意思，以下總結 variance 以及它能做什麼。
+Variance ([wikipedia](http://en.wikipedia.org/wiki/Variance_%28computer_science%29), [scala-lang](http://www.scala-lang.org/node/129)) 乍看瑣碎，卻是保證型別安全的有用工具。我花了一點時間弄懂它隱含的意思，做以下總結以及它能做什麼。
 
-# Variance (可變)
+# Variance (變型)
 
 在 Scala 中，類別的通用化參數可額外加註 variance 註記。那些註記進一步約束宣告的類別如何使用。
 
@@ -14,18 +14,19 @@ Variance 施加額外限制讓我們從子型別 (sub-typing) 與超型別 (supe
 
 ## Covariance (協變)
 
-An example of a covariant class in scala is the immutable Vector.
+在 Scala 中有個 covariant 類別的範例，```Vector```。
 
-Consider this class hierarchy which we will use for the examples:
+觀察這個類別階層：
 
 ```scala
 class Animal
 class Dog extends Animal
 ```
 
-Covariance defines the following relationship: if A is a subtype of B then Vector[A] is a subtype of Vector[B]. Concretely Vector[Dog] is a subtype of Vector[Animal].
+Covariance 定義以下關係：如果 ```A``` 是 ```B``` 的子型別，那麼 ```Vector[A]``` 是 ```Vector[B]``` 的子型別。具體來說，```Vector[Dog]``` 是 ```Vector[Animal]``` 的子型別。
 
-Another way of looking at it is if a Vector is covariant we must be able to use Vector[Dog] in any place that we would use Vector[Animal] because Animal is of type Dog or wider. Covariance implies a conversion between a narrower type and a wider type - you may treat Vector[Dog] as if it’s Vector[Animal].
+由另一的角度來看，如果 ```Vector``` 是協變的，必能使用 ```Vector[Dog]``` 在任何地方取代會使用 ```Vector[Animal]```，因為 ```Dog``` 是一種 ```Animal```。Covariance 意味窄型別與寬型別之間的轉變 - 你可以把 ```Vector[Dog]``` 當成 ```Vector[Animal]```。
+
 
 ```scala
 // we can assign a Vector of Animals to a Vector of Animals 
@@ -120,7 +121,7 @@ scala> val contravariantClass: Contravariant[Animal] = new Contravariant[Dog]
                                                     ^
 ```
 
-# Variance and type safety (可變與型別安全)
+# Variance and type safety (變型與型別安全)
 
 When defining a generic class with a var field we can get compile time errors:
 
