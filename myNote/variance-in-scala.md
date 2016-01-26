@@ -48,9 +48,9 @@ scala> val aCovariantVector: Vector[Dog] = Vector.empty[Animal]
 
 ## Invariance (不變)
 
-If a class parameter is invariant it means that no conversion wider to narrower, nor narrower to wider may be performed on the class.
+如果類別參數是不變的 (invariant)，意味著類別沒有寬、窄型別間的轉換。
 
-The most common usage of invariance are mutable collections. An Array is an example of an invariant class.
+invariance 最一般的用法是集合 (collection)。```Array``` 是 invariant 類別的例子。
 
 ```scala
 scala> val anInvariantArray: Array[Animal] = Array.empty[Animal]
@@ -74,9 +74,9 @@ You may wish to investigate a wildcard type such as `_ >: Dog`. (SLS 3.2.10)
        val anInvariantArray: Array[Dog] = Array.empty[Animal]
 ```
 
-Invariance is important for type safety of mutable collections. Java, famously, has covariant mutable arrays. This should show you why it’s a bad idea:
+Invariance 對於集合的型別安全很重要。Java 陣列具有協變性。以下示範為什麼這是個壞主意：
 
-```scala
+```java
 // declare an array of strings
 String[] a = new String[1];
 
@@ -88,7 +88,7 @@ Object[] b = a;
 b[0] = 1;
 ```
 
-Because of this users of arrays in can be fooled into thinking they are dealing with Object[] instead String[]. If java would allow storing Integers into a String array this would blow up at the read site - the “readers” of the array would think they are still dealing with a String array but and not a Object array and try to read strings from it.
+因為陣列的使用者可能會認為他們在處理```Object[]```而不是```String[]```。如果 Java 允許把 ```Integer``` 儲存到 ```String``` 陣列，這會搞爛網站 - 讀取者以為自己在處理 ```String``` 陣列而不是 ```Object``` 陣列，然後嘗試從陣列中讀出字串。
 
 ## Contravariance (逆變)
 
