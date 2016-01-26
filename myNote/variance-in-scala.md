@@ -1,13 +1,14 @@
 以下內容翻譯文章 [Variance in scala](http://like-a-boss.net/2012/09/17/variance-in-scala.html)
 - 專有名詞除第一次出現時給予中文翻譯，其餘文章皆沿用原文，避免歧義。
+
 ___
-Variance ([wikipedia](http://en.wikipedia.org/wiki/Variance_%28computer_science%29), [scala-lang](http://www.scala-lang.org/node/129)) is a thing that seems trivial on the first glance but is a useful tool for guaranteeing type safety. It took me a while to grok all of its implications, and I’ll summarize variance and the “so what?” behind it.
+Variance ([wikipedia](http://en.wikipedia.org/wiki/Variance_%28computer_science%29), [scala-lang](http://www.scala-lang.org/node/129)) 乍看瑣碎，卻是保證型別安全的有用工具。我花了一點時間弄懂它隱含的意思，以下總結 variance 以及它能做什麼。
 
 # Variance (可變)
 
 In scala generic parameters of classes can be annotated with additional variance annotations. Those annotations impose further bounds on how the declared class can be used.
 
-Variance is somewhat akin to the Liskov Substitution Principle. LSP states that subclasses should be used transparently in place of their superclasses.
+Variance is somewhat akin to the [Liskov Substitution Principle](http://en.wikipedia.org/wiki/Liskov_substitution_principle). LSP states that subclasses should be used transparently in place of their superclasses.
 
 Variances imposes some additional limitations on how we can correctly use a generic class in terms of sub- and super- typing.
 
