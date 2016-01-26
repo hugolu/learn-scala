@@ -92,15 +92,15 @@ b[0] = 1;
 
 ## Contravariance (逆變)
 
-Contravariance is in some way the polar opposite of covariance. The canonical example of a contrvariant class in scala is Function1[-T1, +R]. Why does Function1 need to be contrvariant on its the input parameter?
+某方面來說，contravariance 算是 convariance 的反面。在 scala 中，逆變類別的例子是 ```Function1[-T1, +R]```。為什麼 ```Function1``` 的輸入參數需要是逆變？
 
-Let’s think in term of conversions. Covariance, which was discused before, implies that there exists a conversion between Vector[Dog] to Vector[Animal] because Dog is a subclass of Animal. Does a similar conversion make sense in the case of Function1?
+用協變的角度思考一下。先前討論過，因為```Dog```是```Animal```的子類別，協變意味著```Vector[Dog]```到```Vector[Animal]```間存在轉變。那麼相似的轉變在```Function1```說得過去嗎？
 
-If we have Function1[Dog, Any] then in the general case this function should work for Dogs and its subtypes. But not necessarily for animals because it may use “features” (methods) that are only available to the subtype.
+假設```Function1[Dog, Any]```成立，一般來說，這個函式應該對```Dog```與其子類別都適用。但不必然對```Animal```適用，因為這類別可能使用只有子類才具備的方法。
 
-The reverse conversion works however - if we have a function that works on Animals then this function by design should work on Dogs.
+然而，逆向轉變可行 - 如果一個函式能作用在```Animal```上，那麼設計上，這個函式也應該能作用在```Dog```上。
 
-Contravariance means that if B is a supertype of A then Function1[A, R] is a supertype of Function1[B, R]. Concretely Function1[Dog, Any] is a supertype of Function1[Animal, Any].
+逆變意味如果```B```是```A```的超型別，則```Function1[A, R]```是```Function1[B, R]```的超型別。具體來說，```Function1[Dog, Any]```會是```Function1[Animal, Any]```的超型別。
 
 ```scala
 class Contravariant[-A] 
