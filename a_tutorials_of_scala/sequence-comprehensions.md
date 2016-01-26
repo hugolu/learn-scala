@@ -38,3 +38,21 @@ list.flatMap(p => for(pp <- list2) yield p*pp)
 for(p <- list; pp <- list2) yield p*pp
 //List[Int] = List(4, 5, 6, 8, 10, 12, 12, 15, 18)
 ```
+
+## A more complicated example 
+```scala
+def foo(n: Int, v: Int) = for (i <- 0 until n; j <- i until n if i + j == v) yield Pair(i, j)
+foo(20, 32)foreach(println)
+//(13,19)
+//(14,18)
+//(15,17)
+//(16,16)
+
+def bar(n: Int, v: Int) = for (i <- Range(0,n); j <- Range(i, n) if i + j == v) yield(i,j)
+bar(20, 32).foreach(println)
+//(13,19)
+//(14,18)
+//(15,17)
+//(16,16)
+```
+-  comprehensions are not restricted to lists
