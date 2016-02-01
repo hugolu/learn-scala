@@ -5,14 +5,14 @@ A traditional objection to static typing is that it has much syntactic overhead.
 
 In scala all type inference is local. Scala considers one expression at a time. For example:
 ```scala
-def id[T](x:T):T = x
-// id: [T](x: T)T
+scala> def id[T](x:T):T = x
+id: [T](x: T)T
 
-val x = id(322)
-// x: Int = 322
+scala> val x = id(322)
+x: Int = 322
 
-val x = id("hey")
-//x: String = hey
+scala> val x = id("hey")
+x: String = hey
 ```
 
 Types are now preserved, The Scala compiler infers the type parameter for us. Note also how we did not have to specify the return type explicitly.
@@ -22,48 +22,70 @@ A central question that comes up when mixing OO with polymorphism is: if T’ is
 
 ### ```[T]``` - invariant: C[T] and C[T’] are not related
 ```scala
-class Invariant[T]
+scala> class Invariant[T]
+defined class Invariant
 
-val iv: Invariant[String] = new Invariant[String]
-// iv: Invariant[String] = Invariant@3fa76a13
+scala> val x: Invariant[String] = new Invariant[String]
+x: Invariant[String] = Invariant@e5bcd5a
 
-val iv: Invariant[AnyRef] = new Invariant[String]
-// <console>:11: error: type mismatch;
+scala> val y: Invariant[AnyRef] = new Invariant[String]
+<console>:11: error: type mismatch;
+ found   : Invariant[String]
+ required: Invariant[AnyRef]
+Note: String <: AnyRef, but class Invariant is invariant in type T.
+You may wish to define T as +T instead. (SLS 4.5)
+       val y: Invariant[AnyRef] = new Invariant[String]
+                                  ^
 
-val iv: Invariant[String] = new Invariant[AnyRef]
-// <console>:11: error: type mismatch;
+scala> val z: Invariant[String] = new Invariant[AnyRef]
+<console>:11: error: type mismatch;
+ found   : Invariant[AnyRef]
+ required: Invariant[String]
+Note: AnyRef >: String, but class Invariant is invariant in type T.
+You may wish to define T as -T instead. (SLS 4.5)
+       val z: Invariant[String] = new Invariant[AnyRef]
+                                  ^
 ```
 
-### ```[+T]``` - covariant: C[T’] is a subclass of C[T]
+### ```[+T]``` - covariant: if ```T'``` is a subtype of ```T```, ```C[T']``` is a subclass of ```C[T]```
 ```scala
-class Covariant[+T]
-// defined class Covariant
+scala> class Covariant[+T]
+defined class Covariant
 
-val cv: Covariant[String] = new Covariant[String]
-// cv: Covariant[String] = Covariant@3f44dbd0
+scala> val x: Covariant[String] = new Covariant[String]
+x: Covariant[String] = Covariant@46d3ddd8
 
-val cv: Covariant[AnyRef] = new Covariant[String]
-// cv: Covariant[AnyRef] = Covariant@48f7b4f7
+scala> val y: Covariant[AnyRef] = new Covariant[String]
+y: Covariant[AnyRef] = Covariant@3e4b7374
 
-val cv: Covariant[String] = new Covariant[AnyRef]
-// <console>:11: error: type mismatch;
+scala> val z: Covariant[String] = new Covariant[AnyRef]
+<console>:11: error: type mismatch;
+ found   : Covariant[AnyRef]
+ required: Covariant[String]
+       val z: Covariant[String] = new Covariant[AnyRef]
+                                  ^
 ```
 
-### ```[-T]``` - contravariant: C[T] is a subclass of C[T’]
+### ```[-T]``` - contravariant: if ```T'``` is a subtype of ```T```, ```C[T]``` is a subclass of ```C[T']```
 ```scala
-class Contravariant[-T]
-// defined class Contravariant
+scala> class Contravariant[-T]
+defined class Contravariant
 
-val cv: Contravariant[String] = new Contravariant[String]
-// cv: Contravariant[String] = Contravariant@121b121a
+scala> val x: Contravariant[String] = new Contravariant[String]
+x: Contravariant[String] = Contravariant@299c282e
 
-val cv: Contravariant[AnyRef] = new Contravariant[String]
-// <console>:11: error: type mismatch;
+scala> val y: Contravariant[AnyRef] = new Contravariant[String]
+<console>:11: error: type mismatch;
+ found   : Contravariant[String]
+ required: Contravariant[AnyRef]
+       val y: Contravariant[AnyRef] = new Contravariant[String]
+                                      ^
 
-val cv: Contravariant[String] = new Contravariant[AnyRef]
-// cv: Contravariant[String] = Contravariant@35011e72
+scala> val z: Contravariant[String] = new Contravariant[AnyRef]
+z: Contravariant[String] = Contravariant@44009cf2
 ```
 
+### Subtype
 The subtype relationship really means: for a given type T, if T’ is a subtype, can you substitute T with T'?
 ```scala
 class Base { val name = "base" }
@@ -178,22 +200,22 @@ hatch: () => Bird = <function0>
 - An upper type bound ```T <: A``` declares that type variable ```T``` refers to a subtype of type ```A```. 
 
 ```scala
-class Animal { val sound = "rustle" }
-class Bird extends Animal { override val sound = "call" }
-class Chicken extends Bird { override val sound = "cluck" }
-
-def cacophony[T](things: Seq[T]) = things map (_.sound)
-// <console>:10: error: value sound is not a member of type parameter T
-//       def cacophony[T](things: Seq[T]) = things map (_.sound)
-//                                                        ^
-
-def biophony[T <: Animal](things: Seq[T]) = things map (_.sound)
-// biophony: [T <: Animal](things: Seq[T])Seq[String]
-
-biophony(Seq(new Chicken, new Bird, new Animal))
-// res3: Seq[String] = List(cluck, call, rustle)
+scala> def cacophony[T](things: Seq[T]) = things map (_.sound)
+<console>:10: error: value sound is not a member of type parameter T
+       def cacophony[T](things: Seq[T]) = things map (_.sound)
+                                                        ^
 ```
-- ```T``` is a subtype of ```Animal```, with the upper type bound annotation ```biophony()``` can access the variable ```sound```
+- 無法判斷```T```是否具備```sound```方法
+
+```scala
+scala> def biophony[T <: Animal](things: Seq[T]) = things map (_.sound)
+biophony: [T <: Animal](things: Seq[T])Seq[String]
+
+scala> biophony(Seq(new Chicken, new Bird, new Animal))
+res3: Seq[String] = List(cluck, call, rustle)
+```
+- 透過```T <: Animal```，宣告```T``` is a subtype of ```Animal```
+- with the upper type bound annotation ```biophony()``` can access the variable ```sound```
 
 ### ```>:``` Lower Type Bounds
 [A Tour of Scala: Lower Type Bounds](http://www.scala-lang.org/old/node/137)
@@ -202,6 +224,7 @@ biophony(Seq(new Chicken, new Bird, new Animal))
 List defines ```::[B >: T](x: B)``` which returns a ```List[B]```. 
 - Notice the ```B >: T```. That specifies type ```B``` as a superclass of ```T```. 
 - That lets us do the right thing when prepending an Animal to a ```List[Bird]```:
+
 ```scala
 val flock = List(new Bird, new Bird)
 // flock: List[Bird] = List(Bird@3b7c306a, Bird@564e9da8)
