@@ -82,21 +82,33 @@ showName(new Sub)
 scala> class Animal { val sound = "rustle" }
 scala> class Bird extends Animal { override val sound = "call" }
 scala> class Chicken extends Bird { override val sound = "cluck" }
+```
 
+```scala
 // If you need a function that takes a Bird and you have a function that takes an Animal, that's OK.
 scala> (a: Animal) => a.sound
 res1: Animal => String = <function1>
 
 scala> val getTweet: Bird => String = (a: Animal) => a.sound
 getTweet: Bird => String = <function1>
+```
+- ```getTweet```接受```Bird```型別的參數
+- 將```Bird```實例傳給接受```Animal```實例的匿名函式
+- ```Bird```是```Animal```的subtype，型別轉換沒問題
 
+```scala
 // If you need a function that takes a Bird and you have a function that takes a Bird, that's OK.
 scala> (b: Bird) => b.sound
 res2: Bird => String = <function1>
 
 scala> val getTweet: Bird => String = (b: Bird) => b.sound
 getTweet: Bird => String = <function1>
+```
+- ```getTweet```接受```Bird```型別的參數
+- 將```Bird```實例傳給接受```Bird```實例的匿名函式
+- 不需型別轉換，沒問題
 
+```scala
 // If you need a function that takes a Bird and you have a function that takes a Chicken, that's NOT OK.
 scala> (c: Chicken) => c.sound
 res3: Chicken => String = <function1>
@@ -108,13 +120,18 @@ scala> val getTweet: Bird => String = (c: Chicken) => c.sound
        val getTweet: Bird => String = (c: Chicken) => c.sound
                                                    ^
 ```
+- ```getTweet```接受```Bird```型別的參數
+- 將```Bird```實例傳給接受```Chicken```實例的匿名函式
+- ```Bird```不是```Chicken```的subtype，型別轉換會出錯
 
 ### A function’s *return value* type is covariant.
 ```scala
 scala> class Animal { val sound = "rustle" }
 scala> class Bird extends Animal { override val sound = "call" }
 scala> class Chicken extends Bird { override val sound = "cluck" }
+```
 
+```scala
 // If you need a function that returns a Bird but have a function that returns an Animal, that’s NOT ok.
 scala> () => new Animal
 res0: () => Animal = <function0>
@@ -125,14 +142,24 @@ scala> val hatch: () => Bird = () => new Animal
  required: Bird
        val hatch: () => Bird = () => new Animal
                                      ^
+```
+- ```hatch```回傳```Bird```型別的實例
+- 匿名函式回傳```Animal```型別的實例
+- ```Animal```不是```Bird```的subtype，匿名函式回傳值不可被```hatch```的呼叫者接受，型別轉換會出錯
 
+```scala
 // If you need a function that returns a Bird but have a function that returns a Bird, that’s OK.
 scala> () => new Bird
 res1: () => Bird = <function0>
 
 scala> val hatch: () => Bird = () => new Bird
 hatch: () => Bird = <function0>
+```
+- ```hatch```回傳```Bird```型別的實例
+- 匿名函式回傳```Bird```型別的實例
+- 不需型別轉換，匿名函式回傳值可被```hatch```的呼叫者接受，沒問題
 
+```scala
 // If you need a function that returns a Bird but have a function that returns a Chicken, that’s OK.
 scala> () => new Chicken
 res2: () => Chicken = <function0>
@@ -140,6 +167,9 @@ res2: () => Chicken = <function0>
 scala> val hatch: () => Bird = () => new Chicken
 hatch: () => Bird = <function0>
 ```
+- ```hatch```回傳```Bird```型別的實例
+- 匿名函式回傳```Chicken```型別的實例
+- ```Chicken```是```Bird```的subtype，匿名函式回傳值可被```hatch```的呼叫者接受，沒問題
 
 ## Bounds
 
