@@ -77,7 +77,7 @@ showName(new Sub)
 // subsitute Base with Sub
 ```
 
-### Function parameters are contravariant
+### Function *parameters* are contravariant
 ```scala
 scala> class Animal { val sound = "rustle" }
 scala> class Bird extends Animal { override val sound = "call" }
@@ -86,18 +86,21 @@ scala> class Chicken extends Bird { override val sound = "cluck" }
 // If you need a function that takes a Bird and you have a function that takes an Animal, that's OK.
 scala> (a: Animal) => a.sound
 res1: Animal => String = <function1>
+
 scala> val getTweet: Bird => String = (a: Animal) => a.sound
 getTweet: Bird => String = <function1>
 
 // If you need a function that takes a Bird and you have a function that takes a Bird, that's OK.
 scala> (b: Bird) => b.sound
 res2: Bird => String = <function1>
+
 scala> val getTweet: Bird => String = (b: Bird) => b.sound
 getTweet: Bird => String = <function1>
 
 // If you need a function that takes a Bird and you have a function that takes a Chicken, that's NOT OK.
 scala> (c: Chicken) => c.sound
 res3: Chicken => String = <function1>
+
 scala> val getTweet: Bird => String = (c: Chicken) => c.sound
 <console>:14: error: type mismatch;
  found   : Chicken => String
@@ -106,18 +109,36 @@ scala> val getTweet: Bird => String = (c: Chicken) => c.sound
                                                    ^
 ```
 
-### A function’s return value type is covariant.
+### A function’s *return value* type is covariant.
 ```scala
-class Animal { val sound = "rustle" }
-class Bird extends Animal { override val sound = "call" }
-class Chicken extends Bird { override val sound = "cluck" }
+scala> class Animal { val sound = "rustle" }
+scala> class Bird extends Animal { override val sound = "call" }
+scala> class Chicken extends Bird { override val sound = "cluck" }
 
-def hatch: ()=>Bird = () => new Chicken
-// hatch: () => Bird
-// If you need a function that returns a Bird but have a function that returns a Chicken, that’s great.
+// If you need a function that returns a Bird but have a function that returns an Animal, that’s NOT ok.
+scala> () => new Animal
+res0: () => Animal = <function0>
 
-val b: Bird = hatch()
-// b: Bird = Chicken@7315e196
+scala> val hatch: () => Bird = () => new Animal
+<console>:12: error: type mismatch;
+ found   : Animal
+ required: Bird
+       val hatch: () => Bird = () => new Animal
+                                     ^
+
+// If you need a function that returns a Bird but have a function that returns a Bird, that’s OK.
+scala> () => new Bird
+res1: () => Bird = <function0>
+
+scala> val hatch: () => Bird = () => new Bird
+hatch: () => Bird = <function0>
+
+// If you need a function that returns a Bird but have a function that returns a Chicken, that’s OK.
+scala> () => new Chicken
+res2: () => Chicken = <function0>
+
+scala> val hatch: () => Bird = () => new Chicken
+hatch: () => Bird = <function0>
 ```
 
 ## Bounds
