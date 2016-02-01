@@ -79,25 +79,31 @@ showName(new Sub)
 
 ### Function parameters are contravariant
 ```scala
-class Animal { val sound = "rustle" }
-class Bird extends Animal { override val sound = "call" }
-class Chicken extends Bird { override val sound = "cluck" }
+scala> class Animal { val sound = "rustle" }
+scala> class Bird extends Animal { override val sound = "call" }
+scala> class Chicken extends Bird { override val sound = "cluck" }
 
-val a = new Animal
-val b = new Bird
-val c = new Chicken
-
-val getTweet: (Bird => String) = ((a: Animal) => a.sound )
-// getTweet: Bird => String = <function1>
-// "I need an Animal, I have a subclass of Bird." => it's ok
 // If you need a function that takes a Bird and you have a function that takes an Animal, that's OK.
+scala> (a: Animal) => a.sound
+res1: Animal => String = <function1>
+scala> val getTweet: Bird => String = (a: Animal) => a.sound
+getTweet: Bird => String = <function1>
 
-getTweet(a)
-// <console>:15: error: type mismatch;
-getTweet(b)
-// res1: String = call
-getTweet(c)
-// res2: String = cluck
+// If you need a function that takes a Bird and you have a function that takes a Bird, that's OK.
+scala> (b: Bird) => b.sound
+res2: Bird => String = <function1>
+scala> val getTweet: Bird => String = (b: Bird) => b.sound
+getTweet: Bird => String = <function1>
+
+// If you need a function that takes a Bird and you have a function that takes a Chicken, that's NOT OK.
+scala> (c: Chicken) => c.sound
+res3: Chicken => String = <function1>
+scala> val getTweet: Bird => String = (c: Chicken) => c.sound
+<console>:14: error: type mismatch;
+ found   : Chicken => String
+ required: Bird => String
+       val getTweet: Bird => String = (c: Chicken) => c.sound
+                                                   ^
 ```
 
 ### A function’s return value type is covariant.
