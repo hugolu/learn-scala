@@ -35,3 +35,40 @@ res5: scala.collection.immutable.Map[Char,Int] = Map(a -> 1, b -> 2)
 scala> Map(('a', 1), ('b', 2))
 res6: scala.collection.immutable.Map[Char,Int] = Map(a -> 1, b -> 2)
 ```
+
+## The Hierarchy
+
+### Traversable
+All collections can be traversed. This trait defines standard function combinators. These combinators are written in terms of ```foreach```, which collections must implement.
+```scala
+scala> List(1,2,3).foreach(print)
+123
+```
+
+### Iterable
+Has an iterator() method to give you an Iterator over the elements.
+```scala
+scala> val iter = List(1,2,3).iterator
+iter: Iterator[Int] = non-empty iterator
+
+scala> while(iter.hasNext) { print(iter.next) }
+123
+```
+
+### Seq
+Sequence of items with ordering.
+```scala
+scala> val iter = Seq(1,2,3).reverseIterator
+iter: Iterator[Int] = non-empty iterator
+
+scala> while(iter.hasNext) { print(iter.next) }
+321
+```
+
+### Set
+A collection of items with no duplicates.
+
+### Map
+Key Value Pairs.
+
+## The methods
