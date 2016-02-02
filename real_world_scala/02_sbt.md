@@ -82,3 +82,50 @@ sbt命令
 $ sbt ~compile
 ```
 以上命令意味着， 我更改了任何源代码并且保存之后，将直接触发SBT编译相应的源代码以及相应的依赖变更。 
+
+## SBT的依赖管理
+
+在SBT中， 类库的依赖管理可以分为两类：
+- unmanaged dependencies
+- managed dependencies
+
+### Unmanaged Dependencies
+```
+unmanagedBase <<= baseDirectory { base => base / "3rdlibs" }
+```
+- unmanagedBase这个Key用来表示unmanaged dependencies存放第三方jar包的路径， 具体的值默认是lib
+- 为了改变这个Key的值， 采用<<=操作符， 根据baseDirectory的值转换并计算出一个新值赋值给unmanagedBase这个Key
+- baseDirectory指的是当前项目目录，而<<=操作符(其实是Key的方法)则负责从已知的某些Key的值计算出新的值并赋值给指定的Key
+
+### Managed Dependancies
+sbt的managed dependencies采用Apache Ivy的依赖管理方式， 可以支持从Maven或者Ivy的Repository中自动下载相应的依赖。
+
+简单来说，在SBT中， 使用managed dependencies基本上就意味着往libraryDependencies这个Key中添加所需要的依赖， 添加的一般格式如下:
+```
+libraryDependencies += groupID % artifactID % revision
+```
+
+範例：
+```
+libraryDependencies += "org.apache.derby" % "derby" % "10.4.1.3" % "test"
+```
+- 限定依赖的范围只限于测试期间
+
+```
+libraryDependencies += "org.apache.derby" % "derby" % "10.4.1.3" exclude("org", "artifact")
+```
+- 允许排除递归依赖中某些我们需要排除的依赖
+
+```
+libraryDependencies += "org.apache.derby" %% "derby" % "10.4.1.3" 
+```
+- 在依赖查找的时候，将当前项目使用的scala版本号追加到artifactId之后作为完整的artifactId来查找依赖
+- 比如如果我们的项目使用```scala2.9.2```，那么依赖声明实际上等同于"org.apache.derby" %% "derby_2.9.2" % "10.4.1.3"
+
+
+如果有一堆依赖要添加，一行一行的添加是一种方式，其实也可以一次添加多个依赖：
+```
+libraryDependencies ++= Seq("org.apache.derby" %% "derby" % "10.4.1.3",
+                            "org.scala-tools" %% "scala-stm" % "0.3", 
+                            ...)
+```
