@@ -129,3 +129,18 @@ libraryDependencies ++= Seq("org.apache.derby" %% "derby" % "10.4.1.3",
                             "org.scala-tools" %% "scala-stm" % "0.3", 
                             ...)
 ```
+
+## Resovers
+默认情况下， SBT回去默认的Maven2的Repository中抓取依赖，但如果默认的Repository中找不到我们的依赖，那我们可以通过resolver机制，追加更多的repository让SBT去查找并抓取
+```
+resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+```
+- ```at```之前是要追加的repository的标志名称（任意取），```at```后面则是要追加的repository的路径。
+
+除了可远程访问的Maven Repo，我们也可以将本地的Maven Repo追加到resolver的搜索范围：
+```
+resolvers += "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository"
+```
+
+___
+# SBT 進階篇
