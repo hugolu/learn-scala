@@ -77,3 +77,7 @@ object Statistics {
 
 ## 讓 Type classes 來拯救你！
 
+type class ```C``` 定義一些能夠操作成員變數型別為 ```T``` 的方法，這個成員變數型別 ```T``` 不必繼承 ```C``` 這個類別。
+一旦 ```T``` 成為 ```C``` 的成員，某些類別方法勢必要能接受 ```T``` 做為參數。
+
+使用 *type classes* 的程式碼對擴充開放 (open to extension)，不需要用 adapter。
