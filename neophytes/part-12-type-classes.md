@@ -107,16 +107,27 @@ object Math {
 
 object Statistics {
   import Math.NumberLike
-  def mean[T](xs: Vector[T])(implicit ev: NumberLike[T]): T =
-    ev.divide(xs.reduce(ev.plus(_, _)), xs.size)
+  def mean[T](xs: Vector[T])(implicit ev: NumberLike[T]): T = ev.divide(xs.reduce(ev.plus(_, _)), xs.size)
+  def median[T : NumberLike](xs: Vector[T]): T = xs(xs.size / 2)
+  def quartiles[T: NumberLike](xs: Vector[T]): (T, T, T) = (xs(xs.size / 4), median(xs), xs(xs.size / 4 * 3))
+  def iqr[T: NumberLike](xs: Vector[T]): T = quartiles(xs) match {
+    case (lowerQuartile, _, upperQuartile) => implicitly[NumberLike[T]].minus(upperQuartile, lowerQuartile)
+  }
 }
 
 val ints = Vector[Int](1,2,3,4,5)
-Statistics.mean(ints)
-//res12: Int = 3
+Statistics.mean(ints)       //res0: Int = 3
+Statistics.median(ints)     //res1: Int = 3
+Statistics.quartiles(ints)  //res2: (Int, Int, Int) = (2,3,4)
+Statistics.iqr(ints)        //res3: Int = 2
+
 
 val doubles = Vector[Double](1.0, 2.0, 3.0, 4.0, 5.0)
 Statistics.mean(doubles)
+Statistics.mean(doubles)
+
+Statistics.mean(doubles)
+
 //res13: Double = 3.0
 
 val strings = Vector[String]("1", "2", "3", "4", "5")
@@ -149,4 +160,4 @@ res15: Int = 3
 
 scala> plus(1.0, 2.0)
 res16: Double = 3.0
-``
+```
