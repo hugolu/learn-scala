@@ -81,3 +81,45 @@ type class ```C``` 定義一些能夠操作成員變數型別為 ```T``` 的方�
 一旦 ```T``` 成為 ```C``` 的成員，某些類別方法勢必要能接受 ```T``` 做為參數。
 
 使用 *type classes* 的程式碼對擴充開放 (open to extension)，不需要用 adapter。
+
+```scala
+object Math {
+  import annotation.implicitNotFound
+  @implicitNotFound("No member of type class NumberLike in scope for ${T}")
+  trait NumberLike[T] {
+    def plus(x: T, y: T): T
+    def divide(x: T, y: Int): T
+    def minus(x: T, y: T): T
+  }
+  object NumberLike {
+    implicit object NumberLikeDouble extends NumberLike[Double] {
+      def plus(x: Double, y: Double): Double = x + y
+      def divide(x: Double, y: Int): Double = x / y
+      def minus(x: Double, y: Double): Double = x - y
+    }
+    implicit object NumberLikeInt extends NumberLike[Int] {
+      def plus(x: Int, y: Int): Int = x + y
+      def divide(x: Int, y: Int): Int = x / y
+      def minus(x: Int, y: Int): Int = x - y
+    }
+  }
+}
+
+object Statistics {
+  import Math.NumberLike
+  def mean[T](xs: Vector[T])(implicit ev: NumberLike[T]): T =
+    ev.divide(xs.reduce(ev.plus(_, _)), xs.size)
+}
+
+val ints = Vector[Int](1,2,3,4,5)
+Statistics.mean(ints)
+//res12: Int = 3
+
+val doubles = Vector[Double](1.0, 2.0, 3.0, 4.0, 5.0)
+Statistics.mean(doubles)
+//res13: Double = 3.0
+
+val strings = Vector[String]("1", "2", "3", "4", "5")
+Statistics.mean(strings)
+//<console>:18: error: No member of type class NumberLike in scope for String
+```
