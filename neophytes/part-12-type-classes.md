@@ -116,25 +116,23 @@ object Statistics {
 }
 
 val ints = Vector[Int](1,2,3,4,5)
-Statistics.mean(ints)       //res0: Int = 3
-Statistics.median(ints)     //res1: Int = 3
-Statistics.quartiles(ints)  //res2: (Int, Int, Int) = (2,3,4)
-Statistics.iqr(ints)        //res3: Int = 2
-
+Statistics.mean(ints)         //res0: Int = 3
+Statistics.median(ints)       //res1: Int = 3
+Statistics.quartiles(ints)    //res2: (Int, Int, Int) = (2,3,4)
+Statistics.iqr(ints)          //res3: Int = 2
 
 val doubles = Vector[Double](1.0, 2.0, 3.0, 4.0, 5.0)
-Statistics.mean(doubles)
-Statistics.mean(doubles)
-
-Statistics.mean(doubles)
-
-//res13: Double = 3.0
+Statistics.mean(doubles)      //res4: Double = 3.0
+Statistics.median(doubles)    //res5: Double = 3.0
+Statistics.quartiles(doubles) //res6: (Double, Double, Double) = (2.0,3.0,4.0)
+Statistics.iqr(doubles)       //res7: Double = 2.0
 
 val strings = Vector[String]("1", "2", "3", "4", "5")
-Statistics.mean(strings)
-//<console>:18: error: No member of type class NumberLike in scope for String
+Statistics.mean(strings)      //<console>:14: error: No member of type class NumberLike in scope for String
+Statistics.median(strings)    //<console>:14: error: No member of type class NumberLike in scope for String
+Statistics.quartiles(strings) //<console>:14: error: No member of type class NumberLike in scope for String
+Statistics.iqr(strings)       //<console>:14: error: No member of type class NumberLike in scope for String
 ```
-
 
 觀念拆解
 ```scala
