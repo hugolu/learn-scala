@@ -123,3 +123,30 @@ val strings = Vector[String]("1", "2", "3", "4", "5")
 Statistics.mean(strings)
 //<console>:18: error: No member of type class NumberLike in scope for String
 ```
+
+
+觀念拆解
+```scala
+object Math {
+  trait NumberLike[T] {
+    def plus(x: T, y: T): T
+  }
+  object NumberLike {
+    implicit object NumberLikeInt extends NumberLike[Int] {
+      def plus(x: Int, y: Int): Int = x + y
+    }
+    implicit object NumberLikeDouble extends NumberLike[Double] {
+      def plus(x: Double, y: Double): Double = x + y
+    }
+  }
+}
+
+import Math.NumberLike
+def plus[T](x: T, y: T)(implicit n: NumberLike[T]): T = n.plus(x, y)
+
+plus(1, 2)
+res15: Int = 3
+
+scala> plus(1.0, 2.0)
+res16: Double = 3.0
+``
