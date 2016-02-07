@@ -64,14 +64,49 @@ def sum(f: Int => Int): (Int, Int) => Int = {
 }                                               //> sum: (f: Int => Int)(Int, Int) => Int
 
 def factorial(n: Int): Int = if (n == 0) 1 else n * factorial(n - 1)
-                                                //> factorial: (n: Int)Int
 
 def sumInts(a: Int, b: Int): Int = sum(x => x)(a, b)
-                                                //> sumInts: (a: Int, b: Int)Int
 def sumCubes(a: Int, b: Int): Int = sum(x => x * x * x)(a, b)
-                                                //> sumCubes: (a: Int, b: Int)Int
 def sumFactorials(a: Int, b: Int): Int = sum(factorial)(a, b)
-                                                //> sumFactorials: (a: Int, b: Int)Int
+
+sumInts(3, 5)                                   //> res0: Int = 12
+sumCubes(3, 5)                                  //> res1: Int = 216
+sumFactorials(3, 5)                             //> res2: Int = 150
+```
+
+## Currying Functions
+```scala
+def sum(f: Int => Int)(a: Int, b: Int): Int = {
+  def loop(a: Int, b: Int): Int =
+    if (a > b) 0 else f(a) + loop(a + 1, b)
+  loop(a, b)
+}                                               //> sum: (f: Int => Int)(a: Int, b: Int)Int
+
+def factorial(n: Int): Int = if (n == 0) 1 else n * factorial(n - 1)
+
+def sumInts(a: Int, b: Int): Int = sum(x => x)(a, b)
+def sumCubes(a: Int, b: Int): Int = sum(x => x * x * x)(a, b)
+def sumFactorials(a: Int, b: Int): Int = sum(factorial)(a, b)
+
+sumInts(3, 5)                                   //> res0: Int = 12
+sumCubes(3, 5)                                  //> res1: Int = 216
+sumFactorials(3, 5)                             //> res2: Int = 150
+```
+
+## Tail-recursive Currying Functions
+```scala
+def sum(f: Int => Int)(a: Int, b: Int): Int = {
+  def loop(acc: Int, n: Int): Int =
+    if (n > b) acc else loop(acc + f(n), n + 1)
+
+  loop(0, a)
+}                                               //> sum: (f: Int => Int)(a: Int, b: Int)Int
+
+def factorial(n: Int): Int = if (n == 0) 1 else n * factorial(n - 1)
+
+def sumInts(a: Int, b: Int): Int = sum(x => x)(a, b)
+def sumCubes(a: Int, b: Int): Int = sum(x => x * x * x)(a, b)
+def sumFactorials(a: Int, b: Int): Int = sum(factorial)(a, b)
 
 sumInts(3, 5)                                   //> res0: Int = 12
 sumCubes(3, 5)                                  //> res1: Int = 216
