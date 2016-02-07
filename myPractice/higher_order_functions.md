@@ -114,3 +114,14 @@ sumInts(3, 5)                                   //> res0: Int = 12
 sumCubes(3, 5)                                  //> res1: Int = 216
 sumFactorials(3, 5)                             //> res2: Int = 150
 ```
+
+## Currying Funcitons
+expansion of multiple parameter lists:
+```scala
+def f(a: Int)(b: Int)(c: Int): Int = a + b + c  //> f: (a: Int)(b: Int)(c: Int)Int
+f(1)(2)(3)                                      //> res0: Int = 6
+
+def g = (a: Int) => ((b: Int) => ((c: Int) => a + b + c))
+                                                //> g: => Int => (Int => (Int => Int))
+g(1)(2)(3)                                      //> res1: Int = 6
+```
