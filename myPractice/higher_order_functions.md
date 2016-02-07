@@ -64,10 +64,11 @@ def sum(f: Int => Int): (Int, Int) => Int = {
 }                                               //> sum: (f: Int => Int)(Int, Int) => Int
 
 def factorial(n: Int): Int = if (n == 0) 1 else n * factorial(n - 1)
+                                                //> factorial: (n: Int)Int
 
-def sumInts(a: Int, b: Int): Int = sum(x => x)(a, b)
-def sumCubes(a: Int, b: Int): Int = sum(x => x * x * x)(a, b)
-def sumFactorials(a: Int, b: Int): Int = sum(factorial)(a, b)
+def sumInts = sum(x => x)                       //> sumInts: => (Int, Int) => Int
+def sumCubes = sum(x => x * x * x)              //> sumCubes: => (Int, Int) => Int
+def sumFactorials = sum(factorial)              //> sumFactorials: => (Int, Int) => Int
 
 sumInts(3, 5)                                   //> res0: Int = 12
 sumCubes(3, 5)                                  //> res1: Int = 216
@@ -83,10 +84,11 @@ def sum(f: Int => Int)(a: Int, b: Int): Int = {
 }                                               //> sum: (f: Int => Int)(a: Int, b: Int)Int
 
 def factorial(n: Int): Int = if (n == 0) 1 else n * factorial(n - 1)
+                                                //> factorial: (n: Int)Int
 
-def sumInts(a: Int, b: Int): Int = sum(x => x)(a, b)
-def sumCubes(a: Int, b: Int): Int = sum(x => x * x * x)(a, b)
-def sumFactorials(a: Int, b: Int): Int = sum(factorial)(a, b)
+def sumInts = sum(x => x)_                      //> sumInts: => (Int, Int) => Int
+def sumCubes = sum(x => x * x * x)_             //> sumCubes: => (Int, Int) => Int
+def sumFactorials = sum(factorial)_             //> sumFactorials: => (Int, Int) => Int
 
 sumInts(3, 5)                                   //> res0: Int = 12
 sumCubes(3, 5)                                  //> res1: Int = 216
@@ -98,15 +100,15 @@ sumFactorials(3, 5)                             //> res2: Int = 150
 def sum(f: Int => Int)(a: Int, b: Int): Int = {
   def loop(acc: Int, n: Int): Int =
     if (n > b) acc else loop(acc + f(n), n + 1)
-
   loop(0, a)
 }                                               //> sum: (f: Int => Int)(a: Int, b: Int)Int
 
 def factorial(n: Int): Int = if (n == 0) 1 else n * factorial(n - 1)
+                                                //> factorial: (n: Int)Int
 
-def sumInts(a: Int, b: Int): Int = sum(x => x)(a, b)
-def sumCubes(a: Int, b: Int): Int = sum(x => x * x * x)(a, b)
-def sumFactorials(a: Int, b: Int): Int = sum(factorial)(a, b)
+def sumInts = sum(x => x)_                      //> sumInts: => (Int, Int) => Int
+def sumCubes = sum(x => x * x * x)_             //> sumCubes: => (Int, Int) => Int
+def sumFactorials = sum(factorial)_             //> sumFactorials: => (Int, Int) => Int
 
 sumInts(3, 5)                                   //> res0: Int = 12
 sumCubes(3, 5)                                  //> res1: Int = 216
