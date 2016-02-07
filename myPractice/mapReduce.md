@@ -25,4 +25,6 @@ product(x => x * x)(3, 4)                       //> res0: Int = 144
 def fact(n: Int): Int = mapReduce(x => x, (x, y) => x * y, 1)(1, n)
                                                 //> fact: (n: Int)Int
 fact(5)                                         //> res1: Int = 120
-  ```
+```
+- ```produce``` 型別為 ```(f: Int => Int)(a: Int, b: Int) => Int```，```f``` 作用在```a ... b``` 的每個元素
+- ```mapReduce``` 使用的 reducer 運算為 ```(x, y) => x * y```，把所有```f(n)```結果相乘得到一個最終的整數
