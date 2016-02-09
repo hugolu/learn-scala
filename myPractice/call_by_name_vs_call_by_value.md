@@ -41,3 +41,31 @@ will return 1
 1
 ```
 - ```one```的值在```showNum```使用到的時候才去 evaluate
+
+___
+## What is the difference between “def” and “val” to define a value
+```
+val cbv = util.Random.nextInt                   //> cbv  : Int = -1419163692
+cbv                                             //> res0: Int = -1419163692
+cbv                                             //> res1: Int = -1419163692
+
+def cbn = util.Random.nextInt                   //> cbn: => Int
+cbn                                             //> res2: Int = -2019876673
+cbn                                             //> res3: Int = 1024155007
+```
+- With ```def``` you can get new value on every evaluate
+
+## What is the difference between “def” and “val” to define a function
+```
+val cbv = { val r = util.Random.nextInt; () => r }
+                                             //> cbv  : () => Int = <function0>
+cbv()                                           //> res0: Int = -1266642976
+cbv()                                           //> res1: Int = -1266642976
+
+def cbn = { val r = util.Random.nextInt; () => r }
+                                             //> cbn: => () => Int
+cbn()                                           //> res2: Int = -418853578
+cbn()                                           //> res3: Int = 797816830
+```
+- With ```def``` you can get new function on every call
+- ```val``` evaluates when defined, ```def``` evaluates when called
