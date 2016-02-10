@@ -1,5 +1,7 @@
 # Functional Programming - Lots of emphasis on recursion, why?
 
+original like: http://stackoverflow.com/questions/12659581/functional-programming-lots-of-emphasis-on-recursion-why
+___
 Using recursion we don't need a **mutable state** while solving some problem, and this make possible to specify a semantic in simpler terms. Thus solutions can be simpler, in a formal sense.
 ___
 Pure functional programming means programming **without side effects**. Which means, if you write a loop for instance, the body of your loop can't produce side effects. Thus, if you want your loop to do something, it has to reuse the result of the previous iteration and produce something for the next iteration. Thus, the body of your loop is a function, taking as parameter the result of previous execution and calling itself for the next iteration with its own result. This does not have a huge advantage over directly writing a recursive function for the loop.
