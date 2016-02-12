@@ -50,3 +50,21 @@ def factorial(n:Int): Int = {
 factorial(4)
 ```
 - a tail recursive function
+
+___
+## Evaluating a Function Application
+
+One simple rule : One evaluates a function application ```f(e1 , ..., en )```
+- by evaluating the expressions ```e1 , . . . , en``` resulting in the values ```v1, ..., vn```, then
+- by replacing the application with the body of the function ```f```, in which
+- the actual parameters ```v1 , ..., vn``` replace the formal parameters of ```f```.
+
+This can be formalized as a rewriting of the program itself: 
+```
+def f(x1, ..., xn) = B; ... f(v1, ..., vn)
+→
+def f(x1, ..., xn) = B; ... [v1/x1, ..., vn/xn] B
+```
+Here, ```[v1/x1, ..., vn/xn] B``` means:
+The expression ```B``` in which all occurrences of ```xi``` have been replaced by ```vi```.
+```[v1/x1, ..., vn/xn]``` is called a **substitution**.
