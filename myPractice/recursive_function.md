@@ -1,3 +1,5 @@
+# Recursive Functions
+
 ## GCD
 
 ```scala
@@ -19,8 +21,14 @@ gcd(14, 21)
 // if (0 == 0) 7 else gcd(0, 7%0)
 // 7
 ```
-- a tail recursive function
--  the compiler will optimize a tail recursive function. 
+- It's a tail recursive function.
+- The compiler will optimize a tail recursive function. 
+
+## Tail Recursion
+Implementation Consideration: If a function calls itself as its last action, the function’s stack frame can be reused. This is called tail recursion.
+- Tail recursive functions are iterative processes.
+
+In general, if the last action of a function consists of calling a function (which may be the same), **one stack frame** would be sufficient for both functions. Such calls are called tail-calls.
 
 ## Factorial
 ```scala
@@ -40,7 +48,7 @@ factorial(4)
 // 4 * 6
 // 24
 ```
-- not a tail recursive function
+- It's not a tail recursive function.
 
 ```scala
 def factorial(n:Int): Int = {
@@ -49,7 +57,7 @@ def factorial(n:Int): Int = {
 }
 factorial(4)
 ```
-- a tail recursive function
+- It's a tail recursive function.
 
 ___
 ## Evaluating a Function Application
