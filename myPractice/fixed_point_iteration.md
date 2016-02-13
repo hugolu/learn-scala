@@ -20,6 +20,15 @@ def fixedPoint(f: Double => Double)(firstGuess: Double): Double = {
 ## find the squart root
 ```y=sqrt(x)``` ⇒ ```y^2 = x``` ⇒ ```y = x/y```
 
+y<sub>n+1</sub> = x / y<sub>n</sub>, when x = 2
+
+| y<sub>n</sub> | y<sub>n+1</sub> | Diff |
+|-----------------|---------------|------|
+| 1.0 | 1.5 | 0.5 |
+| 1.5 | 1.4166666666666665 | 0.08333333333333348 |
+| 1.4166666666666665 | 1.4142156862745097 | 0.002450980392156854 |
+| 1.4142156862745097 | 1.4142135623746899 | 2.1238998197947723E-6 |
+
 ```scala
 def sqrt(x: Double): Double = fixedPoint(y => (y + x/y)/2)(1)
                                                 //> sqrt: (x: Double)Double
