@@ -20,7 +20,8 @@ def fixedPoint(f: Double => Double)(firstGuess: Double): Double = {
 ## find the squart root
 ```y=sqrt(x)``` ⇒ ```y^2 = x``` ⇒ ```y = x/y```
 
-y<sub>n+1</sub> = x / y<sub>n</sub>, when x = 2
+y<sub>n+1</sub> = (y<sub>n</sub> + x/y<sub>n</sub>)/2
+- when x = 2, y<sub>n+1</sub> = (y<sub>n</sub> + 2/y<sub>n</sub>)/2
 
 | y<sub>n</sub> | y<sub>n+1</sub> | Diff |
 |-----------------|---------------|------|
