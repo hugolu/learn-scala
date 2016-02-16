@@ -14,21 +14,27 @@ Type Bound的種類
 - View Bounds
 
 ## Upper Bounds
-定義
-- Upper Bound宣告像是```[T <: S]```，```T```是型別參數，```S```是種型別，表示參數型別```T```必須是```S```型別或是子型別。
-
-```scala
-class Animal
-class Dog extends Animal
-class Puppy extends Dog
-
-def display[T <: Dog](t: T) = println(t)        //> display: [T <: myTest.test2.Dog](t: T)Unit
-
-//display(new Animal)                           //> inferred type arguments [Animal] do not conform to method display's type parameter bounds [T <: Dog]
-display(new Dog)                                //> myTest.test2$Dog@1ea85692
-display(new Puppy)                              //> myTest.test2$Puppy@3dcb9af7
-```
+```[T <: S]```，```T```是型別參數，```S```是種型別，表示參數型別```T```必須是```S```型別或是子型別(sub-type)。
 
 ## Lower Bounds
+```[T >: S]```，```T```是型別參數，```S```是種型別，表示參數型別```T```必須是```S```型別或是超型別(super-type)。
 
 ## View Bounds
+```[T <% S]```，```T```是型別參數，```S```是種型別，當型別參數需要隱式轉換，使用View Bound將型別```T```當成```S```型別或是子型別(sub-type)。
+
+```scala
+trait Movable {
+  val name: String
+  def move() = println(s"$name is moving")
+}
+
+class Shape {}
+class Square extends Shape with Movable { val name = "Square" }
+class Triangle extends Shape with Movable { val name = "Triangle" }
+
+def move[T <% Movable](o: T) = o.move()         //> move: [T](o: T)(implicit evidence$3: T => myTest.test.Movable)Unit
+move(new Square)                                //> Square is moving
+move(new Triangle)                              //> Triangle is moving
+```
+
+
