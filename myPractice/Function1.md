@@ -39,6 +39,7 @@ val fun4: () => B = returnB       //> fun4: () => B = <function0>
 - ```fun3```呼叫者預期得到```B```，```returnA```回傳值違反呼叫者要求 (```A```不符合```B```的型別要求)
 - ```fun4```呼叫者預期得到```B```，```returnB```回傳值合乎呼叫者要求
 
+
 ## Contravariant type parameter can only appear in method parameters.
 ```scala
 class A
