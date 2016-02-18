@@ -39,6 +39,23 @@ val fun4: () => B = returnB       //> fun4: () => B = <function0>
 - ```fun3```呼叫者預期得到```B```，```returnA```回傳值違反呼叫者要求 (```A```不符合```B```的型別要求)
 - ```fun4```呼叫者預期得到```B```，```returnB```回傳值合乎呼叫者要求
 
+用```class```來表示function，看起來像...
+```scala
+class A
+class B extends A
+
+trait Function[+T] { def apply(): T }
+class ReturnA extends Function[A] { def apply() = new A }
+class ReturnB extends Function[B] { def apply() = new B }
+
+val returnA = new ReturnA                       //> returnA  : ReturnA = $ReturnA@8854a21
+val returnB = new ReturnB                       //> returnB  : ReturnB = $ReturnB@1a7811df
+
+val fun1: Function[A] = returnA                 //> fun1  : Function[A] = $ReturnA@8854a21
+val fun2: Function[A] = returnB                 //> fun2  : Function[A] = $ReturnB@1a7811df
+val fun3: Function[B] = returnA                 // error: type mismatch;
+val fun4: Function[B] = returnB                 //> fun4  : Function[B] = $ReturnB@1a7811df
+```
 
 ## Contravariant type parameter can only appear in method parameters.
 ```scala
