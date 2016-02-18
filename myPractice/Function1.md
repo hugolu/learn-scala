@@ -48,14 +48,15 @@ trait Function[+T] { def apply(): T }
 class ReturnA extends Function[A] { def apply() = new A }
 class ReturnB extends Function[B] { def apply() = new B }
 
-val returnA = new ReturnA                       //> returnA  : ReturnA = $ReturnA@8854a21
+val returnA = new ReturnA                       //> returnA  : ReturnA = $ReturnA@8854a21a
 val returnB = new ReturnB                       //> returnB  : ReturnB = $ReturnB@1a7811df
 
-val fun1: Function[A] = returnA                 //> fun1  : Function[A] = $ReturnA@8854a21
+val fun1: Function[A] = returnA                 //> fun1  : Function[A] = $ReturnA@8854a21a
 val fun2: Function[A] = returnB                 //> fun2  : Function[A] = $ReturnB@1a7811df
 val fun3: Function[B] = returnA                 // error: type mismatch;
 val fun4: Function[B] = returnB                 //> fun4  : Function[B] = $ReturnB@1a7811df
 ```
+- 檢查 return type：returnA/B 回傳值的型別要能滿足 fun# 對回傳值型別的要求
 
 ## Contravariant type parameter can only appear in method parameters.
 ```scala
@@ -74,6 +75,25 @@ val fun4: B => Unit = acceptB     //> fun4: B => Unit = <function1>
 - ```fun2```函式呼叫者輸入```A```，違反```acceptB```參數型別的要求 (```A```不符合```B```的型別要求)
 - ```fun3```函式呼叫者輸入```B```，合乎```acceptA```參數型別的要求 (```B```符合```A```的型別要求)
 - ```fun4```函式呼叫者輸入```B```，合乎```acceptB```參數型別的要求
+
+用```class```來表示function，看起來像...
+```scala
+class A
+class B extends A
+
+trait Function[-T] { def apply(x: T): Unit }
+class AcceptA extends Function[A] { def apply(x: A) = {} }
+class AcceptB extends Function[B] { def apply(x: B) = {} }
+
+val acceptA = new AcceptA                       //> acceptA  : AcceptA = $AcceptA@40fb2f19
+val acceptB = new AcceptB                       //> acceptB  : AcceptB = $AcceptB@163202d6
+
+val fun1: Function[A] = acceptA                 //> fun1  : Function[A] = $AcceptA@40fb2f19
+val fun2: Function[A] = acceptB                 // error: type mismatch;
+val fun3: Function[B] = acceptA                 //> fun3  : Function[B] = $AcceptA@40fb2f19
+val fun4: Function[B] = acceptB                 //> fun4  : Function[B] = $AcceptB@163202d6
+```
+- 檢查 parameter type：fun# 的參數型別要能滿足 acceptA/B 對參數型別的要求
 
 ## 練習題
 有兩個 function types，根據LSP (Liskov Substitution Principle)，誰是誰的子型別？
