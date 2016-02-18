@@ -4,7 +4,7 @@
 
 ## Definition of Variance
 
-Say ```C[T]``` is a parameterized type and ```A```, ```B``` are types such that ```A <: B```.
+Say ```C[T]``` is a parameterized type and ```A```, ```B``` are types such that ```A <: B``` (```A``` is a subtype of ```B```).
 In genreal, there are three possible relationships between ```C[A]``` and ```C[B]```:
 
 | Relationship | Variance Type |
@@ -68,8 +68,9 @@ class B extends A
 type X = A => B
 type Y = B => A
 ```
-- ```X```可以輸入```B```，並且回傳```A```嗎？ Yes
-- ```Y```可以輸入```A```，並且回傳```B```嗎？ No
+- ```B <: A```，```B```是```A```的子型別
+- ```X```可以輸入```B```，並且回傳值符合```A```的限制嗎？ Yes
+- ```Y```可以輸入```A```，並且回傳值符合```B```的限制嗎？ No
 - ```X```滿足```Y```的限制，所以```X```是```Y```的subtype (```X <: Y```)
 
 ## Function Trait Declaration
