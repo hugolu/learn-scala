@@ -26,23 +26,36 @@ Scala lets you declare the variance of a type by annotating the type parameter.
 class A
 class B extends A
 
-val fun1: () => B = () => new A       // error: type mismatch;
-val fun2: () => A = () => new B       //> fun1: () => A = <function0>
+def returnA(): A = new A          //> returnA: ()A
+def returnB(): B = new B          //> returnB: ()B
+
+val fun1: () => A = returnA       //> fun1: () => A = <function0>
+val fun2: () => A = returnB       //> fun2: () => A = <function0>
+val fun3: () => B = returnA       // error: type mismatch;
+val fun4: () => B = returnB       //> fun4: () => B = <function0>
 ```
-- ```fun1```：匿名函式產生```A```，違背函式呼叫者預期得到```B```的要求 
-- ```fun2```：匿名函式產生```B```，符合函式呼叫者預期得到```A```的要求 (```B```符合```A```的型別要求)
-- 
+- ```fun1```呼叫者預期得到```A```，```returnA```回傳值合乎呼叫者要求
+- ```fun2```呼叫者預期得到```A```，```returnB```回傳值合乎呼叫者要求 (```B```符合```A```的型別要求)
+- ```fun3```呼叫者預期得到```B```，```returnA```回傳值違反呼叫者要求 (```A```不符合```B```的型別要求)
+- ```fun4```呼叫者預期得到```B```，```returnB```回傳值合乎呼叫者要求
 
 ## Contravariant type parameter can only appear in method parameters.
 ```scala
 class A
 class B extends A
 
-val fun3: B => Unit = (s: A) => {}    //> fun3  : B => Unit = <function1>
-val fun4: A => Unit = (s: B) => {}    // error: type mismatch;
+def acceptA(x: A): Unit = {}      //> acceptA: (x: A)Unit
+def acceptB(x: B): Unit = {}      //> acceptB: (x: B)Unit
+
+val fun1: A => Unit = acceptA     //> fun1: A => Unit = <function1>
+val fun2: A => Unit = acceptB     // error: type mismatch;
+val fun3: B => Unit = acceptA     //> fun3: B => Unit = <function1>
+val fun4: B => Unit = acceptB     //> fun4: B => Unit = <function1>
 ```
-- ```fun3```：函式呼叫者輸入```B```，符合匿名函式接收```A```的要求 (```B```符合```A```的型別要求)
-- ```fun4```：函式呼叫者輸入```A```，違背匿名函式接收```B```的要求
+- ```fun1```函式呼叫者輸入```A```，合乎```acceptA```參數型別的要求
+- ```fun2```函式呼叫者輸入```A```，違反```acceptB```參數型別的要求 (```A```不符合```B```的型別要求)
+- ```fun3```函式呼叫者輸入```B```，合乎```acceptA```參數型別的要求 (```B```符合```A```的型別要求)
+- ```fun4```函式呼叫者輸入```B```，合乎```acceptB```參數型別的要求
 
 ## 練習題
 有兩個 function types，根據LSP (Liskov Substitution Principle)，誰是誰的子型別？
