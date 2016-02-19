@@ -78,7 +78,8 @@ val fun2: Function[A] = returnB                 //> fun2  : Function[A] = $Retur
 val fun3: Function[B] = returnA                 // error: type mismatch;
 val fun4: Function[B] = returnB                 //> fun4  : Function[B] = $ReturnB@1a7811df
 ```
-- 檢查 return type：returnA/B 回傳值的型別要能滿足 fun# 對回傳值型別的要求
+- 檢查 return type：returnA/B 回傳值的型別要能滿足 fun# 對回傳值型別的要求 ⇔ returnA/B 是 fun# 的子型別
+- ```B <: A``` 且 ```Function[B] <: Function[A]``` (```Function[B]```可以取代```Function[A]```) ⇔ ```Function[+T]```
 
 ## Contravariant type parameter can only appear in method parameters.
 ```scala
