@@ -2,6 +2,22 @@
 
 參考 Coursera [Functional Programming Principles in Scala](https://class.coursera.org/progfun-005/lecture)
 
+## Subtype
+```scala
+class A
+class B extends A
+
+def show[T <: A](x: T) = println(x)             //> show: [T <: A](x: T)Unit
+
+show(new A)                                     //> $A@4ec6948c
+show(new B)                                     //> $B@4f429bbb
+```
+> 其實 ```def show[T <: A](x: T)``` 應該定義成 ```def show(x: A)```，為了說明 ```<:```，用了一個不是很恰當的範例。
+
+```T <: A``` 表示參數型別 (type parameter) ```T``` 必須是 ```A``` 的子型別 (subtype)，也稱作 [Upper Type Bound](http://www.scala-lang.org/old/node/136)。
+
+定義 Upper Type Bound 有什麼作用？透過這樣的限制，明確定義物件的使用者只能接收```A```或其子型別，這樣就能在 compile-time 檢找出型別錯誤，避免 run-time type error 或要在 run-time 執行類似 Java Reflection 的轉換。
+
 ## Definition of Variance
 
 Say ```C[T]``` is a parameterized type and ```A```, ```B``` are types such that ```A <: B``` (```A``` is a subtype of ```B```).
