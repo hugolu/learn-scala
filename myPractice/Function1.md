@@ -56,6 +56,7 @@ val fun4: () => B = returnB       //> fun4: () => B = <function0>
 - ```fun2```呼叫者預期得到```A```，```returnB```回傳值```B```合乎預期
   - ```B <: A```，```B```是```A```的子型別 ⇔ ```B```符合```A```的型別要求
   - ```()=>A```可以用```()=>B```取代 ⇔ ```()=>B```是```()=>A```的子型別，```()=>B <: ()=>A```
+  - ```B <: A``` 且 ```C[B] <: C[A]```，這就是 **Covariance**
 - ```fun3```呼叫者預期得到```B```，```returnA```回傳值```A```違反預期
   - ```B <: A```，```B```是```A```的子型別 ⇔ ```A```不符合```B```的型別要求
   - ```()=>B```不能用```()=>A```取代 ⇔ ```()=>A```不是```()=>B```的子型別
@@ -94,10 +95,15 @@ val fun2: A => Unit = acceptB     // error: type mismatch;
 val fun3: B => Unit = acceptA     //> fun3: B => Unit = <function1>
 val fun4: B => Unit = acceptB     //> fun4: B => Unit = <function1>
 ```
-- ```fun1```函式呼叫者輸入```A```，合乎```acceptA```參數型別的要求
-- ```fun2```函式呼叫者輸入```A```，違反```acceptB```參數型別的要求 (```A```不符合```B```的型別要求)
-- ```fun3```函式呼叫者輸入```B```，合乎```acceptA```參數型別的要求 (```B```符合```A```的型別要求)
-- ```fun4```函式呼叫者輸入```B```，合乎```acceptB```參數型別的要求
+- ```fun1```呼叫者輸入```A```，合乎```acceptA```參數型別的要求
+- ```fun2```呼叫者輸入```A```，違反```acceptB```參數型別的要求
+  - ```B <: A```，```B```是```A```的子型別 ⇔ ```A```不符合```B```的型別要求
+  - ```(x:A)=>Unit```不可用 ```(x:B)=>Unit```取代 ⇔ ```(x:B)=>Unit```不是```(x:A)=>Unit```的子型別
+- ```fun3```呼叫者輸入```B```，合乎```acceptA```參數型別的要求
+  - ```B <: A```，```B```是```A```的子型別 ⇔ ```B```符合```A```的型別要求
+  - ```(x:B)=>Unit```可以用 ```(x:A)=>Unit```取代 ⇔ ```(x:A)=>Unit```是```(x:B)=>Unit```的子型別，```(x:A)=>Unit <: (x:B)=>Unit```
+  - ```B <: A``` 且 ```C[A] <: C[B]```，這就是 **Contravariance**
+- ```fun4```呼叫者輸入```B```，合乎```acceptB```參數型別的要求
 
 用```class```來表示function，看起來像...
 ```scala
@@ -116,7 +122,8 @@ val fun2: Function[A] = acceptB                 // error: type mismatch;
 val fun3: Function[B] = acceptA                 //> fun3  : Function[B] = $AcceptA@40fb2f19
 val fun4: Function[B] = acceptB                 //> fun4  : Function[B] = $AcceptB@163202d6
 ```
-- 檢查 parameter type：fun# 的參數型別要能滿足 acceptA/B 對參數型別的要求
+- 檢查 parameter type：fun# 的參數型別要能滿足 acceptA/B 對參數型別的要求 ⇔ acceptA/B 是 fun# 的子型別
+- ```B <: A``` 且 ```Function[A] <: Function[B]``` (```Function[A]```可以取代```Function[B]```) ⇔ ```Function[-T]```
 
 ## 練習題
 有兩個 function types，根據LSP (Liskov Substitution Principle)，誰是誰的子型別？
