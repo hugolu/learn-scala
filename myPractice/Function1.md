@@ -14,9 +14,11 @@ show(new B)                                     //> $B@4f429bbb
 ```
 > 其實 ```def show[T <: A](x: T)``` 應該定義成 ```def show(x: A)```，為了說明 ```<:```，用了一個不是很恰當的範例。
 
-```T <: A``` 表示參數型別 (type parameter) ```T``` 必須是 ```A``` 或是其子型別 (subtype)，這樣的限制也稱作 [Upper Type Bound](http://www.scala-lang.org/old/node/136)。
+- ```T <: A``` 表示參數型別 (type parameter) ```T``` 必須是 ```A``` 或是其子型別 (subtype)，這樣的限制也稱作 [Upper Type Bound](http://www.scala-lang.org/old/node/136)。
 
 定義 Upper Type Bound 有什麼作用？因為透過這樣的**限制**，明確宣告物件使用者只能接收```A```或其子型別，這樣就能在 compile-time 檢找出型別錯誤，避免 run-time type error 或要在 run-time 執行類似 Java Reflection 的轉換。
+
+```B``` 是 ```A``` 的子型別 ⇔ 使用 ```A``` 的地方能用 ```B``` 取代。
 
 ## Definition of Variance
 
@@ -50,10 +52,14 @@ val fun2: () => A = returnB       //> fun2: () => A = <function0>
 val fun3: () => B = returnA       // error: type mismatch;
 val fun4: () => B = returnB       //> fun4: () => B = <function0>
 ```
-- ```fun1```呼叫者預期得到```A```，```returnA```回傳值合乎呼叫者要求
-- ```fun2```呼叫者預期得到```A```，```returnB```回傳值合乎呼叫者要求 (```B```符合```A```的型別要求)
-- ```fun3```呼叫者預期得到```B```，```returnA```回傳值違反呼叫者要求 (```A```不符合```B```的型別要求)
-- ```fun4```呼叫者預期得到```B```，```returnB```回傳值合乎呼叫者要求
+- ```fun1```呼叫者預期得到```A```，```returnA```回傳值```A```合乎預期
+- ```fun2```呼叫者預期得到```A```，```returnB```回傳值```B```合乎預期
+  - ```B <: A```，```B```是```A```的子型別 ⇔ ```B```符合```A```的型別要求
+  - ```()=>A```可以用```()=>B```取代 ⇔ ```()=>B```是```()=>A```的子型別，```()=>B <: ()=>A```
+- ```fun3```呼叫者預期得到```B```，```returnA```回傳值```A```違反預期
+  - ```B <: A```，```B```是```A```的子型別 ⇔ ```A```不符合```B```的型別要求
+  - ```()=>B```不能用```()=>A```取代 ⇔ ```()=>A```不是```()=>B```的子型別
+- ```fun4```呼叫者預期得到```B```，```returnB```回傳值```B```合乎預期
 
 用```class```來表示function，看起來像...
 ```scala
