@@ -51,3 +51,32 @@ def prepend[U >: T](elem: U): List[U] = new Cons(elem, this)
 This pass variance checks, because:
 - covariant type parameters ```T``` may appear in lower bounds of method type parameters ```[U >: T]```
 - contravariant type parameters ```U``` may appear in uppper bounds of method ```(elem: U)```
+
+```scala
+class A { override def toString = "A" }
+class B extends A { override def toString = "B" }
+class C extends A { override def toString = "C" }
+
+val listA = List(new A, new A)                  //> listA  : week4.List[week4.test.A] = A->A->Nil
+val listB = List(new B, new B)                  //> listB  : week4.List[week4.test.B] = B->B->Nil
+val listC = List(new C, new C)                  //> listC  : week4.List[week4.test.C] = C->C->Nil
+
+listA.prepend(new C)                            //> res0: week4.List[week4.test.A] = C->A->A->Nil
+listB.prepend(new C)                            //> res1: week4.List[week4.test.A] = C->B->B->Nil
+listC.prepend(new C)                            //> res2: week4.List[week4.test.C] = C->C->C->Nil
+```
+- ```listC.prepend(new C)```
+  - ```T = C```
+  - ```(elem: C)```
+  - ```U = C```
+  - ```def prepend[C](elem: C): List[C]```
+- ```listA.prepend(new C)```
+  - ```T = A```
+  - ```(elem: C)```
+  - ```U = A``` (∵ ```A >: C```)
+  - ```def prepend[A](elem: A): List[A]```
+- ```listB.prepend(new C)```
+  - ```T = B```
+  - ```(elem: C)```
+  - ```U = A``` (∵ ```A >: B``` & ```A >: C```)
+  - ```def prepend[A](elem: A): List[A]```
