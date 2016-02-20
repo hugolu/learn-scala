@@ -37,3 +37,17 @@ val list3 = List(1, 2, 3)                       //> list3  : week4.List[Int] = 1
 val x = list0.prepend(1)                        //> x  : week4.List[Int] = 1->Nil
 val y = list1.prepend(2)                        //> y  : week4.List[Int] = 2->1->Nil
 ```
+
+## Lower Bounds
+Prepend is a natural method to have on immutable lists.
+
+Question: How can we make it covariance-correct?
+
+We can use a *lower bound*:
+```scala
+def prepend[U >: T](elem: U): List[U] = new Cons(elem, this)
+```
+
+This pass variance checks, because:
+- covariant type parameters ```T``` may appear in lower bounds of method type parameters ```[U >: T]```
+- contravariant type parameters ```U``` may appear in uppper bounds of method ```(elem: U)```
