@@ -24,3 +24,14 @@ Greedy quantifiers
 | ```X{n}``` | X出現n次 |
 | ```X{n,}``` | X出現至少n次 |
 | ```X{n,m}``` | X出現至少n次，但不超過m次 |
+
+___
+```scala
+import scala.util.matching.Regex
+
+val string = "Birthday: 1975/05/26"       //> string  : String = Birthday: 1975/05/26
+val rex = new Regex("""\d\d\d\d""")       //> rex  : scala.util.matching.Regex = \d\d\d\d
+val ans = rex.findFirstIn(string)         //> ans  : Option[String] = Some(1975)
+ans.getOrElse("not found")                //> res0: String = 1975
+```
+- 如果你在```"```與```"```間定義規則表示式，那麼對於```\d```的第一個```\```字元，你必須避開（Escape），也就是寫為```\\d```的形式，如果你不想特意作避開字元的動作，則可以在```"""```與```"""```定義規則表示式，
