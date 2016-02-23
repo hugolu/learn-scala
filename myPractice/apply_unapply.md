@@ -42,3 +42,21 @@ bars.foreach(_ match {
                                                 //| (hello,world,scala)
                                                 //| (foo,bar,buz)
 ```
+
+## UnapplySeq
+若想要提取的元素個數不定，則可以定義unapplySeq()方法
+```scala
+object Extractor {
+  def unapplySeq(str: String): Option[Seq[String]] = {
+    var parts = str.split(",")
+    Some(parts)
+  }
+
+}
+
+val string = "hello,world,scala"                //> string  : String = hello,world,scala
+var Extractor(seq @ _*) = string                //> seq  : Seq[String] = WrappedArray(hello, world, scala)
+var Extractor(s1, s2, s3) = string              //> s1  : String = hello
+                                                //| s2  : String = world
+                                                //| s3  : String = scala
+```
