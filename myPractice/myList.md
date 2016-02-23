@@ -80,3 +80,39 @@ listC.prepend(new C)                            //> res2: week4.List[week4.test.
   - ```(elem: C)```
   - ```U = A``` (∵ ```A >: B``` & ```A >: C```)
   - ```def prepend[A](elem: A): List[A]```
+
+___
+## add map()
+
+```scala
+abstract class List[+T] {
+  def isEmpty: Boolean
+  def head: T
+  def tail: List[T]
+  def ::[U >: T](x: U): List[U]
+  def map[U >: T, R](f: U => R): List[R] = if (this.isEmpty == true) Nil else f(this.head) :: this.tail.map(f)
+}
+
+object Nil extends List[Nothing] {
+  def isEmpty: Boolean = true
+  def head: Nothing = throw new Error("Nil.head")
+  def tail: Nothing = throw new Error("Nil.tail")
+  override def toString = "Nil"
+  def ::[T](x: T): List[T] = new Cons(x, this)
+}
+
+class Cons[T](val head: T, val tail: List[T]) extends List[T] {
+  def isEmpty: Boolean = false
+  override def toString = head + "->" + tail
+  def ::[U >: T](x: U): List[U] = new Cons(x, this)
+}
+
+object List {
+  def apply2[T](args: Seq[T]): List[T] = if (args.size == 0) Nil else new Cons(args.head, apply2(args.tail))
+  def apply[T](args: T*): List[T] = apply2(args)
+}
+
+val list = List(1, 2, 3, 4)                     //> list  : myTest.test22.List[Int] = 1->2->3->4->Nil
+
+list.map((x: Int) => x * 2)                     //> res0: myTest.test22.List[Int] = 2->4->6->8->Nil
+```
