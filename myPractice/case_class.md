@@ -60,3 +60,72 @@ Tuple patterns
   
 Typed patterns
 - You can use a typed pattern as a convenient replacement for type tests and type casts.
+
+___
+## Case Class & Pattern Matching
+```scala
+abstract class JSON
+case class JSeq(elems: List[JSON]) extends JSON {
+  override def toString = "[" + (elems.map(_.toString) mkString ", ") + "]"
+}
+
+case class JObj(bindings: Map[String, JSON]) extends JSON {
+  override def toString = "{" + bindings.map(kv => kv match { case (key, value) => "\"" + key + "\": " + value }).mkString(", ") + "}"
+}
+
+case class JNum(num: Double) extends JSON {
+  override def toString = num.toString
+}
+
+case class JStr(str: String) extends JSON {
+  override def toString = "\"" + str + "\""
+}
+
+case class JBool(b: Boolean) extends JSON {
+  override def toString = b.toString
+}
+
+case object JNull extends JSON {
+  override def toString = "Null"
+}
+
+val data = JObj(Map(
+  "firstName" -> JStr("John"),
+  "lastName" -> JStr("Smith"),
+  "address" -> JObj(Map(
+    "streetAddress" -> JStr("21 2nd Street"),
+    "state" -> JStr("NY"),
+    "postalCode" -> JNum(10021))),
+  "phoneNumbers" -> JSeq(List(
+    JObj(Map(
+      "type" -> JStr("home"),
+      "number" -> JStr("212 555-1234"))),
+    JObj(Map(
+      "type" -> JStr("fax"),
+      "number" -> JStr("646 555-4567")))))))    //> data  : week8.JObj = {"firstName": "John", "lastName": "Smith", "address": {
+                                                //| "streetAddress": "21 2nd Street", "state": "NY", "postalCode": 10021.0}, "ph
+                                                //| oneNumbers": [{"type": "home", "number": "212 555-1234"}, {"type": "fax", "n
+                                                //| umber": "646 555-4567"}]}
+def show(json: JSON): String = json match {
+  case JSeq(elems) => "[" + (elems map show mkString ", ") + "]"
+  case JObj(bindings) =>
+    val assocs = bindings map {
+      case (key, value) => "\"" + key + "\": " + show(value)
+    }
+    "{" + (assocs mkString ", ") + "}"
+  case JNum(num) => num.toString
+  case JStr(str) => "\"" + str + "\""
+  case JBool(b)  => b.toString
+  case JNull     => "Null"
+}                                               //> show: (json: week8.JSON)String
+
+show(data)                                      //> res0: String = {"firstName": "John", "lastName": "Smith", "address": {"stree
+                                                //| tAddress": "21 2nd Street", "state": "NY", "postalCode": 10021.0}, "phoneNum
+                                                //| bers": [{"type": "home", "number": "212 555-1234"}, {"type": "fax", "number"
+                                                //| : "646 555-4567"}]}
+
+println(data)                                   //> {"firstName": "John", "lastName": "Smith", "address": {"streetAddress": "21 
+                                                //| 2nd Street", "state": "NY", "postalCode": 10021.0}, "phoneNumbers": [{"type"
+                                                //| : "home", "number": "212 555-1234"}, {"type": "fax", "number": "646 555-4567
+                                                //| "}]}
+```
