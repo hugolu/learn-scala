@@ -63,6 +63,23 @@ Typed patterns
 
 ___
 ## Case Class & Pattern Matching
+
+使用 Scala object 表示以下JSON，並將結構顯示出來
+```json
+{ "firstName": "John",
+  "lastName": "Smith",
+  "address": {
+    "streetAddress": "21 2nd Street",
+    "state": "NY",
+    "postalCode": 10021.0
+  },
+  "phoneNumbers": [
+    {"type": "home", "number": "212 555-1234"},
+    {"type": "fax", "number": "646 555-4567"}
+  ]
+}
+```
+
 ```scala
 abstract class JSON
 case class JSeq(elems: List[JSON]) extends JSON {
