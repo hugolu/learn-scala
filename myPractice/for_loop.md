@@ -103,6 +103,12 @@ for (i <- 1 to 3; if i % 2 != 0) yield i        //> res0: scala.collection.immut
 (1 to 3) filter (_ % 2 != 0)                    //> res1: scala.collection.immutable.IndexedSeq[Int] = Vector(1, 3)
 ```
 
+```scala
+for (i <- 1 to 3; if i % 2 != 0) yield i * 2    //> res0: scala.collection.immutable.IndexedSeq[Int] = Vector(2, 6)
+
+(1 to 3) filter (_ % 2 != 0) map (i => i * 2)   //> res1: scala.collection.immutable.IndexedSeq[Int] = Vector(2, 6)
+```
+
 ### multiple for-loop
 ```scala
 for (i <- 1 to 2; j <- 1 to 2) yield (i, j)     //> res0: scala.collection.immutable.IndexedSeq[(Int, Int)] = Vector((1,1), (1,2
@@ -130,15 +136,15 @@ for (
 
 ### multiple for-loop with guard
 ```scala
-(1 until 10) flatMap (i =>
-  (1 until i) filter (j =>
-    (i + j) % 5 == 0) map (j => (i, j)))        //> res0: scala.collection.immutable.IndexedSeq[(Int, Int)] = Vector((3,2), (4,1
-                                                //| ), (6,4), (7,3), (8,2), (8,7), (9,1), (9,6))
-
 for (
-  i <- 1 until 10;
-  j <- 1 until i;
-  if (i + j) % 5 == 0
-) yield (i, j)                                  //> res1: scala.collection.immutable.IndexedSeq[(Int, Int)] = Vector((3,2), (4,1
-                                                //| ), (6,4), (7,3), (8,2), (8,7), (9,1), (9,6))
+  i <- 1 to 10;
+  j <- 1 to 10;
+  if (i + j) % 11 == 0
+) yield (i, j)                                  //> res0: scala.collection.immutable.IndexedSeq[(Int, Int)] = Vector((1,10), (2,
+                                                //| 9), (3,8), (4,7), (5,6), (6,5), (7,4), (8,3), (9,2), (10,1))
+
+(1 to 10) flatMap (i =>
+  (1 to 10) filter (j =>
+    (i + j) % 11 == 0) map (j => (i, j)))       //> res1: scala.collection.immutable.IndexedSeq[(Int, Int)] = Vector((1,10), (2,
+                                                //| 9), (3,8), (4,7), (5,6), (6,5), (7,4), (8,3), (9,2), (10,1))
 ```
