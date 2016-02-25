@@ -1,5 +1,7 @@
 # Range
 
+Ref: [scala.collection.immutable.Range](http://www.scala-lang.org/api/current/#scala.collection.immutable.Range)
+
 ```scala
 class Range extends AbstractSeq[Int] with IndexedSeq[Int] with CustomParallelizable[Int, ParRange] with Serializable
 ```
@@ -28,7 +30,7 @@ for (i <- 1 to 3) println(i)                     //> 1
                                                 //| 3
 ```
 
-## test
+## test whether a predicate holds ...
 ```scala
 (1 to 3) forall { n => println(n); n > 0 }      //> 1
                                                 //| 2
