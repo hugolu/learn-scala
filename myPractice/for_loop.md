@@ -64,3 +64,56 @@ for {
                                                 //| (2,1)
                                                 //| (2,2)
 ```
+
+___
+## Replace for-loop with ...
+
+### simple for-loop
+```scala
+for (i <- 1 to 3) println (i * 2)               //> 2
+                                                //| 4
+                                                //| 6
+
+(1 to 3).foreach(i => println(i * 2))           //> 2
+                                                //| 4
+                                                //| 6
+```
+
+### for-loop to yield
+```scala
+for (i <- 1 to 3) yield (i * 2)                 //> res0: scala.collection.immutable.IndexedSeq[Int] = Vector(2, 4, 6)
+
+(1 to 3).map(i => i * 2)                        //> res1: scala.collection.immutable.IndexedSeq[Int] = Vector(2, 4, 6)
+```
+
+### for-loop with guard
+```scala
+for (i <- 1 to 3; if i % 2 != 0) yield i        //> res0: scala.collection.immutable.IndexedSeq[Int] = Vector(1, 3)
+
+(1 to 3) filter (_ % 2 != 0)                    //> res1: scala.collection.immutable.IndexedSeq[Int] = Vector(1, 3)
+```
+
+### multiple for-loop
+```scala
+for (i <- 1 to 2; j <- 1 to 2) yield (i, j)     //> res0: scala.collection.immutable.IndexedSeq[(Int, Int)] = Vector((1,1), (1,2
+                                                //| ), (2,1), (2,2))
+
+(1 to 2).flatMap(i => (1 to 2).map(j => (i, j)))//> res1: scala.collection.immutable.IndexedSeq[(Int, Int)] = Vector((1,1), (1,2
+                                                //| ), (2,1), (2,2))
+```
+
+```scala
+for (
+  i <- 1 to 2;
+  j <- 1 to 2;
+  k <- 1 to 2
+) yield (i, j, k)                               //> res0: scala.collection.immutable.IndexedSeq[(Int, Int, Int)] = Vector((1,1,1
+                                                //| ), (1,1,2), (1,2,1), (1,2,2), (2,1,1), (2,1,2), (2,2,1), (2,2,2))
+
+(1 to 2).flatMap(i =>
+  (1 to 2).flatMap(j =>
+    (1 to 2).map(k => (i, j, k))))              //> res1: scala.collection.immutable.IndexedSeq[(Int, Int, Int)] = Vector((1,1,1
+                                                //| ), (1,1,2), (1,2,1), (1,2,2), (2,1,1), (2,1,2), (2,2,1), (2,2,2))
+
+```
+- `for(;;)` 可讀性比較高
