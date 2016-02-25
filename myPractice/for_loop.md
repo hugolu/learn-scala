@@ -39,12 +39,22 @@ for (i <- 1 to 10 if i % 2 == 0) println(i)     //> 2
 
 ## The for Loop with yield
 ```scala
-for (i <- 1 to 10 if i % 2 == 0) yield i        //> res0: scala.collection.immutable.IndexedSeq[Int] = Vector(2, 4, 6, 8, 10)
+for (i <- 1 to 3) yield i                       //> res0: scala.collection.immutable.IndexedSeq[Int] = Vector(1, 2, 3)
 
-(1 to 10) filter (_ % 2 == 0)                    //> res1: scala.collection.immutable.IndexedSeq[Int] = Vector(2, 4, 6, 8, 10)
+(1 to 3) map (i => i)                           //> res1: scala.collection.immutable.IndexedSeq[Int] = Vector(1, 2, 3)
+
 ```
-- for loop with guard = filter
 
+```scala
+def mklist(n: Int): List[Int] = List.fill(n)(n) //> mklist: (n: Int)List[Int]
+mklist(3)                                       //> res0: List[Int] = List(3, 3, 3)
+
+for (i <- 1 to 3) yield (mklist(i))             //> res1: scala.collection.immutable.IndexedSeq[List[Int]] = Vector(List(1), Lis
+                                                //| t(2, 2), List(3, 3, 3))
+
+(1 to 3).map(mklist)                            //> res2: scala.collection.immutable.IndexedSeq[List[Int]] = Vector(List(1), Lis
+                                                //| t(2, 2), List(3, 3, 3))
+```
 ___
 ## What is the difference between `for()` and `for{}`?
 ```scala
