@@ -27,3 +27,16 @@ for (i <- 1 to 3) println(i)                     //> 1
                                                 //| 2
                                                 //| 3
 ```
+
+## test
+```scala
+(1 to 3) forall { n => println(n); n > 0 }      //> 1
+                                                //| 2
+                                                //| 3
+                                                //| res0: Boolean = true
+
+(1 to 3) exists { n => println(n); n > 0 }      //> 1
+                                                //| res1: Boolean = true
+```
+- `forall`: Tests whether a predicate holds for all elements of this iterable collection.
+- `exists`: Tests whether a predicate holds for some of the elements of this iterable collection.
