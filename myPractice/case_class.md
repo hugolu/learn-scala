@@ -123,6 +123,7 @@ val data = JObj(Map(
                                                 //| "streetAddress": "21 2nd Street", "state": "NY", "postalCode": 10021.0}, "ph
                                                 //| oneNumbers": [{"type": "home", "number": "212 555-1234"}, {"type": "fax", "n
                                                 //| umber": "646 555-4567"}]}
+
 def show(json: JSON): String = json match {
   case JSeq(elems) => "[" + (elems map show mkString ", ") + "]"
   case JObj(bindings) =>
@@ -145,4 +146,22 @@ println(data)                                   //> {"firstName": "John", "lastN
                                                 //| 2nd Street", "state": "NY", "postalCode": 10021.0}, "phoneNumbers": [{"type"
                                                 //| : "home", "number": "212 555-1234"}, {"type": "fax", "number": "646 555-4567
                                                 //| "}]}
+```
+
+## For-expressions and Pattern Matching
+
+The left-hand side of a generator may also be a pattern.
+```scala
+val list = List(data)                           //> list  : List[week8.JObj] = List({"firstName": "John", "lastName": "Smith", "
+                                                //| address": {"streetAddress": "21 2nd Street", "state": "NY", "postalCode": 10
+                                                //| 021.0}, "phoneNumbers": [{"type": "home", "number": "212 555-1234"}, {"type"
+                                                //| : "fax", "number": "646 555-4567"}]})
+val person = for {
+  JObj(bindings) <- list
+  JSeq(phones) = bindings("phoneNumbers")
+  JObj(phone) <- phones
+  JStr(digits) = phone("number")
+  if digits startsWith "212"
+} yield (bindings("firstName"), bindings("lastName"))
+                                                //> person  : List[(week8.JSON, week8.JSON)] = List(("John","Smith"))
 ```
