@@ -165,3 +165,29 @@ val person = for {
 } yield (bindings("firstName"), bindings("lastName"))
                                                 //> person  : List[(week8.JSON, week8.JSON)] = List(("John","Smith"))
 ```
+
+## my practice
+```scala
+case class Foo(x: Int, y: Int)
+
+val list = for {
+  i <- 1 to 3
+  j <- 1 to 3
+} yield Map(s"($i, $j)" -> Foo(i, j))           //> list  : scala.collection.immutable.IndexedSeq[scala.collection.immutable.Map
+                                                //| [String,week8.test4.Foo]] = Vector(Map((1, 1) -> Foo(1,1)), Map((1, 2) -> Fo
+                                                //| o(1,2)), Map((1, 3) -> Foo(1,3)), Map((2, 1) -> Foo(2,1)), Map((2, 2) -> Foo
+                                                //| (2,2)), Map((2, 3) -> Foo(2,3)), Map((3, 1) -> Foo(3,1)), Map((3, 2) -> Foo(
+                                                //| 3,2)), Map((3, 3) -> Foo(3,3)))
+
+for {
+  map <- list
+  (key, value) <- map
+  Foo(x, y) = value
+  if (x * y % 2 == 0)
+} yield (key)                                   //> res0: scala.collection.immutable.IndexedSeq[String] = Vector((1, 2), (2, 1),
+                                                //|  (2, 2), (2, 3), (3, 2))
+```
+- list = `Vector(Map((1, 1) -> Foo(1,1)), Map((1, 2) -> Foo(1,2)), Map((1, 3) -> Foo(1,3)), Map((2, 1) -> Foo(2,1)), Map((2, 2) -> Foo(2,2)), Map((2, 3) -> Foo(2,3)), Map((3, 1) -> Foo(3,1)), Map((3, 2) -> Foo( 3,2)), Map((3, 3) -> Foo(3,3)))`
+- for map(0) = `Map((1, 1) -> Foo(1,1))`, key = `"(1, 1)"`, value = `Foo(1,1)`
+- do pattern matching of `Foo(x, y) = Foo(1, 1)`, we get x = 1, and y = 1
+- if `(x * y % 2 == 0)` is true, then `yield (key)` 
