@@ -88,6 +88,7 @@ for (i <- 1 to 3) println (i * 2)               //> 2
                                                 //| 4
                                                 //| 6
 ```
+- `for (x <- e1) e2` >>> `e1.foreach(x => e2)`
 
 ### for-loop to yield
 ```scala
@@ -95,6 +96,7 @@ for (i <- 1 to 3) yield (i * 2)                 //> res0: scala.collection.immut
 
 (1 to 3).map(i => i * 2)                        //> res1: scala.collection.immutable.IndexedSeq[Int] = Vector(2, 4, 6)
 ```
+- `for (x <- e1) yield e2` >>> `e1.map(x => e2)`
 
 ### for-loop with guard
 ```scala
@@ -107,7 +109,12 @@ for (i <- 1 to 3; if i % 2 != 0) yield i        //> res0: scala.collection.immut
 for (i <- 1 to 3; if i % 2 != 0) yield i * 2    //> res0: scala.collection.immutable.IndexedSeq[Int] = Vector(2, 6)
 
 (1 to 3) filter (_ % 2 != 0) map (i => i * 2)   //> res1: scala.collection.immutable.IndexedSeq[Int] = Vector(2, 6)
+
+for (i <- (1 to 3).withFilter(_ % 2 != 0)) yield i * 2
+                                                //> res2: scala.collection.immutable.IndexedSeq[Int] = Vector(2, 6)
 ```
+- `for (x <- e1 if f) yield e2` >>> `e1.filter(f).map(x => e2)`
+- `for (x <- e1 if f) yield e2` >>> `for (x <- e1.withFilter(x => f)) yield e2`
 
 ### multiple for-loop
 ```scala
@@ -117,6 +124,7 @@ for (i <- 1 to 2; j <- 1 to 2) yield (i, j)     //> res0: scala.collection.immut
 (1 to 2).flatMap(i => (1 to 2).map(j => (i, j)))//> res1: scala.collection.immutable.IndexedSeq[(Int, Int)] = Vector((1,1), (1,2
                                                 //| ), (2,1), (2,2))
 ```
+- `for (x <- e1; y <- e2) yield e3` >>> `e1.flatMap(x => for (y <- e2) yield e3)` >>> `e1.flatMap(x => e2.map (y => e3))`
 
 ```scala
 for (
