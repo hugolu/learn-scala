@@ -127,3 +127,18 @@ for (
 
 ```
 - `for(;;)` 可讀性比較高
+
+### multiple for-loop with guard
+```scala
+(1 until 10) flatMap (i =>
+  (1 until i) filter (j =>
+    (i + j) % 5 == 0) map (j => (i, j)))        //> res0: scala.collection.immutable.IndexedSeq[(Int, Int)] = Vector((3,2), (4,1
+                                                //| ), (6,4), (7,3), (8,2), (8,7), (9,1), (9,6))
+
+for (
+  i <- 1 until 10;
+  j <- 1 until i;
+  if (i + j) % 5 == 0
+) yield (i, j)                                  //> res1: scala.collection.immutable.IndexedSeq[(Int, Int)] = Vector((3,2), (4,1
+                                                //| ), (6,4), (7,3), (8,2), (8,7), (9,1), (9,6))
+```
