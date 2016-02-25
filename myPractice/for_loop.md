@@ -148,3 +148,27 @@ for (
     (i + j) % 11 == 0) map (j => (i, j)))       //> res1: scala.collection.immutable.IndexedSeq[(Int, Int)] = Vector((1,10), (2,
                                                 //| 9), (3,8), (4,7), (5,6), (6,5), (7,4), (8,3), (9,2), (10,1))
 ```
+
+```scala
+def isPrime(i: Int) =
+  if (i <= 1)
+    false
+  else if (i == 2)
+    true
+  else
+    !(2 to i / 2).exists(x => i % x == 0)       //> isPrime: (i: Int)Boolean
+
+for (
+  i <- 1 until 10;
+  j <- 1 until i;
+  if isPrime(i + j) == true
+) yield (i, j)                                  //> res0: scala.collection.immutable.IndexedSeq[(Int, Int)] = Vector((2,1), (3,2
+                                                //| ), (4,1), (4,3), (5,2), (6,1), (6,5), (7,4), (7,6), (8,3), (8,5), (9,2), (9,
+                                                //| 4), (9,8))
+
+(1 until 10) flatMap (i =>
+  (1 until i) filter (j =>
+    isPrime(i + j)) map (j => (i, j)))          //> res1: scala.collection.immutable.IndexedSeq[(Int, Int)] = Vector((2,1), (3,2
+                                                //| ), (4,1), (4,3), (5,2), (6,1), (6,5), (7,4), (7,6), (8,3), (8,5), (9,2), (9,
+                                                //| 4), (9,8))
+```
