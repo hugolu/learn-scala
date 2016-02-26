@@ -16,15 +16,57 @@
 - 中子數列：基準值
 - 右子數列：比基準值大的數值
 
+## 基本功能
+
+```scala
+def qsort(list: List[Int]): List[Int] = list match {
+  case Nil => Nil
+  case x :: xs =>
+    val (before, after) = xs.partition(_ < x)
+    qsort(before) ++ (x :: qsort(after))
+}                                               //> qsort: (list: List[Int])List[Int]
+
+val ints = List(1, 3, 5, 6, 4, 2)               //> ints  : List[Int] = List(1, 3, 5, 6, 4, 2)
+qsort(ints)                                     //> res0: List[Int] = List(1, 2, 3, 4, 5, 6)
+```
+- 只能針對`List[Int]`排序
+
+
+## 擴充功能
+
+```scala
+def qsort[T <% Ordered[T]](list: List[T]): List[T] = list match {
+	case Nil => Nil
+	case x::xs =>
+		val (before, after) = xs.partition(_ < x)
+		qsort(before) ++ (x :: qsort(after))
+}                                         //> qsort: [T](list: List[T])(implicit evidence$1: T => Ordered[T])List[T]
+
+val ints = List(1,3,5,6,4,2)              //> ints  : List[Int] = List(1, 3, 5, 6, 4, 2)
+qsort(ints)                               //> res0: List[Int] = List(1, 2, 3, 4, 5, 6)
+```
+- 使用View Bound ```[T <% Ordered[T]]```，將```T```限制為可以比較大小的型別```Ordered[T]```
+
+## 應用
+
 ```scala
 def qsort[T <% Ordered[T]](list: List[T]): List[T] = list match {
   case Nil => Nil
   case x :: xs =>
-    val (before, after) = xs partition (_ < x)
-    qsort(before) ++ (x :: qsort(after));
-}                                               //> qsort: [T](list: List[T])(implicit evidence$2: T => Ordered[T])List[T]
+    val (before, after) = xs.partition(_ < x)
+    qsort(before) ++ (x :: qsort(after))
+}                                               //> qsort: [T](list: List[T])(implicit evidence$1: T => Ordered[T])List[T]
 
-val list = List(5, 7, 9, 2, 4, 6, 3, 1, 10, 8)  //> list  : List[Int] = List(5, 7, 9, 2, 4, 6, 3, 1, 10, 8)
-qsort(list)                                     //> res0: List[Int] = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+class Num(val x: Int) extends Ordered[Num] {
+  override def toString = x.toString
+  def compare(that: Num) = this.x - that.x
+}
+object Num {
+  def apply(x: Int) = new Num(x)
+}
+
+val nums = List(Num(1), Num(3), Num(5), Num(6), Num(4), Num(2))
+                                                //> nums  : List[week8.test6.Num] = List(1, 3, 5, 6, 4, 2)
+qsort(nums)                                     //> res1: List[week8.test6.Num] = List(1, 2, 3, 4, 5, 6)
 ```
-- 使用View Bound ```[T <% Ordered[T]]```，將```T```限制為可以比較大小的型別```Ordered[T]```
+- 針對實作`Ordered[T]`的物件進行排序
