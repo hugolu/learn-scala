@@ -35,19 +35,34 @@ qsort(ints)                                     //> res0: List[Int] = List(1, 2,
 ## 擴充功能
 
 ```scala
-def qsort[T <% Ordered[T]](list: List[T]): List[T] = list match {
-	case Nil => Nil
-	case x::xs =>
-		val (before, after) = xs.partition(_ < x)
-		qsort(before) ++ (x :: qsort(after))
-}                                         //> qsort: [T](list: List[T])(implicit evidence$1: T => Ordered[T])List[T]
+def qsort[T <: Ordered[T]](list: List[T]): List[T] = list match {
+case Nil => Nil
+case x :: xs =>
+val (before, after) = xs.partition(_ < x)
+qsort(before) ++ (x :: qsort(after))
+}                                               //> qsort: [T <: Ordered[T]](list: List[T])List[T]
 
-val ints = List(1,3,5,6,4,2)              //> ints  : List[Int] = List(1, 3, 5, 6, 4, 2)
-qsort(ints)                               //> res0: List[Int] = List(1, 2, 3, 4, 5, 6)
+class Num(val x: Int) extends Ordered[Num] {
+override def toString = x.toString
+def compare(that: Num) = this.x - that.x
+}
+object Num {
+def apply(x: Int) = new Num(x)
+}
+
+val nums = List(Num(1), Num(3), Num(5), Num(6), Num(4), Num(2))
+                                          //> nums  : List[week8.test6.Num] = List(1, 3, 5, 6, 4, 2)
+qsort(nums)                                     //> res0: List[week8.test6.Num] = List(1, 2, 3, 4, 5, 6)
+
+val ints = List(1, 3, 5, 6, 4, 2)
+qsort(ints)
+//error: inferred type arguments [Int] do not conform to method qsort's type parameter bounds [T <: Ordered[T]]
 ```
-- 使用View Bound ```[T <% Ordered[T]]```，將```T```限制為可以比較大小的型別```Ordered[T]```
+- `qsort`可以針對實作`Ordered[T]`的物件進行排序
+- `qsort`無法針對`Int`進行排序
 
-## 應用
+## 使用 View
+
 
 ```scala
 def qsort[T <% Ordered[T]](list: List[T]): List[T] = list match {
@@ -68,5 +83,10 @@ object Num {
 val nums = List(Num(1), Num(3), Num(5), Num(6), Num(4), Num(2))
                                                 //> nums  : List[week8.test6.Num] = List(1, 3, 5, 6, 4, 2)
 qsort(nums)                                     //> res1: List[week8.test6.Num] = List(1, 2, 3, 4, 5, 6)
+
+val ints = List(1, 3, 5, 6, 4, 2)               //> ints  : List[Int] = List(1, 3, 5, 6, 4, 2)
+qsort(ints)                                     //> res1: List[Int] = List(1, 2, 3, 4, 5, 6)
 ```
-- 針對實作`Ordered[T]`的物件進行排序
+- 使用View Bound ```[T <% Ordered[T]]```，將```T```限制為可以比較大小的型別```Ordered[T]```
+- 使用`T<% Ordered[T]`的qsort，其型態參數讀法是：T可以是任何可被視為Ordered[T]型態的物件
+- 因為`Int`並沒有`scala.Ordered [A]`特徵。當試圖使用如`1 < 2`這樣的比較時，會透過隱式轉換（Implicit conversion）將`Int`的1轉換為`RichInt`來包裹1，然後使用其`<`方法來取得比較結果。
