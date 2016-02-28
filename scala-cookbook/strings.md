@@ -191,3 +191,13 @@ res2: Char = e
 ```
 
 ## Add Your Own Methods to the String Class 新增字串方法
+
+```scala
+scala> implicit class StringExtension(s: String) {
+     | def >>(n: Int): String = s.map(c => (c + n).toChar)
+     | }
+defined class StringExtension
+
+scala> "HelloWorld" >> 3
+res0: String = KhoorZruog
+```
