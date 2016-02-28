@@ -31,7 +31,28 @@ res3: Boolean = true
 
 ## Creating Multiline Strings 產生多行字串
 
+```scala
+scala> val string = """hello world
+     | this is a test
+     | scala"""
+string: String =
+hello world
+this is a test
+scala
+
+scala> string.replaceAll("\n", " ")
+res0: String = hello world this is a test scala
+```
+
 ## Splitting Strings 分離字串
+
+```scala
+scala> "hello world".split(" ")
+res0: Array[String] = Array(hello, world)
+
+scala> "apple, banana, carot".split(", ")
+res1: Array[String] = Array(apple, banana, carot)
+```
 
 ## Substituting Variables into Strings 字串內變數置換
 
