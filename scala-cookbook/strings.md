@@ -56,7 +56,59 @@ res1: Array[String] = Array(apple, banana, carot)
 
 ## Substituting Variables into Strings 字串內變數置換
 
+```scala
+scala> val str = "hello"
+str: String = hello
+
+scala> val int = 123
+int: Int = 123
+
+scala> val double = 3.14
+double: Double = 3.14
+
+scala> println(s"$str $int $double")
+hello 123 3.14
+
+scala> println(s"${str.toUpperCase} ${int + 1} ${double * 2}")
+HELLO 124 6.28
+
+scala> println(f"$str%6s 0x$int%x $double%.3f")
+ hello 0x7b 3.140
+```
+
+```scala
+scala> println(s"$str\t$str")
+hello	hello
+
+scala> println(raw"$str\t$str")
+hello\thello
+```
+
 ## Processing a String One Character at a Time 逐次處理字串內字元
+
+```scala
+scala> for (c <- "hello world") print(c)
+hello world
+
+scala> "hello world".foreach(print)
+hello world
+```
+
+```scala
+scala> for (c <- "hello world") yield (c.toUpper)
+res0: String = HELLO WORLD
+
+scala> "hello world".map(_.toUpper)
+res`: String = HELLO WORLD
+```
+
+```scala
+scala> for (c <- "hello world" if c != 'l') yield (c)
+res2: String = heo word
+
+scala> "hello world".filter(_ != 'l')
+res3: String = heo word
+```
 
 ## Finding Patterns in Strings 找尋子字串
 
