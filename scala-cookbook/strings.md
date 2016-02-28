@@ -162,6 +162,32 @@ res3: String = ??? scala ???
 
 ## Extracting Parts of a String That Match Patterns 取出子字串
 
+```scala
+scala> val pattern = "([a-z]+) ([0-9]+)".r
+pattern: scala.util.matching.Regex = ([a-z]+) ([0-9]+)
+
+scala> val pattern(word, number) = "hello 123"
+word: String = hello
+number: String = 123
+
+scala> "hello 123" match {
+     | case pattern(str, num) => println (str + "," + num)
+     | case _ => println("not found")
+     | }
+hello,123
+```
+
 ## Accessing a Character in a String 存取字串內字元
+
+```scala
+scala> "hello".charAt(1)
+res0: Char = e
+
+scala> "hello"(1)
+res1: Char = e
+
+scala> "hello".apply(1)
+res2: Char = e
+```
 
 ## Add Your Own Methods to the String Class 新增字串方法
