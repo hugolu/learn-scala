@@ -112,7 +112,53 @@ res3: String = heo word
 
 ## Finding Patterns in Strings 找尋子字串
 
+```scala
+scala> val string = "123 scala 456"
+string: String = 123 scala 456
+
+scala> val pattern = "[0-9]+".r
+pattern: scala.util.matching.Regex = [0-9]+
+
+scala> pattern.findFirstIn(string)
+res0: Option[String] = Some(123)
+
+scala> pattern.findFirstIn(string).toArray
+res1: Array[String] = Array(123)
+
+scala> pattern.findAllIn(string)
+res2: scala.util.matching.Regex.MatchIterator = non-empty iterator
+
+scala> pattern.findAllIn(string).toArray
+res3: Array[String] = Array(123, 456)
+
+scala> pattern.findFirstIn("hello world")
+res4: Option[String] = None
+
+scala> pattern.findFirstIn("hello world").toArray
+res5: Array[String] = Array()
+```
+
 ## Replacing Patterns in Strings 取代子字串
+
+```scala
+scala> val string = "123 scala 456"
+string: String = 123 scala 456
+
+scala> val pattern = "[0-9]+".r
+pattern: scala.util.matching.Regex = [0-9]+
+
+scala> pattern.replaceFirstIn(string, "xxx")
+res0: String = xxx scala 456
+
+scala> pattern.replaceAllIn(string, "xxx")
+res1: String = xxx scala xxx
+
+scala> string.replaceFirst("[0-9]+", "???")
+res2: String = ??? scala 446
+
+scala> string.replaceAll("[0-9]+", "???")
+res3: String = ??? scala ???
+```
 
 ## Extracting Parts of a String That Match Patterns 取出子字串
 
