@@ -185,6 +185,21 @@ case _        => {}
 
 ## Working with a List in a Match Expression
 
+```scala
+def sum(list: List[Int]): Int = list match {
+case Nil     => 0
+case x :: xs => x + sum(xs)
+}                                               //> sum: (list: List[Int])Int
+sum(List(1, 2, 3, 4, 5))                        //> res0: Int = 15
+
+def acc(list: Seq[Int]): Int = list match {
+case Nil              => 0
+case Seq(x, xs @ _*) => x + acc(xs)
+}                                               //> acc: (list: Seq[Int])Int
+acc(List(1, 2, 3, 4, 5))                        //> res1: Int = 15
+
+```
+
 ## Matching One or More Exceptions with try/catch
 
 ## Declaring a Variable Before Using It in a try/catch/finally Block
