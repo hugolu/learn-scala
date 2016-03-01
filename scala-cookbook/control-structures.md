@@ -105,11 +105,52 @@ for {
 ```
 - **for-loop with guards** 大大提高可讀性
 
-### 
 ## Creating a for Comprehension (for/yield Combination)
+
+```
+val names = Array("chris", "ed", "maurice")     		//> names  : Array[String] = Array(chris, ed, maurice)
+val capNames = for (e <- names) yield e.capitalize	//> capNames  : Array[String] = Array(Chris, Ed, Maurice)
+```
 
 ## Implementing break and continue
 
+scala 沒有支援 `braak` 與 `continue` 關鍵字，為什麼？
+
+```scala
+println("\n=== BREAK EXAMPLE ===")              //> 
+                                                //| === BREAK EXAMPLE ===
+breakable {
+  for (i <- 1 to 10) {
+    println(i)
+    if (i > 4) break // break out of the for loop
+  }
+}                                               //> 1
+                                                //| 2
+                                                //| 3
+                                                //| 4
+                                                //| 5
+                                                
+```
+
+```scala
+println("\n=== CONTINUE EXAMPLE ===")           //> 
+                                                //| === CONTINUE EXAMPLE ===
+val searchMe = "peter piper picked a peck of pickled peppers"
+                                                //> searchMe  : String = peter piper picked a peck of pickled peppers
+
+var numPs = 0                                   //> numPs  : Int = 0
+for (i <- 0 until searchMe.length) {
+  breakable {
+    if (searchMe.charAt(i) != 'p') {
+      break // break out of the 'breakable', continue the outside loop
+    } else {
+      numPs += 1
+    }
+  }
+}
+println("Found " + numPs + " p's in the string.")
+                                                //> Found 9 p's in the string.
+```
 ## Using the if Construct Like a Ternary Operator
 
 ## Using a Match Expression Like a switch Statement
