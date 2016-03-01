@@ -166,7 +166,7 @@ val person = for {
                                                 //> person  : List[(week8.JSON, week8.JSON)] = List(("John","Smith"))
 ```
 
-## my practice
+## my practice 1
 ```scala
 case class Foo(x: Int, y: Int)
 
@@ -191,3 +191,26 @@ for {
 - for map(0) = `Map((1, 1) -> Foo(1,1))`, key = `"(1, 1)"`, value = `Foo(1,1)`
 - do pattern matching of `Foo(x, y) = Foo(1, 1)`, we get x = 1, and y = 1
 - if `(x * y % 2 == 0)` is true, then `yield (key)` 
+
+## my practice 2
+參考連結：http://docs.scala-lang.org/tutorials/tour/case-classes.html
+- Case classes are regular classes which export their constructor parameters and which provide a recursive decomposition mechanism via pattern matching.
+- **It only makes sense to define case classes if pattern matching is used to decompose data structures.** 
+```scala
+abstract class Expr
+case class Num(v: Int) extends Expr
+case class Add(x: Expr, y: Expr) extends Expr
+case class Multiply(x: Expr, y: Expr) extends Expr
+
+val expr = Multiply(Add(Num(3), Multiply(Num(2), Num(5))), Num(7))
+                                                //> expr  : myTest.test33.Multiply = Multiply(Add(Num(3),Multiply(Num(2),Num(5))
+                                                //| ),Num(7))
+
+def showExpr(expr: Expr): String = expr match {
+	case Num(v) => v.toString
+	case Add(x, y) => "(" + showExpr(x) + "+" + showExpr(y) +")"
+	case Multiply(x, y) => "(" + showExpr(x) + "x" + showExpr(y) +")"
+}                                               //> showExpr: (expr: myTest.test33.Expr)String
+
+showExpr(expr)                                  //> res0: String = ((3+(2x5))x7)
+```
