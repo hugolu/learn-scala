@@ -114,8 +114,6 @@ val capNames = for (e <- names) yield e.capitalize	//> capNames  : Array[String]
 
 ## Implementing break and continue
 
-scala 沒有支援 `braak` 與 `continue` 關鍵字，為什麼？
-
 ```scala
 println("\n=== BREAK EXAMPLE ===")              //> 
                                                 //| === BREAK EXAMPLE ===
@@ -151,15 +149,76 @@ for (i <- 0 until searchMe.length) {
 println("Found " + numPs + " p's in the string.")
                                                 //> Found 9 p's in the string.
 ```
+
+### scala 沒有支援 `braak` 與 `continue` 關鍵字，為什麼？
+以下引用自 ⟪Programming in Scala⟫：
+
+You may have noticed that there has been no mention of break or continue. Scala leaves out these commands because they do not mesh well with function literals, a feature described in the next chapter. It is clear what continue means inside a while loop, but what would it mean inside a function literal? While Scala supports both imperative and functional styles of programming, in this case it leans slightly towards functional programming in exchange for simplifying the language. Do not worry, though. There are many ways to program without break and continue, and if you take advantage of function literals, those alternatives can often be shorter than the original code.
+
 ## Using the if Construct Like a Ternary Operator
+
+```scala
+def max(x: Int, y: Int) = if (x > y) x else y   //> max: (x: Int, y: Int)Int
+max(1, 2)                                       //> res0: Int = 2
+```
 
 ## Using a Match Expression Like a switch Statement
 
+```scala
+val i = 6                                       //> i  : Int = 6
+i match {
+	case 1    => println("January")
+	case 2    => println("February")
+	case 3    => println("March")
+	case 4    => println("April")
+	case 5    => println("May")
+	case 6    => println("June")
+	case 7    => println("July")
+	case 8    => println("August")
+	case 9    => println("September")
+	case 10   => println("October")
+	case 11   => println("November")
+	case 12   => println("December")
+	
+	// catch the default with a variable so you can print it
+	case whoa => println("Unexpected case: " + whoa.toString)
+}                                               //> June
+```
 ## Matching Multiple Conditions with One Case Statement
+
+```scala
+val i = 6                                       //> i  : Int = 6
+i match {
+	case 1 | 2 | 3    => println("Spring")
+	case 4 | 5 | 6    => println("Summer")
+	case 7 | 8 | 9    => println("Autumn")
+	case 10 | 11 | 12 => println("Winter")
+	
+	// catch the default with a variable so you can print it
+	case whoa         => println("Unexpected case: " + whoa.toString)
+}                                               //> Summer
+```
 
 ## Assigning the Result of a Match Expression to a Variable
 
+```scala
+val someNumber = 7                              //> someNumber  : Int = 7
+val evenOrOdd = someNumber match {
+	case 1 | 3 | 5 | 7 | 9 => println("odd")
+	case 2 | 4 | 6 | 8 | 10 => println("even")
+}                                               //> odd
+```
+
 ## Accessing the Value of the Default Case in a Match Expression
+
+```scala
+val i = 3                                       //> i  : Int = 3
+i match {
+  case 0    => println("1")
+  case 1    => println("2")
+  case whoa => println("You gave me: " + whoa)
+}                                               //> You gave me: 3
+```
 
 ## Using Pattern Matching in Match Expressions
 
