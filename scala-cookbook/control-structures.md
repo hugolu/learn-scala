@@ -84,6 +84,16 @@ whatIsIt(Foo(22, 66))                           //> res17: String = typed patter
 whatIsIt(null)                                  //> res18: String = others: null
 ```
 
+- Constant patterns - A constant pattern can only match itself. Any literal may be used as a constant. If you specify a `0` as the literal, only an Int value of `0` will be matched.
+- Variable patterns - Scala binds the variable to whatever the object is, which lets you use the variable on the right side of the case statement.
+- Constructor patterns - The constructor pattern lets you match a constructor in a case statement.
+- Sequence patterns - You can match against sequences like List, Array, Vector, etc. Use the `_` character to stand for one element in the sequence, and use `_*` to stand for “zero or more elements,” as shown in the examples.
+- Tuple patterns - As shown in the examples, you can match tuple patterns and access the value of each element in the tuple. You can also use the `_` wildcard if you’re not interested in the value of an element.
+- Type patterns - In the following example, `str: String` is a typed pattern, and `str` is a pattern variable
+```scala
+case str: String => s"you gave me this string: $str"
+```
+
 ## Using Case Classes in Match Expressions
 
 ## Adding if Expressions (Guards) to Case Statements
