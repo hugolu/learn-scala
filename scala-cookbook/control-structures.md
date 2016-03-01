@@ -417,3 +417,30 @@ toInt("abc")                                    //> res1: Option[Int] = None
 ## Declaring a Variable Before Using It in a try/catch/finally Block
 
 ## Creating Your Own Control Structures
+```scala
+var i = 0                                       //> i  : Int = 0
+while (i < 3) {
+  println(i)
+  i = i + 1
+}                                               //> 0
+                                                //| 1
+                                                //| 2
+```
+
+```scala
+def loop(condition: => Boolean)(codeBlock: => Unit) {
+  if (condition) {
+    codeBlock
+    loop(condition)(codeBlock)
+  }
+}                                               //> loop: (condition: => Boolean)(codeBlock: => Unit)Unit
+
+var i = 0                                       //> i  : Int = 0
+loop(i < 3) {
+  println(i)
+  i = i + 1
+}                                               //> 0
+                                                //| 1
+                                                //| 2
+```
+- 實作取代 while-loop 的 tail recursion 範例
