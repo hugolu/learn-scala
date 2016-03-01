@@ -202,6 +202,18 @@ acc(List(1, 2, 3, 4, 5))                        //> res1: Int = 15
 
 ## Matching One or More Exceptions with try/catch
 
+```scala
+def toInt(s: String): Option[Int] =
+try {
+Some(s.toInt)
+} catch {
+case e: Exception => None
+}                                             //> toInt: (s: String)Option[Int]
+
+toInt("123")                                    //> res0: Option[Int] = Some(123)
+toInt("abc")                                    //> res1: Option[Int] = None
+```
+
 ## Declaring a Variable Before Using It in a try/catch/finally Block
 
 ## Creating Your Own Control Structures
