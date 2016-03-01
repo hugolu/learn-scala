@@ -94,6 +94,56 @@ whatIsIt(null)                                  //> res18: String = others: null
 case str: String => s"you gave me this string: $str"
 ```
 
+```scala
+def whatIsIt(x: Any) = x match {
+	case list: List(1, _*) => println(s"pattern match: $list")
+	                                              // Multiple markers at this line
+	                                              // '=>' expected but '(' found.
+	                                              // type List takes type parameters
+
+	case _ => println("not matched")
+}                                               //> whatIsIt: (x: Any)Unit
+
+whatIsIt(List(1,2,3))                           //> pattern match: List(1, 2, 3)
+```
+- The solution to this problem is to add a **variable-binding pattern** to the **sequence pattern**:
+```scala
+def whatIsIt(x: Any) = x match {
+  case list @ List(1, _*) => println(s"pattern match: $list")
+  case _                  => println("not matched")
+}                                               //> whatIsIt: (x: Any)Unit
+
+whatIsIt(List(1, 2, 3))                         //> pattern match: List(1, 2, 3)
+```
+
+
+```scala
+  def whatIsIt(x: Any) = x match {
+    case Some(_) => "get a Some(_)"
+  }                                               //> whatIsIt: (x: Any)String
+
+  whatIsIt(Some(1))                               //> res0: String = get a Some(_)
+```
+-  you can match a Some with the approach shown, but you can’t access its information on the righthand side of the expression. 
+
+```scala
+def whatIsIt(x: Any) = x match {
+  case Some(x) => s"get a Some(x), x=$x"
+}                                               //> whatIsIt: (x: Any)String
+
+whatIsIt(Some(1))                               //> res0: String = get a Some(x), x=1
+```
+- you can access the value inside the Some
+
+```scala
+def whatIsIt(x: Any) = x match {
+  case some@ Some(x) => s"get a $some"
+}                                               //> whatIsIt: (x: Any)String
+
+whatIsIt(Some(1))                               //> res0: String = get a Some(1)
+```
+- you access to the Some object itself
+
 ## Using Case Classes in Match Expressions
 
 ## Adding if Expressions (Guards) to Case Statements
