@@ -148,6 +148,23 @@ whatIsIt(Some(1))                               //> res0: String = get a Some(1)
 
 ## Adding if Expressions (Guards) to Case Statements
 
+```scala
+case class Foo(x: Int)
+
+def whatIsIt(x: Any) = x match {
+case e: Int if e % 2 == 0 => "even integer"
+case o: Int if o % 2 != 0 => "odd integer"
+case Foo(x) if x > 100    => s"big Foo($x)"
+case Foo(x) if x <= 100   => s"small Foo($x)"
+case _                    => "other"
+}                                               //> whatIsIt: (x: Any)String
+
+whatIsIt(1)                                     //> res0: String = odd integer
+whatIsIt(2)                                     //> res1: String = even integer
+whatIsIt(Foo(0))                                //> res2: String = small Foo(0)
+whatIsIt(Foo(1000))                             //> res3: String = big Foo(1000)
+```
+
 ## Using a Match Expression Instead of isInstanceOf
 
 ## Working with a List in a Match Expression
