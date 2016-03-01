@@ -2,6 +2,55 @@
 
 ## Looping with for and foreach
 
+### `Array`
+```scala
+val array = Array(1, 2, 3)                      //> array  : Array[Int] = Array(1, 2, 3)
+
+for (n <- array) yield (n * 2)                  //> res0: Array[Int] = Array(2, 4, 6)
+array.map(_ * 2)                                //> res1: Array[Int] = Array(2, 4, 6)
+
+for (n <- array if (n % 2 != 0)) yield (n)      //> res2: Array[Int] = Array(1, 3)
+array.filter(_ % 2 != 0)                        //> res3: Array[Int] = Array(1, 3)
+```
+
+### `list`
+```scala
+val list = List(1, 2, 3)                        //> list  : List[Int] = List(1, 2, 3)
+
+for (n <- list) yield (n * 2)                   //> res4: List[Int] = List(2, 4, 6)
+list.map(_ * 2)                                 //> res5: List[Int] = List(2, 4, 6)
+
+for (n <- list if (n % 2 != 0)) yield (n)       //> res6: List[Int] = List(1, 3)
+list.filter(_ % 2 != 0)                         //> res7: List[Int] = List(1, 3)
+```
+
+### `Map`
+```scala
+val map = Map(1 -> 'A', 2 -> 'B', 3 -> 'C')     //> map  : scala.collection.immutable.Map[Int,Char] = Map(1 -> A, 2 -> B, 3 -> C)
+
+for ((k, v) <- map) yield ((v, k))              //> res8: scala.collection.immutable.Map[Char,Int] = Map(A -> 1, B -> 2, C -> 3)
+map.map(kv => (kv._2, kv._1))                   //> res9: scala.collection.immutable.Map[Char,Int] = Map(A -> 1, B -> 2, C -> 3)
+
+for ((k, v) <- map if (k % 2 != 0)) yield ((k, v))
+                                                //> res10: scala.collection.immutable.Map[Int,Char] = Map(1 -> A, 3 -> C)
+map.filter(kv => kv._1 % 2 != 0)                //> res11: scala.collection.immutable.Map[Int,Char] = Map(1 -> A, 3 -> C)
+```
+
+### for loop counters
+```scala
+val list = List("A", "B", "C")                  //> list  : List[String] = List(A, B, C)
+
+for (i <- 0 until list.length) println("list(" + i + ")=" + list(i))
+                                                //> list(0)=A
+                                                //| list(1)=B
+                                                //| list(2)=C
+
+for ((k, v) <- list.zipWithIndex) println(s"list($k)=$v")
+                                                //> list(A)=0
+                                                //| list(B)=1
+                                                //| list(C)=2
+```
+
 ## Using for Loops with Multiple Counters
 
 ## Using a for Loop with Embedded if Statements (Guards)
