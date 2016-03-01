@@ -53,8 +53,59 @@ for ((k, v) <- list.zipWithIndex) println(s"list($k)=$v")
 
 ## Using for Loops with Multiple Counters
 
+```scala
+for (i <- 1 to 3; j <- 1 to 3) println(s"($i,$j)")
+                                                //> (1,1)
+                                                //| (1,2)
+                                                //| (1,3)
+                                                //| (2,1)
+                                                //| (2,2)
+                                                //| (2,3)
+                                                //| (3,1)
+                                                //| (3,2)
+                                                //| (3,3)
+
+for {
+  i <- 1 to 3
+  j <- 1 to 3
+} println(s"($i,$j)")                           //> (1,1)
+                                                //| (1,2)
+                                                //| (1,3)
+                                                //| (2,1)
+                                                //| (2,2)
+                                                //| (2,3)
+                                                //| (3,1)
+                                                //| (3,2)
+                                                //| (3,3)
+```
+- `for{...}` 可讀性比較高
+
 ## Using a for Loop with Embedded if Statements (Guards)
 
+```scala
+  for (i <- 1 to 100) {
+    if (i % 3 == 0) {
+      if (i % 7 == 0) {
+        println(i)
+      }
+    }                                             //> 21
+                                                  //| 42
+                                                  //| 63
+                                                  //| 84
+  }
+
+  for {
+    i <- 1 to 100
+    if (i % 3 == 0)
+    if (i % 7 == 0)
+  } println(i)                                    //> 21
+                                                  //| 42
+                                                  //| 63
+                                                  //| 84
+```
+- **for-loop with guards** 大大提高可讀性
+
+### 
 ## Creating a for Comprehension (for/yield Combination)
 
 ## Implementing break and continue
