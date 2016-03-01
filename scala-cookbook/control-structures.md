@@ -167,6 +167,22 @@ whatIsIt(Foo(1000))                             //> res3: String = big Foo(1000)
 
 ## Using a Match Expression Instead of isInstanceOf
 
+```scala
+case class Foo(value: Int)
+val x: Any = Foo(1)                             //> x  : Any = Foo(1)
+
+if (x.isInstanceOf[Foo]) {
+val foo = x.asInstanceOf[Foo]
+println(foo)
+}                                               //> Foo(1)
+
+x match {
+case foo: Foo => println(foo)
+case _        => {}
+}                                               //> Foo(1)
+```
+- use pattern matching instead of `isInstanceOf`
+
 ## Working with a List in a Match Expression
 
 ## Matching One or More Exceptions with try/catch
