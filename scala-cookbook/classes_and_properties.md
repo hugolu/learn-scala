@@ -202,6 +202,12 @@ public class Person {
   new Foo                                         //> res3: myTest.test45.Foo = Foo(123,xyz)
 ```
 
+Rules
+- Auxiliary constructors are defined by creating methods named `this`.
+- Each auxiliary constructor must begin with a call to a previously defined constructor. (呼叫其它constructor之前不能做其他事情)
+- Each constructor must have a different signature.
+- One constructor calls another constructor with the name `this`.
+
 ## Defining a Private Primary Constructor
 
 ## Providing Default Values for Constructor Parameters
