@@ -112,6 +112,69 @@ res3: Foo = Foo(1,2)
 | Default visibility (no `var` or `val`) | No | No |
 | Adding the `private` keyword to `var` or `val` | No | No |
 
+### var fields
+```scala
+class Person(var name: String)
+```
+```shell
+$ scala Person.scala
+$ javap Person
+Compiled from "Person.scala"
+public class Person {
+  public java.lang.String name();
+  public void name_$eq(java.lang.String);
+  public Person(java.lang.String);
+}
+```
+- If a field is declared as a var, Scala generates both getter and setter methods for that field.
+- getter: `public java.lang.String name()`
+- setter: `public void name_$eq(java.lang.String)`
+
+### val fields
+```scala
+class Person(val name: String)
+```
+```shell
+$ scalac Person.scala
+$ javap Person
+Compiled from "Person.scala"
+public class Person {
+  public java.lang.String name();
+  public Person(java.lang.String);
+}
+```
+- If the field is a val, Scala generates only a getter method for it.
+- getter: `public java.lang.String name()`
+
+### Fields without val or var
+```scala
+class Person(name: String)
+```
+```shell
+$ scalac Person.scala
+$ javap Person
+Compiled from "Person.scala"
+public class Person {
+  public Person(java.lang.String);
+}
+```
+-  If a field doesn’t have a var or val modifier, Scala gets conservative, and doesn’t generate a getter or setter method for the field.
+
+### Adding private to val or var
+```scala
+class Person(private var name: String) { def getName {println(name)} }
+```
+```shell
+$ scalac Person.scala
+$ javap Person
+Compiled from "Person.scala"
+public class Person {
+  public void getName();
+  public Person(java.lang.String);
+}
+```
+- Additionally, var and val fields can be modified with the private keyword, which prevents getters and setters from being generated.
+
 ## Defining Auxiliary Constructors
 
 ## Defining a Private Primary Constructor
