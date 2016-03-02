@@ -105,6 +105,13 @@ res3: Foo = Foo(1,2)
 
 ## Controlling the Visibility of Constructor Fields
 
+| Visibility | Accessor? | Mutator? |
+|------------|-----------|----------|
+| `var` | Yes  |Yes |
+| `val` | Yes | No |
+| Default visibility (no `var` or `val`) | No | No |
+| Adding the `private` keyword to `var` or `val` | No | No |
+
 ## Defining Auxiliary Constructors
 
 ## Defining a Private Primary Constructor
