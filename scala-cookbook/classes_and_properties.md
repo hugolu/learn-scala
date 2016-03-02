@@ -36,6 +36,9 @@ public class Foo {
   public Foo(int);
 }
 ```
+- Because the fields are mutable, Scala generates both accessor and mutator methods for them.
+- `val x` has an accessor `public int x();`
+- `var y` has an accessor `public int y();` and a mutator `public void y_$eq(int);`
 
 ### install JAD
 ref: [JAD Java Decompiler](http://varaneckas.com/jad/)
@@ -66,8 +69,12 @@ $ cat Foo.jad
     private int y;
 }
 ```
+- Any method that’s called in the body of the class is really being called from the primary constructor.
+  - `Predef$.MODULE$.println("start of Foo");`
+  - `printFoo();`
+  - `Predef$.MODULE$.println("end of Foo");`
 
-The primary constructor of a Scala class
+### The primary constructor of a Scala class
 - The constructor parameters
 - Methods that are called in the body of the class
 - Statements and expressions that are executed in the body of the class
