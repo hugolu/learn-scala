@@ -67,6 +67,35 @@ $ cat Foo.jad
 }
 ```
 
+The primary constructor of a Scala class
+- The constructor parameters
+- Methods that are called in the body of the class
+- Statements and expressions that are executed in the body of the class
+
+```scala
+scala> :load ./Foo.scala
+Loading ./Foo.scala...
+defined class Foo
+
+scala> var f = new Foo(1)
+start of Foo
+Foo(1,0)
+end of Foo
+f: Foo = Foo(1,0)
+
+scala> f.x
+res1: Int = 1
+
+scala> f.y
+res2: Int = 0
+
+scala> f.y = 2
+f.y: Int = 2
+
+scala> f
+res3: Foo = Foo(1,2)
+```
+
 ## Controlling the Visibility of Constructor Fields
 
 ## Defining Auxiliary Constructors
