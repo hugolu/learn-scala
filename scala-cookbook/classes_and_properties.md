@@ -177,6 +177,31 @@ public class Person {
 
 ## Defining Auxiliary Constructors
 
+```scala
+  class Foo(val num: Int, val str: String) {
+    def this(num: Int) {
+      this(num, Foo.DEFAULT_STRING)
+    }
+    def this(str: String) {
+      this(Foo.DEFAULT_NUMBER, str)
+    }
+    def this() {
+      this(Foo.DEFAULT_NUMBER, Foo.DEFAULT_STRING)
+    }
+    override def toString = "Foo(" + num + "," + str + ")"
+  }
+
+  object Foo {
+    val DEFAULT_NUMBER = 123
+    val DEFAULT_STRING = "xyz"
+  }
+
+  new Foo(111, "hello")                           //> res0: myTest.test45.Foo = Foo(111,hello)
+  new Foo(111)                                    //> res1: myTest.test45.Foo = Foo(111,xyz)
+  new Foo("hello")                                //> res2: myTest.test45.Foo = Foo(123,hello)
+  new Foo                                         //> res3: myTest.test45.Foo = Foo(123,xyz)
+```
+
 ## Defining a Private Primary Constructor
 
 ## Providing Default Values for Constructor Parameters
