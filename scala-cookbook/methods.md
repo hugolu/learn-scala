@@ -12,29 +12,89 @@
 
 ### Object-private
 ```
-scala> class Foo {
-     |   private[this] val num = 100
-     |   def >(that: Foo) = this.num > that.num
-     | }
-<console>:12: error: value num is not a member of Foo
-         def >(that: Foo) = this.num > that.num
-                                            ^
+class Foo {
+  private[this] val num = 100
+  def myNum = num
+  def >(that: Foo) = this.num > that.num	// won't compile
+}
 ```
 
 ### Private
 ```scala
+class Foo {
+  private val num = 100
+  def myNum = num
+  def >(that: Foo) = this.num > that.num
+}
+
+class FooSub extends Foo {
+	def getNum = num	// won't compile
+}
 ```
 
 ### Protected
 ```scala
+class Foo {
+  protected val num = 100
+  def myNum = num
+  def >(that: Foo) = this.num > that.num
+}
+
+class FooSub extends Foo {
+	def getNum = num
+}
+
+class Bar {
+	val foo = new Foo
+	foo.num
+}
 ```
 
 ### Package
 ```scala
+package com.acme.coolapp.model {
+	class Foo {
+		private[model] def doX {}
+		private[coolapp] def doY {}
+		private[acme] def doZ {}
+	}
+}
+
+import com.acme.coolapp.model._
+package com.acme.coolapp.view {
+	class Bar {
+		val foo = new Foo
+		foo.doX // won't compile
+		foo.doY
+		foo.doZ
+	}
+}
+
+package com.acme.common {
+	class Bar {
+		val foo = new Foo
+		foo.doX // won't compile
+		foo.doY // won't compile
+		foo.doZ
+	}
+}
 ```
 
 ### Public
 ```scala
+package com.acme.coolapp.model {
+	class Foo {
+		def doX {}
+	}
+}
+
+import com.acme.coolapp.model._
+package org.xyz.bar {
+	class Bar {
+		val foo = new Foo
+		foo.doX
+	}
+}
 ```
 
 ## Calling a Method on a Superclass
