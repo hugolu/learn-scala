@@ -208,6 +208,54 @@ Rules
 - Each constructor must have a different signature.
 - One constructor calls another constructor with the name `this`.
 
+### Generating auxiliary constructors for case classes 
+```scala
+scala> object testFoo {
+     |   case class Foo(val num: Int, val str: String)
+     |
+     |   object Foo {
+     |     def apply() = new Foo(123, "xyz")
+     |     def apply(num: Int) = new Foo(num, "xyz")
+     |     def apply(str: String) = new Foo(123, str)
+     |   }
+     | }
+defined object testFoo
+
+scala> import testFoo._
+import testFoo._
+
+scala> Foo()
+res4: testFoo.Foo = Foo(123,xyz)
+
+scala> Foo(111)
+res5: testFoo.Foo = Foo(111,xyz)
+
+scala> Foo("abc")
+res6: testFoo.Foo = Foo(123,abc)
+
+scala> Foo(111,"abc")
+res7: testFoo.Foo = Foo(111,abc)
+```
+- to add apply methods to the companion object of the `Foo` case class
+
+```scala
+scala> case class Bar(val num: Int = 123, val str: String = "xyz")
+defined class Bar
+
+scala> Bar()
+res8: Bar = Bar(123,xyz)
+
+scala> Bar(num=111)
+res9: Bar = Bar(111,xyz)
+
+scala> Bar(str="abc")
+res10: Bar = Bar(123,abc)
+
+scala> Bar(111,"abc")
+res11: Bar = Bar(111,abc)
+```
+- `Bar` case class parameters with default values
+
 ## Defining a Private Primary Constructor
 
 ## Providing Default Values for Constructor Parameters
