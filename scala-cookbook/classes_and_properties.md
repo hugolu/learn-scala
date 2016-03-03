@@ -335,6 +335,9 @@ scala> foo.x
 res2: Int = 2
 ```
 - change the name of the field you use in the class constructor so it won’t collide with the name of the getter method you want to use
+	1. Create a private var constructor parameter with a name you want to reference from within your class.
+	2. Define getter and setter names that you want other classes to use. 
+	3. Modify the body of the getter and setter methods as desired.
 
 ```shell
 $ javap Foo
