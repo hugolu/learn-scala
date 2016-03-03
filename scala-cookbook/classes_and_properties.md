@@ -428,6 +428,36 @@ scala> class Woman(private[this] val age: Int) {
 
 ## Assigning a Field to a Block or Function
 
+```scala
+scala> class Foo {
+     |   val num = { println("do something..."); 123 }
+     | }
+defined class Foo
+
+scala> var foo = new Foo
+do something...
+foo: Foo = Foo@3368838
+
+scala> foo.num
+res7: Int = 123
+```
+- Because the assignment of the code block to the text field and the println statement are both in the body of the Foo class, they are in the class’s constructor, and will be executed when a new instance of the class is created. 
+
+```scala
+scala> class Bar {
+     |   lazy val num = { println("do something..."); 123 }
+     | }
+defined class Bar
+
+scala> val bar = new Bar
+bar: Bar = Bar@136422b8
+
+scala> bar.num
+do something...
+res8: Int = 123
+```
+- When this code is compiled and run, there is no output, because the text field isn’t initialized until it’s accessed. That’s how a __lazy__ field works.
+
 ## Setting Uninitialized var Field Types
 
 ## Handling Constructor Parameters When Extending a Class
