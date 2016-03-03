@@ -491,6 +491,30 @@ List(1, 2, 3)
 - If the value is assigned, it will be a `Some[List[Int]]`, so the foreach loop will be entered and the data printed.
 
 ## Handling Constructor Parameters When Extending a Class
+```scala
+class Base(var n: Int)
+class Sub(n: Int) extends Base(n)
+```
+- Because you don’t declare the parameters in Sub as `var`, Scala won’t attempt to generate methods for those fields.
+
+```shell
+$ javap Base
+Compiled from "Base.scala"
+public class Base {
+  public int n();
+  public void n_$eq(int);
+  public Base(int);
+}
+
+$ javap Sub
+Compiled from "Sub.scala"
+public class Sub extends Base {
+  public Sub(int);
+}
+```
+- The Sub class inherits that behavior from `Base`.
+	- accessor: `public int n()`
+  - modifier: `public void n_$eq(int)`
 
 ## Calling a Superclass Constructor
 
