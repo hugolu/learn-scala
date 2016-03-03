@@ -258,6 +258,28 @@ res11: Bar = Bar(111,abc)
 
 ## Defining a Private Primary Constructor
 
+```scala
+scala> object testSingleton {
+     |   class Foo private {
+     |     override def toString = "I'm Foo"
+     |   }
+     |
+     |   object Foo {
+     |     val foo = new Foo
+     |     def getInstance = foo
+     |   }
+     | }
+defined object testSingleton
+
+scala> import testSingleton._
+import testSingleton._
+
+scala> Foo.getInstance
+res0: testSingleton.Foo = I'm Foo
+```
+- A simple way to enforce the Singleton pattern in Scala is to make the primary constructor private, then put a getInstance method in the companion object of the class.
+- To make the primary constructor private, insert the private keyword in between the class name and any parameters the constructor accepts.
+
 ## Providing Default Values for Constructor Parameters
 
 ## Overriding Default Accessors and Mutators
