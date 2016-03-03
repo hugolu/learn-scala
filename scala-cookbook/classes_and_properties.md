@@ -315,6 +315,77 @@ res2: Foo = Foo(222)
 
 ## Overriding Default Accessors and Mutators
 
+```scala
+scala> class Foo(private var _x: Int) {
+     |   def x = _x
+     |   def x_$eq(x: Int) = { _x = x }
+     | }
+defined class Foo
+
+scala> val foo = new Foo(1)
+foo: Foo = Foo@2395a0d9
+
+scala> foo.x
+res1: Int = 1
+
+scala> foo.x = 2
+foo.x: Int = 2
+
+scala> foo.x
+res2: Int = 2
+```
+- change the name of the field you use in the class constructor so it won’t collide with the name of the getter method you want to use
+
+```shell
+$ javap Foo
+Compiled from "Foo.scala"
+public class Foo {
+  public int x();
+  public void x_$eq(int);
+  public Foo(int);
+}
+```
+
+```vim
+// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
+// Jad home page: http://www.kpdus.com/jad.html
+// Decompiler options: packimports(3)
+// Source File Name:   Foo.scala
+
+
+public class Foo
+{
+
+    private int _x()
+    {
+        return _x;
+    }
+
+    private void _x_$eq(int x$1)
+    {
+        _x = x$1;
+    }
+
+    public int x()
+    {
+        return _x();
+    }
+
+    public void x_$eq(int x)
+    {
+        _x_$eq(x);
+    }
+
+    public Foo(int _x)
+    {
+        this._x = _x;
+        super();
+    }
+
+    private int _x;
+}
+```
+
 ## Preventing Getter and Setter Methods from Being Generated
 
 ## Assigning a Field to a Block or Function
