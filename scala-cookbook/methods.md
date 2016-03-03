@@ -11,13 +11,14 @@
 | Public | (no modifier) | The method is public. |
 
 ### Object-private
-```
+```scala
 class Foo {
   private[this] val num = 100
   def myNum = num
   def >(that: Foo) = this.num > that.num	// won't compile
 }
 ```
+- The most restrictive access is to mark a method as object-private. When you do this, the method is available only to the current instance of the current object. Other instances of the same class cannot access the method.
 
 ### Private
 ```scala
@@ -31,6 +32,7 @@ class FooSub extends Foo {
 	def getNum = num	// won't compile
 }
 ```
+- A slightly less restrictive access is to mark a method private, which makes the method available to (a) the current class and (b) other instances of the current class. 
 
 ### Protected
 ```scala
@@ -46,9 +48,10 @@ class FooSub extends Foo {
 
 class Bar {
 	val foo = new Foo
-	foo.num
+	foo.num // won't compile
 }
 ```
+- Marking a method protected makes the method available to subclasses.
 
 ### Package
 ```scala
@@ -79,6 +82,7 @@ package com.acme.common {
 	}
 }
 ```
+- To make a method available to all members of the current package—what would be called “package scope” in Java—mark the method as being private to the current package with the `private[packageName]` syntax.
 
 ### Public
 ```scala
@@ -96,6 +100,7 @@ package org.xyz.bar {
 	}
 }
 ```
+- If no access modifier is added to the method declaration, the method is public.
 
 ## Calling a Method on a Superclass
 
