@@ -776,3 +776,15 @@ true if and only if y.equals(x) returns true.
 - It is _transitive_: for any instances x, y, and z of type AnyRef, if x.equals(y) returns true and y.equals(z) returns true, then x.equals(z) should return true.
 
 ## Creating Inner Classes
+Opposed to Java-like languages where such inner classes are members of the enclosing class, in Scala, such inner classes are bound to the outer object.
+
+```scala
+class Outter {
+  class Inner {
+  }
+}
+
+val outer = new Outter                          //> outer  : myTest.test59.Outter = myTest.test59$$anonfun$main$1$Outter$1@684b4388
+val inner = new outer.Inner                     //> inner  : myTest.test59.outer.Inner = myTest.test59$$anonfun$main$1$Outter$1$Inner@e31b95f
+```
+- 不懂有什麼作用？
