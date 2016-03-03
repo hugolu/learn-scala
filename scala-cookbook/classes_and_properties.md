@@ -675,6 +675,59 @@ public class BarSub
 - scala `trait` 使用 java `interface` 實作: 不存放欄位，所有方法都是 `abstract`
 
 ## Generating Boilerplate Code with Case Classes
+Defining a class as a case class results in a lot of boilerplate code being generated, with the following benefits:
+- An `apply` method is generated, so you don’t need to use the new keyword to create a new instance of the class.
+- `Accessor` methods are generated for the constructor parameters because case class constructor parameters are val by default. `Mutator` methods are also generated for parameters declared as var.
+- A good, default `toStrin`g method is generated.
+- An `unapply` method is generated, making it easy to use case classes in match ex‐
+pressions.
+- `equals` and `hashCode` methods are generated.
+- A `copy` method is generated.
+
+```scala
+case class Foo(var n: Int)
+
+var foo = Foo.apply(1)                          //> foo  : myTest.test57.Foo = Foo(1)
+foo.n                                           //> res0: Int = 1
+foo.n = 2
+
+println(foo)                                    //> Foo(2)
+foo match {
+  case Foo(n) => println(s"n=$n")
+}                                               //> n=2
+
+var foo2 = Foo(2)                               //> foo2  : myTest.test57.Foo = Foo(2)
+foo.equals(foo)                                 //> res1: Boolean = true
+foo.equals(foo2)                                //> res2: Boolean = true
+
+foo.hashCode                                    //> res3: Int = 369114374
+foo2.hashCode                                   //> res4: Int = 369114374
+
+var foo3 = foo.copy(2)                          //> foo3  : myTest.test57.Foo = Foo(2)
+```
+
+```shell
+$ javap Foo
+Compiled from "Foo.scala"
+public class Foo implements scala.Product,scala.Serializable {
+  public static scala.Option<java.lang.Object> unapply(Foo);
+  public static Foo apply(int);
+  public static <A extends java/lang/Object> scala.Function1<java.lang.Object, A> andThen(scala.Function1<Foo, A>);
+  public static <A extends java/lang/Object> scala.Function1<A, Foo> compose(scala.Function1<A, java.lang.Object>);
+  public int n();
+  public Foo copy(int);
+  public int copy$default$1();
+  public java.lang.String productPrefix();
+  public int productArity();
+  public java.lang.Object productElement(int);
+  public scala.collection.Iterator<java.lang.Object> productIterator();
+  public boolean canEqual(java.lang.Object);
+  public int hashCode();
+  public java.lang.String toString();
+  public boolean equals(java.lang.Object);
+  public Foo(int);
+}
+```
 
 ## Defining an equals Method (Object Equality)
 
