@@ -390,6 +390,41 @@ public class Foo
 ```
 
 ## Preventing Getter and Setter Methods from Being Generated
+When you define a class field as a var, Scala automatically generates getter and setter methods for the field, and defining a field as a val automatically generates a getter method, but you don’t want either a getter or setter.
+
+### private fields
+```scala
+scala> class Woman(private val age: Int) {
+     |   def isOrderThan(that: Woman): Boolean = this.age > that.age
+     | }
+defined class Woman
+
+scala> val w1 = new Woman(30)
+w1: Woman = Woman@4b9d09e2
+
+scala> val w2 = new Woman(40)
+w2: Woman = Woman@5019b943
+
+scala> w1 isOrderThan w2
+res3: Boolean = false
+
+scala> w1.age
+<console>:13: error: value age in class Woman cannot be accessed in Woman
+       w1.age
+          ^
+```
+- Defining a field as private limits the field so it’s only available to instances of the same class.
+
+### object-private fields
+```scala
+scala> class Woman(private[this] val age: Int) {
+     |   def isOrderThan(that: Woman): Int = this.age > that.age
+     | }
+<console>:12: error: value age is not a member of Woman
+         def isOrderThan(that: Woman): Int = this.age > that.age
+                                                             ^
+```
+- Defining a field as `private[this]` takes this privacy a step further, and makes the field object-private, which means that it can only be accessed from the object that contains it.
 
 ## Assigning a Field to a Block or Function
 
