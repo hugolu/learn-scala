@@ -727,7 +727,19 @@ public class Foo implements scala.Product,scala.Serializable {
   public boolean equals(java.lang.Object);
   public Foo(int);
 }
+
+$ javap Foo$
+Compiled from "Foo.scala"
+public final class Foo$ extends scala.runtime.AbstractFunction1<java.lang.Object, Foo> implements scala.Serializable {
+  public static final Foo$ MODULE$;
+  public static {};
+  public final java.lang.String toString();
+  public Foo apply(int);
+  public scala.Option<java.lang.Object> unapply(Foo);
+  public java.lang.Object apply(java.lang.Object);
+}
 ```
+- 還搞不懂 `Foo` 跟 `Foo$` 的關係...
 
 ## Defining an equals Method (Object Equality)
 
