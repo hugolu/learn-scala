@@ -570,6 +570,106 @@ val y = new Rectangle(2, 4)                     //> y  : myTest.test56.Rectangle
 ```
 
 ## Defining Properties in an Abstract Base Class (or Trait)
+You can declare both val and var fields in an abstract class (or trait), and those fields can be abstract or have concrete implementations. 
+
+```scala
+abstract class Foo {
+  val str: String
+  val num = 123
+}
+
+class FooSub extends Foo {
+  val str = "FooSub"
+}
+
+trait Bar {
+  val str: String
+  val num = 123
+}
+
+class BarSub extends Bar {
+  val str = "BarSub"
+}
+
+new FooSub                                      //> res0: myTest.test57.FooSub = myTest.test57$$anonfun$main$1$FooSub$1@4586793e
+new BarSub                                      //> res1: myTest.test57.BarSub = myTest.test57$$anonfun$main$1$BarSub$1@2d583afc
+```
+- the fields don’t actually exist in the abstract base class (or trait), the override keyword is not necessary
+
+When you define an abstract field in an abstract class or trait, the Scala compiler does not create a field in the resulting code; it only generates the methods that correspond to the val or var field.
+```shell
+$ jad Foo; cat Foo.jad
+public abstract class Foo
+{
+    public abstract String str();
+
+    public int num()
+    {
+        return num;
+    }
+
+    public Foo()
+    {
+    }
+
+    private final int num = 123;
+}
+
+$ jad FooSub; cat FooSub.jad
+public class FooSub extends Foo
+{
+    public String str()
+    {
+        return str;
+    }
+
+    public FooSub()
+    {
+    }
+
+    private final String str = "FooSub";
+}
+```
+
+```scala
+$ cat Bar.jad
+public interface Bar
+{
+    public abstract void Bar$_setter_$num_$eq(int i);
+
+    public abstract String str();
+
+    public abstract int num();
+}
+
+$ jad BarSub; cat BarSub.jad
+public class BarSub
+    implements Bar
+{
+    public int num()
+    {
+        return num;
+    }
+
+    public void Bar$_setter_$num_$eq(int x$1)
+    {
+        num = x$1;
+    }
+
+    public String str()
+    {
+        return str;
+    }
+
+    public BarSub()
+    {
+        Bar.class.$init$(this);
+    }
+
+    private final String str = "BarSub";
+    private final int num;
+}
+```
 
 ## Generating Boilerplate Code with Case Classes
 
