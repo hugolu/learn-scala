@@ -460,6 +460,20 @@ res8: Int = 123
 
 ## Setting Uninitialized var Field Types
 
+```scala
+class Foo {
+  var str = None: Option[String]
+}
+
+val foo = new Foo                               //> foo  : myTest.test52.Foo = myTest.test52$$anonfun$main$1$Foo$1@684d0ca0
+foo.str                                         //> res0: Option[String] = None
+foo.str.getOrElse("<empty>")                    //> res1: String = <empty>
+
+foo.str = Some("hello world")
+foo.str                                         //> res2: Option[String] = Some(hello world)
+foo.str.getOrElse("<empty>")                    //> res3: String = hello world
+```
+
 ## Handling Constructor Parameters When Extending a Class
 
 ## Calling a Superclass Constructor
