@@ -517,6 +517,31 @@ public class Sub extends Base {
   - modifier: `public void n_$eq(int)`
 
 ## Calling a Superclass Constructor
+```scala
+class Foo(var x: Int, var y: Int) {
+  override def toString = s"Foo($x,$y)"
+  def this() = this(1, 2)
+  def this(x: Int) = this(x, 2)
+}
+
+class Bar0(var z: Int) extends Foo() {
+  override def toString = s"Bar0($x,$y,$z)"
+}
+new Bar0(3)                                     //> res0: myTest.test55.Bar0 = Bar0(1,2,3)
+
+class Bar1(x: Int, var z: Int) extends Foo(x) {
+  override def toString = s"Bar1($x,$y,$z)"
+}
+new Bar1(1, 3)                                  //> res1: myTest.test55.Bar1 = Bar1(1,2,3)
+
+class Bar2(x: Int, y: Int, var z: Int) extends Foo(x, y) {
+  override def toString = s"Bar2($x,$y,$z)"
+}
+new Bar2(1, 2, 3)                               //> res2: myTest.test55.Bar2 = Bar2(1,2,3)
+```
+- the first line of an auxiliary constructor must be a call to another constructor of the current class
+- there is no way for auxiliary con‐ structors to call a superclass constructor
+- Can `Bar1`, `Bar2`, `Bar3` become a single `Bar`??
 
 ## When to Use an Abstract Class
 
