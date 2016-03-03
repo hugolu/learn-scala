@@ -280,6 +280,23 @@ res0: testSingleton.Foo = I'm Foo
 - A simple way to enforce the Singleton pattern in Scala is to make the primary constructor private, then put a getInstance method in the companion object of the class.
 - To make the primary constructor private, insert the private keyword in between the class name and any parameters the constructor accepts.
 
+### Utility classes
+```scala
+import FooUtils._
+
+object testSingleton {
+	hiFoo()                                   //> Hello, Foo
+	hiBar()                                   //> Hello, Bar
+}
+
+object FooUtils {
+	def hiFoo() = println("Hello, Foo")
+	def hiBar() = println("Hello, Bar")
+}
+```
+- in Java you’d create a file utilities class by defining _static_ methods in a Jav `class`
+- in Scala you do the same thing by putting all the methods in a Scala `object`
+
 ## Providing Default Values for Constructor Parameters
 
 ## Overriding Default Accessors and Mutators
