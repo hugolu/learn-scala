@@ -544,6 +544,30 @@ new Bar2(1, 2, 3)                               //> res2: myTest.test55.Bar2 = B
 - Can `Bar1`, `Bar2`, `Bar3` become a single `Bar`??
 
 ## When to Use an Abstract Class
+- You want to create a base class that requires constructor arguments.
+- The code will be called from Java code.
+- Be aware that a class can extend only one abstract class.
+
+```scala
+abstract class Shape {
+  val name: String 	// abstract field
+  def area: Int 		// abstract method
+  override def toString = s"$name($area)"
+}
+
+class Square(val l: Int) extends Shape {
+  val name = "Square"
+  val area = l * l
+}
+
+class Rectangle(val l: Int, val w: Int) extends Shape {
+  val name = "Rectangle"
+  val area = l * w
+}
+
+val x = new Square(3)                           //> x  : myTest.test56.Square = Square(9)
+val y = new Rectangle(2, 4)                     //> y  : myTest.test56.Rectangle = Rectangle(8)
+```
 
 ## Defining Properties in an Abstract Base Class (or Trait)
 
