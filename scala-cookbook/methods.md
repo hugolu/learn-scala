@@ -104,6 +104,67 @@ package org.xyz.bar {
 
 ## Calling a Method on a Superclass
 
+```scala
+class Foo {
+  def talk() = println("Foo...")
+}
+
+class Bar extends Foo {
+  override def talk() = {
+    super.talk()
+    println("Bar...")
+  }
+}
+
+var bar = new Bar                               //> bar  : myTest.test60.Bar = myTest.test60$$anonfun$main$1$Bar$1@3d8f5954
+bar.talk                                        //> Foo...
+                                                //| Bar...
+```
+
+### Controlling which trait you call a method from
+```scala
+trait Foo {
+  def talk = "Foo..."
+}
+
+trait Bar extends Foo {
+  override def talk = "Bar"
+}
+
+trait Buz extends Foo {
+  override def talk = "Buz"
+}
+
+class Woo extends Foo with Bar with Buz {
+  def talkSuper = super.talk
+  def talkFoo = super[Foo].talk
+  def talkBar = super[Bar].talk
+  def talkBuz = super[Buz].talk
+}
+
+var woo = new Woo                               //> woo  : myTest.test60.Woo = myTest.test60$$anonfun$main$1$Woo$1@76de43f3
+woo.talk                                        //> res0: String = Buz
+woo.talkSuper                                   //> res1: String = Buz
+woo.talkFoo                                     //> res2: String = Foo...
+woo.talkBar                                     //> res3: String = Bar
+woo.talkBuz                                     //> res4: String = Buz
+```
+- As shown, when a class inherits from multiple traits, and those traits have a common method name, you can choose which trait to run the method from with the `super[traitName].methodName` syntax.
+
+```scala
+class Foo { def say = "Foo" }
+
+class Bar extends Foo { override def say = "Bar" }
+
+class Qiz extends Bar {
+  def saySuper = super.say
+  def saySuperx2 = super.super.say // won't compile
+  def sayBar = super[Bar].say
+  def sayFoo = super[Foo].say // won't compile
+}
+```
+- Note that when using this technique, you can’t continue to reach up through the parent class hierarchy __unless__ you directly extend the target class or trait using the `extends` or `with` keywords. 
+
 ## Setting Default Values for Method Parameters
 
 ## Using Parameter Names When Calling a Method
