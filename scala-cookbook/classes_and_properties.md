@@ -299,6 +299,20 @@ object FooUtils {
 
 ## Providing Default Values for Constructor Parameters
 
+```scala
+scala> class Foo(val x: Int = 123) { override def toString = s"Foo($x)" }
+defined class Foo
+
+scala> new Foo
+res0: Foo = Foo(123)
+
+scala> new Foo(111)
+res1: Foo = Foo(111)
+
+scala> new Foo(x=222)
+res2: Foo = Foo(222)
+```
+
 ## Overriding Default Accessors and Mutators
 
 ## Preventing Getter and Setter Methods from Being Generated
