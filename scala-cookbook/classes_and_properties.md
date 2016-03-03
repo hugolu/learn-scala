@@ -597,8 +597,9 @@ new BarSub                                      //> res1: myTest.test57.BarSub =
 - the fields don’t actually exist in the abstract base class (or trait), the override keyword is not necessary
 
 When you define an abstract field in an abstract class or trait, the Scala compiler does not create a field in the resulting code; it only generates the methods that correspond to the val or var field.
-```shell
-$ jad Foo; cat Foo.jad
+
+```scala
+$ cat Foo.jad
 public abstract class Foo
 {
     public abstract String str();
@@ -615,7 +616,7 @@ public abstract class Foo
     private final int num = 123;
 }
 
-$ jad FooSub; cat FooSub.jad
+$ cat FooSub.jad
 public class FooSub extends Foo
 {
     public String str()
@@ -630,6 +631,7 @@ public class FooSub extends Foo
     private final String str = "FooSub";
 }
 ```
+- scala `abstract class` 使用 java `abstract class` 實作: 只針對已有的欄位產生存取方法
 
 ```scala
 $ cat Bar.jad
@@ -642,7 +644,7 @@ public interface Bar
     public abstract int num();
 }
 
-$ jad BarSub; cat BarSub.jad
+$ cat BarSub.jad
 public class BarSub
     implements Bar
 {
@@ -670,6 +672,7 @@ public class BarSub
     private final int num;
 }
 ```
+- scala `trait` 使用 java `interface` 實作: 不存放欄位，所有方法都是 `abstract`
 
 ## Generating Boilerplate Code with Case Classes
 
