@@ -474,6 +474,22 @@ foo.str                                         //> res2: Option[String] = Some(
 foo.str.getOrElse("<empty>")                    //> res3: String = hello world
 ```
 
+### None is harmless
+```scala
+scala> val none: Option[List[Int]] = None
+none: Option[List[Int]] = None
+
+scala> none.foreach(println)
+
+scala> val some: Option[List[Int]] = Some(List(1, 2, 3))
+some: Option[List[Int]] = Some(List(1, 2, 3))
+
+scala> some.foreach(println)
+List(1, 2, 3)
+```
+- If the value hasn’t been assigned, it is a `None`, and calling foreach on it does no harm, the loop is just skipped over.
+- If the value is assigned, it will be a `Some[List[Int]]`, so the foreach loop will be entered and the data printed.
+
 ## Handling Constructor Parameters When Extending a Class
 
 ## Calling a Superclass Constructor
