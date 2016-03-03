@@ -742,5 +742,37 @@ public final class Foo$ extends scala.runtime.AbstractFunction1<java.lang.Object
 - 還搞不懂 `Foo` 跟 `Foo$` 的關係...
 
 ## Defining an equals Method (Object Equality)
+- like Java, you define an `equals` method (and `hashCode` method) in your class to compare two instances
+- unlike Java, you then use the `==` method to compare the equality of two instances
+	- in Java, the `==` operator compares _reference equality_
+	- in Scala, `==` is a method you use on each class to compare the _equality_ of two instances
+
+```scala
+class Foo(val num: Int)
+
+var f1 = new Foo(1)                             //> f1  : myTest.test59.Foo = myTest.test59$$anonfun$main$1$Foo$1@5b013dc8
+var f2 = new Foo(1)                             //> f2  : myTest.test59.Foo = myTest.test59$$anonfun$main$1$Foo$1@2e7f4425
+f1 == f2                                        //> res0: Boolean = false
+```
+
+With the `equals` method defined, you can compare instances of a `Foo` with `==`
+```scala
+class Foo(val num: Int) {
+  override def equals(that: Any): Boolean = that match {
+    case that: Foo => this.num == that.num
+    case _         => false
+  }
+}
+
+var f1 = new Foo(1)                             //> f1  : myTest.test59.Foo = myTest.test59$$anonfun$main$1$Foo$1@2e7f4425
+var f2 = new Foo(1)                             //> f2  : myTest.test59.Foo = myTest.test59$$anonfun$main$1$Foo$1@2552f0fc
+f1 == f2                                        //> res0: Boolean = true
+```
+
+### Theory: an equivalence relation should have these three properties:
+- It is _reflexive_: for any instance x of type Any, x.equals(x) should return true.
+- It is _symmetric_: for any instances x and y of type Any, x.equals(y) should return
+true if and only if y.equals(x) returns true.
+- It is _transitive_: for any instances x, y, and z of type AnyRef, if x.equals(y) returns true and y.equals(z) returns true, then x.equals(z) should return true.
 
 ## Creating Inner Classes
