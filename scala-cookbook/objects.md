@@ -78,8 +78,44 @@ Hello, puppy.
 > Note that in both cases, Scala applications are launched from an object, not a class.
 
 ## Creating Singletons with object
+```scala
+object Random {
+  val rand = new scala.util.Random
+  def nextInt = rand.nextInt
+}
+
+Random.nextInt                                  //> res0: Int = 2107712364
+Random.nextInt                                  //> res1: Int = -1411768149
+Random.nextInt                                  //> res2: Int = -1776584259
+```
+- `Random` here is a singleton object
 
 ## Creating Static Members with Companion Objects
+Define nonstatic (instance) members in your class, and define members that you want to appear as “static” members in an object that has the same name as the class, and is in the same file as the class.
+- define instance members in `class`
+- define static members in `object`
+
+```scala
+class Foo {
+  val x = 200
+  def getX() = Foo.x
+}
+
+object Foo {
+  val x = 100
+  def hi() = "hello, world"
+}
+
+Foo.hi()                                  //> res0: String = hello, world
+
+val foo = new Foo                         //> foo  : myTest.test65.Foo = myTest.test65$$anonfun$main$1$Foo$2@49cc6cb4
+foo.getX()                                //> res1: Int = 100
+foo.x                                     //> res2: Int = 200
+```
+- `Foo.hi()`: static method
+- `Foo.x`: static field
+- `foo.getX()`: instance method
+- `foo.x`: instance field
 
 ## Putting Common Code in Package Objects
 
