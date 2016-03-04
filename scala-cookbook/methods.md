@@ -166,6 +166,63 @@ class Qiz extends Bar {
 - Note that when using this technique, you can’t continue to reach up through the parent class hierarchy __unless__ you directly extend the target class or trait using the `extends` or `with` keywords. 
 
 ## Setting Default Values for Method Parameters
+```scala
+class Foo {
+  def cat(x: String = "111", y: String = "222") = x + y
+}
+
+var f = new Foo                                 //> f  : myTest.test61.Foo = myTest.test61$$anonfun$main$1$Foo$1@4437a770
+f.cat()                                         //> res0: String = 111222
+f.cat("???")                                    //> res1: String = ???222
+f.cat(x = "???")                                //> res2: String = ???222
+f.cat(y = "???")                                //> res3: String = 111???
+f.cat("XXX", "YYY")                             //> res4: String = XXXYYY
+```
+
+### 反組譯
+```scala
+public class Foo
+{
+    public String cat(String x, String y)
+    {
+        return (new StringBuilder()).append(x).append(y).toString();
+    }
+
+    public String cat$default$1()
+    {
+        return "111";
+    }
+
+    public String cat$default$2()
+    {
+        return "222";
+    }
+
+    public Foo()
+    {
+    }
+}
+```
+```scala
+f().cat(f().cat$default$1(), f().cat$default$2());
+f().cat("???", f().cat$default$2());
+f().cat("???", f().cat$default$2());
+String x$1 = "???";
+String x$2 = f().cat$default$1();
+f().cat(x$2, x$1);
+f().cat("xxx", "yyy");
+```
+
+| Source | Decompiled Code |
+|--------|---------------|
+`f.cat()` | `f().cat(f().cat$default$1(), f().cat$default$2())` |
+| `f.cat("???")` | `f().cat("???", f().cat$default$2())` |
+| `f.cat(x = "???")` | `f().cat("???", f().cat$default$2())` |
+| `f.cat(y = "???")` | `f().cat(x$2, x$1)` |
+| `f.cat("XXX", "YYY")` | `f().cat("xxx", "yyy")` |
+
+- default values are static binding, e.g. `cat$default$1()` & `cat$default$2()`
+- parameters are dynamic binding, e.g. `f().cat(x$2, x$1)`
 
 ## Using Parameter Names When Calling a Method
 
