@@ -464,3 +464,34 @@ println("reach here :)")                        //> reach here :)
 ```
 
 ## Supporting a Fluent Style of Programming
+A fluent style of programming lets users of your API write code by chaining method calls together.
+
+```scala
+class Foo {
+  private var x: Int = _
+  private var y: Int = _
+  private var z: Int = _
+
+  def doX(x: Int): this.type = {
+    this.x = x
+    this
+  }
+  def doY(y: Int): this.type = {
+    this.y = y
+    this
+  }
+  def doZ(z: Int): this.type = {
+    this.z = z
+    this
+  }
+
+  override def toString = s"Foo($x, $y, $x)"
+}
+
+var f = new Foo                                 //> f  : myTest.test63.Foo = Foo(0, 0, 0)
+f.doZ(3).doY(2).doX(1)                          //> res0: myTest.test63.Foo = Foo(1, 2, 1)
+```
+
+To support this style of programming:
+- If your class *can be extended*, specify `this.type` as the return type of fluent style methods.
+- If you’re sure that your class *won’t be extended*, you can optionally return `this` from your fluent style methods.
