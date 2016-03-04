@@ -121,5 +121,31 @@ foo.x                                     //> res2: Int = 200
 
 ## Creating Object Instances Without Using the new Keyword
 
+1. Create a companion object for your class, and define an `apply` method in the companion object with the desired constructor signature.
+2. Define your class as a `case class`.
+
+```scala
+class Foo {
+	var num: Int = _
+	override def toString = s"Foo($num)"
+}
+
+object Foo {
+	var count = 0
+	def apply(num: Int): Foo = {
+		val f = new Foo
+		f.num = num
+		count += 1
+		f
+	}
+}
+
+Foo(1)                                    //> res0: myTest.test66.Foo = Foo(1)
+Foo(2)                                    //> res1: myTest.test66.Foo = Foo(2)
+Foo(3)                                    //> res2: myTest.test66.Foo = Foo(3)
+Foo.count                                 //> res3: Int = 3
+}
+```
+
 ## Implement the Factory Method in Scala with apply
 
