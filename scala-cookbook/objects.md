@@ -26,8 +26,56 @@ res2: Array[java.lang.reflect.Method] = Array(public boolean java.lang.String.eq
   - use `String.class` in java
 
 ## Determining the Class of an Object
+```scala
+scala> "hello".getClass
+res3: Class[_ <: String] = class java.lang.String
+```
 
 ## Launching an Application with an Object
+```scala
+// Hello.Scala
+
+object Hello extends App {
+  println("Hello, world")
+}
+```
+
+```shell
+$ scalac Hello.scala
+$ scala Hello
+Hello, world
+```
+
+### `App.args`
+When using this approach, any command-line arguments to your application are im‐ plicitly available through an args object, which is inherited from the App trait.
+```scala
+object Hello1 extends App {
+  println(s"Hello, ${args(0)}.")
+}
+```
+```shell
+$ scalac Hello1.scala
+$ scala Hello1 kitty
+Hello, kitty.
+```
+
+### `main` method
+To launching an application is to manually implement a main method with the correct signature in an object, in a manner similar to Java.
+
+```scala
+object Hello2 {
+  def main(args: Array[String]) {
+    println(s"Hello, ${args(0)}.")
+  }
+}
+```
+```shell
+$ scalac Hello2.scala
+$ scala Hello2 puppy
+Hello, puppy.
+```
+
+> Note that in both cases, Scala applications are launched from an object, not a class.
 
 ## Creating Singletons with object
 
