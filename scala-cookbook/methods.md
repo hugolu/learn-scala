@@ -340,7 +340,7 @@ res0: Int = 123
 ```
 - evaluate once in the definition
 
-###Call by Name
+### Call by Name
 ```scala
 scala> def bar = { println("bar..."); 123 }
 bar: Int
@@ -350,6 +350,14 @@ bar...
 res1: Int = 123
 ```
 - evaluate whenever it is called
+
+### Side Effects
+Side effect: “if, in addition to returning a value, it also modifies some state or has an observable interaction with calling functions or the outside world.”
+- Writing or printing output.
+- Reading input.
+- Mutating the state of a variable that was given as input, changing data in a data structure, or modifying the value of a field in an object.
+- Throwing an exception, or stopping the application when an error occurs.
+- Calling other functions that have side effects.
 
 ## Creating Methods That Take Variable-Argument Fields
 
