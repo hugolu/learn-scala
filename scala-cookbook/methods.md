@@ -319,6 +319,37 @@ val ans = qoo match {
 ```
 
 ## Forcing Callers to Leave Parentheses off Accessor Methods
+```scala
+class Pizza {
+  def crustSize = 12
+}
+
+val p = new Pizza                               //> p  : myTest.test62.Pizza = myTest.test62$$anonfun$main$1$Pizza$1@3d8f5954
+p.crustSize                                     //> res0: Int = 12
+p.crustSize()																		//error: Int does not take parameters
+```
+
+### Call by Value
+```scala
+scala> val foo = { println("foo..."); 123 }
+foo...
+foo: Int = 123
+
+scala> foo
+res0: Int = 123
+```
+- evaluate once in the definition
+
+###Call by Name
+```scala
+scala> def bar = { println("bar..."); 123 }
+bar: Int
+
+scala> bar
+bar...
+res1: Int = 123
+```
+- evaluate whenever it is called
 
 ## Creating Methods That Take Variable-Argument Fields
 
