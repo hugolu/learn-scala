@@ -739,7 +739,7 @@ public final class Foo$ extends scala.runtime.AbstractFunction1<java.lang.Object
   public java.lang.Object apply(java.lang.Object);
 }
 ```
-- 還搞不懂 `Foo` 跟 `Foo$` 的關係...
+- 還搞不懂 `Foo` 跟 `Foo$` 的關係... ⇒ 參考[Scala Object](https://github.com/hugolu/learn-scala/blob/master/myPractice/object.md)說明
 
 ## Defining an equals Method (Object Equality)
 - like Java, you define an `equals` method (and `hashCode` method) in your class to compare two instances
