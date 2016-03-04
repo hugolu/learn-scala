@@ -10,3 +10,7 @@
 ## Accessing POST Request Data with Scalatra
 ## Creating a Simple GET Request Client
 ## Sending JSON Data to a POST URL
+## Getting URL Headers
+## Setting URL Headers When Sending a Request
+## Creating a GET Request Web Service with the Play Framework
+## POSTing JSON Data to a Play Framework Web Service
