@@ -221,10 +221,88 @@ f().cat("xxx", "yyy");
 | `f.cat(y = "???")` | `f().cat(x$2, x$1)` |
 | `f.cat("XXX", "YYY")` | `f().cat("xxx", "yyy")` |
 
-- default values are static binding, e.g. `cat$default$1()` & `cat$default$2()`
-- parameters are dynamic binding, e.g. `f().cat(x$2, x$1)`
+- Names are static: `public String cat(String x, String y)`
+- Values are runtime: `f().cat(f().cat$default$1(), f().cat$default$2())`, `f().cat("???", f().cat$default$2())`...
 
 ## Using Parameter Names When Calling a Method
+```scala
+class Foo {
+def cat(x: String = "111", y: String = "222") = x + y
+}
+
+var f = new Foo                                 //> f  : myTest.test61.Foo = myTest.test61$$anonfun$main$1$Foo$1@2e095b5c
+f.cat(x = "???")                                //> res0: String = ???222
+f.cat(y = "???")                                //> res1: String = 111???
+```
+
+根據 ⟪Scala in Depth⟫ 3.3.2 節 Working with named and default parameters 提出的警告：*Argument names become confusing with inheritance in the mix.*
+
+```scala
+class Foo {
+  def cat(x: String = "xxx", y: String = "yyy") = x + y
+}
+
+class Bar extends Foo {
+  override def cat(y: String = "YYY", x: String = "XXX") = x + y
+}
+
+var x = new Bar                                 //> x  : myTest.test61.Bar = myTest.test61$$anonfun$main$1$Bar$1@2faa819
+x.cat(x = "???")                                //> res0: String = ???YYY
+
+val y: Foo = new Bar                            //> y  : myTest.test61.Foo = myTest.test61$$anonfun$main$1$Bar$1@6b081032
+y.cat(x = "???")                                //> res1: String = XXX???
+```
+
+```scala
+public class Foo
+{
+
+    public String cat(String x, String y)
+    {
+        return (new StringBuilder()).append(x).append(y).toString();
+    }
+
+    public String cat$default$1()
+    {
+        return "xxx";
+    }
+
+    public String cat$default$2()
+    {
+        return "yyy";
+    }
+
+    public Foo()
+    {
+    }
+}
+
+public class Bar extends Foo
+{
+
+    public String cat(String y, String x)
+    {
+        return (new StringBuilder()).append(x).append(y).toString();
+    }
+
+    public String cat$default$1()
+    {
+        return "YYY";
+    }
+
+    public String cat$default$2()
+    {
+        return "XXX";
+    }
+
+    public Bar()
+    {
+    }
+}
+```
+
+- for `Bar`, `x.cat(x = "???")` >> `x().cat(f().cat$default$1(), "???")` >> `"???YYY"`
+- for `Foo`, `y.cat(x = "???")` >> `y().cat("???", f().cat$default$2())` >> `"XXX???"`
 
 ## Defining a Method That Returns Multiple Items (Tuples)
 
