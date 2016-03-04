@@ -449,4 +449,18 @@ bar()                                           //> java.lang.Exception
 println("never reach here")
 ```
 
+```scala
+def bar() {
+  throw new Exception
+}                                               //> bar: ()Unit
+
+try {
+  bar()
+} catch {
+  case e: Exception => println("Exception happens")
+}                                               //> Exception happens
+
+println("reach here :)")                        //> reach here :)
+```
+
 ## Supporting a Fluent Style of Programming
