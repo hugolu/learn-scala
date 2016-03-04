@@ -148,4 +148,29 @@ Foo.count                                 //> res3: Int = 3
 ```
 
 ## Implement the Factory Method in Scala with apply
+```scala
+trait Something {
+  val name: String
+  override def toString = name
+}
 
+class Foo extends Something {
+  val name = "Foo"
+}
+
+class Bar extends Something {
+  val name = "Bar"
+}
+
+object Factory {
+  def apply(what: String): Option[Something] = what match {
+    case "foo" => Some(new Foo)
+    case "bar" => Some(new Bar)
+    case _     => None
+  }
+}
+
+var f = Factory("foo")                          //> f  : Option[myTest.test67.Something] = Some(Foo)
+var b = Factory("bar")                          //> b  : Option[myTest.test67.Something] = Some(Bar)
+var x = Factory("???")                          //> x  : Option[myTest.test67.Something] = None
+```
