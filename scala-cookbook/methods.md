@@ -360,7 +360,80 @@ Side effect: “if, in addition to returning a value, it also modifies some stat
 - Calling other functions that have side effects.
 
 ## Creating Methods That Take Variable-Argument Fields
+```scala
+def showStrings(strs: String*) {
+  strs.foreach(println)
+}                                               //> showStrings: (strs: String*)Unit
+
+showStrings("foo", "bar", "buz")                //> foo
+                                                //| bar
+                                                //| buz
+```
+
+By defining a varargs method that can take multiple integers, and then calling that method (a) with arguments, and (b) without arguments.
+```scala
+def show(args: Int*) {
+  println(args.getClass)
+}                                               //> show: (args: Int*)Unit
+
+show(1, 2, 3)                                   //> class scala.collection.mutable.WrappedArray$ofInt
+show()                                          //> class scala.collection.immutable.Nil$
+```
 
 ##  Declaring That a Method Can Throw an Exception
+- To declare that a method can throw an exception, either to alert callers to this fact or because your method will be called from Java code.
+- Use the @throws annotation to declare the exception(s) that can be thrown. 
+
+### with @throws annotation
+```scala
+class Foo {
+  @throws(classOf[Exception])
+  def what {
+    throw new Exception
+  }
+}
+```
+```scala
+val f = new Foo                                 //> f  : myTest.Foo = myTest.Foo@4586793e
+f.what                                          //> java.lang.Exception
+```
+
+```scala
+public class Foo
+{
+    public void what()
+        throws Exception
+    {
+        throw new Exception();
+    }
+
+    public Foo()
+    {
+    }
+}
+```
+
+### without @throws annotation
+```scala
+class Bar {
+  def what {
+    throw new Exception
+  }
+}
+```
+
+```scala
+public class Bar
+{
+    public void what()
+    {
+        throw new Exception();
+    }
+
+    public Bar()
+    {
+    }
+}
+```
 
 ## Supporting a Fluent Style of Programming
