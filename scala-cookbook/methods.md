@@ -436,4 +436,17 @@ public class Bar
 }
 ```
 
+### Warning
+Although Scala doesn’t require that exceptions are checked, if you fail to test for them, they’ll blow up your code just like they do in Java. 
+
+```scala
+def bar() {
+  throw new Exception
+}                                               //> bar: ()Unit
+
+bar()                                           //> java.lang.Exception
+
+println("never reach here")
+```
+
 ## Supporting a Fluent Style of Programming
