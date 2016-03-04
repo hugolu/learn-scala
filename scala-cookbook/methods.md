@@ -305,7 +305,18 @@ public class Bar extends Foo
 - for `Foo`, `y.cat(x = "???")` >> `y().cat("???", f().cat$default$2())` >> `"XXX???"`
 
 ## Defining a Method That Returns Multiple Items (Tuples)
+```scala
+  def retMany = (123, "xyz")                      //> retMany: => (Int, String)
+  val (num, str) = retMany                        //> num  : Int = 123
+                                                  //| str  : String = xyz
 
+  case class Qoo(num: Int, str: String)
+  val qoo = new Qoo(123, "xyz")                   //> qoo  : myTest.test61.Qoo = Qoo(123,xyz)
+  val ans = qoo match {
+    case Qoo(num, str) => s"Qoo($num, $str)"
+    case _             => "others"
+  }                                               //> ans  : String = Qoo(123, xyz)
+}
 ## Forcing Callers to Leave Parentheses off Accessor Methods
 
 ## Creating Methods That Take Variable-Argument Fields
