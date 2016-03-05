@@ -118,20 +118,26 @@ foo.x                                     //> res2: Int = 200
 - `foo.x`: instance field
 
 ## Putting Common Code in Package Objects
+To make functions, fields, and other code available at a package level
+- By convention, put your code in a file named _package.scala_ in the directory where you want your code to be available.
+- In the _package.scala_ source code, remove the word _model_ from the end of the package statement, and use that name to declare the name of the package object. 
+- Write the rest of your code as you normally would.
+- You can now access this code directly from within other classes, traits, and objects in the package `foo.bar.model`.
+
 ```shell
-$ tree
 .
 └── foo
     └── bar
-        ├── Main.scala
-        └── package.scala
+        └── model
+            ├── Main.scala
+            └── package.scala
 ```
 
-### foo/bar/package.scala
+### foo/bar/model/package.scala
 ```scala
-package foo
+package foo.bar
 
-package object bar {
+package object model {
   // field
   val FOO = "foo"
 
@@ -150,9 +156,9 @@ package object bar {
 }
 ```
 
-### foo/bar/Main.scala
+### foo/bar/model/Main.scala
 ```scala
-package foo.bar
+package foo.bar.model
 
 object Main extends App {
   show(FOO)
@@ -167,9 +173,9 @@ object Main extends App {
 
 ### compile & run
 ```shell
-$ scalac foo/bar/package.scala
-$ scalac foo/bar/Main.scala
-$ scala foo.bar.Main
+$ scalac foo/bar/model/package.scala
+$ scalac foo/bar/model/Main.scala
+$ scala foo.bar.model.Main
 foo
 hello world
 BIG
