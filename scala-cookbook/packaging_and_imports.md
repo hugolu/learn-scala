@@ -58,6 +58,39 @@ foo.bar.Bar
 ```
 
 ## Importing One or More Members
+```scala
+import java.io.File
+import java.io.IOException
+import java.io.FileNotFoundException
+```
+
+```scala
+import java.io.{File, IOException, FileNotFoundException}
+```
+- import selector clause
+
+```scala
+import java.io._
+```
+- The `_` character in this example is similar to the `*` wildcard character in Java.
+
+### Placing import statements anywhere
+```scala
+package foo
+
+import java.io.File
+import java.io.PrintWriter
+
+class Foo {
+  import javax.swing.JFrame // only visible in this class
+  // ...
+}
+
+class Bar {
+  import scala.util.Random // only visible in this class
+  // ...
+}
+```
 
 ## Renaming Members on Import
 
