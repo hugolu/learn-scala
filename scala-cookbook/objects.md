@@ -126,6 +126,57 @@ $ tree
         ├── Main.scala
         └── package.scala
 ```
+
+### foo/bar/package.scala
+```scala
+package foo
+
+package object bar {
+  // field
+  val FOO = "foo"
+
+  // method
+  def show(a: Any) = println(a)
+
+  // enumeration
+  object Size extends Enumeration {
+    type Size = Value
+    val SMALL, MEDIUM, BIG = Value
+  }
+
+  // type definition
+  type MutableMap[K, V] = scala.collection.mutable.Map[K, V]
+  val MutableMap = scala.collection.mutable.Map
+}
+```
+
+### foo/bar/Main.scala
+```scala
+package foo.bar
+
+object Main extends App {
+  show(FOO)
+  show("hello world")
+  show(Size.BIG)
+
+  val mm = MutableMap(1 -> "A")
+  mm += (2 -> "B")
+  mm.foreach(kv => println(kv._1 + ":" + kv._2))
+}
+```
+
+### compile & run
+```shell
+$ scalac foo/bar/package.scala
+$ scalac foo/bar/Main.scala
+$ scala foo.bar.Main
+foo
+hello world
+BIG
+2:B
+1:A
+```
+
 ## Creating Object Instances Without Using the new Keyword
 
 1. Create a companion object for your class, and define an `apply` method in the companion object with the desired constructor signature.
