@@ -94,6 +94,30 @@ class Bar {
 
 ## Renaming Members on Import
 
+```scala
+package foo {
+  class Foo { override def toString = "foo.Foo" }
+}
+
+package test {
+	import foo.{Foo => Bar}
+
+  object test {
+    var bar = new Bar                             //> bar  : foo.Foo = foo.Foo
+  }
+}
+```
+
+As an interesting combination of several recipes, not only can you rename classes on import, but you can even rename class members. 
+
+```scala
+scala> import System.out.{println => p}
+import System.out.{println=>p}
+
+scala> p("hello")
+hello
+```
+
 ## Hiding a Class During the Import Process
 
 ## Using Static Imports
