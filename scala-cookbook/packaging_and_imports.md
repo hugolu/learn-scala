@@ -120,6 +120,21 @@ hello
 
 ## Hiding a Class During the Import Process
 
+```scala
+package foo {
+  class Bar { override def toString = "Bar" }
+  class Buz { override def toString = "Buz" }
+}
+
+package test {
+  import foo.{ Buz => _, _ }
+
+  object test {
+    var bar = new Bar                             //> bar  : foo.Bar = Bar
+		var buz = new Buz					                    // won't compile
+  }
+}
+```
 ## Using Static Imports
 
 ## Using Import Statements Anywhere
