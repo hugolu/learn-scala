@@ -118,7 +118,14 @@ foo.x                                     //> res2: Int = 200
 - `foo.x`: instance field
 
 ## Putting Common Code in Package Objects
-
+```shell
+$ tree
+.
+└── foo
+    └── bar
+        ├── Main.scala
+        └── package.scala
+```
 ## Creating Object Instances Without Using the new Keyword
 
 1. Create a companion object for your class, and define an `apply` method in the companion object with the desired constructor signature.
