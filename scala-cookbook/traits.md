@@ -169,7 +169,51 @@ class Barr extends Bar with Qiz // illegal inheritance;  self-type myTest.test73
 ```
 
 ## Ensuring a Trait Can Only Be Added to a Type That Has a Specific Method
+Use a variation of the self-type syntax that lets you declare that any class that attempts to mix in the trait must implement the method you specify.
+In the following example, the `WarpCore` trait requires that any classes that attempt to mix it in must have an `ejectWarpCore` method:
+```scala
+trait WarpCore {
+this: { def ejectWarpCore(password: String): Boolean } =>
+}
+```
+
+```scala
+class Foo { def doX = "X" }
+class Bar { def doY = "Y" }
+
+trait Qiz { this: { def doX: String } =>
+	def doY = println(doX)
+}
+
+class Fooo extends Foo with Qiz
+class Barr extends Bar with Qiz // illegal inheritance;  self-type myTest.test73.Barr does not conform to myTest.test73.Qiz's selftype myTest.test73.Qiz with AnyRef{def doX: String}
+```
 
 ## Adding a Trait to an Object Instance
+
+```scala
+class Foo
+trait Bar
+
+new Foo with Bar                                //> res0: myTest.test74.Foo with myTest.test74.Bar myTest.test74$$anonfun$main$1$$anon$1@2e7f4425
+```
+- Rather than add a trait to an entire class, you just want to add a trait to an object instance when the object is created.
+
+### debugger
+As a more practical matter, you might mix in something like a debugger or logging trait when constructing an object to help debug that object.
+
+```scala
+trait Debugger {
+	def log(message: String) {
+    // do something with message
+	}
+}
+
+// no debugger
+val child = new Child
+
+// debugger added as the object is created
+val problemChild = new ProblemChild with Debugger
+```
 
 ## Extending a Java Interface Like a Trait
