@@ -175,5 +175,60 @@ div(7, 3)                                       //> res3: Int#1103 = 2
 ```
 
 ## Creating Partial Functions
+A partial function of type PartialFunction[A, B] is a unary function where the domain does not necessarily include all values of type A. The function isDefinedAt allows [you] to test dynamically if a value is in the domain of the function.
+
+```scala
+val divide = (x: Int) => x match {
+  case n if n != 0 => 42 / n
+}                                               //> divide  : Int#1103 => Int#1103 = <function1>
+
+divide(1)                                       //> res0: Int#1103 = 42
+divide(0)                                       //> scala.MatchError: 0 (of class java.lang.Integer)
+```
+
+```scala
+val divide = new PartialFunction[Int, Int] {
+  def apply(x: Int) = 42 / x
+  def isDefinedAt(x: Int) = x != 0
+}                                               //> divide  : PartialFunction#845[Int#1103,Int#1103] = <function1>
+
+divide.isDefinedAt(1)                           //> res0: Boolean#2525 = true
+if (divide.isDefinedAt(1)) divide(1)            //> res1: AnyVal#2333 = 42
+
+divide.isDefinedAt(0)                           //> res2: Boolean#2525 = false
+```
+
+```scala
+val divide: PartialFunction[Int, Int] = {
+  case n if n != 0 => 42 / n
+}                                               //> divide  : PartialFunction#845[Int#1103,Int#1103] = <function1>
+
+divide.isDefinedAt(1)                           //> res0: Boolean#2525 = true
+if (divide.isDefinedAt(1)) divide(1)            //> res1: AnyVal#2333 = 42
+
+divide.isDefinedAt(0)                           //> res2: Boolean#2525 = false
+```
+
+### `trait PartialFunction[-A, +B] extends (A) => B`
+- `(A) => B` can be interpreted as a function that transforms a type `A` into a resulting type `B`
+
+### `map` vs `collect`
+```scala
+val divide = new PartialFunction[Int, Int] {
+  def apply(x: Int) = 42 / x
+  def isDefinedAt(x: Int) = x != 0
+}                                               //> divide  : PartialFunction#845[Int#1103,Int#1103] = <function1>
+```
+
+```scala
+val list = List(0,2,4)                          //> list  : List#8182[Int#1103] = List(0, 2, 4)
+list.map(divide)                                //> java.lang.ArithmeticException: / by zero
+```
+
+```scala
+val list = List(0, 2, 4)                        //> list  : List#8182[Int#1103] = List(0, 2, 4)
+list.collect(divide)                            //> res0: List#8182[Int#1103] = List(21, 10)
+```
+- This is because the `collect` method is written to test the `isDefinedAt` method for each element it’s given. As a result, it doesn’t run the divide algorithm when the input value is 0 (but does run it for every other element).
 
 ## A Real-World Example
