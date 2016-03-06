@@ -97,6 +97,26 @@ def addBoth: (Int, Int) => Int = (a, b) => a + b//> addBoth: => (Int#1103, Int#1
 exec(addBoth, 1, 2)                             //> 3
 ```
 ## Using Closures
+"a closure is a block of code which meets three criteria."
+
+1. The block of code can be passed around as a value, and
+2. It can be executed on demand by anyone who has that value, at which time
+3. It can refer to variables from the context in which it was created (i.e., it is closed with respect to variable access, in the mathematical sense of the word “closed”).
+
+```scala
+def getMultiplier(n: Int): (Int) => Int = {
+  def multiplier(v: Int): Int = n * v
+  multiplier
+}                                               //> getMultiplier: (n#96954462: Int#1103)Int#1103 => Int#1103
+
+val x2 = getMultiplier(2)                       //> x2  : Int#1103 => Int#1103 = <function1>
+x2(2)                                           //> res0: Int#1103 = 4
+x2(3)                                           //> res1: Int#1103 = 6
+
+val x3 = getMultiplier(3)                       //> x3  : Int#1103 => Int#1103 = <function1>
+x3(2)                                           //> res2: Int#1103 = 6
+x3(3)                                           //> res3: Int#1103 = 9
+```
 
 ## Using Partially Applied Functions
 
