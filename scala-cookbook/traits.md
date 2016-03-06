@@ -151,6 +151,23 @@ class Qiz extends Foo with Bar
 
 ## Marking Traits So They Can Only Be Used by Subclasses of a Certain Type
 
+To make sure a trait named `MyTrait` can only be mixed into a class that is a subclass of a type named `BaseType`, begin your trait with a `this: BaseType =>` declaration, as shown here:
+```scala
+trait MyTrait { this: BaseType =>
+```
+
+```scala
+class Foo
+class Bar
+
+trait Qiz { this: Foo =>
+	def hi = println("hello")
+}
+
+class Fooo extends Foo with Qiz
+class Barr extends Bar with Qiz // illegal inheritance;  self-type myTest.test73.Barr does not conform to myTest.test73.Qiz's selftype myTest.test73.Qiz with myTest.test73.Foo
+```
+
 ## Ensuring a Trait Can Only Be Added to a Type That Has a Specific Method
 
 ## Adding a Trait to an Object Instance
