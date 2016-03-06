@@ -84,6 +84,18 @@ exec(fun)                                       //> hello123
 
 ## More Complex Functions
 
+```scala
+// 1. define the method
+def exec(callback: (Int, Int) => Int, x: Int, y: Int) {
+  println(callback(x, y))
+}                                               //> exec: (callback#95918787: (Int#1103, Int#1103) => Int#1103, x#95918788: Int#1103, y#95918789: Int#1103)Unit#2630
+
+// 2. define a function to pass in
+def addBoth: (Int, Int) => Int = (a, b) => a + b//> addBoth: => (Int#1103, Int#1103) => Int#1103
+
+// 3. pass the function and some parameters to the method
+exec(addBoth, 1, 2)                             //> 3
+```
 ## Using Closures
 
 ## Using Partially Applied Functions
