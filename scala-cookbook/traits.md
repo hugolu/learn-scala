@@ -68,11 +68,86 @@ f.bar                                           //> bar...
 
 ## Using Abstract and Concrete Fields in Traits
 
+```scala
+trait Foo {
+  def doX = "X" //concrete method
+  def doY: String //abstract method
+}
+
+class Bar extends Foo {
+  def doY = "Y"
+}
+
+var b = new Bar                                 //> b  : myTest.test72.Bar = myTest.test72$$anonfun$main$1$Bar$1@2e095b5c
+b.doX                                           //> res0: String = X
+b.doY                                           //> res1: String = Y
+```
+- Define a field with an initial value to make it concrete;
+- otherwise, don’t assign it an initial value to make it abstract. 
+
 ## Using a Trait Like an Abstract Class
+```scala
+trait Foo {
+	def doX = println("Foo's x") // concrete
+	def doY // abstract
+}
+
+class Bar extends Foo {
+	def doY = println("Bar's Y")
+}
+
+class Qiz extends Foo {
+	override def doX = println("Qiz's X")
+	def doY = println("Qiz's Y")
+}
+
+var b = new Bar                                 //> b  : myTest.test72.Bar = myTest.test72$$anonfun$main$1$Bar$1@7f81f91a
+b.doX                                           //> Foo's x
+b.doY                                           //> Bar's Y
+
+var q = new Qiz                                 //> q  : myTest.test72.Qiz = myTest.test72$$anonfun$main$1$Qiz$1@40dd550c
+q.doX                                           //> Qiz's X
+q.doY                                           //> Qiz's Y
+```
+- In the class that extends the trait, you can override those methods or use them as they are defined in the trait.
 
 ## Using Traits as Simple Mixins
 
+```scala
+abstract class Foo {
+  def doXY
+}
+
+trait Bar {
+  def doX = println("doing x")
+  def doY = println("doing y")
+}
+
+class Qiz extends Foo with Bar {
+  def doXY = {
+    doX
+    doY
+  }
+}
+
+var q = new Qiz                                 //> q  : myTest.test72.Qiz = myTest.test72$$anonfun$main$1$Qiz$1@1a7811df
+q.doXY                                          //> doing x
+                                                //| doing y
+```
+- To implement a simple mixin, define the methods you want in your trait, then add the trait to your class using extends or with.
+
 ## Limiting Which Classes Can Use a Trait by Inheritance
+
+Use the following syntax to declare a trait named TraitName, where TraitName can only be mixed into classes that extend a type named SuperThing, where SuperThing may be a trait, class, or abstract class.
+```scala
+trait [TraitName] extends [SuperThing]
+```
+
+```scala
+class Foo
+trait Bar extends Foo
+class Qiz extends Foo with Bar
+```
 
 ## Marking Traits So They Can Only Be Used by Subclasses of a Certain Type
 
