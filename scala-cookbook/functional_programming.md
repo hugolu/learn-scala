@@ -118,9 +118,61 @@ x3(2)                                           //> res2: Int#1103 = 6
 x3(3)                                           //> res3: Int#1103 = 9
 ```
 
+> a closure begins with a function and a variable defined in the same scope, which are then separated from each other. When the function is executed at some other point in space (scope) and time, it is magically still aware of the variable it referenced in their earlier time together, and even picks up any changes to that variable.
+
 ## Using Partially Applied Functions
 
+```scala
+val cat = (s1: String, s2: String) => s1 + s2   //> cat  : (String#98388767, String#98388767) => String#238 = <function2>
+cat("Foo", "Bar")                               //> res0: String#238 = FooBar
+cat("Foo", "Buz")                               //> res1: String#238 = FooBuz
+
+val catFooWith = cat("Foo", _: String)          //> catFooWith  : String#98388767 => String#238 = <function1>
+catFooWith("Bar")                               //> res2: String#238 = FooBar
+catFooWith("Buz")                               //> res3: String#238 = FooBuz
+```
+- Because you haven’t provided a value for the 2nd parameter of `cat("Foo", _: String)`, the resulting variable `catFooWith` is a partially applied function.
+- type of `catWithFoo` is `funtion1`, which takes a `String` and returns a `String`
+
+In functional programming languages, when you call a function that has parameters, you are said to be applying the function to the parameters. 
+- When all the parameters are passed to the function, you have **fully** applied the function to all of the parameters.
+- But when you give only a subset of the parameters to the function, the result of the expression is a **partially** applied function.
+
+This technique has many advantages, including the ability to make life easier for the consumers of a library you create. 
+
 ## Creating a Function That Returns a Function
+
+```scala
+def cat1(s1: String, s2: String) = s"$s1, $s2"    //> cat1: (s1#100832098: String#98388767, s2#100832099: String#98388767)String#98388767
+cat1("hello", "world")                            //> res0: String#98388767 = hello, world
+val cat1x = cat1("hello", _: String)              //> cat1x  : String#98388767 => String#98388767 = <function1>
+cat1x("kitty")                                    //> res1: String#98388767 = hello, kitty
+
+val cat2 = (s1: String, s2: String) => s"$s1, $s2"//> cat2  : (String#98388767, String#98388767) => String#98388767 = <function2>
+cat2("hello", "world")                            //> res2: String#98388767 = hello, world
+val cat2x = cat2("hello", _: String)              //> cat2x  : String#98388767 => String#98388767 = <function1>
+cat2x("puppy")                                    //> res3: String#98388767 = hello, puppy
+
+def cat3(s1: String) = (s2: String) => s"$s1, $s2"//> cat3: (s1#100832176: String#98388767)String#98388767 => String#98388767
+val cat3x = cat3("hello")                         //> cat3x  : String#98388767 => String#98388767 = <function1>
+cat3x("scala")                                    //> res4: String#98388767 = hello, scala
+```
+
+To return a function (algorithm) from a function or method.
+```scala
+def calculate(f: (Int, Int) => Int) = (a: Int, b: Int) => f(a, b)
+                                                //> calculate: (f#101707466: (Int#1103, Int#1103) => Int#1103)(Int#1103, Int#1103) => Int#1103
+
+val add = calculate(_ + _)                      //> add  : (Int#1103, Int#1103) => Int#1103 = <function2>
+val sub = calculate(_ - _)                      //> sub  : (Int#1103, Int#1103) => Int#1103 = <function2>
+val mul = calculate(_ * _)                      //> mul  : (Int#1103, Int#1103) => Int#1103 = <function2>
+val div = calculate(_ / _)                      //> div  : (Int#1103, Int#1103) => Int#1103 = <function2>
+
+add(7, 3)                                       //> res0: Int#1103 = 10
+sub(7, 3)                                       //> res1: Int#1103 = 4
+mul(7, 3)                                       //> res2: Int#1103 = 21
+div(7, 3)                                       //> res3: Int#1103 = 2
+```
 
 ## Creating Partial Functions
 
