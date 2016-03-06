@@ -231,4 +231,28 @@ list.collect(divide)                            //> res0: List#8182[Int#1103] = 
 ```
 - This is because the `collect` method is written to test the `isDefinedAt` method for each element it’s given. As a result, it doesn’t run the divide algorithm when the input value is 0 (but does run it for every other element).
 
+```scala
+scala> val isEven: PartialFunction[Int, String] = {
+     | case n if n % 2 == 0 => s"$n is even"
+     | }
+isEven: PartialFunction[Int,String] = <function1>
+
+scala> val isOdd: PartialFunction[Int, String] = {
+     | case n if n % 2 != 0 => s"$n is odd"
+     | }
+isOdd: PartialFunction[Int,String] = <function1>
+
+scala> val samples = 1 to 5
+samples: scala.collection.immutable.Range.Inclusive = Range(1, 2, 3, 4, 5)
+
+scala> samples.collect(isEven)
+res0: scala.collection.immutable.IndexedSeq[String] = Vector(2 is even, 4 is even)
+
+scala> samples.collect(isOdd)
+res1: scala.collection.immutable.IndexedSeq[String] = Vector(1 is odd, 3 is odd, 5 is odd)
+
+scala> samples.map(isEven orElse isOdd)
+res3: scala.collection.immutable.IndexedSeq[String] = Vector(1 is odd, 2 is even, 3 is odd, 4 is even, 5 is odd)
+```
+
 ## A Real-World Example
