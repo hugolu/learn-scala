@@ -217,3 +217,50 @@ val problemChild = new ProblemChild with Debugger
 ```
 
 ## Extending a Java Interface Like a Trait
+
+### Animal.java
+```java
+public interface Animal {
+  public void speak();
+}
+```
+
+### Wagging.java
+```java
+public interface Wagging {
+  public void wag();
+}
+```
+
+### Running.java
+```java
+public interface Running {
+  public void run();
+}
+```
+
+### Dog.scala
+```scala
+class Dog extends Animal with Wagging with Running {
+  def speak = println("Woof")
+  def wag = println("wagging")
+  def run = println("running")
+}
+
+object Dog extends App {
+  val dog = new Dog
+  dog.speak
+  dog.wag
+  dog.run
+}
+```
+
+### compile & run
+```shell
+$ javac *.java
+$ scalac Dog.scala
+$ scala Dog
+Woof
+wagging
+running
+```
