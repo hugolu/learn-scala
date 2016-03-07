@@ -21,7 +21,7 @@ At a high level, Scala’s collection classes begin with the `Traversable` and `
       - `IndexedSeq`
       - `LinearSeq`
 
-`Seq`
+`Seq`: A sequence is a linear collection of elements and may be indexed or linear (a linked list).
 - `IndexedSeq`
   - `Array`
   - `StringBuilder`
@@ -39,7 +39,7 @@ At a high level, Scala’s collection classes begin with the `Traversable` and `
   - `MutableList`
   - `Stream`
 
-`Map`
+`Map`: A map contains a collection of key/value pairs, like a Java Map, Ruby Hash, or Python dictionary.
   - `HashMap`
   - `WeakHashMap`
   - `SortedMap`
@@ -47,7 +47,7 @@ At a high level, Scala’s collection classes begin with the `Traversable` and `
   - `LinkedHashMap`
   - `ListMap`
 
-`Set`
+`Set`: A set is a collection that contains no duplicate elements.
   - `BitSet`
   - `HashSet`
   - `ListSet`
@@ -55,6 +55,32 @@ At a high level, Scala’s collection classes begin with the `Traversable` and `
     - `TreeSet`
 
 ## Choosing a Collection Class
+
+### Choosing a sequence
+- Should the sequence be indexed (like an array), allowing rapid access to any ele‐ ments, or should it be implemented as a linked list?
+- Do you want a mutable or immutable collection?
+
+|   | Immutable | Mutable |
+|---|-----------|---------|
+| Indexed | Vector | ArrayBuffer |
+| Linear (Linked lists) | List | ListBuffer |
+
+Traits commonly used in library APIs
+- `IndexedSeq` Implies that random access of elements is efficient.
+- `LinearSeq` Implies that linear access to elements is efficient.
+- `Seq` Used when it isn’t important to indicate that the sequence is indexed or linear in nature.
+
+### Choosing a map
+Choosing a map class is easier than choosing a sequence. There are the base mutable and immutable map classes, a SortedMap trait to keep elements in sorted order by key, a LinkedHashMap to store elements in insertion order, and a few other maps for special purposes.
+
+### Choosing a set
+Choosing a set is similar to choosing a map. There are base mutable and immutable set classes, a SortedSet to return elements in sorted order by key, a LinkedHashSet to store elements in insertion order, and a few other sets for special purposes.
+
+### Types that act like collections
+- `Enumeration` - A finite collection of constant values (i.e., the days in a week or months in a year).
+- `Iterator` - An iterator isn’t a collection; instead, it gives you a way to access the elements in a collection. It does, however, define many of the methods you’ll see in a normal collection class, including foreach, map, flatMap, etc. You can also convert an iterator to a collection when needed.
+- `Option` - Acts as a collection that contains zero or one elements. The Some class and None object extend Option. Some is a container for one element, and None holds zero elements.
+- `Tuple` - Supports a heterogeneous collection of elements. There is no one “Tuple” class; tuples are implemented as case classes ranging from Tuple1 to Tuple22, which support 1 to 22 elements.
 
 ## Choosing a Collection Method to Solve a Problem
 
