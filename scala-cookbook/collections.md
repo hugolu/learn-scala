@@ -7,6 +7,53 @@ There are a few important concepts to know when working with the methods of the 
 
 ## Understanding the Collections Hierarchy
 
+At a high level, Scala’s collection classes begin with the `Traversable` and `Iterable` traits, and extend into the three main categories of sequences (Seq), sets (Set), and maps (Map). Sequences further branch off into indexed and linear sequences.
+- `Traversable` trait lets you traverse an entire collection
+  - it implements the behavior common to all collections in terms of a foreach method
+- `Iterable` trait defines an iterator, which lets you loop through a collection’s elements one at a time
+  - when using an iterator, the collection can be traversed only once, because each element is consumed during the iteration process.
+
+`Traversable`
+  - `Iterable`
+    - `Seq`
+    - `Set`
+    - `Map`
+      - `IndexedSeq`
+      - `LinearSeq`
+
+`Seq`
+- `IndexedSeq`
+  - `Array`
+  - `StringBuilder`
+  - `Range`
+  - `String`
+  - `Vector`
+- `Buffer`
+  - `ArrayBuffer`
+  - `ListBuffer`
+- `LinearSeq`
+  - `List`
+  - `Queue`
+  - `LinkedList`
+  - `Stack`
+  - `MutableList`
+  - `Stream`
+
+`Map`
+  - `HashMap`
+  - `WeakHashMap`
+  - `SortedMap`
+  - `TreeMap`
+  - `LinkedHashMap`
+  - `ListMap`
+
+`Set`
+  - `BitSet`
+  - `HashSet`
+  - `ListSet`
+  - `SortedSet`
+    - `TreeSet`
+
 ## Choosing a Collection Class
 
 ## Choosing a Collection Method to Solve a Problem
