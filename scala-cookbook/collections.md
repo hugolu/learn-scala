@@ -1,5 +1,10 @@
 # Collections
 
+There are a few important concepts to know when working with the methods of the Scala collection classes:
+- A _predicate_ is simply a method, function, or anonymous function that takes one or more parameters and returns a Boolean value
+- anonymous function
+- implied loops
+
 ## Understanding the Collections Hierarchy
 
 ## Choosing a Collection Class
