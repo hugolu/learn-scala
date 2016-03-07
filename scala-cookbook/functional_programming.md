@@ -256,3 +256,49 @@ res3: scala.collection.immutable.IndexedSeq[String] = Vector(1 is odd, 2 is even
 ```
 
 ## A Real-World Example
+[Newton's method](https://en.wikipedia.org/wiki/Newton%27s_method): x<sub>n+1</sub> = x<sub>n</sub> - f(x<sub>n</sub>) / f'(x<sub>n</sub>), abs(x<sub>n+1</sub> - x<sub>n</sub>) < tolerance
+
+```scala
+def driver {
+  // the f(x) and f'(x) functions
+  val fx = (x: Double) => 3 * x + math.sin(x) - math.pow(math.E, x)
+  val fxPrime = (x: Double) => 3 + math.cos(x) - math.pow(Math.E, x)
+
+  val initialGuess = 0.0
+  val tolerance = 0.00005
+
+  // pass f(x) and f'(x) to the Newton's Method function, along with
+  // the initial guess and tolerance
+  val answer = newtonsMethod(fx, fxPrime, initialGuess, tolerance)
+
+  println(answer)
+}                                               //> driver: => Unit#2630
+
+def newtonsMethod(fx: Double => Double,
+                  fxPrime: Double => Double,
+                  x: Double,
+                  tolerance: Double): Double = {
+  var x1 = x
+  var xNext = newtonsMethodHelper(fx, fxPrime, x1)
+  while (math.abs(xNext - x1) > tolerance) {
+    x1 = xNext
+    println(xNext) // debugging (intermediate values)
+    xNext = newtonsMethodHelper(fx, fxPrime, x1)
+  }
+  xNext
+}                                               //> newtonsMethod: (fx#106318925: Double#1619 => Double#1619, fxPrime#106318926:
+                                                //|  Double#1619 => Double#1619, x#106318927: Double#1619, tolerance#106318928: 
+                                                //| Double#1619)Double#1619
+
+def newtonsMethodHelper(fx: Double => Double,
+                        fxPrime: Double => Double,
+                        x: Double): Double = {
+  x - fx(x) / fxPrime(x)
+}                                               //> newtonsMethodHelper: (fx#106318933: Double#1619 => Double#1619, fxPrime#106
+                                                //| 318934: Double#1619 => Double#1619, x#106318935: Double#1619)Double#1619
+
+driver                                          //> 0.3333333333333333
+                                                //| 0.3601707135776337
+                                                //| 0.36042168047601975
+                                                //| 0.3604217029603242
+```
