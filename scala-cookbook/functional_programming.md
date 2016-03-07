@@ -302,3 +302,37 @@ driver                                          //> 0.3333333333333333
                                                 //| 0.36042168047601975
                                                 //| 0.3604217029603242
 ```
+
+enhance `newtonsMethod` with tail-recursion
+```
+def driver {
+  // the f(x) and f'(x) functions
+  val fx = (x: Double) => 3 * x + math.sin(x) - math.pow(math.E, x)
+  val fxPrime = (x: Double) => 3 + math.cos(x) - math.pow(Math.E, x)
+
+  val initialGuess = 0.0
+  val tolerance = 0.00005
+
+  // pass f(x) and f'(x) to the Newton's Method function, along with
+  // the initial guess and tolerance
+  val answer = newtonsMethod(fx, fxPrime, initialGuess, tolerance)
+
+  println(answer)
+}                                               //> driver: => Unit#2630
+
+def newtonsMethod(fx: Double => Double,
+                  fxPrime: Double => Double,
+                  x: Double,
+                  tolerance: Double): Double = {
+  def loop(fx: Double => Double, fxPrime: Double => Double, x: Double): Double = {
+    val xNext = x - fx(x) / fxPrime(x)
+    if (math.abs(xNext - x) < tolerance) xNext else loop(fx, fxPrime, xNext)
+  }
+
+  loop(fx, fxPrime, x)
+}                                               //> newtonsMethod: (fx#107995294: Double#1619 => Double#1619, fxPrime#107995295:
+                                                //|  Double#1619 => Double#1619, x#107995296: Double#1619, tolerance#107995297: 
+                                                //| Double#1619)Double#1619
+
+driver                                          //> 0.3604217029603242
+```
