@@ -46,6 +46,52 @@ fruits += "coconut"                             //> res2: myTest.test86.fruits.t
 
 ## Adding Elements to a List
 
+- A List is immutable, so you can’t actually add elements to it.
+- To work with a List, the general approach is to prepend items to the list while assigning the results to a new List.
+
+```scala
+scala> val x = 3 :: Nil
+x: List[Int] = List(3)
+
+scala> val y = 2 :: x
+y: List[Int] = List(2, 3)
+
+scala> val z = 1 :: y
+z: List[Int] = List(1, 2, 3)
+```
+
+```scala
+scala> var x = List[Int]()
+x: List[Int] = List()
+
+scala> x = 3 :: x
+x: List[Int] = List(3)
+
+scala> x = 2 :: x
+x: List[Int] = List(2, 3)
+
+scala> x = 1 :: x
+x: List[Int] = List(1, 2, 3)
+```
+
+```scala
+scala> var x = List(3)
+x: List[Int] = List(3)
+
+scala> x = 2 +: x
+x: List[Int] = List(2, 3)
+
+scala> x = 1 +: x
+x: List[Int] = List(1, 2, 3)
+
+scala> x.head
+res0: Int = 1
+
+scala> x = x.tail
+x: List[Int] = List(2, 3)
+```
+- List 具有 FILO 的特性
+
 ## Deleting Elements from a List (or ListBuffer)
 
 ## Merging (Concatenating) Lists
