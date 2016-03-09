@@ -137,6 +137,23 @@ res61: x.type = ListBuffer(2)
 
 ## Merging (Concatenating) Lists
 
+```scala
+scala> val a = List(1,2,3)
+a: List[Int] = List(1, 2, 3)
+
+scala> val b = List(4,5,6)
+b: List[Int] = List(4, 5, 6)
+
+scala> val c = a ++ b
+c: List[Int] = List(1, 2, 3, 4, 5, 6)
+
+scala> val c = a ::: b
+c: List[Int] = List(1, 2, 3, 4, 5, 6)
+
+scala> val c = List.concat(a, b)
+c: List[Int] = List(1, 2, 3, 4, 5, 6)
+```
+
 ## Using Stream, a Lazy Version of a List
 
 ## Different Ways to Create and Update an Array
