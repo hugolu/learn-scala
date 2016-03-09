@@ -32,6 +32,18 @@ collection.mutable.ListBuffer(1, 2, 3).toList   //> res8: List[Int] = List(1, 2,
 
 ## Creating a Mutable List
 
+Use a `ListBuffer`, and convert the `ListBuffer` to a `List` when needed.
+
+```scala
+val fruits = new scala.collection.mutable.ListBuffer[String]()
+                                                //> fruits  : scala.collection.mutable.ListBuffer[String] = ListBuffer()
+fruits += "apple"                               //> res0: myTest.test86.fruits.type = ListBuffer(apple)
+fruits += "banana"                              //> res1: myTest.test86.fruits.type = ListBuffer(apple, banana)
+fruits += "coconut"                             //> res2: myTest.test86.fruits.type = ListBuffer(apple, banana, coconut)
+```
+- A `ListBuffer` is a Buffer implementation backed by a list. It provides constant time prepend and append. Most other operations are **linear**.
+- Don’t use `ListBuffer` if you want to access elements arbitrarily, such as accessing items by index (like list(10000)); use `ArrayBuffer` instead.
+
 ## Adding Elements to a List
 
 ## Deleting Elements from a List (or ListBuffer)
