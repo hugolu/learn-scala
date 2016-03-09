@@ -94,6 +94,47 @@ x: List[Int] = List(2, 3)
 
 ## Deleting Elements from a List (or ListBuffer)
 
+### List
+A `List` is immutable, so you can’t delete elements from it, but you can filter out the elements you don’t want while you assign the result to a new variable.
+
+```scala
+scala> val x = List.range(0,10)
+x: List[Int] = List(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+scala> val y = x.filter(_ % 2 == 0)
+y: List[Int] = List(0, 2, 4, 6, 8)
+```
+
+### ListBuffer
+If you’re going to be modifying a list frequently, it may be better to use a `ListBuffer` instead of a List.
+
+```scala
+scala> val x = scala.collection.mutable.ListBuffer((1 to 10): _*)
+x: scala.collection.mutable.ListBuffer[Int] = ListBuffer(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+
+scala> x -= 5
+res55: x.type = ListBuffer(1, 2, 3, 4, 6, 7, 8, 9, 10)
+
+scala> x -= (3, 4)
+res56: x.type = ListBuffer(1, 2, 6, 7, 8, 9, 10)
+
+scala> x.remove(0)
+res57: Int = 1
+
+scala> x
+res58: scala.collection.mutable.ListBuffer[Int] = ListBuffer(2, 6, 7, 8, 9, 10)
+
+scala> x.remove(1,3)
+
+scala> x
+res60: scala.collection.mutable.ListBuffer[Int] = ListBuffer(2, 9, 10)
+
+scala> x --= Seq(9, 10)
+res61: x.type = ListBuffer(2)
+```
+- use `-` to delete one element at a time
+- use `--` to delete two or more elements at once
+
 ## Merging (Concatenating) Lists
 
 ## Using Stream, a Lazy Version of a List
