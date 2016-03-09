@@ -156,6 +156,40 @@ c: List[Int] = List(1, 2, 3, 4, 5, 6)
 
 ## Using Stream, a Lazy Version of a List
 
+- A `Stream` is like a `List`, except that its elements are computed lazily, in a manner similar to how a view creates a lazy version of a collection.
+  - Like a `view`, only the elements that are accessed are computed.
+  - Other than this behavior, a Stream behaves similar to a `List`.
+
+```scala
+scala> val stream = 1 #:: 2 #:: 3 #:: Stream.empty
+stream: scala.collection.immutable.Stream[Int] = Stream(1, ?)
+
+scala> val stream = (1 to 1000000).toStream
+stream: scala.collection.immutable.Stream[Int] = Stream(1, ?)
+```
+- a `List` can be constructed with `::`
+- a `Stream` can be constructed with `#::`
+- the stream begins with the number `1` but uses a `?` to denote the end of the stream. This is because the end of the stream hasn’t been evaluated yet.
+
+```scala
+scala> stream.head
+res64: Int = 1
+
+scala> stream.tail
+res65: scala.collection.immutable.Stream[Int] = Stream(2, ?)
+
+scala> stream
+res66: scala.collection.immutable.Stream[Int] = Stream(1, 2, ?)
+```
+- The `?` symbol is the way a lazy collection shows that the end of the collection hasn’t been evaluated yet.
+
+Calls to the following **strict** methods are evaluated immediately and can easily cause java.lang.OutOfMemoryError errors:
+```scala
+stream.max
+stream.size
+stream.sum
+```
+
 ## Different Ways to Create and Update an Array
 
 ## Creating an Array Whose Size Can Change (ArrayBuffer)
