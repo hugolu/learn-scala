@@ -108,8 +108,7 @@ class Cons[T](val head: T, val tail: List[T]) extends List[T] {
 }
 
 object List {
-  def apply2[T](args: Seq[T]): List[T] = if (args.size == 0) Nil else new Cons(args.head, apply2(args.tail))
-  def apply[T](args: T*): List[T] = apply2(args)
+  def apply[T](args: T*): List[T] = if (args.size == 0) Nil else new Cons(args.head, apply(args.tail: _*))
 }
 
 val list = List(1, 2, 3, 4)                     //> list  : myTest.test22.List[Int] = 1->2->3->4->Nil
