@@ -337,8 +337,33 @@ a(0)(2)=c
 a(1)(0)=d
 a(1)(1)=e
 ```
+- Creating an array whose elements are arrays gives you more control of the process, and lets you create “ragged” arrays (where each contained array may be a different size).
 
 ## Creating Maps
+
+To use an immutable map, you don’t need an import statement, just create a `Map`:
+
+```scala
+val states = Map("AL" -> "Alabama", "AK" -> "Alaska")
+                                                //> states  : scala.collection.immutable.Map[String,String] = Map(AL -> Alabama, AK -> Alaska)
+
+val key = "AL"                                  //> key  : String = AL
+val value = states(key)                         //> value  : String = Alabama
+```
+
+To create a mutable map, either use an import statement to bring it into scope, or specify the full path to the `scala.collection.mutable.Map` class when you create an instance:
+
+```scala
+var states = collection.mutable.Map("AL" -> "Alabama")
+                                                //> states  : scala.collection.mutable.Map[String,String] = Map(AL -> Alabama)
+states += ("AK" -> "Alaska")                    //> res0: scala.collection.mutable.Map[String,String] = Map(AL -> Alabama, AK -> Alaska)
+```
+
+```scala
+var states = collection.mutable.Map[String, String]()
+                                                //> states  : scala.collection.mutable.Map[String,String] = Map()
+states += ("AL" -> "Alabama")                   //> res0: scala.collection.mutable.Map[String,String] = Map(AL -> Alabama)
+```
 
 ## Choosing a Map Implementation
 
