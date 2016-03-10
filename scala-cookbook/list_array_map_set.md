@@ -274,6 +274,39 @@ nums                                            //> res7: scala.collection.mutab
 ```
 
 ## Sorting Arrays
+If you’re working with an `Array` that holds elements that have an implicit `Ordering`, you can sort the Array in place using the `scala.util.Sorting.quickSort` method
+
+```scala
+val fruits = Array("cherry", "apple", "banana") //> fruits  : Array[String] = Array(cherry, apple, banana)
+scala.util.Sorting.quickSort(fruits)
+fruits                                          //> res0: Array[String] = Array(apple, banana, cherry)
+```
+
+If the type an `Array` is holding doesn’t have an implicit `Ordering`, you can either modify it to mix in the `Ordered` trait (which gives it an implicit Ordering), or sort it using the `sorted`, `sortWith`, or `sortBy` methods.
+
+```scala
+case class Foo(val n: Int) extends Ordered[Foo] {
+  def compare(that: Foo) = this.n - that.n
+}
+
+val foos = Array(Foo(1), Foo(3), Foo(2))        //> foos  : Array[myTest.test86.Foo] = Array(Foo(1), Foo(3), Foo(2))
+scala.util.Sorting.quickSort(foos)
+foos                                            //> res0: Array[myTest.test86.Foo] = Array(Foo(1), Foo(2), Foo(3))
+```
+
+```scala
+val nums = Array(1,3,2)                         //> nums  : Array[Int] = Array(1, 3, 2)
+nums.sorted                                     //> res1: Array[Int] = Array(1, 2, 3)
+nums                                            //> res2: Array[Int] = Array(1, 3, 2)
+```
+
+```scala
+case class Bar(n: Int)
+val bars = Array(Bar(1), Bar(3), Bar(2))        //> bars  : Array[myTest.test86.Bar] = Array(Bar(1), Bar(3), Bar(2))
+
+bars.sortWith((x, y) => x.n < y.n)              //> res1: Array[myTest.test86.Bar] = Array(Bar(1), Bar(2), Bar(3))
+bars.sortBy(x => x.n)                           //> res2: Array[myTest.test86.Bar] = Array(Bar(1), Bar(2), Bar(3))
+```
 
 ## Creating Multidimensional Arrays
 
