@@ -192,6 +192,29 @@ stream.sum
 
 ## Different Ways to Create and Update an Array
 
+```scala
+Array(1, 2, 3)                                  //> res0: Array[Int] = Array(1, 2, 3)
+Array(1, 2.0, 3L)                               //> res1: Array[Double] = Array(1.0, 2.0, 3.0)
+Array[Number](1, 2.0, 3L)                       //> res2: Array[Number] = Array(1, 2.0, 3)
+
+val fruits = new Array[String](3)               //> fruits  : Array[String] = Array(null, null, null)
+fruits(0) = "apple"
+fruits(1) = "banana"
+fruits(2) = "coconut"
+fruits                                          //> res3: Array[String] = Array(apple, banana, coconut)
+
+var array: Array[String] = null                 //> array  : Array[String] = null
+array = fruits
+
+Array.range(1, 10)                              //> res4: Array[Int] = Array(1, 2, 3, 4, 5, 6, 7, 8, 9)
+Array.range(1, 10, 2)                           //> res5: Array[Int] = Array(1, 3, 5, 7, 9)
+Array.fill(3)("foo")                            //> res6: Array[String] = Array(foo, foo, foo)
+Array.tabulate(3)(n => n * n)                   //> res7: Array[Int] = Array(0, 1, 4)
+Seq(1, 2, 3).toArray                            //> res8: Array[Int] = Array(1, 2, 3)
+"hello".toArray                                 //> res9: Array[Char] = Array(h, e, l, l, o)
+```
+- The `Array` is  **mutable** in that its *elements* can be changed, but it’s **immutable** in that its *size* cannot be changed.
+
 ## Creating an Array Whose Size Can Change (ArrayBuffer)
 
 ## Deleting Array and ArrayBuffer Elements
