@@ -468,6 +468,34 @@ map                                             //> res8: scala.collection.mutab
 
 ## Adding, Updating, and Removing Elements with Immutable Maps
 
+Use the correct operator for each purpose, remembering to assign the results to a new map.
+
+```scala
+var map = Map(1 -> "one")                       //> map  : scala.collection.immutable.Map[Int,String] = Map(1 -> one)
+
+map = map + (2 -> "two")
+map                                             //> res0: scala.collection.immutable.Map[Int,String] = Map(1 -> one, 2 -> two)
+
+map = map + (3 -> "three", 4 -> "four")
+map                                             //> res1: scala.collection.immutable.Map[Int,String] = Map(1 -> one, 2 -> two, 3 -> three, 4 -> four)
+
+map = map ++ List((5 -> "five"), (6 -> "six"))
+map                                             //> res2: scala.collection.immutable.Map[Int,String] = Map(5 -> five, 1 -> one, 6 -> six, 2 -> two, 3 -> three, 4 -> four)
+
+map = map - 2
+map                                             //> res3: scala.collection.immutable.Map[Int,String] = Map(5 -> five, 1 -> one, 6 -> six, 3 -> three, 4 -> four)
+
+map = map - (3, 4)
+map                                             //> res4: scala.collection.immutable.Map[Int,String] = Map(5 -> five, 1 -> one, 6 -> six)
+
+map = map -- List(5, 6)
+map                                             //> res5: scala.collection.immutable.Map[Int,String] = Map(1 -> one)
+```
+
+```scala
+map(1) = "ONE"                                  //error: value update is not a member of scala.collection.immutable.Map[Int,String]
+```
+
 ## Accessing Map Values
 
 ## Traversing a Map
