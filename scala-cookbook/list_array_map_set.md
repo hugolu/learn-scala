@@ -497,8 +497,93 @@ map(1) = "ONE"                                  //error: value update is not a m
 ```
 
 ## Accessing Map Values
+- Access the value associated with a key
+- If the map doesn’t contain the requested key, a java.util.NoSuchElementException exception is thrown. To avoid this problem is to create the map with the `withDefaultValue` method.
+- To use the `getOrElse` method when attempting to find a value.
+- To use the `get` method, which returns an Option
+
+```scala
+scala> val map = Map(1 -> "one", 2 -> "two", 3 -> "three")
+map: scala.collection.immutable.Map[Int,String] = Map(1 -> one, 2 -> two, 3 -> three)
+
+scala> map(1)
+res0: String = one
+
+scala> map(4)
+java.util.NoSuchElementException: key not found: 4
+```
+
+```scala
+scala> val map = Map(1 -> "one", 2 -> "two", 3 -> "three").withDefaultValue("???")
+map: scala.collection.immutable.Map[Int,String] = Map(1 -> one, 2 -> two, 3 -> three)
+
+scala> map(4)
+res2: String = ???
+```
+
+```scala
+scala> val map = Map(1 -> "one", 2 -> "two", 3 -> "three")
+map: scala.collection.immutable.Map[Int,String] = Map(1 -> one, 2 -> two, 3 -> three)
+
+scala> map.getOrElse(1, "???")
+res5: String = one
+
+scala> map.getOrElse(4, "???")
+res6: String = ???
+```
+
+```scala
+scala> val map = Map(1 -> "one", 2 -> "two", 3 -> "three")
+map: scala.collection.immutable.Map[Int,String] = Map(1 -> one, 2 -> two, 3 -> three)
+
+scala> map.get(1)
+res7: Option[String] = Some(one)
+
+scala> map.get(4)
+res8: Option[String] = None
+```
 
 ## Traversing a Map
+
+```scala
+val nums = Map(1 -> "A", 2 -> "B", 3 -> "C")    //> nums  : scala.collection.immutable.Map[Int,String] = Map(1 -> A, 2 -> B, 3 -> C)
+
+for ((k, v) <- nums) println(s"$k->$v")         //> 1->A
+                                                //| 2->B
+                                                //| 3->C
+
+nums.foreach(x => println(s"${x._1}->${x._2}")) //> 1->A
+                                                //| 2->B
+                                                //| 3->C
+
+nums.foreach {
+  case (k, v) => println(s"$k->$v")
+}                                               //> 1->A
+                                                //| 2->B
+                                                //| 3->C
+
+nums.keys.foreach(println)                      //> 1
+                                                //| 2
+                                                //| 3
+
+nums.values.foreach(println)                    //> A
+                                                //| B
+                                                //| C
+```
+
+```scala
+cala> val nums = Map(1 -> "a", 2 -> "b", 3 -> "c")
+nums: scala.collection.immutable.Map[Int,String] = Map(1 -> a, 2 -> b, 3 -> c)
+
+scala> nums.map(x => (x._1 -> x._2.toUpperCase))
+res0: scala.collection.immutable.Map[Int,String] = Map(1 -> A, 2 -> B, 3 -> C)
+
+scala> nums.mapValues(_.toUpperCase)
+res1: scala.collection.immutable.Map[Int,String] = Map(1 -> A, 2 -> B, 3 -> C)
+
+scala> nums.transform((k,v) => v.toUpperCase)
+res2: scala.collection.immutable.Map[Int,String] = Map(1 -> A, 2 -> B, 3 -> C)
+```
 
 ## Getting the Keys or Values from a Map
 
