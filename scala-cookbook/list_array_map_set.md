@@ -587,7 +587,68 @@ res2: scala.collection.immutable.Map[Int,String] = Map(1 -> A, 2 -> B, 3 -> C)
 
 ## Getting the Keys or Values from a Map
 
+```scala
+scala> val nums = Map(1 -> "a", 2 -> "b", 3 -> "c")
+nums: scala.collection.immutable.Map[Int,String] = Map(1 -> a, 2 -> b, 3 -> c)
+
+scala> nums.keySet
+res0: scala.collection.immutable.Set[Int] = Set(1, 2, 3)
+
+scala> nums.keys
+res1: Iterable[Int] = Set(1, 2, 3)
+
+scala> nums.keys.iterator
+res2: Iterator[Int] = non-empty iterator
+
+scala> nums.keysIterator
+res3: Iterator[Int] = non-empty iterator
+
+scala> nums.values
+res4: Iterable[String] = MapLike(a, b, c)
+
+scala> nums.values.iterator
+res5: Iterator[String] = non-empty iterator
+
+scala> nums.valuesIterator
+res6: Iterator[String] = non-empty iterator
+```
+
+```scala
+scala> val nums = Map(1 -> "a", 2 -> "b", 3 -> "c")
+nums: scala.collection.immutable.Map[Int,String] = Map(1 -> a, 2 -> b, 3 -> c)
+
+scala> nums.keysIterator.toList
+res0: List[Int] = List(1, 2, 3)
+
+scala> nums.toList
+res1: List[(Int, String)] = List((1,a), (2,b), (3,c))
+
+scala> nums.keysIterator.foreach(println)
+1
+2
+3
+
+scala> nums.keys.for
+forall   foreach
+
+scala> nums.keys.foreach(println)
+1
+2
+3
+```
+
 ## Reversing Keys and Values
+
+```scala
+scala> val nums = Map(1 -> "a", 2 -> "b", 3 -> "c")
+nums: scala.collection.immutable.Map[Int,String] = Map(1 -> a, 2 -> b, 3 -> c)
+
+scala> for ((k,v) <- nums) yield (v, k)
+res0: scala.collection.immutable.Map[String,Int] = Map(a -> 1, b -> 2, c -> 3)
+
+scala> nums.map(n => (n._2, n._1))
+res1: scala.collection.immutable.Map[String,Int] = Map(a -> 1, b -> 2, c -> 3)
+```
 
 ## Testing for the Existence of a Key or Value in a Map
 
