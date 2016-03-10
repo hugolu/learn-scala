@@ -375,6 +375,49 @@ m += (2 -> 'b')                                 //> res0: myTest.test86.m.type =
 
 ## Choosing a Map Implementation
 
+### `collection.immutable.Map`
+This is the default, general-purpose immutable map you get if you don’t import anything.
+
+```scala
+val m = Map(1 -> 'a', 2 -> 'b', 3 -> 'c')       //> m  : scala.collection.immutable.Map[Int,Char] = Map(1 -> a, 2 -> b, 3 -> c)
+```
+
+### `collection.mutable.Map`
+A mutable version of the basic map.
+
+```
+scala
+import scala.collection.mutable.{ Map => MMap }
+val m = MMap(1 -> 'a', 2 -> 'b', 3 -> 'c')      //> m  : scala.collection.mutable.Map[Int,Char] = Map(2 -> b, 1 -> a, 3 -> c)
+```
+
+### `collection.mutable.LinkedHashMap`
+All methods that traverse the elements will visit the elements in their **insertion order**.
+
+```scala
+import scala.collection.mutable.{ LinkedHashMap => LHMap }
+val m = LHMap(3 -> 'c', 2 -> 'b', 1 -> 'a')     //> m  : scala.collection.mutable.LinkedHashMap[Int,Char] = Map(3 -> c, 2 -> b, 1 -> a)
+```
+
+### `collection.immutable.ListMap` & `collection.mutable.ListMap`
+Per the Scaladoc, “implements immutable maps using a *list-based* data structure.” As shown in the examples, elements that are added are prepended to the head of the list. Scala has both mutable and immutable `ListMap` classes. They return elements in the opposite order in which you inserted them, as though each insert was at the head of the map (like a List):
+
+```scala
+scala> scala.collection.immutable.ListMap(3 -> 'c', 2 -> 'b', 1 -> 'a')
+res7: scala.collection.immutable.ListMap[Int,Char] = Map(3 -> c, 2 -> b, 1 -> a)
+
+scala> scala.collection.mutable.ListMap(3 -> 'c', 2 -> 'b', 1 -> 'a')
+res8: scala.collection.mutable.ListMap[Int,Char] = Map(1 -> a, 3 -> c, 2 -> b)
+```
+
+### `collection.SortedMap`
+Keys of the map are returned in sorted order. Therefore, all traversal methods (such as foreach) return keys in that order.
+
+```scala
+scala> scala.collection.SortedMap(3 -> 'c', 2 -> 'b', 1 -> 'a')
+res9: scala.collection.SortedMap[Int,Char] = Map(1 -> a, 2 -> b, 3 -> c)
+```
+
 ## Adding, Updating, and Removing Elements with a Mutable Map
 
 ## Adding, Updating, and Removing Elements with Immutable Maps
