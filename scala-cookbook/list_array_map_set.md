@@ -385,8 +385,7 @@ val m = Map(1 -> 'a', 2 -> 'b', 3 -> 'c')       //> m  : scala.collection.immuta
 ### `collection.mutable.Map`
 A mutable version of the basic map.
 
-```
-scala
+```scala
 import scala.collection.mutable.{ Map => MMap }
 val m = MMap(1 -> 'a', 2 -> 'b', 3 -> 'c')      //> m  : scala.collection.mutable.Map[Int,Char] = Map(2 -> b, 1 -> a, 3 -> c)
 ```
@@ -419,6 +418,53 @@ res9: scala.collection.SortedMap[Int,Char] = Map(1 -> a, 2 -> b, 3 -> c)
 ```
 
 ## Adding, Updating, and Removing Elements with a Mutable Map
+
+- Add elements to a mutable map by simply assigning them, or with the += method.
+- Remove elements with -= or --=.
+- Update elements by reassigning them.
+
+```scala
+val map = scala.collection.mutable.Map[Int, String]()
+                                                //> map  : scala.collection.mutable.Map[Int,String] = Map()
+map(1) = "one"
+map                                             //> res0: scala.collection.mutable.Map[Int,String] = Map(1 -> one)
+
+map += (2 -> "two")                             //> res1: myTest.test86.map.type = Map(2 -> two, 1 -> one)
+map += (3 -> "three", 4 -> "four")              //> res2: myTest.test86.map.type = Map(2 -> two, 4 -> four, 1 -> one, 3 -> three)
+map ++= List((5 -> "five"), (6 -> "six"))       //> res3: myTest.test86.map.type = Map(2 -> two, 5 -> five, 4 -> four, 1 -> one, 3 -> three, 6 -> six)
+
+map -= 2                                        //> res4: myTest.test86.map.type = Map(5 -> five, 4 -> four, 1 -> one, 3 -> three, 6 -> six)
+map -= (3, 4)                                   //> res5: myTest.test86.map.type = Map(5 -> five, 1 -> one, 6 -> six)
+map --= List(5, 6)                              //> res6: myTest.test86.map.type = Map(1 -> one)
+
+map(1) = "ONE"
+map                                             //> res7: scala.collection.mutable.Map[Int,String] = Map(1 -> ONE)
+```
+
+- use `put` to add an element (or replace an existing element)
+- use `retain` to keep only the elements in the map that match the predicate you supply
+- use `remove` to remove an element by its key value
+- use `clear` to delete all elements in the map
+
+```scala
+val map = scala.collection.mutable.Map(1 -> "one", 2 -> "two", 3 -> "three")
+                                                //> map  : scala.collection.mutable.Map[Int,String] = Map(2 -> two, 1 -> one, 3 -> three)
+
+map.put(4, "four")                              //> res0: Option[String] = None
+map                                             //> res1: scala.collection.mutable.Map[Int,String] = Map(2 -> two, 4 -> four, 1 -> one, 3 -> three)
+
+map.put(1, "ONE")                               //> res2: Option[String] = Some(one)
+map                                             //> res3: scala.collection.mutable.Map[Int,String] = Map(2 -> two, 4 -> four, 1 -> ONE, 3 -> three)
+
+map.retain((k, v) => k > 2)                     //> res4: myTest.test86.map.type = Map(4 -> four, 3 -> three)
+map                                             //> res5: scala.collection.mutable.Map[Int,String] = Map(4 -> four, 3 -> three)
+
+map.remove(4)                                   //> res6: Option[String] = Some(four)
+map                                             //> res7: scala.collection.mutable.Map[Int,String] = Map(3 -> three)
+
+map.clear
+map                                             //> res8: scala.collection.mutable.Map[Int,String] = Map()
+```
 
 ## Adding, Updating, and Removing Elements with Immutable Maps
 
