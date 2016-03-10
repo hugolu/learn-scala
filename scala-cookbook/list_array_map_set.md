@@ -365,6 +365,14 @@ var states = collection.mutable.Map[String, String]()
 states += ("AL" -> "Alabama")                   //> res0: scala.collection.mutable.Map[String,String] = Map(AL -> Alabama)
 ```
 
+```scala
+import scala.collection.mutable.{ Map => MMap }
+
+val m = MMap(1 -> 'a')                          //> m  : scala.collection.mutable.Map[Int,Char] = Map(1 -> a)
+m += (2 -> 'b')                                 //> res0: myTest.test86.m.type = Map(2 -> b, 1 -> a)
+```
+- to give the mutable Map an alias when you **import** it, and then refer to it using that alias
+
 ## Choosing a Map Implementation
 
 ## Adding, Updating, and Removing Elements with a Mutable Map
