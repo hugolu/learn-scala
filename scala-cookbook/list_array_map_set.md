@@ -216,8 +216,62 @@ Seq(1, 2, 3).toArray                            //> res8: Array[Int] = Array(1, 
 - The `Array` is  **mutable** in that its *elements* can be changed, but it’s **immutable** in that its *size* cannot be changed.
 
 ## Creating an Array Whose Size Can Change (ArrayBuffer)
+- An Array is mutable in that its elements can change, but its size can’t change.
+- To create a mutable, indexed sequence whose size can change, use the ArrayBuffer class.
+ 
+```scala
+val fruits = new scala.collection.mutable.ArrayBuffer[String]()
+                                                //> fruits  : scala.collection.mutable.ArrayBuffer[String] = ArrayBuffer()
+fruits += "apple"                               //> res0: myTest.test86.fruits.type = ArrayBuffer(apple)
+fruits += "banana"                              //> res1: myTest.test86.fruits.type = ArrayBuffer(apple, banana)
+fruits += "coconut"                             //> res2: myTest.test86.fruits.type = ArrayBuffer(apple, banana, coconut)
+
+import scala.collection.mutable.ArrayBuffer
+val nums = ArrayBuffer[Int](0)                  //> nums  : scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(0)
+nums += 1                                       //> res3: myTest.test86.nums.type = ArrayBuffer(0, 1)
+nums += (2, 3)                                  //> res4: myTest.test86.nums.type = ArrayBuffer(0, 1, 2, 3)
+nums ++= Seq(4, 5)                              //> res5: myTest.test86.nums.type = ArrayBuffer(0, 1, 2, 3, 4, 5)
+nums.append(6)
+nums                                            //> res6: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(0, 1, 2, 3, 4, 5, 6)
+```
 
 ## Deleting Array and ArrayBuffer Elements
+An `ArrayBuffer` is a mutable sequence, so you can delete elements with the usual `-=`, `--=`, `remove`, and `clear` methods.
+
+```scala
+import scala.collection.mutable.ArrayBuffer
+val nums = ArrayBuffer(1, 2, 3, 4, 5, 6, 7, 8, 9)
+                                                //> nums  : scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+nums -= 1                                       //> res0: myTest.test86.nums.type = ArrayBuffer(2, 3, 4, 5, 6, 7, 8, 9)
+nums -= (2, 3)                                  //> res1: myTest.test86.nums.type = ArrayBuffer(4, 5, 6, 7, 8, 9)
+
+nums.remove(0)                                  //> res2: Int = 4
+nums                                            //> res3: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(5, 6, 7, 8, 9)
+
+nums.remove(1, 3)
+nums                                            //> res4: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(5, 9)
+
+nums.clear
+nums                                            //> res5: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer()
+```
+
+```scala
+import scala.collection.mutable.ArrayBuffer
+val nums = ArrayBuffer(1, 2, 3, 4)              //> nums  : scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(1, 2, 3, 4)
+
+nums.filter(_ % 2 == 0)                         //> res0: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(2, 4)
+nums                                            //> res1: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(1, 2, 3, 4)
+
+nums.filterNot(_ % 2 == 0)                      //> res2: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(1, 3)
+nums                                            //> res3: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(1, 2, 3, 4)
+
+nums.take(2)                                    //> res4: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(1, 2)
+nums                                            //> res5: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(1, 2, 3, 4)
+
+nums.drop(2)                                    //> res6: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(3, 4)
+nums                                            //> res7: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(1, 2, 3, 4)
+```
 
 ## Sorting Arrays
 
