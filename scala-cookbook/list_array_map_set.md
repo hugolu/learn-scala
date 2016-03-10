@@ -310,6 +310,34 @@ bars.sortBy(x => x.n)                           //> res2: Array[myTest.test86.Ba
 
 ## Creating Multidimensional Arrays
 
+```scala
+scala> val a = Array.ofDim[Int](2, 3)
+a: Array[Array[Int]] = Array(Array(0, 0, 0), Array(0, 0, 0))
+
+scala> for {
+     | i <- 0 until 2
+     | j <- 0 until 3 }
+     | a(i)(j) = i + j
+
+scala> a
+res4: Array[Array[Int]] = Array(Array(0, 1, 2), Array(1, 2, 3))
+```
+
+```scala
+scala> val a = Array(Array("a", "b", "c"), Array("d", "e"))
+a: Array[Array[String]] = Array(Array(a, b, c), Array(d, e))
+
+scala> for {
+     | i <- 0 until a.size
+     | j <- 0 until a(i).size }
+     | println(s"a($i)($j)=${a(i)(j)}")
+a(0)(0)=a
+a(0)(1)=b
+a(0)(2)=c
+a(1)(0)=d
+a(1)(1)=e
+```
+
 ## Creating Maps
 
 ## Choosing a Map Implementation
