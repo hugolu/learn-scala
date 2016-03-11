@@ -217,9 +217,67 @@ res24: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(4, 5, 6)
 
 ## Looping over a Collection with foreach
 
+As long as your function (or method) takes one parameter of the same type as the elements in the collection and returns nothing (Unit), it can be called from a foreach method.
+```scala
+scala> val fruits = Array("apple", "banana", "coconut")
+fruits: Array[String] = Array(apple, banana, coconut)
+
+scala> fruits.foreach(n => println(n))
+apple
+banana
+coconut
+
+scala> fruits.foreach(println)
+apple
+banana
+coconut
+```
+
 ## Looping over a Collection with a for Loop
 
+You can loop over any `Traversable` type (basically any sequence) using a `for` loop:
+```scala
+scala> val fruits = Array("apple", "banana", "coconut")
+fruits: Array[String] = Array(apple, banana, coconut)
+
+scala> for(f <- fruits) println(f)
+apple
+banana
+coconut
+
+scala> for(f <- fruits) yield f.capitalize
+res28: Array[String] = Array(Apple, Banana, Coconut)
+```
+
 ## Using zipWithIndex or zip to Create Loop Counters
+
+```scala
+scala> val fruits = Array("apple", "banana", "coconut")
+fruits: Array[String] = Array(apple, banana, coconut)
+
+scala> fruits.zipWithIndex
+res35: Array[(String, Int)] = Array((apple,0), (banana,1), (coconut,2))
+```
+- `value` first, then `index`
+
+```scala
+scala> val fruits = Array("apple", "banana", "coconut")
+fruits: Array[String] = Array(apple, banana, coconut)
+
+scala> fruits.zipWithIndex.foreach {
+     | case (value, index) => println(s"fruits[$index] = $value")
+     | }
+fruits[0] = apple
+fruits[1] = banana
+fruits[2] = coconut
+
+scala> for(i <- 0 until fruits.size) {
+     | println(s"fruits[$i] = ${fruits(i)}")
+     | }
+fruits[0] = apple
+fruits[1] = banana
+fruits[2] = coconut
+```
 
 ## Using Iterators
 
