@@ -818,7 +818,85 @@ res2: String = three
 
 ## Adding Elements to a Set
 
+Add elements to a **mutable** Set with the `+=`, `++=`, and `add` methods:
+```scala
+scala> val set = scala.collection.mutable.Set[Int]()
+set: scala.collection.mutable.Set[Int] = Set()
+
+scala> set += 1
+res0: set.type = Set(1)
+
+scala> set += (2, 3)
+res1: set.type = Set(1, 2, 3)
+
+scala> set += 2
+res2: set.type = Set(1, 2, 3)
+
+scala> set ++= Seq(4, 5)
+res3: set.type = Set(1, 5, 2, 3, 4)
+
+scala> set.add(6)
+res4: Boolean = true
+
+scala> set
+res5: scala.collection.mutable.Set[Int] = Set(1, 5, 2, 6, 3, 4)
+```
+
+Create a new **immutable** set by adding elements to a previous set with the `+` and `++` methods:
+```scala
+scala> var set = Set[Int]()
+set: scala.collection.immutable.Set[Int] = Set()
+
+scala> set = set + 1
+set: scala.collection.immutable.Set[Int] = Set(1)
+
+scala> set = set + (2, 3)
+set: scala.collection.immutable.Set[Int] = Set(1, 2, 3)
+
+scala> set = set + 2
+set: scala.collection.immutable.Set[Int] = Set(1, 2, 3)
+
+scala> set = set ++ Seq(4, 5)
+set: scala.collection.immutable.Set[Int] = Set(5, 1, 2, 3, 4)
+```
+
 ## Deleting Elements from Sets
+
+When working with a **mutable** Set, remove elements from the set using the `-=` and `--=` methods:
+```scala
+scala> val set = scala.collection.mutable.Set(1, 2, 3, 4, 5, 6)
+set: scala.collection.mutable.Set[Int] = Set(1, 5, 2, 6, 3, 4)
+
+scala> set -= 1
+res0: set.type = Set(5, 2, 6, 3, 4)
+
+scala> set -= (2, 3)
+res1: set.type = Set(5, 6, 4)
+
+scala> set --= Seq(4,5)
+res2: set.type = Set(6)
+
+scala> set.remove(6)
+res3: Boolean = true
+
+scala> set
+res4: scala.collection.mutable.Set[Int] = Set()
+```
+
+When using an **immutable** Set you can’t remove elements from it, but you can use the `-` and `--` operators to remove elements while assigning the result to a new variable:
+```scala
+scala> var set = Set(1, 2, 3, 4, 5, 6)
+set: scala.collection.immutable.Set[Int] = Set(5, 1, 6, 2, 3, 4)
+
+scala> set = set - 1
+set: scala.collection.immutable.Set[Int] = Set(5, 6, 2, 3, 4)
+
+scala> set = set - (2, 3)
+set: scala.collection.immutable.Set[Int] = Set(5, 6, 4)
+
+scala> set = set -- Seq(4, 5)
+set: scala.collection.immutable.Set[Int] = Set(6)
+```
 
 ## Using Sortable Sets
 
