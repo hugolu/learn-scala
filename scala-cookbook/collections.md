@@ -310,7 +310,37 @@ res38: List[Int] = List(1, 2, 3)
 
 ## Transforming One Collection to Another with for/ yield
 
-##  Transforming One Collection to Another with map
+```scala
+scala> val nums = List(1, 2, 3)
+nums: List[Int] = List(1, 2, 3)
+
+scala> for(n <- nums) yield n*n
+res42: List[Int] = List(1, 4, 9)
+
+scala> for(n <- nums if n % 2 != 0) yield n
+res43: List[Int] = List(1, 3)
+
+scala> for(n <- nums if n % 2 != 0) yield n
+res44: List[Int] = List(1, 9)
+```
+- This combination of a for `loop` and `yield` statement is known as a *for comprehension* or *sequence comprehension*. 
+- In general, the collection type that’s returned by a for comprehension will be the same type that you begin with.
+
+## Transforming One Collection to Another with map
+
+```scala
+scala> val nums = List(1, 2, 3)
+nums: List[Int] = List(1, 2, 3)
+
+scala> nums.map(n => n*n)
+res45: List[Int] = List(1, 4, 9)
+
+scala> nums.filter(n => n % 2 != 0)
+res46: List[Int] = List(1, 3)
+
+scala> nums.filter(n => n % 2 != 0).map(n => n*n)
+res47: List[Int] = List(1, 9)
+```
 
 ## Flattening a List of Lists with flatten
 
