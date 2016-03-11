@@ -143,7 +143,77 @@ scala> b(1) = 99
 
 ## Make Vector Your “Go To” Immutable Sequence
 
+`Vector` is a fast, general-purpose, **immutable**, sequential collection type.
+```scala
+scala> var v = Vector(1,2,3)
+v: scala.collection.immutable.Vector[Int] = Vector(1, 2, 3)
+
+scala> v(0)
+res5: Int = 1
+
+scala> v = v ++ Vector(4,5,6)
+v: scala.collection.immutable.Vector[Int] = Vector(1, 2, 3, 4, 5, 6)
+
+scala> v = v.updated(0, 99)
+v: scala.collection.immutable.Vector[Int] = Vector(99, 2, 3, 4, 5, 6)
+
+scala> v.take(2)
+res6: scala.collection.immutable.Vector[Int] = Vector(99, 2)
+
+scala> v.filter(_ > 2)
+res7: scala.collection.immutable.Vector[Int] = Vector(99, 3, 4, 5, 6)
+```
+
 ## Make ArrayBuffer Your “Go To” Mutable Sequence
+
+ArrayBuffer is a general-purpose, **mutable**, sequential collection type.
+```scala
+scala> val v = scala.collection.mutable.ArrayBuffer(1, 2, 3)
+v: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(1, 2, 3)
+
+scala> v += (4, 5, 6)
+res8: v.type = ArrayBuffer(1, 2, 3, 4, 5, 6)
+
+scala> v.append(7)
+
+scala> v
+res10: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(1, 2, 3, 4, 5, 6, 7)
+
+scala> v.appendAll(Seq(8, 9))
+
+scala> v
+res12: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+scala> v.insert(0)
+
+scala> v
+res14: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+scala> v.insert(0, 0)
+
+scala> v
+res16: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+scala> v.prepend(-1)
+
+scala> v
+res18: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+scala> v.remove(0, 2)
+
+scala> v
+res20: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+scala> v.trimStart(3)
+
+scala> v
+res22: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(4, 5, 6, 7, 8, 9)
+
+scala> v.trimEnd(3)
+
+scala> v
+res24: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(4, 5, 6)
+```
 
 ## Looping over a Collection with foreach
 
