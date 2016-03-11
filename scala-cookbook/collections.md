@@ -421,6 +421,7 @@ ints: List[Int] = List(1, 2, 3)
 scala> val sum = ints.sum
 sum: Int = 6
 ```
+- `flatten` works very well with a list of `Some` and `None` elements. It extracts the values from the `Some` elements while discarding the `None` elements.
 
 使用 `flatMap` 簡化過程
 ```scala
@@ -442,7 +443,73 @@ sum: Int = 6
 
 ## Using filter to Filter a Collection
 
+To use `filter` on your collection, give it a *predicate* to filter the collection elements as desired.
+```scala
+scala> val list = List.range(1, 10)
+list: List[Int] = List(1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+scala> val odds = list.filter(_ % 2 != 0)
+odds: List[Int] = List(1, 3, 5, 7, 9)
+```
+
 ## Extracting a Sequence of Elements from a Collection
+
+There are quite a few collection methods you can use to extract a contiguous list of elements from a sequence, including `drop`, `dropWhile`, `head`, `headOption`, `init`, `last`, `lastOption`, `slice`, `tail`, `take`, `takeWhile`.
+```scala
+scala> val list = List.range(1, 10)
+list: List[Int] = List(1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+scala> list.filter(_ % 2 != 0)
+res68: List[Int] = List(1, 3, 5, 7, 9)
+
+scala> val odds = list.filter(_ % 2 != 0)
+odds: List[Int] = List(1, 3, 5, 7, 9)
+
+scala> val x = (1 to 10).toArray
+x: Array[Int] = Array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+
+scala> x.drop(3)
+res69: Array[Int] = Array(4, 5, 6, 7, 8, 9, 10)
+
+scala> x.dropWhile(_ < 6)
+res70: Array[Int] = Array(6, 7, 8, 9, 10)
+
+scala> x.dropRight(4)
+res71: Array[Int] = Array(1, 2, 3, 4, 5, 6)
+
+scala> x.take(3)
+res72: Array[Int] = Array(1, 2, 3)
+
+scala> x.takeWhile(_ < 6)
+res74: Array[Int] = Array(1, 2, 3, 4, 5)
+
+scala> x.takeRight(3)
+res75: Array[Int] = Array(8, 9, 10)
+
+scala> x.head
+res79: Int = 1
+
+scala> x.headOption
+res80: Option[Int] = Some(1)
+
+scala> x.tail
+res81: Array[Int] = Array(2, 3, 4, 5, 6, 7, 8, 9, 10)
+
+scala> x.init
+res87: Array[Int] = Array(1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+scala> x.last
+res88: Int = 10
+
+scala> x.lastOption
+res89: Option[Int] = Some(10)
+```
+
+But I cannot explain this :(
+```
+scala> x.slice(3, 3)
+res95: Array[Int] = Array()
+```
 
 ## Splitting Sequences into Subsets (groupBy, partition, etc.)
 
