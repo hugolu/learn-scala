@@ -639,7 +639,72 @@ list.scanLeft(0)(add)                           //> 0 + 1 = 1
 
 ## Extracting Unique Elements from a Sequence
 
+```scala
+scala> val seq = Seq(1, 1, 2, 2, 3, 4)
+seq: Seq[Int] = List(1, 1, 2, 2, 3, 4)
+
+scala> val y = seq.distinct
+y: Seq[Int] = List(1, 2, 3, 4)
+
+scala> val y = seq.toSet
+y: scala.collection.immutable.Set[Int] = Set(1, 2, 3, 4)
+```
+
 ## Merging Sequential Collections
+
+Use the `++=` method to merge a sequence into a mutable sequence:
+```scala
+scala> var a = scala.collection.mutable.ArrayBuffer(1,2)
+a: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(1, 2)
+
+scala> a ++= Seq(3,4)
+res128: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(1, 2, 3, 4)
+```
+
+Use the `++` method to merge two mutable or immutable sequences:
+```scala
+scala> val a = List(1,2)
+a: List[Int] = List(1, 2)
+
+scala> val b = a ++ List(3,4)
+b: List[Int] = List(1, 2, 3, 4)
+```
+
+Use collection methods like `union`, `diff`, and `intersect`:
+```scala
+scala> val a = List(1,2)
+a: List[Int] = List(1, 2)
+
+scala> val b = a ++ List(3,4)
+b: List[Int] = List(1, 2, 3, 4)
+
+scala> val a = List(1, 2, 3)
+a: List[Int] = List(1, 2, 3)
+
+scala> val b = List(2, 3, 4)
+b: List[Int] = List(2, 3, 4)
+
+scala> a.union(b)
+res130: List[Int] = List(1, 2, 3, 2, 3, 4)
+
+scala> a.union(b).distinct
+res131: List[Int] = List(1, 2, 3, 4)
+
+scala> val a1 = a.diff(b)
+a1: List[Int] = List(1)
+
+scala> val b1 = b.diff(a)
+b1: List[Int] = List(4)
+
+scala> val ab = a.intersect(b)
+ab: List[Int] = List(2, 3)
+
+scala> a1 ++ ab
+res132: List[Int] = List(1, 2, 3)
+
+scala> b1 ++ ab
+res133: List[Int] = List(4, 2, 3)
+```
 
 ## Merging Two Sequential Collections into Pairs with zip
 
