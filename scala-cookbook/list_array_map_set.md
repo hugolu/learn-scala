@@ -697,6 +697,35 @@ res6: Boolean = false
 
 ## Filtering a Map
 
+Use the `retain` method to define the elements to retain when using a **mutable** map
+```scala
+scala> val nums = scala.collection.mutable.Map(1->"one", 2->"two", 3->"three")
+nums: scala.collection.mutable.Map[Int,String] = Map(2 -> two, 1 -> one, 3 -> three)
+
+scala> nums.retain((k,v) => k > 1)
+res0: nums.type = Map(2 -> two, 3 -> three)
+
+scala> nums
+res1: scala.collection.mutable.Map[Int,String] = Map(2 -> two, 3 -> three)
+```
+
+Use `filterKeys` or `filter` to filter the elements in a mutable or **immutable** map
+```scala
+scala> val nums = Map(1->"one", 2->"two", 3->"three")
+nums: scala.collection.immutable.Map[Int,String] = Map(1 -> one, 2 -> two, 3 -> three)
+
+scala> val x = nums.filterKeys(_ > 2)
+x: scala.collection.immutable.Map[Int,String] = Map(3 -> three)
+
+scala> val y = nums.filter(n => n._1 > 2)
+y: scala.collection.immutable.Map[Int,String] = Map(3 -> three)
+
+scala> val z = nums.filter(n => n._2.length > 3)
+z: scala.collection.immutable.Map[Int,String] = Map(3 -> three)
+```
+- x, y: nums is filtered by key
+- z: nums is filtered by value
+
 ## Sorting an Existing Map by Key or Value
 
 ## Finding the Largest Key or Value in a Map
