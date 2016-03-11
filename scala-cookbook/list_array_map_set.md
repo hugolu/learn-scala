@@ -1045,3 +1045,18 @@ list: List[Int] = List(2, 1)
 ```
 
 ## Using a Range 
+
+Ranges are often used to populate data structures
+```scala
+(1 to 10).toList                                //> res0: List[Int] = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+Range(1, 10).toSet                              //> res1: scala.collection.immutable.Set[Int] = Set(5, 1, 6, 9, 2, 7, 3, 8, 4)
+Array.range(1, 10, 2)                           //> res2: Array[Int] = Array(1, 3, 5, 7, 9)
+```
+
+a `Range` can be combined with the `map` method to populate a collection
+```scala
+(1 to 5).map(n=>n*n)                            //> res0: scala.collection.immutable.IndexedSeq[Int] = Vector(1, 4, 9, 16, 25)
+Vector.tabulate(5)(n => (n+1)*(n+1))            //> res1: scala.collection.immutable.Vector[Int] = Vector(1, 4, 9, 16, 25)
+
+Map((1 to 10 by 2).map(n => (n, n - 1)): _*)    //> res2: scala.collection.immutable.Map[Int,Int] = Map(5 -> 4, 1 -> 0, 9 -> 8, 7 -> 6, 3 -> 2)
+```
