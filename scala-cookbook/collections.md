@@ -344,6 +344,35 @@ res47: List[Int] = List(1, 9)
 
 ## Flattening a List of Lists with flatten
 
+Use the `flatten` method to convert *a list of lists* into a single list.
+```scala
+scala> val lol = List(List(1,2,3), List(4,5,6))
+lol: List[List[Int]] = List(List(1, 2, 3), List(4, 5, 6))
+
+scala> val list = lol.flatten
+list: List[Int] = List(1, 2, 3, 4, 5, 6)
+
+scala> for {
+     | list <- lol
+     | elem <- list
+     | } yield elem
+res51: List[Int] = List(1, 2, 3, 4, 5, 6)
+```
+
+Because an `Option` can be thought of as a container that holds zero or one elements, `flatten` has a very useful effect on a sequence of Some and None elements. It pulls the values out of the Some elements to create the new list, and drops the None elements:
+```scala
+scala> val list = List(Some(1), None, Some(2), Some(3), Some(4), None)
+list: List[Option[Int]] = List(Some(1), None, Some(2), Some(3), Some(4), None)
+
+scala> list.flatten
+res49: List[Int] = List(1, 2, 3, 4)
+
+scala> for {
+     | Some(x) <- list
+     | } yield x
+res50: List[Int] = List(1, 2, 3, 4)
+```
+
 ## Combining map and flatten with flatMap
 
 ## Using filter to Filter a Collection
