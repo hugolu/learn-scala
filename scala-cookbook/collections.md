@@ -375,6 +375,71 @@ res50: List[Int] = List(1, 2, 3, 4)
 
 ## Combining map and flatten with flatMap
 
+Use `flatMap` in situations where you run `map` followed by `flatten`. 
+- You’re using map (or a for/yield expression) to create a new collection from an existing collection.
+- The resulting collection is a list of lists.
+- You call flatten immediately after map (or a for/yield expression).
+
+```scala
+scala> val lol = for (i <- List(1, 4, 7)) yield List(i, i+1, i+2)
+lol: List[List[Int]] = List(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9))
+
+scala> val list1 = lol.flatten
+list1: List[Int] = List(1, 2, 3, 4, 5, 6, 7, 8, 9)
+```
+```scala
+scala> val list2 = List(1, 4, 7).flatMap(i => List(i, i+1, i+2))
+list2: List[Int] = List(1, 2, 3, 4, 5, 6, 7, 8, 9)
+```
+
+將 `bag` 裡面能轉成數字的值做總和：
+```scala
+scala> def toInt(str: String) = {
+     | try {
+     | Some(str.toInt)
+     | } catch {
+     | case e: Exception => None
+     | }
+     | }
+toInt: (str: String)Option[Int]
+
+scala> val number = toInt("1")
+number: Option[Int] = Some(1)
+
+scala> val notNumber = toInt("apple")
+notNumber: Option[Int] = None
+
+scala> val bag = List("1", "apple", "2", "banana", "3", "coconut")
+bag: List[String] = List(1, apple, 2, banana, 3, coconut)
+
+scala> val nums = bag.map(toInt)
+nums: List[Option[Int]] = List(Some(1), None, Some(2), None, Some(3), None)
+
+scala> val ints = nums.flatten
+ints: List[Int] = List(1, 2, 3)
+
+scala> val sum = ints.sum
+sum: Int = 6
+```
+
+使用 `flatMap` 簡化過程
+```scala
+scala> def toInt(str: String) = {
+     | try {
+     | Some(str.toInt)
+     | } catch {
+     | case e: Exception => None
+     | }
+     | }
+toInt: (str: String)Option[Int]
+
+scala> val bag = List("1", "apple", "2", "banana", "3", "coconut")
+bag: List[String] = List(1, apple, 2, banana, 3, coconut)
+
+scala> val sum = bag.flatMap(toInt).sum
+sum: Int = 6
+```
+
 ## Using filter to Filter a Collection
 
 ## Extracting a Sequence of Elements from a Collection
