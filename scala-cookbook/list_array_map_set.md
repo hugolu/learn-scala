@@ -984,5 +984,64 @@ res2: scala.collection.immutable.Queue[Int] = Queue(1, 2, 3)
 ```
 
 ## Using a Stack
+A stack is a last-in, first-out (LIFO) data structure. In most programming languages you add elements to a stack using a `push` method, and take elements off the stack with `pop`.
+
+```scala
+scala> val stack = scala.collection.mutable.Stack[Int]()
+stack: scala.collection.mutable.Stack[Int] = Stack()
+
+scala> stack.push(1)
+res0: stack.type = Stack(1)
+
+scala> stack.push(2)
+res1: stack.type = Stack(2, 1)
+
+scala> stack.push(3, 4)
+res2: stack.type = Stack(4, 3, 2, 1)
+
+scala> stack.pop
+res4: Int = 4
+
+scala> stack
+res5: scala.collection.mutable.Stack[Int] = Stack(3, 2, 1)
+
+scala> stack.top
+res6: Int = 3
+
+scala> stack
+res7: scala.collection.mutable.Stack[Int] = Stack(3, 2, 1)
+
+scala> stack.size
+res8: Int = 3
+
+scala> stack.isEmpty
+res9: Boolean = false
+
+scala> stack.clear
+
+scala> stack
+res11: scala.collection.mutable.Stack[Int] = Stack()
+```
+
+A `List` has at least one less layer of code, and you can push elements onto the List with `::` and access the first element with the `head` method.
+```scala
+scala> var list = List[Int]()
+list: List[Int] = List()
+
+scala> list = 1 :: list
+list: List[Int] = List(1)
+
+scala> list = 2 :: list
+list: List[Int] = List(2, 1)
+
+scala> list = 3 :: list
+list: List[Int] = List(3, 2, 1)
+
+scala> val n = list.head
+n: Int = 3
+
+scala> list = list.tail
+list: List[Int] = List(2, 1)
+```
 
 ## Using a Range 
