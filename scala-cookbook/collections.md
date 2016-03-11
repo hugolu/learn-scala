@@ -728,6 +728,65 @@ d: scala.collection.immutable.Map[Int,String] = Map(1 -> apple, 2 -> banana, 3 -
 
 ## Creating a Lazy View on a Collection
 
+A *strict* version of the collection - This means that if you create a collection that contains one million elements, memory is allocated for all of those elements immediately.
+
+In Scala you can optionally create a `view` on a collection. A view makes the result non‐strict, or *lazy*.
+
+```scala
+scala> (1 to 10)
+res0: scala.collection.immutable.Range.Inclusive = Range(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+
+scala> (1 to 10).view
+res1: scala.collection.SeqView[Int,scala.collection.immutable.IndexedSeq[Int]] = SeqView(...)
+
+scala> (1 to 10).view.force
+res2: scala.collection.immutable.IndexedSeq[Int] = Vector(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+```
+- `Int` is the type of the view’s elements.
+- The `scala.collection.immutable.IndexedSeq[Int]` portion of the output indicates the type you’ll get if you force the collection back to a “normal,” strict collection.
+- You can see this when you `force` the view back to a normal collection.
+
+`map` is a transformer method. Calling a map method with and without a view has dramatically different results:
+```scala
+scala> (1 to 10).map(_*2)
+res3: scala.collection.immutable.IndexedSeq[Int] = Vector(2, 4, 6, 8, 10, 12, 14, 16, 18, 20)
+
+scala> (1 to 10).view.map(_*2)
+res4: scala.collection.SeqView[Int,Seq[_]] = SeqViewM(...)
+```
+
+- a view “constructs only a proxy for the result collection, and its elements get constructed only as one demands them ... A view is a special kind of collection that represents some base collection, but implements all transformers lazily.”
+- A transformer is a method that constructs a new collection from an existing collection.
+- This includes methods like `map`, `filter`, `reverse`, and many more.  When you use these methods, you’re transforming the input collection to a new output collection.
+
+There are two primary use cases for using a view:
+- Performance
+- To treat a collection like a database view
+```scala
+scala> val arr = (1 to 10).toArray
+arr: Array[Int] = Array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+
+scala> val view = arr.view.slice(2, 5)
+view: scala.collection.mutable.IndexedSeqView[Int,Array[Int]] = SeqViewS(...)
+
+scala> arr(2) = 42
+
+scala> view.foreach(println)
+42
+4
+5
+
+scala> view(0) = 10
+
+scala> view(1) = 20
+
+scala> view(2) = 30
+
+scala> arr
+res11: Array[Int] = Array(1, 2, 10, 20, 30, 6, 7, 8, 9, 10)
+```
+- Changing the elements in the array updates the view, and changing the elements referenced by the view changes the elements in the array.
+
 ## Populating a Collection with a Range
 
 ## Creating and Using Enumerations
