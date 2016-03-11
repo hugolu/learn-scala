@@ -708,6 +708,24 @@ res133: List[Int] = List(4, 2, 3)
 
 ## Merging Two Sequential Collections into Pairs with zip
 
+```scala
+scala> val a = List(1, 2, 3)
+a: List[Int] = List(1, 2, 3)
+
+scala> val b = List("apple", "banana", "coconut")
+b: List[String] = List(apple, banana, coconut)
+
+scala> val ab = a zip b
+ab: List[(Int, String)] = List((1,apple), (2,banana), (3,coconut))
+
+scala> val c = a.zip(b).toMap
+c: scala.collection.immutable.Map[Int,String] = Map(1 -> apple, 2 -> banana, 3 -> coconut)
+
+scala> val d = Map(a.zip(b): _*)
+d: scala.collection.immutable.Map[Int,String] = Map(1 -> apple, 2 -> banana, 3 -> coconut)
+```
+- Once you have a sequence of tuples like couples, you can convert it to a Map.
+
 ## Creating a Lazy View on a Collection
 
 ## Populating a Collection with a Range
