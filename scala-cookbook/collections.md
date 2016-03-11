@@ -281,6 +281,33 @@ fruits[2] = coconut
 
 ## Using Iterators
 
+### Why iterator?
+That being said, sometimes you’ll run into an iterator, with one of the best examples being the io.Source.fromFile method. This method returns an iterator, which makes sense, because when you’re working with very large files, it’s not practical to read the entire file into memory.
+
+An iterator isn’t a collection; instead, it gives you a way to access the elements in a collection, one by one.
+
+```scala
+scala> val list = List(1,2,3)
+list: List[Int] = List(1, 2, 3)
+
+scala> val it = list.iterator
+it: Iterator[Int] = non-empty iterator
+
+scala> it.max
+res36: Int = 3
+
+scala> it.foreach(println)
+```
+- An important part of using an iterator is knowing that it’s exhausted after you use it. As you access each element, you mutate the iterator, and the previous element is discarded.
+
+```scala
+scala> val it = Iterator(1, 2, 3)
+it: Iterator[Int] = non-empty iterator
+
+scala> it.toList
+res38: List[Int] = List(1, 2, 3)
+```
+
 ## Transforming One Collection to Another with for/ yield
 
 ##  Transforming One Collection to Another with map
