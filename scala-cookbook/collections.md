@@ -513,6 +513,68 @@ res95: Array[Int] = Array()
 
 ## Splitting Sequences into Subsets (groupBy, partition, etc.)
 
+Use the `groupBy`, `partition`, `span`, or `splitAt` methods to partition a sequence into subsequences.
+```scala
+scala> val x = List(15, 10, 5, 8, 20, 12)
+x: List[Int] = List(15, 10, 5, 8, 20, 12)
+
+scala> val y = x.groupBy(_ > 10)
+y: scala.collection.immutable.Map[Boolean,List[Int]] = Map(false -> List(10, 5, 8), true -> List(15, 20, 12))
+
+scala> val y = x.partition(_ > 10)
+y: (List[Int], List[Int]) = (List(15, 20, 12),List(10, 5, 8))
+
+scala> val y = x.span(_ < 20)
+y: (List[Int], List[Int]) = (List(15, 10, 5, 8),List(20, 12))
+
+scala> val y = x.splitAt(2)
+y: (List[Int], List[Int]) = (List(15, 10),List(5, 8, 20, 12))
+```
+- The `span` method returns a `Tuple2` based on your predicate p, consisting of **“the longest prefix of this list whose elements all satisfy p, and the rest of this list.”**
+
+```scala
+scala> val x = List(15, 10, 5, 8, 20, 12)
+x: List[Int] = List(15, 10, 5, 8, 20, 12)
+
+scala> val groups = x.groupBy(_ > 10)
+groups: scala.collection.immutable.Map[Boolean,List[Int]] = Map(false -> List(10, 5, 8), true -> List(15, 20, 12))
+
+scala> val g1 = groups(true)
+g1: List[Int] = List(15, 20, 12)
+
+scala> val g2 = groups(false)
+g2: List[Int] = List(10, 5, 8)
+```
+
+The `sliding(size, step)` method is an interesting creature that can be used to break a sequence into many groups. It can be called with just a size, or both a size and step:
+```scala
+scala> val list = (1 to 12).toList
+list: List[Int] = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
+
+scala> val groups = list.sliding(3,3).toList
+groups: List[List[Int]] = List(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9), List(10, 11, 12))
+
+scala> val groups = list.sliding(4, 4).toList
+groups: List[List[Int]] = List(List(1, 2, 3, 4), List(5, 6, 7, 8), List(9, 10, 11, 12))
+```
+- As shown, sliding works by passing a “sliding window” over the original sequence, returning sequences of a length given by size. 
+
+The `unzip` method is also interesting. It can be used to take a sequence of Tuple2 values and create two resulting lists: one that contains the first element of each tuple, and another that contains the second element from each tuple:
+```scala
+scala> val a = List(1, 2, 3)
+a: List[Int] = List(1, 2, 3)
+
+scala> val b = List("apple", "banana", "coconut")
+b: List[String] = List(apple, banana, coconut)
+
+scala> val c = a.zip(b)
+c: List[(Int, String)] = List((1,apple), (2,banana), (3,coconut))
+
+scala> val (nums, fruits) = c.unzip
+nums: List[Int] = List(1, 2, 3)
+fruits: List[String] = List(apple, banana, coconut)
+```
+
 ## Walking Through a Collection with the reduce and fold Methods
 
 ## Extracting Unique Elements from a Sequence
