@@ -922,6 +922,66 @@ res2: set.type = Set(1, 3, 5, 2, 4)
 ```
 
 ## Using a Queue
+A queue is a first-in, first-out (FIFO) data structure.
+
+### mutable queue
+```scala
+scala> val q = scala.collection.mutable.Queue[Int]()
+q: scala.collection.mutable.Queue[Int] = Queue()
+
+scala> q += 1
+res0: q.type = Queue(1)
+
+scala> q += (2, 3)
+res1: q.type = Queue(1, 2, 3)
+
+scala> q ++= Seq(4, 5)
+res2: q.type = Queue(1, 2, 3, 4, 5)
+
+scala> q.enqueue(6)
+
+scala> q
+res4: scala.collection.mutable.Queue[Int] = Queue(1, 2, 3, 4, 5, 6)
+
+scala> q.dequeue
+res6: Int = 1
+
+scala> q.dequeue
+res7: Int = 2
+
+scala> q.dequeueFirst(_ > 4)
+res8: Option[Int] = Some(5)
+
+scala> q
+res9: scala.collection.mutable.Queue[Int] = Queue(3, 4, 6)
+
+scala> q.dequeueAll(_ > 3)
+res11: scala.collection.mutable.Seq[Int] = ArrayBuffer(4, 6)
+
+scala> q
+res12: scala.collection.mutable.Queue[Int] = Queue(3)
+```
+
+### immutable queue
+```scala
+scala> var q = scala.collection.immutable.Queue[Int]()
+q: scala.collection.immutable.Queue[Int] = Queue()
+
+scala> q = q.enqueue(1)
+q: scala.collection.immutable.Queue[Int] = Queue(1)
+
+scala> q = q.enqueue(2)
+q: scala.collection.immutable.Queue[Int] = Queue(1, 2)
+
+scala> q = q.enqueue(3)
+q: scala.collection.immutable.Queue[Int] = Queue(1, 2, 3)
+
+scala> q.dequeue
+res1: (Int, scala.collection.immutable.Queue[Int]) = (1,Queue(2, 3))
+
+scala> q
+res2: scala.collection.immutable.Queue[Int] = Queue(1, 2, 3)
+```
 
 ## Using a Stack
 
