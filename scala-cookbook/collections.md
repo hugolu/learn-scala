@@ -577,6 +577,66 @@ fruits: List[String] = List(apple, banana, coconut)
 
 ## Walking Through a Collection with the reduce and fold Methods
 
+Use the `reduceLeft`, `foldLeft`, `reduceRight`, and `foldRight` methods to walk through the elements in a sequence, applying your function to neighboring elements to yield a new result, which is then compared to the next element in the sequence to yield a new result.
+```scala
+scala> val list = (1 to 10).toList
+list: List[Int] = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+
+scala> list.reduceLeft(_ + _)
+res101: Int = 55
+
+scala> list.foldLeft(0)(_ + _)
+res102: Int = 55
+```
+
+The difference between reduceLeft and reduceRight: “The order in which operations are performed on elements is unspecified and may be nondeterministic.”
+```scala
+scala> val a = Array(1.0, 2.0, 3.0)
+a: Array[Double] = Array(1.0, 2.0, 3.0)
+
+scala> a.reduceLeft(_/_)
+res124: Double = 0.16666666666666666
+
+scala> a.reduceRight(_/_)
+res125: Double = 1.5
+```
+
+Two methods named `scanLeft` and `scanRight` walk through a sequence in a manner similar to `reduceLeft` and `reduceRight`, but they return a sequence instead of a single value.
+```scala
+val product = (x: Int, y: Int) => {
+  val result = x * y
+  println(s"$x x $y = $result")
+  result
+}                                               //> product  : (Int, Int) => Int = <function2>
+
+val a = Array(1, 2, 3)                          //> a  : Array[Int] = Array(1, 2, 3)
+a.scanLeft(10)(product)                         //> 10 x 1 = 10
+                                                //| 10 x 2 = 20
+                                                //| 20 x 3 = 60
+                                                //| res0: Array[Int] = Array(10, 10, 20, 60)
+```
+```scala
+def add(x: Int, y: Int) = {
+  val result = x + y
+  println(s"$x + $y = $result")
+  result
+}                                               //> add: (x: Int, y: Int)Int
+
+val list = (1 to 10).toList                     //> list  : List[Int] = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+list.scanLeft(0)(add)                           //> 0 + 1 = 1
+                                                //| 1 + 2 = 3
+                                                //| 3 + 3 = 6
+                                                //| 6 + 4 = 10
+                                                //| 10 + 5 = 15
+                                                //| 15 + 6 = 21
+                                                //| 21 + 7 = 28
+                                                //| 28 + 8 = 36
+                                                //| 36 + 9 = 45
+                                                //| 45 + 10 = 55
+                                                //| res1: List[Int] = List(0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55)
+```
+- scanLeft “Produces a collection containing cumulative results of applying the operator going left to right.”
+
 ## Extracting Unique Elements from a Sequence
 
 ## Merging Sequential Collections
