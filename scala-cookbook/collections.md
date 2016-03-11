@@ -13,33 +13,34 @@ At a high level, Scala’s collection classes begin with the `Traversable` and `
 - `Iterable` trait defines an iterator, which lets you loop through a collection’s elements one at a time
   - when using an iterator, the collection can be traversed only once, because each element is consumed during the iteration process.
 
-`Traversable`
+- `Traversable`
   - `Iterable`
     - `Seq`
-    - `Set`
-    - `Map`
       - `IndexedSeq`
       - `LinearSeq`
+    - `Set`
+    - `Map`
 
-`Seq`: A sequence is a linear collection of elements and may be indexed or linear (a linked list).
-- `IndexedSeq`
-  - `Array`
-  - `StringBuilder`
-  - `Range`
-  - `String`
-  - `Vector`
-- `Buffer`
-  - `ArrayBuffer`
-  - `ListBuffer`
-- `LinearSeq`
-  - `List`
-  - `Queue`
-  - `LinkedList`
-  - `Stack`
-  - `MutableList`
-  - `Stream`
+- `Seq`: A sequence is a linear collection of elements and may be indexed or linear (a linked list).
+  - `IndexedSeq`
+    - `Array`
+    - `StringBuilder`
+    - `Range`
+    - `String`
+    - `Vector`
+    - `ArrayBuffer`
+  - `Buffer`
+    - `ArrayBuffer`
+    - `ListBuffer`
+  - `LinearSeq`
+    - `List`
+    - `Queue`
+    - `LinkedList`
+    - `Stack`
+    - `MutableList`
+    - `Stream`
 
-`Map`: A map contains a collection of key/value pairs, like a Java Map, Ruby Hash, or Python dictionary.
+- `Map`: A map contains a collection of key/value pairs, like a Java Map, Ruby Hash, or Python dictionary.
   - `HashMap`
   - `WeakHashMap`
   - `SortedMap`
@@ -47,7 +48,7 @@ At a high level, Scala’s collection classes begin with the `Traversable` and `
   - `LinkedHashMap`
   - `ListMap`
 
-`Set`: A set is a collection that contains no duplicate elements.
+- `Set`: A set is a collection that contains no duplicate elements.
   - `BitSet`
   - `HashSet`
   - `ListSet`
@@ -88,7 +89,57 @@ Choosing a set is similar to choosing a map. There are base mutable and immutabl
 
 ## Declaring a Type When Creating a Collection
 
+```scala
+scala> List(1, 2.0, 3L)
+res0: List[Double] = List(1.0, 2.0, 3.0)
+
+scala> List[Number](1, 2.0, 3L)
+res1: List[Number] = List(1, 2.0, 3)
+
+scala> List[AnyVal](1, 2.0, 3L)
+res2: List[AnyVal] = List(1, 2.0, 3)
+```
+- By manually specifying a type, in this case Number, you control the collection type.
+
 ## Understanding Mutable Variables with Immutable Collections
+
+```scala
+scala> var a = Vector(1, 2, 3)
+a: scala.collection.immutable.Vector[Int] = Vector(1, 2, 3)
+
+scala> a = a :+ 4
+vector: scala.collection.immutable.Vector[Int] = Vector(1, 2, 3, 4)
+
+scala> val b = Vector(1, 2, 3)
+b: scala.collection.immutable.Vector[Int] = Vector(1, 2, 3)
+
+scala> b = b :+ 4
+<console>:11: error: reassignment to val
+       b = b :+ 4
+         ^
+```
+- A mutable variable (`var`) can be reassigned to point at new data.
+- An immutable variable (`val`) is like a final variable in Java; it can never be reassigned.
+
+```scala
+scala> val a = scala.collection.mutable.ArrayBuffer(1,2,3)
+a: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(1, 2, 3)
+
+scala> a(1) = 99
+
+scala> a
+res3: scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer(1, 99, 3)
+
+scala> val b = Vector(1,2,3)
+b: scala.collection.immutable.Vector[Int] = Vector(1, 2, 3)
+
+scala> b(1) = 99
+<console>:12: error: value update is not a member of scala.collection.immutable.Vector[Int]
+       b(1) = 99
+       ^
+```
+- The elements in a `mutable` collection (like ArrayBuffer) **can be changed**.
+- The elements in an `immutable` collection (like Vector) **cannot be changed**.
 
 ## Make Vector Your “Go To” Immutable Sequence
 
