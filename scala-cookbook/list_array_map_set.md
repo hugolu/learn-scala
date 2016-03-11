@@ -652,6 +652,49 @@ res1: scala.collection.immutable.Map[String,Int] = Map(a -> 1, b -> 2, c -> 3)
 
 ## Testing for the Existence of a Key or Value in a Map
 
+To test for the existence of a `key` in a map, use the `contains` method:
+```scala
+scala> val nums = Map(1->"one", 2->"two", 3->"three")
+nums: scala.collection.immutable.Map[Int,String] = Map(1 -> one, 2 -> two, 3 -> three)
+
+scala> nums.contains(1)
+res0: Boolean = true
+
+scala> nums.contains(4)
+res1: Boolean = false
+```
+
+To test whether a value exists in a map, use the `valuesIterator` method to search for the value using `exists` and `contains`:
+
+Method I:
+```scala
+scala> nums.valuesIterator.exists(_.contains("one"))
+res3: Boolean = true
+
+scala> nums.valuesIterator.exists(_.contains("four"))
+res4: Boolean = false
+```
+
+Method II:
+```scala
+scala> nums.valuesIterator.contains("one")
+res3: Boolean = true
+
+scala> nums.valuesIterator.contains("four")
+res4: Boolean = false
+```
+
+Differents between method I && II:
+```scala
+scala> nums.valuesIterator.exists(_.contains("on"))
+res5: Boolean = true
+
+scala> nums.valuesIterator.contains("on")
+res6: Boolean = false
+```
+- `nums.valuesIterator.exists(_.contains("on"))` 測試每個value裡面是否包含"on"
+- `nums.valuesIterator.contains("on")` 測試nums是否含有"on"的value
+
 ## Filtering a Map
 
 ## Sorting an Existing Map by Key or Value
