@@ -900,6 +900,27 @@ set: scala.collection.immutable.Set[Int] = Set(6)
 
 ## Using Sortable Sets
 
+A `SortedSet` returns elements in a **sorted order**
+```scala
+scala> val set = scala.collection.SortedSet(1, 2, 3, 4, 5, 6)
+set: scala.collection.SortedSet[Int] = TreeSet(1, 2, 3, 4, 5, 6)
+```
+
+A `LinkedHashSet` saves elements in **the order in which they were inserted**
+```scala
+scala> val set = scala.collection.mutable.LinkedHashSet[Int]()
+set: scala.collection.mutable.LinkedHashSet[Int] = Set()
+
+scala> set += 1
+res0: set.type = Set(1)
+
+scala> set += (3, 5)
+res1: set.type = Set(1, 3, 5)
+
+scala> set ++= Seq(2, 4)
+res2: set.type = Set(1, 3, 5, 2, 4)
+```
+
 ## Using a Queue
 
 ## Using a Stack
