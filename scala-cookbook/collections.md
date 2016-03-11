@@ -789,7 +789,63 @@ res11: Array[Int] = Array(1, 2, 10, 20, 30, 6, 7, 8, 9, 10)
 
 ## Populating a Collection with a Range
 
+```scala
+scala> Array.range(1, 10)
+res0: Array[Int] = Array(1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+scala> List.range(1, 10)
+res1: List[Int] = List(1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+scala> Vector.range(1, 10)
+res2: scala.collection.immutable.Vector[Int] = Vector(1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+scala> (1 to 10).toArray
+res3: Array[Int] = Array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+
+scala> (1 to 10).toList
+res4: List[Int] = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+
+scala> (1 to 10).toVector
+res5: Vector[Int] = Vector(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+```
+
 ## Creating and Using Enumerations
+
+```scala
+package foo.bar.app {
+  object Color extends Enumeration {
+    type Color = Value
+    val RED, GREEN, BLUE, BLACK, WHITE = Value
+  }
+}
+
+import foo.bar.app.Color._
+val color = RED                                 //> color  : myTest.foo.bar.app.Color.Value = RED
+
+foo.bar.app.Color.values foreach println        //> RED
+                                                //| GREEN
+                                                //| BLUE
+                                                //| BLACK
+                                                //| WHITE
+```
+
+[Understanding scala enumerations](http://stackoverflow.com/questions/11067396/understanding-scala-enumerations)
+```scala
+object WeekDay extends Enumeration {
+  type WeekDay = Value
+  val Mon, Tue, Wed, Thu, Fri, Sat, Sun = Value
+}
+import WeekDay._
+def isWorkingDay(d: WeekDay) = ! (d == Sat || d == Sun)
+```
+- The line `type WeekDay = Value` is just a *type alias*. 
+- The `Enumeration` trait has a type member `Value` representing the individual elements of the enumeration
+- Thus `object WeekDay` inherits that type member.
+- `val Mon, Tue, Wed, Thu, Fri, Sat, Sun = Value` = `val Mon = Value`, `val Tue = Value`, `val Wed = Value`...
+- if the contents of object WeekDay is not imported, you would need to use type WeekDay.Value
+```scala
+def isWorkingDay(d: WeekDay.Value) = ! (d == WeekDay.Sat || d == WeekDay.Sun)
+```
 
 ## Tuples, for When You Just Need a Bag of Things
 
