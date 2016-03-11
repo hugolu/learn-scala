@@ -728,7 +728,93 @@ z: scala.collection.immutable.Map[Int,String] = Map(3 -> three)
 
 ## Sorting an Existing Map by Key or Value
 
+Usage of `sortBy` & `sortWith`:
+```scala
+scala> val seq = Seq(1, 3, 5, 2, 4)
+seq: Seq[Int] = List(1, 3, 5, 2, 4)
+
+scala> seq.sortBy(n => n)
+res0: Seq[Int] = List(1, 2, 3, 4, 5)
+
+scala> seq.sortWith(_ < _)
+res1: Seq[Int] = List(1, 2, 3, 4, 5)
+
+scala> seq.sortWith(_ > _)
+res2: Seq[Int] = List(5, 4, 3, 2, 1)
+```
+
+```scala
+scala> val nums = Map(1->"one", 2->"two", 3->"three")
+nums: scala.collection.immutable.Map[Int,String] = Map(1 -> one, 2 -> two, 3 -> three)
+
+scala> nums.toSeq.sortBy(_._1)
+res0: Seq[(Int, String)] = ArrayBuffer((1,one), (2,two), (3,three))
+
+scala> nums.toSeq.sortWith(_._1 < _._1)
+res1: Seq[(Int, String)] = ArrayBuffer((1,one), (2,two), (3,three))
+
+scala> nums.toSeq.sortWith(_._1 > _._1)
+res2: Seq[(Int, String)] = ArrayBuffer((3,three), (2,two), (1,one))
+
+scala> Map(nums.toSeq.sortBy(_._1): _*)
+res3: scala.collection.immutable.Map[Int,String] = Map(1 -> one, 2 -> two, 3 -> three)
+```
+- Sort the map by key, from low to high, using `sortBy`
+- Sort by key in ascending or descending order using `sortWith`
+- `_*`: It’s used to convert the data so it will be passed as multiple parameters to the Map.
+
+```scala
+scala> val nums = Map(1->"one", 2->"two", 3->"three")
+nums: scala.collection.immutable.Map[Int,String] = Map(1 -> one, 2 -> two, 3 -> three)
+
+scala> nums.toSeq.sortBy(_._2)
+res0: Seq[(Int, String)] = ArrayBuffer((1,one), (3,three), (2,two))
+
+scala> nums.toSeq.sortWith(_._2 < _._2)
+res1: Seq[(Int, String)] = ArrayBuffer((1,one), (3,three), (2,two))
+
+scala> nums.toSeq.sortWith(_._2 > _._2)
+res2: Seq[(Int, String)] = ArrayBuffer((2,two), (3,three), (1,one))
+
+scala> Map(nums.toSeq.sortBy(_._2): _*)
+res3: scala.collection.immutable.Map[Int,String] = Map(1 -> one, 3 -> three, 2 -> two)
+```
+- Sort the map by value using `sortBy`
+- Sort by value in ascending or descending order using `sortWith`
+
 ## Finding the Largest Key or Value in a Map
+
+Find the largest key:
+```scala
+scala> val nums = Map(1->"one", 2->"two", 3->"three")
+nums: scala.collection.immutable.Map[Int,String] = Map(1 -> one, 2 -> two, 3 -> three)
+
+scala> nums.max
+res0: (Int, String) = (3,three)
+
+scala> nums.maxBy(_._1)
+res1: (Int, String) = (3,three)
+
+scala> nums.keysIterator.max
+res2: Int = 3
+
+scala> nums.keysIterator.reduce((x,y) => if(x>y) x else y)
+res5: Int = 3
+```
+Find the largest value:
+```scala
+scala> val nums = Map(1->"one", 2->"two", 3->"three")
+nums: scala.collection.immutable.Map[Int,String] = Map(1 -> one, 2 -> two, 3 -> three)
+
+scala> nums.maxBy(_._2.length)
+res0: (Int, String) = (3,three)
+
+scala> nums.valuesIterator.maxBy(_.length)
+res1: String = three
+
+scala> nums.valuesIterator.reduce((x,y) => if (x.length > y.length) x else y)
+res2: String = three
+```
 
 ## Adding Elements to a Set
 
