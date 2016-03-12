@@ -58,7 +58,7 @@ At a high level, Scala’s collection classes begin with the `Traversable` and `
 ## Choosing a Collection Class
 
 ### Choosing a sequence
-- Should the sequence be indexed (like an array), allowing rapid access to any ele‐ ments, or should it be implemented as a linked list?
+- Should the sequence be indexed (like an array), allowing rapid access to any elements, or should it be implemented as a linked list?
 - Do you want a mutable or immutable collection?
 
 |   | Immutable | Mutable |
@@ -84,6 +84,11 @@ Choosing a set is similar to choosing a map. There are base mutable and immutabl
 - `Tuple` - Supports a heterogeneous collection of elements. There is no one “Tuple” class; tuples are implemented as case classes ranging from Tuple1 to Tuple22, which support 1 to 22 elements.
 
 ## Choosing a Collection Method to Solve a Problem
+- **Filtering methods** can be used to filter a collection include collect, diff, distinct, drop, dropWhile, filter, filterNot, find, foldLeft, foldRight, head, headOption, init, intersect, last, lastOption, reduceLeft, reduceRight, remove, slice, tail, take, takeWhile, and union.
+- **Transformer methods** take at least one input collection to create a new output collection, typically using an algorithm you provide. They include +, ++, −, −−, diff, distinct, collect, flatMap, map, reverse, sortWith, takeWhile, zip, and zipWithIndex.
+- **Grouping methods** let you take an existing collection and create multiple groups from that one collection. These methods include groupBy, partition, sliding, span, splitAt, and unzip.
+- **Informational and mathematical methods** provide information about a collection, and include canEqual, contains, containsSlice, count, endsWith, exists, find, forAll, hasDefiniteSize, indexOf, indexOfSlice, indexWhere, isDefinedAt, isEmpty, lastIndexOf, lastIndexOfSlice, lastIndexWhere, max, min, nonEmpty, product, segmentLength, size, startsWith, sum. The methods foldLeft, foldRight, reduceLeft, and reduceRight can also be used with a function you supply to obtain information about a collection.
+- A few other methods are hard to categorize, including par, view, flatten, foreach, and mkString. par creates a parallel collection from an existing collection; view creates a lazy view on a collection; flatten converts a list of lists down to one list; foreach is like a for loop, letting you iterate over the elements in a collection; mkString lets you build a String from a collection.
 
 ## Understanding the Performance of Collections
 
