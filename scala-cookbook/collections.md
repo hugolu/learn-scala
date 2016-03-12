@@ -892,5 +892,51 @@ map: scala.collection.immutable.Map[Int,String] = Map(1 -> A, 2 -> B, 3 -> C)
 ```
 
 ## Sorting a Collection
+You want to sort a sequential collection. Or, you want to implement the `Ordered` trait in a custom class so you can use the sorted method, or operators like `<`, `<=`, `>`, and `>=` to compare instances of your class.
+
+```scala
+scala> List(1, 2, 3).sorted
+res4: List[Int] = List(1, 2, 3)
+
+scala> List(1, 2, 3).sortWith(_ < _)
+res5: List[Int] = List(1, 2, 3)
+
+scala> List(1, 2, 3).sortWith(_ > _)
+res6: List[Int] = List(3, 2, 1)
+
+scala> List("apple", "banana", "coconut").sorted
+res7: List[String] = List(apple, banana, coconut)
+
+scala> List("apple", "banana", "coconut").sortWith(_ < _)
+res8: List[String] = List(apple, banana, coconut)
+
+scala> List("apple", "banana", "coconut").sortWith(_ > _)
+res9: List[String] = List(coconut, banana, apple)
+```
+- The “rich” versions of the numeric classes (like RichInt) and the StringOps class all extend the `Ordered` trait, so they can be used with the sorted method.
+
+### Mix in the Ordered trait
+```scala
+scala> :paste
+// Entering paste mode (ctrl-D to finish)
+
+class Foo(var n: Int) extends Ordered[Foo] {
+  override def toString = s"Foo($n)"
+  def compare(that: Foo) = this.n - that.n
+}
+
+// Exiting paste mode, now interpreting.
+
+defined class Foo
+
+scala> List(new Foo(1), new Foo(2), new Foo(3)).sorted
+res12: List[Foo] = List(Foo(1), Foo(2), Foo(3))
+
+scala> List(new Foo(1), new Foo(2), new Foo(3)).sortWith(_ < _)
+res13: List[Foo] = List(Foo(1), Foo(2), Foo(3))
+
+scala> List(new Foo(1), new Foo(2), new Foo(3)).sortWith(_ > _)
+res14: List[Foo] = List(Foo(3), Foo(2), Foo(1))
+```
 
 ## Converting a Collection to a String with mkString
