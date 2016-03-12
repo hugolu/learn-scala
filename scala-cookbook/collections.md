@@ -855,6 +855,42 @@ def isWorkingDay(d: WeekDay.Value) = ! (d == WeekDay.Sat || d == WeekDay.Sun)
 
 ## Tuples, for When You Just Need a Bag of Things
 
+```scala
+scala> val x = (1, "hell", List(1, 2, 3))
+x: (Int, String, List[Int]) = (1,hell,List(1, 2, 3))
+
+scala> x._1
+res0: Int = 1
+
+scala> x._2
+res1: String = hell
+
+scala> x._3
+res2: List[Int] = List(1, 2, 3)
+
+scala> val (int, string, list) = x
+int: Int = 1
+string: String = hell
+list: List[Int] = List(1, 2, 3)
+```
+
+```scala
+scala> val a = (1, "A")
+a: (Int, String) = (1,A)
+
+scala> val b = 2 -> "B"
+b: (Int, String) = (2,B)
+
+scala> val c = (3 -> "C")
+c: (Int, String) = (3,C)
+
+scala> c.getClass
+res0: Class[_ <: (Int, String)] = class scala.Tuple2
+
+scala> val map = Map(a, b, c)
+map: scala.collection.immutable.Map[Int,String] = Map(1 -> A, 2 -> B, 3 -> C)
+```
+
 ## Sorting a Collection
 
 ## Converting a Collection to a String with mkString
