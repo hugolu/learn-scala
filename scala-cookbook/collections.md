@@ -820,13 +820,19 @@ package foo.bar.app {
 }
 
 import foo.bar.app.Color._
-val color = RED                                 //> color  : myTest.foo.bar.app.Color.Value = RED
 
-foo.bar.app.Color.values foreach println        //> RED
-                                                //| GREEN
-                                                //| BLUE
-                                                //| BLACK
-                                                //| WHITE
+def show(color: Color) = color match {
+  case RED   => println("RED")
+  case GREEN => println("GREEN")
+  case BLUE  => println("BLUE")
+  case _ => println("others")
+} 
+
+val color = RED                                 //> color  : myTest87.foo.bar.app.Color.Value = RED
+show(color)                                     //> RED
+
+import foo.bar.app._
+Color.values                                    //> res0: myTest87.foo.bar.app.Color.ValueSet = Color.ValueSet(RED, GREEN, BLUE, BLACK, WHITE)
 ```
 
 [Understanding scala enumerations](http://stackoverflow.com/questions/11067396/understanding-scala-enumerations)
