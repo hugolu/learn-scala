@@ -940,3 +940,19 @@ res14: List[Foo] = List(Foo(3), Foo(2), Foo(1))
 ```
 
 ## Converting a Collection to a String with mkString
+```scala
+scala> val fruits = Array("Apple", "Banana", "Coconut")
+fruits: Array[String] = Array(Apple, Banana, Coconut)
+
+scala> fruits.mkString
+res0: String = AppleBananaCoconut
+
+scala> fruits.mkString(", ")
+res1: String = Apple, Banana, Coconut
+
+scala> fruits.mkString("[", ", ", "]")
+res2: String = [Apple, Banana, Coconut]
+
+scala> fruits.flatten.mkString("[", ", ", "]")
+res3: String = [A, p, p, l, e, B, a, n, a, n, a, C, o, c, o, n, u, t]
+```
