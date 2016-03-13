@@ -1,6 +1,25 @@
 # Files and Processes
 
 ## How to Open and Read a Text File
+### Using the concise syntax
+```scala
+scala> io.Source.fromFile("fruits.txt").getLines.toArray
+res0: Array[String] = Array(apple, banana, coconut)
+```
+- This approach has the side effect of leaving the file open as long as the JVM is running, but for short-lived shell scripts, this shouldn’t be an issue; the file is closed when the JVM shuts down.
+
+### Properly closing the file
+```scala
+scala> val bs = io.Source.fromFile("fruits.txt")
+bs: scala.io.BufferedSource = non-empty iterator
+
+scala> bs.getLines.toArray
+res1: Array[String] = Array(apple, banana, coconut)
+
+scala> bs.close
+```
+- To properly close the file, get a reference to the BufferedSource when opening the file, and manually close it when you’re finished with the file.
+
 ## Writing Text Files
 ## Reading and Writing Binary Files
 ## How to Process Every Character in a Text File
