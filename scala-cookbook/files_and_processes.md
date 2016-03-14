@@ -156,6 +156,44 @@ coconut
 cannot read file
 ```
 
+### my trail
+Test.scala:
+```scala
+import scala.io._
+
+object Test extends App {
+  def ReadText(filename: String) = {
+    var in = None: Option[BufferedSource]
+
+    println(s">> ReadText($filename)")
+    try {
+      in = Some(Source.fromFile(filename))
+      for (line <- in.get.getLines)
+        println(line)
+    } catch {
+      case e: Exception => println("something's wrong")
+    } finally {
+      if (in.isDefined) in.get.close
+    }
+  }
+
+  ReadText("fruits.txt")
+  ReadText("no_such_file")
+}
+```
+
+```shell
+$ scalac Test.scala
+$ scala Test
+>> ReadText(fruits.txt)
+apple
+banana
+coconut
+
+>> ReadText(no_such_file)
+something's wrong
+```
+
 ## Writing Text Files
 ```scala
 scala> import java.io._
