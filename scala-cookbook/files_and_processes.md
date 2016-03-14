@@ -156,6 +156,28 @@ coconut
 cannot read file
 ```
 
+## Writing Text Files
+```scala
+scala> import java.io._
+import java.io._
+
+scala> val pw = new PrintWriter(new File("foo.txt"))
+pw: java.io.PrintWriter = java.io.PrintWriter@7bc18623
+scala> pw.write("hello world")
+scala> pw.close
+
+scala> var fw = new FileWriter(new File("qiz.txt"))
+fw: java.io.FileWriter = java.io.FileWriter@4e73e6cd
+scala> fw.write("hello world")
+scala> fw.close
+
+scala> val bw = new BufferedWriter(new FileWriter(new File("bar.txt")))
+bw: java.io.BufferedWriter = java.io.BufferedWriter@3579defb
+scala> bw.write("hello world")
+scala> bw.close
+```
+- `FileWriter` throws IOExceptions, whereas `PrintWriter` does not throw exceptions, and instead sets Boolean flags that can be checked.
+
 ## Reading and Writing Binary Files
 ## How to Process Every Character in a Text File
 ## How to Process a CSV File
