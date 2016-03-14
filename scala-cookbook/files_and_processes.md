@@ -73,7 +73,89 @@ banana
 coconut
 ```
 
-## Writing Text Files
+### Handling exceptions
+```scala
+scala> import java.io.{FileNotFoundException, IOException}
+import java.io.{FileNotFoundException, IOException}
+
+scala> :paste
+// Entering paste mode (ctrl-D to finish)
+
+try {
+  io.Source.fromFile("no-such-file").getLines.foreach(println)
+} catch {
+  case e: FileNotFoundException => println("file not found")
+  case e: Exception => println("exception")
+}
+
+// Exiting paste mode, now interpreting.
+
+file not found
+```
+- use Scala’s `try/catch` syntax to handle exceptions generated when trying to open a file
+
+### using + try/catch
+Control.scala:
+```scala
+object Control {
+  def using[A <: { def close(): Unit}, B](resource: A)(f: A=>B):B =
+    try {
+      f(resource)
+    } finally {
+      resource.close()
+    }
+}
+```
+
+ReadText.scala:
+```scala
+import Control._
+
+object ReadText {
+  def readTextFile(filename: String): Option[List[String]] = {
+    try {
+      val lines = using(io.Source.fromFile(filename)) { source =>
+        (for (line <- source.getLines) yield line).toList
+      }
+      Some(lines)
+    } catch {
+      case e: Exception => None
+    }
+  }
+}
+```
+
+TestRead.scala:
+```scala
+import Control._
+import ReadText._
+
+object TestRead extends App {
+  def readFile(filename: String) = {
+    println(s">> readFile($filename)")
+    readTextFile(filename) match {
+      case Some(lines) => lines.foreach(println)
+      case None => println("cannot read file")
+    }
+  }
+
+  readFile("fruits.txt")
+  readFile("no-such-file")
+}
+```
+
+```shell
+$ scalac *.scala
+$
+$ scala TestRead
+>> readFile(fruits.txt)
+apple
+banana
+coconut
+>> readFile(no-such-file)
+cannot read file
+```
+
 ## Reading and Writing Binary Files
 ## How to Process Every Character in a Text File
 ## How to Process a CSV File
