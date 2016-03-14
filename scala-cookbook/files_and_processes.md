@@ -20,6 +20,59 @@ scala> bs.close
 ```
 - To properly close the file, get a reference to the BufferedSource when opening the file, and manually close it when you’re finished with the file.
 
+### Automatically closing the resource
+Control.scala:
+```scala
+object Control {
+  def using[A <: { def close(): Unit}, B](resource: A)(f: A=>B):B =
+    try {
+      f(resource)
+    } finally {
+      resource.close()
+    }
+}
+```
+
+TestUsing.scala:
+```scala
+import Control._
+
+object TestUsing extends App {
+  using(io.Source.fromFile("fruits.txt")) { source =>
+    for(line <- source.getLines) {
+      println(line)
+    }
+  }
+}
+```
+
+fruits.txt:
+```
+apple
+banana
+coconut
+```
+
+compile & run
+```shell
+$ scalac *.scala
+$ ls
+Control$.class
+Control.class
+Control.scala
+TestUsing$$anonfun$1$$anonfun$apply$1.class
+TestUsing$$anonfun$1.class
+TestUsing$.class
+TestUsing$delayedInit$body.class
+TestUsing.class
+TestUsing.scala
+fruits.txt
+$ scala TestUsing
+apple
+banana
+coconut
+```
+
 ## Writing Text Files
 ## Reading and Writing Binary Files
 ## How to Process Every Character in a Text File
