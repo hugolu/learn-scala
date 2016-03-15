@@ -341,6 +341,7 @@ $ scala CopyBinary
 close in & out
 $ diff 100k 100k.copy
 ```
+> Hope that Scala will support "optional binding" & "implicitly unwrapped optionals" like Swift in the near feature :)
 
 ## How to Process Every Character in a Text File
 ## How to Process a CSV File
