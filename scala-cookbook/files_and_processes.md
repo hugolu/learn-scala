@@ -778,6 +778,35 @@ find: /usr/sbin/authserver: Permission denied
 - capture the output with a `ProcessLogger`
 
 ## Building a Pipeline of Commands
+```scala
+scala> import scala.sys.process._
+import scala.sys.process._
+
+scala> ("ls -al" #| "wc -l").!!
+res6: String =
+"       5
+"
+
+scala> ("ls -al" #| "wc -l").!!.trim
+res7: String = 5
+```
+- Use the `#|` method to pipe the output from one command into the input stream of another command.
+
+```scala
+scala> ("whoami | date").!!.trim
+usage: whoami
+java.lang.RuntimeException: Nonzero exit value: 1
+```
+- This doesn’t work because the piping capability comes from a shell (Bourne shell, Bash, etc.), and when you run a command like this, you don’t have a shell.
+
+```scala
+scala> ("whoami" ### "date").!!.trim
+res12: String =
+hugo
+2016年 3月15日 周二 16時07分28秒 CST
+```
+- use the `###` operator as the Unix `;` symbol
+
 ## Redirecting the STDOUT and STDIN of External Commands
 ## Using AND (&&) and OR (||) with Processes
 ## Handling Wildcard Characters in External Commands
