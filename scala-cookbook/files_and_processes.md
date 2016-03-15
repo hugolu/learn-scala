@@ -808,8 +808,105 @@ hugo
 - use the `###` operator as the Unix `;` symbol
 
 ## Redirecting the STDOUT and STDIN of External Commands
+
+```scala
+scala> import scala.sys.process._
+import scala.sys.process._
+
+scala> import java.io._
+import java.io._
+
+scala> ("ls -al" #> new File("ls.txt")).!
+res1: Int = 0
+
+scala> ("cat" #< new File("ls.txt")).!!
+res2: String =
+"total 8
+drwxr-xr-x   5 hugo  staff  170  3 15 16:19 .
+drwxr-xr-x  13 hugo  staff  442  3 15 13:58 ..
+-rw-r--r--   1 hugo  staff    0  3 15 15:53 FRED
+-rw-r--r--   1 hugo  staff    0  3 15 16:19 ls.txt
+-rwxr-xr-x   1 hugo  staff  272  3 15 15:53 scala.sh
+"
+```
+
 ## Using AND (&&) and OR (||) with Processes
+
+```scala
+scala> import scala.sys.process._
+import scala.sys.process._
+
+scala> ("ls hello.txt" #&& "wc -c hello.txt" #|| "echo file not found").!
+hello.txt
+      12 hello.txt
+res4: Int = 0
+```
+
 ## Handling Wildcard Characters in External Commands
+
+```scala
+scala> import scala.sys.process._
+import scala.sys.process._
+
+scala> "ls *".!
+ls: *: No such file or directory
+res0: Int = 1
+
+scala> Seq("/bin/sh", "-c", "ls -al *").!!.trim
+res1: String = -rw-r--r--  1 hugo  staff  12  3 15 16:22 hello.txt
+```
+- Putting a shell wildcard character like `*` into a command doesn’t work because the `*` needs to be interpreted and expanded by a shell, like the Bourne or Bash shells.
+
 ## How to Run a Process in a Different Directory
+
+```scala
+scala> Process("ls -al", new File("/tmp")).!!
+res14: String =
+"total 0
+drwxrwxrwt  7 root  wheel  238  3 15 15:00 .
+drwxr-xr-x@ 6 root  wheel  204 11 24  2014 ..
+drwx------  4 hugo  wheel  136  3 11 15:25 .vbox-hugo-ipc
+drwx------  3 hugo  wheel  102  3 15 15:00 KSOutOfProcessFetcher.501.ppfIhqX0vjaTSb8AJYobDV7Cu68=
+drwx------  3 hugo  wheel  102  3  7 21:55 com.apple.launchd.HZVHs3tJPU
+drwx------  3 hugo  wheel  102  3  7 21:55 com.apple.launchd.hQVmFSLdqo
+drwx------  3 hugo  wheel  102  3  7 21:55 com.apple.launchd.tRG29JZqtL
+"
+```
+- `Process().!!` creates a ProcessBuilder and exexutes it
+
 ## Setting Environment Variables When Running Commands
+
+/Users/hugo/bin/hello.sh:
+```shell
+#!/bin/sh
+echo "hello world"
+```
+
+/Users/hugo/bin/foo.sh:
+```shell
+#!/bin/sh
+
+echo VAR1=${VAR1}
+echo VAR2=${VAR2}
+```
+
+```scala
+scala> import scala.sys.process._
+import scala.sys.process._
+
+scala> import java.io._
+import java.io._
+
+scala> Process("hello.sh", new File("/Users/hugo/bin")).!!.trim
+res0: String = hello world
+
+scala> Process("hello.sh", None, "PATH" -> ".:/Users/hugo/bin").!!.trim
+res1: String = hello world
+
+scala> Process("foo.sh", new File("/Users/hugo/bin"), "VAR1" -> "foo", "VAR2" -> "bar").!!.trim
+res2: String =
+VAR1=foo
+VAR2=bar
+```
+
 ## An Index of Methods to Execute External Commands
