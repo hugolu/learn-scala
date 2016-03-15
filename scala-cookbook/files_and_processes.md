@@ -474,7 +474,64 @@ Cherry|300|789
 ```
 
 ## Pretending that a String Is a File
+```scala
+scala> var source = io.Source.fromFile("fruits.txt")
+source: scala.io.BufferedSource = non-empty iterator
+
+scala> source.getLines.foreach(println)
+apple
+banana
+cherry
+
+scala> source.close
+```
+
+```scala
+scala> var source = io.Source.fromString("apple\nbanana\ncherry")
+source: scala.io.Source = non-empty iterator
+
+scala> source.getLines.foreach(println)
+apple
+banana
+cherry
+
+scala> source.close
+```
+
 ## Using Serialization
+TestSerialization.scala:
+```scala
+import java.io._
+
+object TestSerialization extends App {
+  val foo = new Foo("hello", 123)
+
+  val out = new ObjectOutputStream(new FileOutputStream("hello.serial"))
+  out.writeObject(foo)
+
+  val in = new ObjectInputStream(new FileInputStream("hello.serial"))
+  val obj = in.readObject.asInstanceOf[Foo]
+
+  println(obj)
+
+  in.close
+  out.close
+}
+
+@SerialVersionUID(100L)
+class Foo (var str: String, var num: Int) extends Serializable {
+  override def toString = s"Foo($str, $num)"
+}
+```
+
+```shell
+$ scalac TestSerialization.scala
+$ scala TestSerialization
+Foo(hello, 123)
+```
+- `ObjectInputStream.writeObject` for serial-out
+- `ObjectOutputStream.readObject.asInstanceOf[T]` for serial-in
+
 ## Listing Files in a Directory
 ## Listing Subdirectories Beneath a Directory
 ## Executing External Commands
