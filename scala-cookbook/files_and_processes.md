@@ -344,6 +344,79 @@ $ diff 100k 100k.copy
 > Hope that Scala will support "optional binding" & "implicitly unwrapped optionals" like Swift in the near feature :)
 
 ## How to Process Every Character in a Text File
+fruits.txt (the file to process):
+```
+Apple
+Banana
+Cherry
+```
+
+```scala
+scala> val source = io.Source.fromFile("fruits.txt")
+source: scala.io.BufferedSource = non-empty iterator
+
+scala> for (line <- source.getLines) println(line)
+Apple
+Banana
+Cherry
+
+scala> source.close
+```
+
+```scala
+scala> val source = io.Source.fromFile("fruits.txt")
+source: scala.io.BufferedSource = non-empty iterator
+
+scala> source.toArray.map(_.toByte)
+res19: Array[Byte] = Array(65, 112, 112, 108, 101, 10, 66, 97, 110, 97, 110, 97, 10, 67, 104, 101, 114, 114, 121, 10)
+
+scala> source.close
+```
+
+Check text file byte by byte:
+```scala
+scala> val source = io.Source.fromFile("fruits.txt")
+source: scala.io.BufferedSource = non-empty iterator
+
+scala> val NEWLINE = 10
+NEWLINE: Int = 10
+
+scala> var newlineCnt = 0
+newlineCnt: Int = 0
+
+scala> for {
+     |   char <- source
+     |   if char.toByte == NEWLINE
+     | } newlineCnt += 1
+
+scala> println(newlineCnt)
+3
+```
+
+Treat text file as binary file:
+```scala
+scala> val in = new FileInputStream("fruits.txt")
+in: java.io.FileInputStream = java.io.FileInputStream@2aa3e9a6
+
+scala> val NEWLINE = 10
+NEWLINE: Int = 10
+
+scala> var newlineCnt = 0
+newlineCnt: Int = 0
+
+scala> var c: Int = 0
+c: Int = 0
+
+scala> while({c = in.read; c != -1}) {
+     |   if (c == NEWLINE) newlineCnt += 1
+     | }
+
+scala> println(newlineCnt)
+3
+
+scala> in.close
+```
+
 ## How to Process a CSV File
 ## Pretending that a String Is a File
 ## Using Serialization
