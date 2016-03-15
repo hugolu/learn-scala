@@ -217,6 +217,50 @@ scala> bw.close
 - `FileWriter` throws IOExceptions, whereas `PrintWriter` does not throw exceptions, and instead sets Boolean flags that can be checked.
 
 ## Reading and Writing Binary Files
+
+Reference:
+- https://docs.oracle.com/javase/7/docs/api/java/io/FileInputStream.html
+- https://docs.oracle.com/javase/7/docs/api/java/io/FileOutputStream.html
+
+```scala
+scala> import java.io._
+import java.io._
+
+scala> val bytes = Array.fill[Byte](1024)(0)
+bytes: Array[Byte] = Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,...
+
+scala> val in = new FileInputStream("input.txt")
+in: java.io.FileInputStream = java.io.FileInputStream@566caa0d
+
+scala> val byte = in.read
+byte: Int = 14
+
+scala> in.read(bytes)
+res0: Int = 1024
+
+scala> in.read(bytes, 100, 100)
+res1: Int = 100
+
+scala> in.close
+
+scala> val out = new FileOutputStream("output.txt")
+out: java.io.FileOutputStream = java.io.FileOutputStream@36665b29
+
+scala> out.write(byte)
+
+scala> out.write(bytes)
+
+scala> out.write(bytes, 100, 100)
+
+scala> out.close
+```
+- `int read()`: Reads a byte of data from this input stream.
+- `int read(byte[] b)`: Reads up to b.length bytes of data from this input stream into an array of bytes.
+- `int read(byte[] b, int off, int len)`: Reads up to len bytes of data from this input stream into an array of bytes.
+- `void write(int b)`: Writes the specified byte to this file output stream.
+- `void write(byte[] b)`: Writes b.length bytes from the specified byte array to this file output stream.
+- `void rite(byte[] b, int off, int len)`: Writes len bytes from the specified byte array starting at offset off to this file output stream.
+
 ## How to Process Every Character in a Text File
 ## How to Process a CSV File
 ## Pretending that a String Is a File
