@@ -910,3 +910,48 @@ VAR2=bar
 ```
 
 ## An Index of Methods to Execute External Commands
+reference: http://www.scala-lang.org/api/current/index.html#scala.sys.process.ProcessBuilder
+
+| Method | Description |
+|--------|-------------|
+| `!: Int` | Starts the process represented by this builder, blocks until it exits, and returns the exit code. |
+| `!!: String` | Starts the process represented by this builder, blocks until it exits, and returns the output as a String. Standard error is sent to the console. If the exit code is non-zero, an exception is thrown. |
+| `###(other: ProcessBuilder): ProcessBuilder` | Constructs a command that will run this command and then other. The exit code will be the exit code of other. |
+| `#&&(other: ProcessBuilder): ProcessBuilder`| Constructs a command that runs this command first and then other if this command succeeds. |
+| `#||(other: ProcessBuilder): ProcessBuilder` | Constructs a command that runs this command first and then other if this command does not succeed. |
+| `#|(other: ProcessBuilder): ProcessBuilder` | Constructs a command that will run this command and pipes the output to other. other must be a simple command. |
+| `lineStream: Stream[String]` | Starts the process represented by this builder. The output is returned as a Stream that blocks when lines are not available but the process has not completed. |
+| `lineStream_!: Stream[String]` | Starts the process represented by this builder. The output is returned as a Stream that blocks when lines are not available but the process has not completed. |
+| `#<(in: ⇒ InputStream): ProcessBuilder` | Reads the given InputStream into the input stream of this process. |
+| `#>(out: ⇒ OutputStream): ProcessBuilder` | Writes the output stream of this process to the given OutputStream. |
+| `#>>(f: File): ProcessBuilder` | Appends the output stream of this process to the given file. |
+
+Deprecated Value Members:
+- `lines: Stream[String]`: Deprecated (renamed). Use `lineStream` instead.
+- `lines_!: Stream[String]`: Deprecated (renamed). Use `lineStream_!` instead.
+
+`lineStream`: returns immediately like `run`, and the output being generated is provided through a `Stream[String]`. Getting the next element of that `Stream` may block until it becomes available. This method will throw an exception if the return code is different than zero -- if this is not desired, use the `lineStream_!` method.
+
+```scala
+scala> import scala.sys.process._
+import scala.sys.process._
+
+scala> val stream = "ls -al".lineStream
+stream: Stream[String] = Stream(total 8, ?)
+
+scala> if (stream.isEmpty == false) stream.foreach(println)
+total 8
+drwxr-xr-x   3 hugo  staff  102  3 15 16:22 .
+drwxr-xr-x  13 hugo  staff  442  3 15 13:58 ..
+-rw-r--r--   1 hugo  staff   12  3 15 16:22 hello.txt
+
+scala> val stream = "ls foo".lineStream
+ls: foo: No such file or directory
+java.lang.RuntimeException: Nonzero exit code: 1
+
+scala> val stream = "ls foo".lineStream_!
+ls: foo: No such file or directory
+stream: Stream[String] = Stream()
+
+scala> if (stream.isEmpty == false) stream.foreach(println)
+```
