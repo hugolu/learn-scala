@@ -590,7 +590,151 @@ dir3 has file07, file08, file09
 ```
 
 ## Executing External Commands
+```scala
+scala> import scala.sys.process._
+import scala.sys.process._
+
+scala> "ls -al" !
+warning: there was one feature warning; re-run with -feature for details
+total 0
+drwxr-xr-x   5 hugo  staff  170  3 15 15:08 .
+drwxr-xr-x  13 hugo  staff  442  3 15 13:58 ..
+-rw-r--r--   1 hugo  staff    0  3 15 13:58 file00
+-rw-r--r--   1 hugo  staff    0  3 15 13:58 file01
+-rw-r--r--   1 hugo  staff    0  3 15 13:58 file02
+res0: Int = 0
+
+scala> "ls -al" !!
+warning: there was one feature warning; re-run with -feature for details
+res1: String =
+"total 0
+drwxr-xr-x   5 hugo  staff  170  3 15 15:08 .
+drwxr-xr-x  13 hugo  staff  442  3 15 13:58 ..
+-rw-r--r--   1 hugo  staff    0  3 15 13:58 file00
+-rw-r--r--   1 hugo  staff    0  3 15 13:58 file01
+-rw-r--r--   1 hugo  staff    0  3 15 13:58 file02
+"
+```
+- Use the `!` method to execute the command and get **its exit status**.
+- Use the `!!` method to execute the command and get **its output**.
+
+```scala
+scala> import scala.sys.process._
+import scala.sys.process._
+
+scala> val process = Process("find /usr -print")
+process: scala.sys.process.ProcessBuilder = [find, /usr, -print]
+
+scala> val stream = process.lines
+stream: Stream[String] = Stream(/usr, ?)
+
+scala> val it = stream.iterator
+it: Iterator[String] = non-empty iterator
+
+scala> it.next
+res0: String = /usr
+
+scala> it.next
+res1: String = /usr/bin
+```
+- With `lines`, you can immediately execute a command in the background.
+
 ## Executing External Commands and Using STDOUT
+
+```scala
+scala> import scala.sys.process._
+import scala.sys.process._
+
+scala> val result = "ls -al" !!
+warning: there was one feature warning; re-run with -feature for details
+result: String =
+"total 0
+drwxr-xr-x   5 hugo  staff  170  3 15 15:08 .
+drwxr-xr-x  13 hugo  staff  442  3 15 13:58 ..
+-rw-r--r--   1 hugo  staff    0  3 15 13:58 file00
+-rw-r--r--   1 hugo  staff    0  3 15 13:58 file01
+-rw-r--r--   1 hugo  staff    0  3 15 13:58 file02
+"
+
+scala> println(result)
+total 0
+drwxr-xr-x   5 hugo  staff  170  3 15 15:08 .
+drwxr-xr-x  13 hugo  staff  442  3 15 13:58 ..
+-rw-r--r--   1 hugo  staff    0  3 15 13:58 file00
+-rw-r--r--   1 hugo  staff    0  3 15 13:58 file01
+-rw-r--r--   1 hugo  staff    0  3 15 13:58 file02
+```
+- `!!` returns the STDOUT from the command rather than the exit code of the command.
+
+```scala
+scala> import scala.sys.process._
+import scala.sys.process._
+
+scala> val result = Seq("ls", "-al") !!
+warning: there was one feature warning; re-run with -feature for details
+result: String =
+"total 0
+drwxr-xr-x   5 hugo  staff  170  3 15 15:08 .
+drwxr-xr-x  13 hugo  staff  442  3 15 13:58 ..
+-rw-r--r--   1 hugo  staff    0  3 15 13:58 file00
+-rw-r--r--   1 hugo  staff    0  3 15 13:58 file01
+-rw-r--r--   1 hugo  staff    0  3 15 13:58 file02
+```
+- using a `Seq` is a good way to execute a system command that requires arguments
+
+### Using the lines_! method
+```scala
+scala> import scala.sys.process._
+import scala.sys.process._
+
+scala> "ls foo" !
+warning: there was one feature warning; re-run with -feature for details
+ls: foo: No such file or directory
+res7: Int = 1
+
+scala> "ls foo" !!
+warning: there was one feature warning; re-run with -feature for details
+ls: foo: No such file or directory
+java.lang.RuntimeException: Nonzero exit value: 1
+  at scala.sys.package$.error(package.scala:27)
+  at scala.sys.process.ProcessBuilderImpl$AbstractBuilder.slurp(ProcessBuilderImpl.scala:132)
+  at scala.sys.process.ProcessBuilderImpl$AbstractBuilder.$bang$bang(ProcessBuilderImpl.scala:102)
+  ... 33 elided
+```
+- If the value of executing `!` is nonzero, you know that the executable is not available on the current system.
+
+```scala
+scala> import scala.sys.process._
+import scala.sys.process._
+
+scala> "which foo".lines_!.headOption
+res16: Option[String] = None
+
+scala> "which ls".lines_!.headOption
+res17: Option[String] = Some(/bin/ls)
+```
+
+```scala
+scala> import scala.sys.process._
+import scala.sys.process._
+
+scala> def execute(cmd: String) = {
+     |   cmd.lines_!.headOption match {
+     |     case None => println("cmd failed")
+     |     case Some(str) => println(str)
+     |   }
+     | }
+warning: there was one deprecation warning; re-run with -deprecation for details
+execute: (cmd: String)Unit
+
+scala> execute("ls foo.txt")
+foo.txt
+
+scala> execute("ls bar.txt")
+ls: bar.txt: No such file or directory
+cmd failed
+```
+
 ## Handling STDOUT and STDERR for External Commands
 ## Building a Pipeline of Commands
 ## Redirecting the STDOUT and STDIN of External Commands
