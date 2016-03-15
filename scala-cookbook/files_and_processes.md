@@ -708,10 +708,23 @@ scala> import scala.sys.process._
 import scala.sys.process._
 
 scala> "which foo".lines_!.headOption
+warning: there was one deprecation warning; re-run with -deprecation for details
 res16: Option[String] = None
 
 scala> "which ls".lines_!.headOption
+warning: there was one deprecation warning; re-run with -deprecation for details
 res17: Option[String] = Some(/bin/ls)
+```
+
+```scala
+scala> import scala.sys.process._
+import scala.sys.process._
+
+scala> "which foo".lineStream_!.headOption
+res18: Option[String] = None
+
+scala> "which ls".lineStream_!.headOption
+res19: Option[String] = Some(/bin/ls)
 ```
 
 ```scala
