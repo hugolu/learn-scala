@@ -454,7 +454,24 @@ Cherry|300|789
 scala> source.close
 ```
 
+```scala
+scala> val source = io.Source.fromFile("fruits.csv")
+source: scala.io.BufferedSource = non-empty iterator
 
+scala> val lines = source.getLines
+lines: Iterator[String] = non-empty iterator
+
+scala> val rows = new Array[Array[String]](3)
+rows: Array[Array[String]] = Array(null, null, null)
+
+scala> for((line, index) <- lines.zipWithIndex)
+     |   rows(index) = line.split(",").map(_.trim)
+
+scala> rows.foreach(row => println(row.mkString("|")))
+Apple|100|123
+Banana|200|456
+Cherry|300|789
+```
 
 ## Pretending that a String Is a File
 ## Using Serialization
