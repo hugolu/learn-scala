@@ -749,6 +749,34 @@ cmd failed
 ```
 
 ## Handling STDOUT and STDERR for External Commands
+
+```scala
+scala> import scala.sys.process._
+import scala.sys.process._
+
+scala> val stdout = new StringBuilder
+stdout: StringBuilder =
+
+scala> val stderr = new StringBuilder
+stderr: StringBuilder =
+
+scala> val status = Seq("find", "/usr", "-name", "make") ! ProcessLogger(stdout append _, stderr append _)
+status: Int = 1
+
+scala> println(status)
+1
+
+scala> println(stdout)
+/usr/bin/make/usr/local/Library/ENV/4.3/make
+
+scala> println(stderr)
+find: /usr/sbin/authserver: Permission denied
+
+```
+- `stdout` variable contains the STDOUT if the command is successful
+- `stderr` contains the STDERR from the command if there are problems
+- capture the output with a `ProcessLogger`
+
 ## Building a Pipeline of Commands
 ## Redirecting the STDOUT and STDIN of External Commands
 ## Using AND (&&) and OR (||) with Processes
