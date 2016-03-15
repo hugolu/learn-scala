@@ -307,6 +307,41 @@ scala> in.close
 scala> out.close
 ```
 
+### FileInputStream/FileOutputStream & Option & Copying buffer
+CopyBinary.scala
+```scala
+import java.io._
+
+object CopyBinary extends App {
+  var in = None : Option[FileInputStream]
+  var out = None : Option[FileOutputStream]
+  val bytes = Array.fill[Byte](1024)(0)
+  var length = 0
+
+  try {
+    in = Some(new FileInputStream("100k"))
+    out = Some(new FileOutputStream("100k.copy"))
+
+    while ({length = in.get.read(bytes); length > 0}) {
+      out.get.write(bytes, 0, length)
+    }
+  } catch {
+    case e: IOException => e.printStackTrace
+  } finally {
+    println ("close in & out")
+    if (in.isDefined) in.get.close
+    if (out.isDefined) out.get.close
+  }
+}
+```
+
+```shell
+$ scalac CopyBinary.scala
+$ scala CopyBinary
+close in & out
+$ diff 100k 100k.copy
+```
+
 ## How to Process Every Character in a Text File
 ## How to Process a CSV File
 ## Pretending that a String Is a File
