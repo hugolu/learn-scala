@@ -533,7 +533,62 @@ Foo(hello, 123)
 - `ObjectOutputStream.readObject.asInstanceOf[T]` for serial-in
 
 ## Listing Files in a Directory
+
+```scala
+scala> import java.io.File
+import java.io.File
+
+scala> val dir = new File(".")
+dir: java.io.File = .
+
+scala> if (dir.isDirectory) dir.listFiles.filter(_.isFile).map(_.getName)
+res0: Any = Array(file00, file01, file02)
+```
+
 ## Listing Subdirectories Beneath a Directory
+
+```shell
+$ tree
+.
+├── dir1
+│   ├── file01
+│   ├── file02
+│   └── file03
+├── dir2
+│   ├── file04
+│   ├── file05
+│   └── file06
+├── dir3
+│   ├── file07
+│   ├── file08
+│   └── file09
+├── file00
+├── file01
+└── file02
+```
+
+```scala
+scala> import java.io._
+import java.io._
+
+scala> val pwd = new File(".")
+pwd: java.io.File = .
+
+scala> def listFile(dir: File) = {
+     |   val files = dir.listFiles.filter(_.isFile).map(_.getName)
+     |   println(s"${dir.getName} has ${files.mkString(", ")}")
+     | }
+listFile: (dir: java.io.File)Unit
+
+scala> listFile(pwd)
+. has file00, file01, file02
+
+scala> pwd.listFiles.filter(_.isDirectory).foreach(listFile)
+dir1 has file01, file02, file03
+dir2 has file04, file05, file06
+dir3 has file07, file08, file09
+```
+
 ## Executing External Commands
 ## Executing External Commands and Using STDOUT
 ## Handling STDOUT and STDERR for External Commands
