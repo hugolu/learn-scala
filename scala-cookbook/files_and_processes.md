@@ -418,6 +418,44 @@ scala> in.close
 ```
 
 ## How to Process a CSV File
+fruits.csv (the file to process):
+```
+pple, 100, 123
+Banana, 200, 456
+Cherry, 300, 789
+```
+
+```scala
+scala> val source = io.Source.fromFile("fruits.csv")
+source: scala.io.BufferedSource = non-empty iterator
+
+scala> for (line <- source.getLines) println(line.split(",").map(_.trim).mkString("|"))
+Apple|100|123
+Banana|200|456
+Cherry|300|789
+
+scala> source.close
+```
+
+```scala
+scala> var source = io.Source.fromFile("fruits.csv")
+source: scala.io.BufferedSource = non-empty iterator
+
+scala> var lines = source.getLines.toArray.map { line =>
+     |   line.split(",").map(_.trim).mkString("|")
+     | }
+lines: Array[String] = Array(Apple|100|123, Banana|200|456, Cherry|300|789)
+
+scala> lines.foreach(println)
+Apple|100|123
+Banana|200|456
+Cherry|300|789
+
+scala> source.close
+```
+
+
+
 ## Pretending that a String Is a File
 ## Using Serialization
 ## Listing Files in a Directory
