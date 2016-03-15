@@ -261,6 +261,52 @@ scala> out.close
 - `void write(byte[] b)`: Writes b.length bytes from the specified byte array to this file output stream.
 - `void rite(byte[] b, int off, int len)`: Writes len bytes from the specified byte array starting at offset off to this file output stream.
 
+copy byte by byte:
+```scala
+scala> import java.io._
+import java.io._
+
+scala> val in = new FileInputStream("100k")
+in: java.io.FileInputStream = java.io.FileInputStream@74491643
+
+scala> val out = new FileOutputStream("100k.copy")
+out: java.io.FileOutputStream = java.io.FileOutputStream@c3f2507
+
+scala> var c: Int = 0
+c: Int = 0
+
+scala> while ({c = in.read; c != -1}) { out.write(c) }
+
+scala> in.close
+
+scala> out.close
+```
+
+copy with a buffer of array
+```scala
+scala> import java.io._
+import java.io._
+
+scala> val in = new FileInputStream("100k")
+in: java.io.FileInputStream = java.io.FileInputStream@2ecb6c33
+
+scala> val out = new FileOutputStream("100k.copy")
+out: java.io.FileOutputStream = java.io.FileOutputStream@3b4bd56d
+
+scala> val bytes = Array.fill[Byte](1024)(0)
+bytes: Array[Byte] = Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,...
+scala>
+
+scala> var length = 0
+length: Int = 0
+
+scala> while({length = in.read(bytes); length > 0}) { out.write(bytes, 0, length) }
+
+scala> in.close
+
+scala> out.close
+```
+
 ## How to Process Every Character in a Text File
 ## How to Process a CSV File
 ## Pretending that a String Is a File
