@@ -955,3 +955,26 @@ stream: Stream[String] = Stream()
 
 scala> if (stream.isEmpty == false) stream.foreach(println)
 ```
+
+```scala
+scala> import scala.sys.process._
+import scala.sys.process._
+
+scala> var stdout = new StringBuilder
+stdout: StringBuilder =
+
+scala> var stderr = new StringBuilder
+stderr: StringBuilder =
+
+scala> val process = Process("find /usr -name make") run ProcessLogger(stdout append _, stderr append _)
+process: scala.sys.process.Process = scala.sys.process.ProcessImpl$SimpleProcess@53c81ca3
+
+scala> println(process.exitValue)
+1
+
+scala> println(stdout)
+/usr/bin/make/usr/local/Library/ENV/4.3/make
+
+scala> println(stderr)
+find: /usr/sbin/authserver: Permission denied
+```
