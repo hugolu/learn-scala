@@ -50,6 +50,31 @@ scalaVersion := "2.11.7"
 ```
 
 ## Compiling, Running, and Packaging a Scala Project with SBT
+
+```shell
+$ src/main/scala/Hello.scala
+$ sbt compile
+$ sbt run
+$ sbt package
+$ jar tvf target/scala-2.11/test_2.11-1.0.jar
+   265 Thu Mar 17 15:35:02 CST 2016 META-INF/MANIFEST.MF
+     0 Thu Mar 17 15:35:02 CST 2016 foo/
+     0 Thu Mar 17 15:35:02 CST 2016 foo/bar/
+     0 Thu Mar 17 15:35:02 CST 2016 foo/bar/baz/
+   798 Thu Mar 17 15:34:42 CST 2016 foo/bar/baz/Main$delayedInit$body.class
+   976 Thu Mar 17 15:34:42 CST 2016 foo/bar/baz/Main.class
+  2435 Thu Mar 17 15:34:42 CST 2016 foo/bar/baz/Main$.class
+```
+
+src/main/scala/Hello.scala:
+```scala
+package foo.bar.baz
+
+object Main extends App {
+  println("Hello, world")
+}
+```
+
 ## Running Tests with SBT and ScalaTest
 ## Managing Dependencies with SBT
 ## Controlling Which Version of a Managed Dependency Is Used
