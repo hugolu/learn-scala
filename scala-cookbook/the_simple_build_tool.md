@@ -76,6 +76,65 @@ object Main extends App {
 ```
 
 ## Running Tests with SBT and ScalaTest
+
+template of test cases:
+```scala
+import org.scalatest.FunSuite
+
+class HelloTests extends FunSuite {
+  test("describing the target of the test") {
+    result = expressions
+    assert(result == desire)
+  }
+}
+```
+
+src/main/scala/Hello.scala:
+```scala
+package foo.bar.baz
+
+object Main extends App {
+  println("Hello, world")
+}
+
+case class Foo(var name: String)
+```
+
+src/test/scala/HelloTest.scala:
+```scala
+import foo.bar.baz._
+import org.scalatest.FunSuite
+
+class HelloTests extends FunSuite {
+  test("the name of Foo is set correctly in constructor") {
+    val f = Foo("foo")
+    assert(f.name == "foo")
+  }
+
+  test("the Foo's name cat be changed") {
+    val f = Foo("foo")
+    f.name = "bar"
+    assert(f.name == "bar")
+  }
+}
+```
+
+```shell
+$ sbt test
+[info] Set current project to test (in build file:/Users/hugo/workspace.scala/sbt/test/)
+[info] Compiling 1 Scala source to /Users/hugo/workspace.scala/sbt/test/target/scala-2.11/classes...
+[info] Compiling 1 Scala source to /Users/hugo/workspace.scala/sbt/test/target/scala-2.11/test-classes...
+[info] HelloTests:
+[info] - the name of Foo is set correctly in constructor
+[info] - the Foo's name cat be changed
+[info] Run completed in 308 milliseconds.
+[info] Total number of tests run: 2
+[info] Suites: completed 1, aborted 0
+[info] Tests: succeeded 2, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[success] Total time: 8 s, completed 2016/3/17 下午 03:47:50
+```
+
 ## Managing Dependencies with SBT
 ## Controlling Which Version of a Managed Dependency Is Used
 ## Creating a Project with Subprojects
