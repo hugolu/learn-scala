@@ -238,6 +238,8 @@ $ sbt reload update "show update"
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.1.+" % "test"
 ```
 ```shell
+$ sbt reload update "show update"
+...
 [info] 	org.scalatest:scalatest_2.11
 [info] 		- 2.1.7
 [info] 			status: release
@@ -253,6 +255,173 @@ libraryDependencies += "org.scalatest" %% "scalatest" % "2.1.+" % "test"
 ```
 
 ## Creating a Project with Subprojects
+
+```shell
+$ mkdir test; cd test; mkdir4sbt.sh hello 1.0
+$ (mkdir foo; cd foo; mkdir4sbt.sh foo 1.0)
+$ (mkdir bar; cd bar; mkdir4sbt.sh bar 1.0)
+$ tree
+.
+├── bar
+│   ├── build.sbt
+│   ├── lib
+│   ├── project
+│   ├── src
+│   │   ├── main
+│   │   │   ├── java
+│   │   │   ├── resources
+│   │   │   └── scala
+│   │   └── test
+│   │       ├── java
+│   │       ├── resources
+│   │       └── scala
+│   └── target
+├── build.sbt
+├── foo
+│   ├── build.sbt
+│   ├── lib
+│   ├── project
+│   ├── src
+│   │   ├── main
+│   │   │   ├── java
+│   │   │   ├── resources
+│   │   │   └── scala
+│   │   └── test
+│   │       ├── java
+│   │       ├── resources
+│   │       └── scala
+│   └── target
+├── lib
+├── project
+├── src
+│   ├── main
+│   │   ├── java
+│   │   ├── resources
+│   │   └── scala
+│   └── test
+│       ├── java
+│       ├── resources
+│       └── scala
+└── target
+
+38 directories, 3 files
+```
+
+build.sbt:
+```scala
+name := "hello"
+version := "1.0"
+scalaVersion := "2.11.7"
+```
+
+Foo/build.sbt:
+```scala
+name := "foo"
+version := "1.0"
+scalaVersion := "2.11.7"
+```
+
+Bar/build.sbt:
+```scala
+name := "bar"
+version := "1.0"
+scalaVersion := "2.11.7"
+```
+
+project/Build.scala:
+```scala
+import sbt._
+import Keys._
+
+object HelloBuild extends Build {
+  lazy val root = Project(id = "hello",
+    base = file(".")) aggregate(foo, bar) dependsOn(foo, bar)
+
+  lazy val foo = Project(id = "foo",
+    base = file("foo"))
+
+  lazy val bar = Project(id = "bar",
+    base = file("bar"))
+}
+```
+
+src/main/scala/Hello.scala:
+```scala
+package com.whatever.hello
+
+import com.whatever.foo._
+import com.whatever.bar._
+
+object Hello extends App {
+  println(Foo(123))
+  println(Bar(456))
+}
+```
+
+Foo/src/main/scala/Foo.scala:
+```scala
+package com.whatever.foo
+
+object Foo extends App {
+  println("Hello, I'm Foo")
+}
+
+case class Foo(num: Int)
+```
+
+Bar/src/main/scala/Bar.scala:
+```scala
+package com.whatever.bar
+
+object Bar extends App {
+  println("Hello, I'm Bar")
+}
+
+case class Bar(num: Int)
+```
+
+```shell
+$ sbt run
+[info] Loading project definition from /Users/hugo/workspace.scala/sbt/test/project
+[info] Set current project to hello (in build file:/Users/hugo/workspace.scala/sbt/test/)
+[info] Updating {file:/Users/hugo/workspace.scala/sbt/test/}foo...
+[info] Updating {file:/Users/hugo/workspace.scala/sbt/test/}bar...
+[info] Resolving jline#jline;2.12.1 ...
+[info] Done updating.
+[info] Resolving jline#jline;2.12.1 ...
+[info] Done updating.
+[info] Updating {file:/Users/hugo/workspace.scala/sbt/test/}hello...
+[info] Resolving jline#jline;2.12.1 ...
+[info] Done updating.
+[info] Compiling 1 Scala source to /Users/hugo/workspace.scala/sbt/test/bar/target/scala-2.11/classes...
+[info] Compiling 1 Scala source to /Users/hugo/workspace.scala/sbt/test/foo/target/scala-2.11/classes...
+[info] Compiling 1 Scala source to /Users/hugo/workspace.scala/sbt/test/target/scala-2.11/classes...
+[info] Running com.whatever.hello.Hello
+Foo(123)
+Bar(456)
+[success] Total time: 7 s, completed 2016/3/17 下午 04:54:46
+```
+```shell
+$ (cd Foo; sbt run)
+[info] Set current project to foo (in build file:/Users/hugo/workspace.scala/sbt/test/foo/)
+[info] Updating {file:/Users/hugo/workspace.scala/sbt/test/foo/}foo...
+[info] Resolving jline#jline;2.12.1 ...
+[info] Done updating.
+[info] Running com.whatever.foo.Foo
+Hello, I'm Foo
+[success] Total time: 2 s, completed 2016/3/17 下午 04:55:29
+```
+```shell
+$ (cd Bar; sbt run)
+[info] Set current project to bar (in build file:/Users/hugo/workspace.scala/sbt/test/bar/)
+[info] Updating {file:/Users/hugo/workspace.scala/sbt/test/bar/}bar...
+[info] Resolving jline#jline;2.12.1 ...
+[info] Done updating.
+[info] Running com.whatever.bar.Bar
+Hello, I'm Bar
+[success] Total time: 2 s, completed 2016/3/17 下午 04:55:48
+```
+
 ## Using SBT with Eclipse
 ## Generating Project API Documentation
 ## Specifying a Main Class to Run
