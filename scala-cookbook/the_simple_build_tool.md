@@ -523,7 +523,6 @@ resolvers ++= Seq(
 When an SBT command silently fails (typically with a “Nonzero exit code” message), but you can’t tell why, run your command from within the SBT shell, then use the last run command after the command that failed.
 
 ```scala
-```
 $ sbt run   // something fails here, but you can't tell what
 
 $ sbt
