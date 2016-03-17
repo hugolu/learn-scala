@@ -169,6 +169,89 @@ libraryDependencies ++= Seq(
 ```
 
 ## Controlling Which Version of a Managed Dependency Is Used
+
+### specific revision
+```scala
+libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.6" % "test"
+```
+```shell
+$ sbt reload update "show update"
+...
+[info] 	org.scalatest:scalatest_2.11
+[info] 		- 2.2.6
+[info] 			status: release
+[info] 			publicationDate: Wed Jan 06 03:54:37 CST 2016
+[info] 			resolver: sbt-chain
+[info] 			artifactResolver: sbt-chain
+[info] 			evicted: false
+[info] 			homepage: http://www.scalatest.org
+[info] 			isDefault: false
+[info] 			configurations: default(compile), default, compile, runtime, master
+[info] 			licenses: (the Apache License, ASL Version 2.0,Some(http://www.apache.org/licenses/LICENSE-2.0))
+[info] 			callers: default:test_2.11:1.0
+```
+
+### latest.integration
+```scala
+libraryDependencies += "org.scalatest" %% "scalatest" % "latest.integration" % "test"
+```
+```shell
+$ sbt reload update "show update"
+...
+[info] 	org.scalatest:scalatest_2.11
+[info] 		- 3.0.0-SNAP13
+[info] 			status: release
+[info] 			publicationDate: Thu Nov 12 20:44:03 CST 2015
+[info] 			resolver: sbt-chain
+[info] 			artifactResolver: sbt-chain
+[info] 			evicted: false
+[info] 			homepage: http://www.scalatest.org
+[info] 			isDefault: false
+[info] 			configurations: default(compile), default, compile, runtime, master
+[info] 			licenses: (the Apache License, ASL Version 2.0,Some(http://www.apache.org/licenses/LICENSE-2.0))
+[info] 			callers: default:test_2.11:1.0
+```
+
+### latest.milestone
+```scala
+libraryDependencies += "org.scalatest" %% "scalatest" % "latest.milestone" % "test"
+```
+```scala
+$ sbt reload update "show update"
+...
+[info] 	org.scalatest:scalatest_2.11
+[info] 		- 3.0.0-SNAP13
+[info] 			status: release
+[info] 			publicationDate: Thu Nov 12 20:44:03 CST 2015
+[info] 			resolver: sbt-chain
+[info] 			artifactResolver: sbt-chain
+[info] 			evicted: false
+[info] 			homepage: http://www.scalatest.org
+[info] 			isDefault: false
+[info] 			configurations: default(compile), default, compile, runtime, master
+[info] 			licenses: (the Apache License, ASL Version 2.0,Some(http://www.apache.org/licenses/LICENSE-2.0))
+[info] 			callers: default:test_2.11:1.0
+```
+
+### revision with a `+` character
+```scala
+libraryDependencies += "org.scalatest" %% "scalatest" % "2.1.+" % "test"
+```
+```shell
+[info] 	org.scalatest:scalatest_2.11
+[info] 		- 2.1.7
+[info] 			status: release
+[info] 			publicationDate: Sat May 17 14:50:00 CST 2014
+[info] 			resolver: sbt-chain
+[info] 			artifactResolver: sbt-chain
+[info] 			evicted: false
+[info] 			homepage: http://www.scalatest.org
+[info] 			isDefault: false
+[info] 			configurations: default(compile), default, compile, runtime, master
+[info] 			licenses: (the Apache License, ASL Version 2.0,Some(http://www.apache.org/licenses/LICENSE-2.0))
+[info] 			callers: default:test_2.11:1.0
+```
+
 ## Creating a Project with Subprojects
 ## Using SBT with Eclipse
 ## Generating Project API Documentation
