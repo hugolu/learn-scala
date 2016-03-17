@@ -544,5 +544,26 @@ logLevel := Level.Debug
 ## Deploying a Single, Executable JAR File
 ## Publishing Your Library
 ## Using Build.scala Instead of build.sbt
+
+reference: [What is the difference between build.sbt and build.scala?](http://stackoverflow.com/questions/18000103/what-is-the-difference-between-build-sbt-and-build-scala)
+
+`build.sbt`:
+```scala
+name := "hello"
+version := "1.0"
+```
+is a shorthand notation roughly equivalent to this `project/Build.scala`:
+```scala
+import sbt._
+import Keys._
+
+object Build extends Build {
+  lazy val root = Project(id = "root", base = file(".")).settings(
+    name := "hello",
+    version := "1.0"      
+  )
+}
+```
+
 ## Using a Maven Repository Library with SBT
 ## Building a Scala Project with Ant
