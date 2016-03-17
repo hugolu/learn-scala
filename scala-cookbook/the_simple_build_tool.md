@@ -136,6 +136,38 @@ $ sbt test
 ```
 
 ## Managing Dependencies with SBT
+- If you have JAR files (unmanaged dependencies) that you want to use in your project, simply copy them to the lib folder in the root directory of your SBT project, and SBT will find them automatically. If those JARs depend on other JAR files, you’ll have to download those other JAR files and copy them to the lib directory as well.
+- If you have a single managed dependency, add a libraryDependencies line like this to your build.sbt file. A managed dependency is a dependency that’s managed by the build tool.
+
+two general forms for adding a managed dependency to a build.sbt:
+- `libraryDependencies += groupID % artifactID % revision`
+- `libraryDependencies += groupID % artifactID % revision % configuration`
+
+`libraryDependencies += "org.specs2" %% "specs2" % "1.14" % "test"` >>>
+```maven
+<dependency>
+   <groupId>org.specs2</groupId>
+   <artifactId>specs2_2.10</artifactId>
+   <version>1.14</version>
+   <scope>test</scope>
+</dependency>
+```
+
+### using `Seq()`
+```scala
+libraryDependencies += "net.sourceforge.htmlcleaner" % "htmlcleaner" % "2.4"
+libraryDependencies += "org.scalatest" % "scalatest_2.10" % "1.9.1" % "test"
+libraryDependencies += "org.foobar" %% "foobar" % "1.6"
+```
+
+```scala
+libraryDependencies ++= Seq(
+   "net.sourceforge.htmlcleaner" % "htmlcleaner" % "2.4",
+   "org.scalatest" % "scalatest_2.10" % "1.9.1" % "test",
+   "org.foobar" %% "foobar" % "1.8"
+)
+```
+
 ## Controlling Which Version of a Managed Dependency Is Used
 ## Creating a Project with Subprojects
 ## Using SBT with Eclipse
