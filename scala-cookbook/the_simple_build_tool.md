@@ -431,6 +431,79 @@ $ sbt doc
 -  places the root `index.html` Scaladoc file at `target/scala-2.11/api/index.html` under the root directory of your project.
 
 ## Specifying a Main Class to Run
+
+```shell
+$ mkdir test; cd test; mkdir4sbt.sh hello 1.0
+$ vi Hello.scala
+$ vi Foo.scala
+$ vi Bar.scala
+$ sbt run
+[info] Set current project to hello (in build file:/Users/hugo/workspace.scala/sbt/test/)
+[warn] Multiple main classes detected.  Run 'show discoveredMainClasses' to see the list
+
+Multiple main classes detected, select one to run:
+
+ [1] com.whatever.bar.Bar
+ [2] com.whatever.foo.Foo
+ [3] com.whatever.hello.Hello
+
+Enter number: 1
+
+[info] Running com.whatever.bar.Bar
+I'm Bar
+[success] Total time: 4 s, completed 2016/3/17 下午 05:09:38
+
+$ sbt "run-main com.whatever.foo.Foo"
+[info] Set current project to hello (in build file:/Users/hugo/workspace.scala/sbt/test/)
+[info] Running com.whatever.foo.Foo
+I'm Foo
+[success] Total time: 1 s, completed 2016/3/17 下午 05:10:05
+```
+
+Hello.scala:
+```scala
+package com.whatever.hello
+
+object Hello {
+  def main(args: Array[String]) = println("Hello, world")
+}
+```
+
+Foo.scala:
+```scala
+package com.whatever.foo
+
+object Foo {
+  def main(args: Array[String]) = println("I'm Foo")
+}
+```
+
+Bar.scala:
+```scala
+package com.whatever.bar
+
+object Bar {
+  def main(args: Array[String]) = println("I'm Bar")
+}
+```
+
+### set the main class for 'sbt run'
+build.sbt
+```scala
+name := "hello"
+version := "1.0"
+scalaVersion := "2.11.7"
+
+mainClass in (Compile, run) := Some("com.whatever.hello.Hello")
+```
+```shell
+$ sbt run
+[info] Set current project to hello (in build file:/Users/hugo/workspace.scala/sbt/test/)
+[info] Running com.whatever.hello.Hello
+Hello, world
+[success] Total time: 1 s, completed 2016/3/17 下午 05:14:39
+```
+
 ## Using GitHub Projects as Project Dependencies
 ## Telling SBT How to Find a Repository (Working with Resolvers)
 ## Resolving Problems by Getting an SBT Stack Trace
