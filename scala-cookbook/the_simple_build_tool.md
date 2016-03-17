@@ -506,8 +506,41 @@ Hello, world
 
 ## Using GitHub Projects as Project Dependencies
 ## Telling SBT How to Find a Repository (Working with Resolvers)
+
+Use the resolvers key in the build.sbt file to add any unknown Ivy repositories. 
+```scala
+resolvers += "repository name" at "location"
+
+resolvers ++= Seq(
+   "repository name 1" at "location 1"
+   "repository name 2" at "location 2"
+   ...
+)
+```
+
 ## Resolving Problems by Getting an SBT Stack Trace
+
+When an SBT command silently fails (typically with a “Nonzero exit code” message), but you can’t tell why, run your command from within the SBT shell, then use the last run command after the command that failed.
+
+```scala
+```
+$ sbt run   // something fails here, but you can't tell what
+
+$ sbt
+> run       // failure happens again
+> last run  // this shows the full stack trace
+```
+
 ## Setting the SBT Log Level
+
+Set the SBT logging level in your build.sbt file with this setting:
+```scala
+logLevel := Level.Debug
+```
+- Level.Info
+- Level.Warning
+- Level.Error
+
 ## Deploying a Single, Executable JAR File
 ## Publishing Your Library
 ## Using Build.scala Instead of build.sbt
