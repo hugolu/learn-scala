@@ -424,6 +424,12 @@ Hello, I'm Bar
 
 ## Using SBT with Eclipse
 ## Generating Project API Documentation
+
+```shell
+$ sbt doc
+```
+-  places the root `index.html` Scaladoc file at `target/scala-2.11/api/index.html` under the root directory of your project.
+
 ## Specifying a Main Class to Run
 ## Using GitHub Projects as Project Dependencies
 ## Telling SBT How to Find a Repository (Working with Resolvers)
