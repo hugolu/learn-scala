@@ -63,6 +63,12 @@ Inspect each key (the detail is listed in the bottom):
 - 設定在 `.sbt` 的 `settings` 會疊加到 `.scala` 檔案
 - 設定在 `.sbt` 的 `settings` 是 project-scope (除非另定範圍，如`sampleKeyC`)
 
+## When to use `.scala` files
+- `.sbt` 使用方便，但不容易擴充
+- `.scala` 沒有使用限制，可以自行地義 `var` & `object`
+- to define settings in `.sbt` files, using `.scala` files when you need to factor out a `val` or `object` or method definition.
+- `.scala` files are also required to define multiple projects in a single build
+
 ___
 ```
 $ sbt "inspect sample-a"
