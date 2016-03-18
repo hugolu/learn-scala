@@ -52,6 +52,17 @@ Inspect each key (the detail is listed in the bottom):
 | `sample-c` | `C: in build.sbt scoped to ThisBuild` | `{file:.../hello/}/*:sampleC` |
 | `sample-d` | `D: in build.sbt` | `{file:.../hello/}hello/*:sampleD` |
 
+- The "Provided by" shows the same scope for `sample-a` and `sample-c`. That is, `sampleKeyC in ThisBuild` in a .sbt file is equivalent to placing a setting in the `Build.settings` list in a .scala file. sbt takes build-scoped settings from both places to create the build definition.
+- `sample-b` is scoped to the project (`{file:/home/hp/checkout/hello/}hello`) rather than the entire build (`{file:/home/hp/checkout/hello/}`) (build-scope 的範圍 > project-scope)
+- sbt *appends* the settings from `.sbt` files to the settings from `Build.settings` and `Project.settings` which means .sbt settings take precedence. (定義在`.sbt`的build definition優先權比較高)
+- `sampleKeyC` and `sampleKeyD` were available inside `build.sbt`. That's because sbt imports the contents of your Build object into your `.sbt` files. In this case `import HelloBuild._` was implicitly done for the build.sbt file. (定義在`Build.scala`的key會自動載入`build.sbt`)
+
+總結：
+- 設定在 `project/*.scala` 的 `Build.settings` 會自動載入 `.sbt` 的 build-scope.
+- 設定在 `project/*.scala` 的 `Project.settings` 會自動載入 `.sbt` 的 project-scope.
+- 設定在 `.sbt` 的 `settings` 會疊加到 `.scala` 檔案
+- 設定在 `.sbt` 的 `settings` 是 project-scope (除非另定範圍，如`sampleKeyC`)
+
 ___
 ```
 $ sbt "inspect sample-a"
