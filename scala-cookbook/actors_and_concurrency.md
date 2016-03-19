@@ -24,7 +24,7 @@ resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/release
 libraryDependencies += "com.typesafe.akka" %% "akka-actor" % "2.4.2"
 ```
 
-hello.scala:
+echo.scala:
 ```scala
 import akka.actor._
 
@@ -64,6 +64,35 @@ hi
 ```
 
 ## Creating an Actor Whose Class Constructor Requires Arguments
+
+echo2.scala
+```scala
+import akka.actor._
+
+class EchoActor(val name: String) extends Actor {
+  def receive = {
+    case msg: String => println(s"$name: msg")
+  }
+}
+
+object EchoTest extends App {
+  val system = ActorSystem("EchoTest")
+  val actor = system.actorOf(Props(new EchoActor("Foo")))
+
+  actor ! "hello"
+  actor ! "hi"
+
+  system.shutdown
+}
+```
+
+```shell
+$ sbt run
+[info] Running EchoTest
+Foo: hello
+Foo: hi
+```
+
 ## How to Communicate Between Actors
 ## Understanding the Methods in the Akka Actor Lifecycle
 ## Starting an Actor
