@@ -94,6 +94,76 @@ Foo: hi
 ```
 
 ## How to Communicate Between Actors
+
+When an actor receives a message from another actor, it also receives an implicit reference named `sender`, and it can use that reference to send a message back to the originating actor.
+
+```scala
+mport akka.actor._
+
+case object PingMessage
+case object PongMessage
+case object StartMessage
+case object StopMessage
+
+class Ping(pong: ActorRef) extends Actor {
+  var count = 0
+  def incrementAndPrint { count += 1; println("ping") }
+  def receive = {
+    case StartMessage =>
+      incrementAndPrint
+      pong ! PingMessage
+    case PongMessage =>
+      incrementAndPrint
+      if (count > 3) {
+        sender ! StopMessage
+        println("ping stopped")
+        context.stop(self)
+      } else {
+        sender ! PingMessage
+      }
+  }
+}
+
+class Pong extends Actor {
+  def receive = {
+    case PingMessage =>
+      println("pong")
+      sender ! PongMessage
+    case StopMessage =>
+      println("pong stopped")
+      context.stop(self)
+  }
+}
+
+object PingPongTest extends App {
+  val system = ActorSystem("PingPongTest")
+  val pong = system.actorOf(Props[Pong])
+  val ping = system.actorOf(Props(new Ping(pong)))
+
+  ping ! StartMessage
+
+  Thread.sleep(100)
+  system.shutdown
+}
+```
+- To get things started, the `Ping` class needs an initial reference to the `Pong` actor
+- The `context` object is implicitly available to all actors, and can be used to stop actors, among other uses.
+- The `ping` and `pong` instances are ActorRef instances, as is the `sender` variable.
+
+```shell
+$ sbt run
+[info] Running PingPongTest
+ping
+pong
+ping
+pong
+ping
+pong
+ping
+ping stopped
+pong stopped
+```
+
 ## Understanding the Methods in the Akka Actor Lifecycle
 ## Starting an Actor
 ## Stopping Actors
