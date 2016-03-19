@@ -288,6 +288,164 @@ foo got a message: hello
 ```
 
 ## Stopping Actors
+
+- `stop`
+  - The actor will continue to process its **current message** (if any), but no additional messages will be processed. See additional notes in the paragraphs that follow.
+  - `actorSystem.stop(anActor)`
+  - `context.stop(childActor)`
+  - `context.stop(self)`
+- `PoisonPill`
+  - A `PoisonPill` message will stop an actor when the message is processed. A `PoisonPill` message is queued just like an ordinary message and will be handled after other messages queued ahead of it in its mailbox.
+  - `actor ! PoisonPill`
+- `gracefulStop`
+  - Lets you attempt to terminate actors gracefully, waiting for them to timeout. The documentation states that this is a good way to terminate actors in a specific order.
+
+### system.stop and context.stop
+```scala
+import akka.actor._
+
+class Foo extends Actor {
+  override def postStop = { println("postStop") }
+  def receive = { case _ => println("got a message") }
+}
+
+object SystemStopTest extends App {
+  val system = ActorSystem("SystemStopTest")
+  val actor = system.actorOf(Props[Foo])
+
+  println(">>> sending a message")
+  actor ! "hello"
+  Thread.sleep(10)
+
+  println(">>> stopping actor")
+  system.stop(actor)
+  Thread.sleep(10)
+
+  system.shutdown
+}
+```
+```
+$ sbt run
+[info] Running SystemStopTest
+>>> sending a message
+got a message
+>>> stopping actor
+postStop
+```
+
+### PoisonPill message
+```scala
+import akka.actor._
+
+class Foo extends Actor {
+  override def postStop = { println("postStop") }
+  def receive = { case _ => println("got a message") }
+}
+
+object PoisonPillTest extends App {
+  val system = ActorSystem("PoisonPillTest")
+  val actor = system.actorOf(Props[Foo])
+
+  actor ! "hello"
+  println("before PoisonPill")
+  system.stop(actor)
+  println("after PoisonPill")
+  actor ! "hello"
+
+  system.shutdown
+}
+```
+```shell
+$ sbt run
+[info] Running PoisonPillTest
+before PoisonPill
+got a message
+after PoisonPill
+postStop
+```
+
+### gracefulStop
+```scala
+import akka.actor._
+import akka.pattern.gracefulStop
+import scala.concurrent.{Future, Await, ExecutionContext}
+import scala.concurrent.duration._
+
+class Foo extends Actor {
+  override def postStop { println("postStop") }
+  def receive = { case _ => println("got a message") }
+}
+
+object GracefulStopTest extends App {
+  val system = ActorSystem("GracefulStopTest")
+  val actor = system.actorOf(Props[Foo])
+
+  try {
+    val toStop: Future[Boolean] = gracefulStop(actor, 2 second)
+    Await.result(toStop, 3 second)
+  } catch {
+    case e: Exception => e.printStackTrace
+  } finally {
+    system.shutdown
+  }
+}
+```
+```
+$ sbt run
+[info] Running GracefulStopTest
+postStop
+```
+- `gracefulStop(actorRef, timeout)` returns a Future that will be completed with success when existing messages of the target actor has been processed and the actor has been terminated.
+- If the actor isn’t terminated within the timeout, the `Future` results in an ActorTimeoutException.
+
+```scala
+class Foo extends Actor {
+  override def postStop { Thread.sleep(3000); println("postStop") }
+  def receive = { case _ => println("got a message") }
+}
+```
+```
+$ sbt run
+[info] Running GracefulStopTest
+akka.pattern.AskTimeoutException: Ask timed out on [Actor[akka://GracefulStopTest/user/$a#1157456389]] after [2000 ms]. Sender[null] sent message of type "akka.actor.PoisonPill$".
+postStop
+```
+
+### “Killing” an actor
+The Akka documentation states that sending a Kill message to an actor, “will restart the actor through regular supervisor semantics.” With the default supervisory strategy, the Kill message does what its name states, terminating the target actor.
+
+```scala
+import akka.actor._
+
+class Foo extends Actor {
+  def receive = { case _ => println("got a message") }
+
+  override def preStart = println("preStart")
+  override def postStop = println("postStop")
+  override def preRestart(reason: Throwable, message: Option[Any]) = println("preRestart")
+  override def postRestart(reason: Throwable) = println("postRestart")
+}
+
+object KillTest extends App {
+  val system = ActorSystem("KillTest")
+  val actor = system.actorOf(Props[Foo])
+
+  actor ! "hello"
+  actor ! Kill
+
+  Thread.sleep(100)
+  system.shutdown
+}
+```
+```
+$ sbt run
+[info] Running KillTest
+preStart
+got a message
+[ERROR] [03/19/2016 23:21:00.297] [KillTest-akka.actor.default-dispatcher-3] [akka://KillTest/user/$a] Kill (akka.actor.ActorKilledException)
+postStop
+```
+
 ## Shutting Down the Akka Actor System
 ## Monitoring the Death of an Actor with watch
 ## Simple Concurrency with Futures
