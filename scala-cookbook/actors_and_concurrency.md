@@ -165,6 +165,79 @@ pong stopped
 ```
 
 ## Understanding the Methods in the Akka Actor Lifecycle
+
+![Actor Liftcycle](http://doc.akka.io/docs/akka/current/_images/actor_lifecycle1.png)
+- `preRestart()` called on new instance
+- `postRestart()` called on old instance
+
+```scala
+import akka.actor._
+
+case object ForceRestart
+
+class Foo extends Actor {
+  println("Foo> constructor")
+  override def preStart { println("Foo> preStart") }
+  override def postStop { println("Foo> postStop") }
+  override def preRestart(reason: Throwable, message: Option[Any]) {
+    println(s"""Foo> preRestart, ${reason.getMessage}, ${message.getOrElse("")}""")
+    super.preRestart(reason, message)
+  }
+  override def postRestart(reason: Throwable) {
+    println(s"Foo> postRestart, ${reason.getMessage}");
+    super.postRestart(reason)
+  }
+  def receive = {
+    case ForceRestart => throw new Exception("Boom!")
+    case _            => println("Foo> receive")
+  }
+}
+
+object LiftcycleTest extends App {
+  val system = ActorSystem("LifecycleTest")
+  val actor = system.actorOf(Props[Foo])
+
+  def sleep(time: Long) = { Thread.sleep(time) }
+
+  println(">>>> sending a message")
+  actor ! "hello"
+  sleep(100)
+
+  println(">>>> sending a restart")
+  actor ! ForceRestart
+  sleep(100)
+
+  println(">>>> sending a message")
+  actor ! "hi"
+  sleep(100)
+
+  println(">>>> shut down the world")
+  system.shutdown
+}
+```
+
+```
+[info] Running LiftcycleTest
+Foo> constructor
+>>>> sending a message
+Foo> preStart
+Foo> receive
+>>>> sending a restart
+Foo> preRestart, Boom!, ForceRestart
+Foo> postStop
+[ERROR] [03/19/2016 21:32:40.707] [LifecycleTest-akka.actor.default-dispatcher-5] [akka://LifecycleTest/user/$a] Boom!
+java.lang.Exception: Boom!
+Foo> constructor
+Foo> postRestart, Boom!
+Foo> preStart
+>>>> sending a message
+Foo> receive
+>>>> shut down the world
+Foo> postStop
+```
+- 1st Foo: constructor -> preStart -> throw Exception -> preRestart -> postStop
+- 2nd Foo: constructor -> postRestart -> preStart -> postStop
+
 ## Starting an Actor
 ## Stopping Actors
 ## Shutting Down the Akka Actor System
