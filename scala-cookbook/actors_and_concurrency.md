@@ -239,6 +239,54 @@ Foo> postStop
 - 2nd Foo: constructor -> postRestart -> preStart -> postStop
 
 ## Starting an Actor
+- Akka actors are started asynchronously when they’re passed into the `actorOf` method using a `Props`.
+- Within an actor, you create a child actor by calling the `context.actorOf` method.
+
+```scala
+import akka.actor._
+
+case class CreateChild(name: String)
+case class Name(name: String)
+
+class Parent extends Actor {
+  def receive = {
+    case CreateChild(name) =>
+      var child = context.actorOf(Props[Child], name=s"$name")
+      child ! Name(name)
+  }
+}
+
+class Child extends Actor {
+  var name = "???"
+  def receive = {
+    case Name(name) => this.name = name
+    case message: String => println(s"$name got a message: $message")
+  }
+}
+
+object ParentChildTest extends App {
+  val system = ActorSystem("ParentChildTest")
+  val parent = system.actorOf(Props[Parent], name = "parent")
+
+  parent ! CreateChild("foo")
+  parent ! CreateChild("bar")
+
+  println("sending foo a message")
+  val foo = system.actorSelection("/user/parent/foo")
+  foo ! "hello"
+
+  Thread.sleep(100)
+  system.shutdown
+}
+```
+
+```
+$ sbt run
+[info] Running ParentChildTest
+sending foo a message
+foo got a message: hello
+```
+
 ## Stopping Actors
 ## Shutting Down the Akka Actor System
 ## Monitoring the Death of an Actor with watch
