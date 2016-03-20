@@ -447,6 +447,17 @@ postStop
 ```
 
 ## Shutting Down the Akka Actor System
+
+```scala
+import akka.actor._
+
+object ShutdownTest extends App {
+  var system = ActorSystem("ShutdownTest")
+
+  system.shutdown
+}
+```
+
 ## Monitoring the Death of an Actor with watch
 ## Simple Concurrency with Futures
 ## Sending a Message to an Actor and Waiting for a Reply
