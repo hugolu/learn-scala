@@ -825,4 +825,56 @@ object AskTest extends App {
 ```
 
 ## Switching Between Different States with become
+
+```scala
+import akka.actor._
+
+case object SwitchFooState
+case object SwitchBarState
+
+class Something extends Actor {
+  import context._
+
+  def fooState: Receive = {
+    case SwitchBarState => become(barState)
+    case num: Int => println(s"foo: got a number $num")
+  }
+
+  def barState: Receive = {
+    case SwitchFooState => become(fooState)
+    case str: String => println(s"bar: got a string $str")
+  }
+
+  def receive = {
+    case _ => println("???: got a message)")
+  }
+
+  // fooState by default
+  become(fooState)
+}
+
+object BecomeTest extends App {
+  var system = ActorSystem("BecomeTest")
+  var actor = system.actorOf(Props[Something])
+
+  actor ! "hello"
+  actor ! 123
+  actor ! SwitchBarState
+  actor ! "hello"
+  actor ! 123
+
+  system.shutdown
+}
+```
+- It’s important to note that the different states can only receive the messages they’re programmed for, and those messages can be different in the different states. 
+  - `fooState` only processes `SwitchBarState` and `Int`
+  - `barState` only processes `SwitchFooState` and `String`
+
+```
+$ sbt run
+[info] Running BecomeTest
+foo: got a number 123
+bar: got a string hello
+```
+
 ## Using Parallel Collections
