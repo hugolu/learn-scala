@@ -878,3 +878,32 @@ bar: got a string hello
 ```
 
 ## Using Parallel Collections
+```scala
+scala> var v = Vector.range(0, 10)
+v: scala.collection.immutable.Vector[Int] = Vector(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+scala> v foreach print
+0123456789
+
+scala> val vp = v.par
+vp: scala.collection.parallel.immutable.ParVector[Int] = ParVector(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+scala> vp foreach print
+0125673489
+
+scala> val vp = scala.collection.parallel.immutable.ParVector.range(0, 10)
+vp: scala.collection.parallel.immutable.ParVector[Int] = ParVector(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+scala> vp foreach print
+0123456789
+
+scala> vp foreach { e => Thread.sleep(10); print(e) }
+5203146789
+```
+
+### Conecpt of parallel collection
+- Collection elements are split into different groups.
+- The operation is performed.
+- The elements are recombined.
+
+The impact of this approach is that it must be okay that your algorithm receives elements in an arbitrary order.
