@@ -63,6 +63,34 @@ res1: Int = 0
 
 ## Pasting and Loading Blocks of Code into the REPL
 
+### The `:paste` command
+```scala
+scala> :paste
+// Entering paste mode (ctrl-D to finish)
+
+if (true)
+  println("True")
+else
+  println("False")
+
+// Exiting paste mode, now interpreting.
+
+True
+```
+
+### The `:load` command
+```scala
+$ echo "case class Foo(n: Int)" > Foo.scala
+$ scala
+
+scala> :load Foo.scala
+Loading Foo.scala...
+defined class Foo
+
+scala> Foo(123)
+res0: Foo = Foo(123)
+```
+
 ## Adding JAR Files and Classes to the REPL Classpath
 
 ## Running a Shell Command from the REPL
