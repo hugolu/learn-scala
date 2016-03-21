@@ -564,6 +564,220 @@ Child: postStop
 - `Parent: my child is killed`, the message doesn't occur
 
 ## Simple Concurrency with Futures
+
+A `future` gives you a simple way to run an algorithm concurrently
+
+```scala
+import scala.concurrent.{Future, Await}
+import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext.Implicits.global
+
+object FutureTest extends App {
+  def sleep(time: Long) = { Thread.sleep(time) }
+
+  val future = Future {
+    sleep(500)
+    1 + 1
+  }
+
+  val result = Await.result(future, 1 second)
+  println(result)
+
+  sleep(500)
+}
+```
+- The `ExecutionContext.Implicits.global` imports the “default global execution context.”
+- A `Future` is created by passing a block of code you want to run. The code will be executed at some point of the future.
+- The `Await.result` method call declares that it will wait for up to `one second` for the Future to return. If the Future doesn’t return within that time, it throws a `java.util.concurrent.TimeoutException`.
+
+```
+$ sbt run
+[info] Running FutureTest
+2
+```
+
+### Run one thing, but don’t block—use callback
+
+```scala
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{Failure, Success}
+import scala.util.Random
+
+object FutureTest extends App {
+  def sleep(time: Long) = { Thread.sleep(time) }
+
+  val future = Future {
+    sleep(Random.nextInt(500))
+      42
+  }
+
+  future.onComplete {
+    case Success(value) => println(s"answer=$value")
+    case Failure(e)     => e.printStackTrace
+  }
+
+  println("A..."); sleep(100)
+  println("B..."); sleep(100)
+  println("C..."); sleep(100)
+  println("D..."); sleep(100)
+  println("E..."); sleep(100)
+  println("F..."); sleep(100)
+
+  sleep(1000)
+}
+```
+- The `f.onComplete` method call sets up the callback. Whenever the Future completes, it makes a callback to onComplete, at which time that code will be executed.
+
+```
+[info] Running FutureTest
+A...
+B...
+C...
+D...
+answer=42
+E...
+F...
+```
+
+### The `onSuccess` and `onFailure` callback methods
+```scala
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+//import scala.util.{Failure, Success}
+import scala.util.Random
+
+object FutureTest extends App {
+  def sleep(time: Long) = { Thread.sleep(time) }
+
+  val future = Future {
+    sleep(Random.nextInt(500))
+    if(Random.nextInt(500) > 250) throw new Exception("Yikes!") else 42
+  }
+
+  future onSuccess {
+    case result         => println(s"answer=$result")
+  }
+  future onFailure {
+    case e              => e.printStackTrace
+  }
+
+  println("A..."); sleep(100)
+  println("B..."); sleep(100)
+  println("C..."); sleep(100)
+  println("D..."); sleep(100)
+  println("E..."); sleep(100)
+  println("F..."); sleep(100)
+
+  sleep(1000)
+}
+```
+- `f.onComplete` for `Success` and `Failure` = `f.onSuccess` + `f.onFailure`
+
+### Creating a method to return a `Future[T]`
+```scala
+import scala.concurrent.{Future, future}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{Failure, Success}
+
+object FutureTest extends App {
+  def sleep(time: Long) = { Thread.sleep(time) }
+
+  def longRunningComputation(i: Int): Future[Int] = future {
+    sleep(100)
+    i + 1
+  }
+
+  longRunningComputation(11) onComplete {
+    case Success(result)  => println(s"answer: $result")
+    case Failure(e)       => e.printStackTrace
+  }
+
+  sleep(1000)
+}
+```
+```scala
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{Failure, Success}
+
+object FutureTest extends App {
+  def sleep(time: Long) = { Thread.sleep(time) }
+
+  def longRunningComputation(i: Int): Future[Int] = Future {
+    sleep(100)
+    i + 1
+  }
+
+  longRunningComputation(11) onComplete {
+    case Success(result)  => println(s"answer: $result")
+    case Failure(e)       => e.printStackTrace
+  }
+
+  sleep(1000)
+}
+```
+- The `future` method shown in this example is another way to create a future. It starts the computation asynchronously and returns a `Future[T]` that will hold the result of the computation. This is a common way to define methods that return a future.
+- `Future` or `future`??
+
+```
+[info] Running FutureTest
+answer: 12
+```
+
+### Run multiple things; something depends on them; join them together
+```scala
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.Random
+
+object Cloud {
+  def runAlgorithm(i: Int): Future[Int] = Future {
+    Thread.sleep(Random.nextInt(500))
+    val result = i + 10
+    println(s"returning result from cloud: $result")
+    result
+  }
+}
+
+object RunningMultipleFutures extends App {
+  println("starting futures")
+  val result1 = Cloud.runAlgorithm(10)
+  val result2 = Cloud.runAlgorithm(20)
+  val result3 = Cloud.runAlgorithm(30)
+
+  println("befor for-comprehension")
+  val result = for {
+    r1 <- result1
+    r2 <- result2
+    r3 <- result3
+  } yield (r1+r2+r3)
+
+  println("before onSuccess")
+  result onSuccess {
+    case result => println(s"total=$result")
+  }
+
+  println("before end of the world")
+  Thread.sleep(2000)
+}
+```
+- The for comprehension is used as a way to *join* the results back together. When all three futures return, their `Int` values are assigned to the variables `r1`, `r2`, and `r3`, and the sum of those three values is returned from the yield expression, and assigned to the result variable.
+- Notice that result can’t just be printed after the for comprehension. That’s because the for comprehension returns a new future, so `result` has the type `Future[Int]`.
+
+```
+[info] Running RunningMultipleFutures
+starting futures
+befor for-comprehension
+before onSuccess
+before end of the world
+returning result from cloud: 30
+returning result from cloud: 20
+returning result from cloud: 40
+total=90
+```
+- When this code is run, the output is **nondeterministic**.
+
 ## Sending a Message to an Actor and Waiting for a Reply
 ## Switching Between Different States with become
 ## Using Parallel Collections
