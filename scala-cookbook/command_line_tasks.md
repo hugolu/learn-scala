@@ -111,4 +111,82 @@ hello, world
 ```
 
 ## Prompting for Input from a Scala Shell Script
+
+read.sh:
+```script
+#!/bin/sh
+exec scala "$0" "$@"
+!#
+
+val name = readLine("What's your name? ")
+val age = readLine("How old are you? ").toInt
+
+println(s"Hi $name, you're $age years old.")
+```
+```
+$ ./read.sh
+one warning found
+What's your name? Scala
+How old are you? 12
+Hi Scala, you're 12 years old.
+```
+
 ## Make Your Scala Scripts Run Faster
+echo1.sh:
+```script
+#!/bin/sh
+exec scala "$0" "$@"
+!#
+
+println("args:")
+args foreach println
+```
+```shell
+$ time ./echo1.sh hello world
+args:
+hello
+world
+
+real	0m0.986s
+user	0m0.428s
+sys	0m0.078s
+$ time ./echo1.sh hello world
+args:
+hello
+world
+
+real	0m0.728s
+user	0m0.413s
+sys	0m0.075s
+```
+
+## use the option `-savecompiled`
+Run the script once. This generates a compiled version of the script. After that, the script runs with a consistently lower real time (wall clock) on all subsequent runs.
+
+echo2.sh:
+```script
+#!/bin/sh
+exec scala -savecompiled "$0" "$@"
+!#
+
+println("args:")
+args foreach println
+```
+```shell
+$ time ./echo2.sh hello world
+args:
+hello
+world
+
+real	0m0.992s
+user	0m0.432s
+sys	0m0.080s
+$ time ./echo2.sh hello world
+args:
+hello
+world
+
+real	0m0.319s
+user	0m0.314s
+sys	0m0.064s
+```
