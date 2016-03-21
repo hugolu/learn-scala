@@ -181,6 +181,11 @@ world
 real	0m0.992s
 user	0m0.432s
 sys	0m0.080s
+
+$ ls -al echo2.sh*
+-rwxr-xr-x  1 hugo  staff    87  3 21 21:30 echo2.sh
+-rw-r--r--  1 hugo  staff  2698  3 21 21:33 echo2.sh.jar
+
 $ time ./echo2.sh hello world
 args:
 hello
