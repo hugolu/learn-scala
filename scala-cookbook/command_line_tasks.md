@@ -1,7 +1,68 @@
 # Command-Line Tasks
 
 ## Getting Started with the Scala REPL
+```scala
+scala> var x, y = 1
+x: Int = 1
+y: Int = 1
+
+scala> x + y
+res0: Int = 2
+
+scala> val a = Array(1,2,3)
+a: Array[Int] = Array(1, 2, 3)
+
+scala> a.sum
+res1: Int = 6
+
+scala> res1.getClass
+res2: Class[Int] = int
+```
+
+### REPL command-line options
+```scala
+scala> Runtime.getRuntime.maxMemory / 1024
+res0: Long = 233472
+
+scala> :quit
+$ scala -J-Xms256m -J-Xmx512m
+
+scala> Runtime.getRuntime.maxMemory / 1024
+res0: Long = 466432
+```
+
+### Deprecation and feature warnings
+```scala
+scala> import sys.process._
+import sys.process._
+
+scala> "date" !
+warning: there was one feature warning; re-run with -feature for details
+2016年 3月21日 周一 21時50分02秒 CST
+res8: Int = 0
+
+scala> :quit
+$ scala -feature
+
+scala> "date" !
+<console>:14: warning: postfix operator ! should be enabled
+by making the implicit value scala.language.postfixOps visible.
+This can be achieved by adding the import clause 'import scala.language.postfixOps'
+or by setting the compiler option -language:postfixOps.
+See the Scala docs for value scala.language.postfixOps for a discussion
+why the feature should be explicitly enabled.
+       "date" !
+              ^
+2016年 3月21日 周一 21時50分37秒 CST
+res0: Int = 0
+
+scala> "date".!
+2016年 3月21日 周一 21時50分45秒 CST
+res1: Int = 0
+```
+
 ## Pasting and Loading Blocks of Code into the REPL
+
 ## Adding JAR Files and Classes to the REPL Classpath
 
 ## Running a Shell Command from the REPL
