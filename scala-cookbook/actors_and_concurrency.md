@@ -779,5 +779,50 @@ total=90
 - When this code is run, the output is **nondeterministic**.
 
 ## Sending a Message to an Actor and Waiting for a Reply
+
+```scala
+import akka.actor._
+import akka.pattern.ask
+import akka.util.Timeout
+import scala.concurrent.{ExecutionContext, Future, Await}
+import scala.concurrent.duration._
+
+case object AskNameMessage
+
+class Foo extends Actor {
+  def receive = {
+    case AskNameMessage => sender ! "Foo"
+  }
+}
+
+object AskTest extends App {
+  // create system and actor
+  val system = ActorSystem("AskTest")
+  val actor = system.actorOf(Props[Foo], name = "foo")
+
+  // implicit timeout for ask
+  implicit val timeout = Timeout(1 second)
+
+  // ways to ask information
+  val future1 = actor ? AskNameMessage
+  val result1 = Await.result(future1, 2 second)
+  println(result1)
+
+  val future2 = ask(actor, AskNameMessage)
+  val result2 = Await.result(future2, 2 second)
+  println(result2)
+
+  val future3 = ask(actor, AskNameMessage).mapTo[String]
+  val result3 = Await.result(future3, 2 second)
+  println(result3)
+
+  val future4 = ask(actor, AskNameMessage)
+  val result4 = Await.result(future4, 2 second).asInstanceOf[String]
+  println(result4)
+
+  system.shutdown
+}
+```
+
 ## Switching Between Different States with become
 ## Using Parallel Collections
