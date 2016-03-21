@@ -459,6 +459,110 @@ object ShutdownTest extends App {
 ```
 
 ## Monitoring the Death of an Actor with watch
+
+```scala
+import akka.actor._
+
+class Child extends Actor {
+  def receive = {
+    case _ => println("Child: got a message")
+  }
+}
+
+class Parent extends Actor {
+  val child = context.actorOf(Props[Child], name = "child")
+  context.watch(child)
+
+  def receive = {
+    case Terminated(child)  => println("Parent: my child is killed")
+    case _                  => println("Parent: got a message")
+  }
+}
+
+object DeathWatchTest extends App {
+  val system = ActorSystem("DeathWatchTest")
+  val parent = system.actorOf(Props[Parent], name = "parent")
+
+  val child = system.actorSelection("/user/parent/child")
+  child ! PoisonPill
+
+  Thread.sleep(100)
+  system.shutdown
+}
+```
+- Use the `watch` method of an actor’s context object to declare that the actor should be notified when an actor it’s monitoring is stopped.
+
+```
+[info] Running DeathWatchTest
+Parent: my child is killed
+```
+
+- Using the `watch` method lets an actor be notified when another actor is stopped (such as with the `PoisonPill` message), or if it’s killed with a `Kill` message or `gracefulStop`. 
+- If the child actor throws an exception, which is not killed, the parent won't be notified.
+
+```scala
+import akka.actor._
+
+case object Explode
+
+class Child extends Actor {
+  println("Child: constructor")
+
+  def receive = {
+    case Explode => throw new Exception("Boom!")
+    case _ => println("Child: got a message")
+  }
+
+  override def preStart = println("Child: preStart")
+  override def postStop = println("Child: postStop")
+  override def preRestart(reason: Throwable, message: Option[Any]) {
+    println("Child: preRestart")
+    super.preRestart(reason, message)
+  }
+  override def postRestart(reason: Throwable) {
+    println("Child: PostRestart")
+    super.postRestart(reason)
+  }
+}
+
+class Parent extends Actor {
+  val child = context.actorOf(Props[Child], name = "child")
+  context.watch(child)
+
+  def receive = {
+    case Terminated(child)  => println("Parent: my child is killed")
+    case _                  => println("Parent: got a message")
+  }
+}
+
+object DeathWatchTest extends App {
+  val system = ActorSystem("DeathWatchTest")
+  val parent = system.actorOf(Props[Parent], name = "parent")
+
+  val child = system.actorSelection("/user/parent/child")
+  child ! Explode
+
+  Thread.sleep(100)
+  system.shutdown
+}
+```
+
+```
+[info] Running DeathWatchTest
+Child: constructor
+Child: preStart
+Child: preRestart
+Child: postStop
+[ERROR] [03/21/2016 08:57:04.640] [DeathWatchTest-akka.actor.default-dispatcher-4] [akka://DeathWatchTest/user/parent/child] Boom!
+java.lang.Exception: Boom!
+
+Child: constructor
+Child: PostRestart
+Child: preStart
+Child: postStop
+```
+- `Parent: my child is killed`, the message doesn't occur
+
 ## Simple Concurrency with Futures
 ## Sending a Message to an Actor and Waiting for a Reply
 ## Switching Between Different States with become
