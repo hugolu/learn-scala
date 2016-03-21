@@ -157,10 +157,164 @@ res1: String = hello world
 ```
 
 ## Compiling with scalac and Running with scala
+hello.scala:
+```scala
+object Hello extends App {
+  println("hello world")
+}
+```
+```shell
+$ scalac hello.scala
+$ scala Hello
+hello world
+```
+
 ## Disassembling and Decompiling Scala Code
+
+### Use `javap`
+Foo.scala:
+```scala
+case class Foo(n: Int, s: String)
+```
+```shell
+$ scalac Foo.scala
+$ javap Foo
+Compiled from "Foo.scala"
+public class Foo implements scala.Product,scala.Serializable {
+  public static scala.Option<java.lang.Object> unapply(Foo);
+  public static Foo apply(int);
+  public static <A> scala.Function1<java.lang.Object, A> andThen(scala.Function1<Foo, A>);
+  public static <A> scala.Function1<A, Foo> compose(scala.Function1<A, java.lang.Object>);
+  public int n();
+  public Foo copy(int);
+  public int copy$default$1();
+  public java.lang.String productPrefix();
+  public int productArity();
+  public java.lang.Object productElement(int);
+  public scala.collection.Iterator<java.lang.Object> productIterator();
+  public boolean canEqual(java.lang.Object);
+  public int hashCode();
+  public java.lang.String toString();
+  public boolean equals(java.lang.Object);
+  public Foo(int);
+}
+```
+
+### Use `scalac` option `-Xprint:parse`
+Hello.scala;
+```scala
+object Hello extends App {
+  println("hello world")
+}
+```
+```shell
+$ scalac -Xprint:parse Hello.scala
+[[syntax trees at end of                    parser]] // Hello.scala
+package <empty> {
+  object Hello extends App {
+    def <init>() = {
+      super.<init>();
+      ()
+    };
+    println("hello world")
+  }
+}
+```
+### Use `jad`
+Bar.scala
+```scala
+case object Bar
+```
+```shell
+$ scalac Bar.scala
+$ jad Bar
+$ cat Bar.jad
+// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
+// Jad home page: http://www.kpdus.com/jad.html
+// Decompiler options: packimports(3)
+// Source File Name:   Bar.scala
+
+import scala.collection.Iterator;
+
+public final class Bar
+{
+
+    public static String toString()
+    {
+        return Bar$.MODULE$.toString();
+    }
+
+    public static int hashCode()
+    {
+        return Bar$.MODULE$.hashCode();
+    }
+
+    public static boolean canEqual(Object obj)
+    {
+        return Bar$.MODULE$.canEqual(obj);
+    }
+
+    public static Iterator productIterator()
+    {
+        return Bar$.MODULE$.productIterator();
+    }
+
+    public static Object productElement(int i)
+    {
+        return Bar$.MODULE$.productElement(i);
+    }
+
+    public static int productArity()
+    {
+        return Bar$.MODULE$.productArity();
+    }
+
+    public static String productPrefix()
+    {
+        return Bar$.MODULE$.productPrefix();
+    }
+}
+```
 ## Finding Scala Libraries
 ## Generating Documentation with scaladoc
 ## Faster Command-Line Compiling with fsc
+Foo.bar:
+```scala
+case object Foo
+```
+
+Bar.scala:
+```scala
+case object Bar
+```
+
+Test.scala:
+```scala
+object Test extends App {
+  var foo = Foo
+  var bar = Bar
+
+  println(foo, bar)
+}
+```
+
+```shell
+$ fsc *.scala
+$ ls *.class
+Bar$.class                  Test$.class
+Bar.class                   Test$delayedInit$body.class
+Foo$.class                  Test.class
+Foo.class
+$ scala Test
+(Foo,Bar)
+
+$ ps auxw | grep CompileServer
+hugo            85718   0.0  0.0  2443608   1100 s000  S     9:19下午   0:00.01 bash /usr/local/Cellar/scala/2.11.7/libexec/bin/scala scala.tools.nsc.CompileServer
+
+$ fsc -shutdown
+[Compile server exited]
+```
+
 ## Using Scala as a Scripting Language
 print.sh:
 ```script
