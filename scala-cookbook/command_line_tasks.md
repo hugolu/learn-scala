@@ -92,6 +92,37 @@ res0: Foo = Foo(123)
 ```
 
 ## Adding JAR Files and Classes to the REPL Classpath
+Foo.scala:
+```scala
+package com.whatever
+case class Foo(n: Int)
+```
+
+Foo.mf:
+```
+Main-Class: Foo
+```
+
+```shell
+$ scala Foo.scala
+$ tree .
+.
+├── Foo.scala
+└── com
+    └── whatever
+        ├── Foo$.class
+        └── Foo.class
+$ jar -cvfm Foo.jar Foo.mf com/whatever/Foo.class
+已新增資訊清單
+新增: com/whatever/Foo.class (讀=4036)(寫=2235)(壓縮 44%)
+$ scala -classpath Foo.jar
+
+scala> import com.whatever._
+import com.whatever._
+
+scala> var foo = Foo(123)
+foo: com.whatever.Foo = Foo(123)
+```
 
 ## Running a Shell Command from the REPL
 repl-commands:
