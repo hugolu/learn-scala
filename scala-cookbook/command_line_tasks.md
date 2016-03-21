@@ -42,6 +42,49 @@ res1: String = hello world
 ## Generating Documentation with scaladoc
 ## Faster Command-Line Compiling with fsc
 ## Using Scala as a Scripting Language
+print.sh:
+```script
+~/workspace.scala/cmdline$ cat printall.sh
+#!/bin/sh
+exec scala "$0" "$@"
+!#
+
+args.foreach(println)
+```
+- The `#!` in the first line is the usual way to start a Unixs hell script. It invokes a Unix Bourne shell.
+- The `exec` command is a shell built-in. `$0` expands to the name of the shell script, and `$@` expands to the positional parameters.
+- The `!#` characters as the third line of the scripti show the header section is closed.
+```shell
+$ ./print.sh hello world
+hello
+world
+```
+```shell
+$ scala println.scala hello world
+hello
+world
+```
+
+print2.sh
+```script
+#!/bin/sh
+exec scala "$0" "$@"
+!#
+
+object Main {
+  def main(args: Array[String]) {
+    args.foreach(println)
+  }
+}
+
+Main.main(args)
+```
+```shell
+$ ./print2.sh hello world
+hello
+world
+```
+
 ## Accessing Command-Line Arguments from a Script
 ## Prompting for Input from a Scala Shell Script
 ## Make Your Scala Scripts Run Faster
