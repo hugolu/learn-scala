@@ -86,5 +86,29 @@ world
 ```
 
 ## Accessing Command-Line Arguments from a Script
+print3.sh:
+```script
+#!/bin/sh
+exec scala "$0" "$@"
+!#
+
+if (args.length != 2) {
+  Console.err.println("Usage: print3 <first string> <second string>")
+  System.exit(1)
+}
+
+val first = args(0)
+val second = args(1)
+
+println(s"$first, $second")
+```
+```shell
+$ ./print3.sh
+Usage: print3 <first string> <second string>
+
+$ ./print3.sh hello world
+hello, world
+```
+
 ## Prompting for Input from a Scala Shell Script
 ## Make Your Scala Scripts Run Faster
