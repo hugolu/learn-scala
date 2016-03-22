@@ -1,6 +1,52 @@
 # Web Services
 
 ## Creating a JSON String from a Scala Object
+
+### Lift-JSON solution
+LiftJson.scala:
+```scala
+import scala.collection.mutable._
+import net.liftweb.json._
+import net.liftweb.json.Serialization.write
+
+case class Person(name: String, address: Address)
+case class Address(city: String, state: String)
+
+object LiftJsonTest extends App {
+  val p = Person("Alvin Alenander", Address("Talkeetna", "AK"))
+
+  implicit val formats = DefaultFormats
+  val jsonString = write(p)
+  println(jsonString)
+}
+```
+```shell
+$ sbt run
+[info] Running LiftJsonTest
+{"name":"Alvin Alenander","address":{"city":"Talkeetna","state":"AK"}}
+```
+
+### Gson solution
+```scala
+import com.google.gson.Gson
+
+case class Person(name: String, address: Address)
+case class Address(city: String, state: String)
+
+object GsonTest extends App {
+  val p = Person("Alvin Alexander", Address("Talkeetan", "AK"))
+
+  val gson = new Gson
+  val jsonString = gson.toJson(p)
+  println(jsonString)
+}
+```
+```shell
+$ sbt run
+[info] Running GsonTest
+{"name":"Alvin Alexander","address":{"city":"Talkeetan","state":"AK"}}
+```
+
 ## Creating a JSON String from Classes That Have Collections
 ## Creating a Simple Scala Object from a JSON String
 ## Parsing JSON Data into an Array of Objects
