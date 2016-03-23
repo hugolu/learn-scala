@@ -189,7 +189,91 @@ object GsonWithArray extends App {
   - An `ArrayBuffer` begins with 16 elements, and when Gson generates the JSON for the list of friends, it correctly includes the two friends, but then outputs the word `null` 14 times, along with including the other output shown.
 
 ## Creating a Simple Scala Object from a JSON String
+```scala
+import net.liftweb.json._
+
+case class MailServer(url: String, username: String, password: String)
+
+object JsonParsingTest extends App {
+  implicit val formats = DefaultFormats
+
+  val jsonString = """
+  {
+    "url": "imap.yahoo.com",
+    "username": "myusername",
+    "password": "mypaaaword"
+  }
+  """
+
+  val jValue = parse(jsonString)
+
+  val mailServer = jValue.extract[MailServer]
+  println(mailServer)
+}
+```
+```
+[info] Running JsonParsingTest
+MailServer(imap.yahoo.com,myusername,mypaaaword)
+```
+- The string is converted into a Lift-JSON `JValue` object with the `parse` function
+- Once you have a `JValue` object, use its `extract` method to create a `MailServer` object
+
 ## Parsing JSON Data into an Array of Objects
+```scala
+import net.liftweb.json._
+
+case class EmailAccount(
+  accountName: String,
+  url: String,
+  username: String,
+  password: String,
+  minutesBetweenCheck: Int,
+  userOfInterest: List[String]
+)
+
+object ParseJsonArray extends App {
+  implicit val formats = DefaultFormats
+
+  val jsonString = """
+  {
+    "account": [
+    { "emailAccount": {
+      "accountName": "YMail",
+      "username": "USERNAME",
+      "password": "PASSWORD",
+      "url": "imap.yahoo.com",
+      "minutesBetweenCheck": 1,
+      "userOfInterest": ["barney", "betty", "wilma"]
+    }},
+    { "emailAccount": {
+      "accountName": "Gmail",
+      "username": "USER",
+      "password": "PASS",
+      "url": "imap.gail.com",
+      "minutesBetweenCheck": 1,
+      "userOfInterest": ["pebbles", "bam-bam"]
+    }}
+    ]
+  }
+  """
+
+  val json = parse(jsonString)
+  val elements = (json \\ "emailAccount").children
+  for (acct <- elements) {
+    val m = acct.extract[EmailAccount]
+    println(s"Account: ${m.url}, ${m.username}, ${m.password}")
+    println(" Users: " + m.userOfInterest.mkString(","))
+  }
+```
+```
+[info] Running ParseJsonArray
+Account: imap.yahoo.com, USERNAME, PASSWORD
+ Users: barney,betty,wilma
+Account: imap.gail.com, USER, PASS
+ Users: pebbles,bam-bam
+```
+- This string is turned into a `JValue` object named `json` with the `parse` function. The json object is then searched for all elements named `emailAccount` using the `\\` method.
+
 ## Creating Web Services with Scalatra
 ## Replacing XML Servlet Mappings with Scalatra Mounts
 ## Accessing Scalatra Web Service GET Parameters
