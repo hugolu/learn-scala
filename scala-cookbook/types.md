@@ -150,6 +150,67 @@ callSpeak(new Cat)                              //> meow
 ```
 
 ## Make Mutable Collections Invariant
+
+When creating a collection of elements that can be changed (mutated), its generic type parameter should be declared as `[A]`, making it *invariant*.
+
+Declaring a type as invariant has several effects. First, the container can hold both the specified types as well as its subtypes. 
+
+```scala
+import scala.collection.mutable.ArrayBuffer
+
+class A { override def toString = "A" }
+class B extends A { override def toString = "B" }
+class C extends B { override def toString = "C" }
+
+val bs = ArrayBuffer[B]()                       //> bs  : scala.collection.mutable.ArrayBuffer[myTest.test97.B] = ArrayBuffer()
+bs += new B                                     //> res0: myTest.test97.bs.type = ArrayBuffer(B)
+bs += new C                                     //> res1: myTest.test97.bs.type = ArrayBuffer(B, C)
+bs.foreach(println)                             //> B
+                                                //| C
+```
+
+The second effect of declaring an invariant type is the primary purpose of this recipe. A method only accepts `ArrayBuffer[B]`, but not its subtype.
+
+```scala
+def show(array: ArrayBuffer[B]) {
+  array.foreach(println)
+}                                               //> show: (array: scala.collection.mutable.ArrayBuffer[myTest.test97.B])Unit
+
+val bs = ArrayBuffer[B]()                       //> bs  : scala.collection.mutable.ArrayBuffer[myTest.test97.B] = ArrayBuffer()
+bs += new B                                     //> res0: myTest.test97.bs.type = ArrayBuffer(B)
+bs += new C                                     //> res1: myTest.test97.bs.type = ArrayBuffer(B, C)
+show(bs)                                        //> B
+                                                //| C
+
+val cs = ArrayBuffer[C]()                       //> cs  : scala.collection.mutable.ArrayBuffer[myTest.test97.C] = ArrayBuffer()
+cs += new C                                     //> res2: myTest.test97.cs.type = ArrayBuffer(C)
+cs += new C                                     //> res3: myTest.test97.cs.type = ArrayBuffer(C)
+show(cs)                                        // won't compile
+```
+
+- Elements in an `ArrayBuffer` can be mutated.
+- `show` is defined to accept a parameter of type `ArrayBuffer[B]`.
+- You’re attempting to pass in cs, whose type is `ArrayBuffer[C]`.
+- If the compiler allowed this, `show` could replace `C` elements in `cs` with plain old `B` elements. This can’t be allowed.
+
+### Mutable Collections
+The elements of the `Array`, `ArrayBuffer`, and `ListBuffer` classes can be **mutated**, and they’re all defined with *invariant* type parameters:
+```scala
+class Array[T]
+class ArrayBuffer[A]
+class ListBuffer[A]
+```
+
+### Immutable Collecitons
+Conversely, collections classes that are **immutable** identify their generic type parameters differently, with the `+` symbol, as shown here:
+```scala
+class List[+T]
+class Vector[+A]
+trait Seq[+A]
+```
+
+The `+` symbol used on the type parameters of the **immutable** collections defines their parameters to be *covariant*. Because their elements can’t be mutated, adding this symbol makes them more flexible. 
+
 ## Make Immutable Collections Covariant
 ## Create a Collection Whose Elements Are All of Some Base Type
 ## Selectively Adding New Behavior to a Closed Model
