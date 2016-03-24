@@ -230,5 +230,29 @@ showContent(Container(new C))                   //> C
 ```
 
 ## Create a Collection Whose Elements Are All of Some Base Type
+You want to specify that a class or method takes a type parameter, and that parameter is limited so it can only be a base type, or a subtype of that base type. Define the class or method by specifying the type parameter with an `upper bound`.
+
+```scala
+class A { override def toString = "A" }
+class B extends A { override def toString = "B" }
+class C extends B { override def toString = "C" }
+
+val a = new A                                   //> a  : test.A = A
+val b = new B                                   //> b  : test.B = B
+val c = new C                                   //> c  : test.C = C
+
+class Container[T <: B](val elem: T)
+val ca = new Container(a)                       // wont' compile
+val cb = new Container(b)                       //> cb  : test.Container[test.B] = test$$anonfun$main$1$Container$1@2d583afc
+val cc = new Container(c)                       //> cc  : test.Container[test.C] = test$$anonfun$main$1$Container$1@7b888da5
+
+def show[T <: B](obj: T) = println(obj)         //> show: [T <: test.B](obj: T)Unit
+show(a)                                         // won't compile
+show(b)                                         //> B
+show(c)                                         //> C
+```
+- `Container[T <: B]` is a class taking a type parameter with an `upper bound` of `B`
+- `show[T <: B]` is a method taking a type parameter with an `upper bound` of `B`
+
 ## Selectively Adding New Behavior to a Closed Model
 ## Building Functionality with Types
