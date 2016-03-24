@@ -347,3 +347,92 @@ cat.speak                                       //> Hello, my name is Kitty
 - Using *implicit conversion* is more convenient than *type class*, isn't it?
 
 ## Building Functionality with Types
+
+### Example 1: Creating a Timer
+```scala
+def timer[A](blockOfCode: => A): (A, Double) = {
+  val startTime = System.nanoTime
+  val result = blockOfCode
+  val stopTime = System.nanoTime
+  val delta = stopTime - startTime
+  (result, delta / 1000000d)
+}                                               //> timer: [A](blockOfCode: => A)(A, Double)
+
+val (r1, t1) = timer { Thread.sleep(500) }      //> r1  : Unit = ()
+                                                //| t1  : Double = 500.551
+
+val (r2, t2) = timer { io.Source.fromFile("/etc/passwd").getLines }
+                                                //> r2  : Iterator[String] = non-empty iterator
+                                                //| t2  : Double = 7.627
+```
+- The timer method uses Scala’s *call-by-name* syntax to accept a block of code as a parameter.
+
+### Example 2: Writing Your Own “Try” Classes
+```scala
+sealed class Attempt[A]
+final case class Success[A](result: A) extends Attempt[A]
+final case class Failure[A](exception: Throwable) extends Attempt[A]
+
+object Attempt {
+  def apply[A](f: => A): Attempt[A] =
+    try {
+      val result = f
+      Success(result)
+    } catch {
+      case e: Exception => Failure(e)
+    }
+}
+
+Attempt("10".toInt) match {
+  case Success(result) => println(result)
+  case Failure(e)      => println("error")
+}                                               //> 10
+
+Attempt("??".toInt) match {
+  case Success(result) => println(result)
+  case Failure(e)      => println("error")
+}                                               //> error
+```
+
+```scala
+sealed abstract class Attempt[A] {
+  def getOrElse[B >: A](default: => B): B = if (isSuccess) get else default
+  var isSuccess = false
+  def get: A
+}
+
+object Attempt {
+  def apply[A](f: => A): Attempt[A] =
+    try {
+      val result = f
+      Success(result)
+    } catch {
+      case e: Exception => Failure(e)
+    }
+}
+
+final case class Success[A](result: A) extends Attempt[A] {
+  isSuccess = true
+  def get = result
+}
+
+final case class Failure[A](exception: Exception) extends Attempt[A] {
+  isSuccess = false
+  def get: A = throw exception
+}
+
+Attempt("10".toInt).getOrElse(0)                //> res0: Int = 10
+Attempt("??".toInt).getOrElse(0)                //> res1: Int = 0
+
+// test lower bound
+class A
+class B extends A
+class C extends B
+
+def getA: A = new A                             //> getA: => myTest.test08.A
+def getB: B = throw new Exception               //> getB: => myTest.test08.B
+def getC: C = new C                             //> getC: => myTest.test08.C
+Attempt(getB).getOrElse(getA)                   //> res2: myTest.test08.A = myTest.test08$$anonfun$main$1$B$1@3eadff2f
+Attempt(getB).getOrElse(getC)                   //> res3: myTest.test08.B = myTest.test08$$anonfun$main$1$B$1@1f7c9157
+```
+- The expression `B >: A` is a lower bound
