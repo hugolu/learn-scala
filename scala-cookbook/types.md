@@ -255,4 +255,95 @@ show(c)                                         //> C
 - `show[T <: B]` is a method taking a type parameter with an `upper bound` of `B`
 
 ## Selectively Adding New Behavior to a Closed Model
+```scala
+ def add[A](x: A, y: A)(implicit numeric: Numeric[A]): A = numeric.plus(x, y)
+                                                //> add: [A](x: A, y: A)(implicit numeric: Numeric[A])A
+add(1, 2)                                       //> res0: Int = 3
+add(1.0, 2.0)                                   //> res1: Double = 3.0
+add(1L, 2L)                                     //> res2: Long = 3
+```
+
+The process of creating a type class:
+- Usually you start with a need,such as having a closed model to which you want to add new behavior.
+- To add the new behavior, you define a *type class*. The typical approach is to create a base trait, and then write specific implementations of that trait using implicit objects.
+- Back in your main application, create a method that uses the type class to apply the behavior to the closed model.
+
+### Type Class
+```scala
+final class Dog(val name: String)
+final class Cat(val name: String)
+
+trait Speakable[A] {
+  def speak(speaker: A): Unit
+}
+
+implicit object SpeakingDog extends Speakable[Dog] {
+  def speak(dog: Dog) { println(s"Woof! I'm a Dog, my name is ${dog.name}") }
+}
+
+def makeItSpeak(dog: Dog)(implicit speakable: Speakable[Dog]) {
+  speakable.speak(dog)
+}                                               //> makeItSpeak: (dog: myTest.test02.Dog)(implicit speakable: myTest.test02.Speakable[myTest.test02.Dog])Unit
+
+val dog = new Dog("Puppy")                      //> dog  : myTest.test02.Dog = myTest.test02$$anonfun$main$1$Dog$1@6ba00355
+makeItSpeak(dog)                                //> Woof! I'm a Dog, my name is Puppy
+
+val cat = new Cat("Kitty")                      //> cat  : myTest.test02.Cat = myTest.test02$$anonfun$main$1$Cat$1@31730d7b
+makeItSpeak(cat)                                // won't compile
+```
+
+### Implicit Conversion
+```scala
+final class Dog(val name: String)
+final class Cat(val name: String)
+
+implicit class DogSpeaking(val dog: Dog) {
+  def speak = println(s"Woof! I'm a Dog, my name is ${dog.name}")
+}
+
+def makeItSpeak(dog: Dog) {
+  dog.speak
+}                                               //> makeItSpeak: (dog: myTest.test04.Dog)Unit
+
+val dog = new Dog("Puppy")                      //> dog  : myTest.test04.Dog = myTest.test04$$anonfun$main$1$Dog$1@7f81f91a
+makeItSpeak(dog)                                //> Woof! I'm a Dog, my name is Puppy
+
+val cat = new Cat("Kitty")                      //> cat  : myTest.test04.Cat = myTest.test04$$anonfun$main$1$Cat$1@53c9f789
+//makeItSpeak(cat)
+```
+
+### My Try
+```scala
+class Animal(val name: String)
+final class Dog(name: String) extends Animal(name)
+final class Cat(name: String) extends Animal(name)
+
+val dog = new Dog("Puppy")                      //> dog  : myTest.test05.Dog = myTest.test05$$anonfun$main$1$Dog$1@693b004c
+val cat = new Cat("Kitty")                      //> cat  : myTest.test05.Cat = myTest.test05$$anonfun$main$1$Cat$1@2090b38d
+
+// type class
+trait Speakable[A] {
+	def speak(speaker: A): Unit
+}
+implicit object SpeakingAnimal extends Speakable[Animal] {
+	def speak(animal: Animal) = println(s"Hello, my name is ${animal.name}")
+}
+
+def makeItSpeak(animal: Animal)(implicit speakable: Speakable[Animal]) {
+	speakable.speak(animal)
+}                                               //> makeItSpeak: (animal: myTest.test05.Animal)(implicit speakable: myTest.test05.Speakable[myTest.test05.Animal])Unit
+
+makeItSpeak(dog)                                //> Hello, my name is Puppy
+makeItSpeak(cat)                                //> Hello, my name is Kitty
+
+// implicit conversion
+implicit class AnimalSpeaking(animal: Animal) {
+	def speak = println(s"Hello, my name is ${animal.name}")
+}
+
+dog.speak                                       //> Hello, my name is Puppy
+cat.speak                                       //> Hello, my name is Kitty
+```
+- Using *implicit conversion* is more convenient than *type class*, isn't it?
+
 ## Building Functionality with Types
