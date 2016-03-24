@@ -212,6 +212,23 @@ trait Seq[+A]
 The `+` symbol used on the type parameters of the **immutable** collections defines their parameters to be *covariant*. Because their elements can’t be mutated, adding this symbol makes them more flexible. 
 
 ## Make Immutable Collections Covariant
+You *can* define a collection of **immutable** elements as invariant, but your collection will be much more flexible if you declare that your type parameter is **covariant**. To make a type parameter covariant, declare it with the `+` symbol, like `[+A]`.
+
+```scala
+class A { override def toString = "A" }
+class B extends A { override def toString = "B" }
+class C extends B { override def toString = "C" }
+
+case class Container[+T](val elem: T)
+
+def showContent(c: Container[B]) = println(c.elem)
+                                                //> showContent: (c: myTest.test98.Container[myTest.test98.B])Unit
+
+showContent(Container(new A))										// won't compile
+showContent(Container(new B))                   //> B
+showContent(Container(new C))                   //> C
+```
+
 ## Create a Collection Whose Elements Are All of Some Base Type
 ## Selectively Adding New Behavior to a Closed Model
 ## Building Functionality with Types
