@@ -333,3 +333,40 @@ def readTextFile(f: String): Option[List[String]] = allCatch.opt(Source.fromFile
 - `allCatch` is described as a Catch object “that catches everything.” The opt method returns `None` if an exception is caught (such as a FileNotFoundException), and a Some if the block of code succeeds.
 
 ### Using Try/Success/Failure when you need the error message
+Scala 2.10 introduced `scala.util.Try` as an approach that’s similar to `Option`, but returns failure information rather than a `None`.
+
+```scala
+scala> import scala.util.{Try,Success,Failure}
+import scala.util.{Try, Success, Failure}
+```
+```
+scala> val x = Try(2/1)
+x: scala.util.Try[Int] = Success(2)
+
+scala> val x = Try(2/1).getOrElse(0)
+x: Int = 2
+
+scala> Try(2/1).foreach(println)
+2
+
+scala> Try(2/1) match {
+     |   case Success(i) => println(i)
+     |   case Failure(e) => println(e)
+     | }
+2
+```
+```scala
+scala> val y = Try(2/0)
+y: scala.util.Try[Int] = Failure(java.lang.ArithmeticException: / by zero)
+
+scala> val y = Try(2/0).getOrElse(0)
+y: Int = 0
+
+scala> Try(2/0).foreach(println)
+
+scala> Try(2/0) match {
+     |   case Success(i) => println(i)
+     |   case Failure(e) => println(e)
+     | }
+java.lang.ArithmeticException: / by zero
+```
