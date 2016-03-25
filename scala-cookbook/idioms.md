@@ -112,6 +112,24 @@ class Pizza {
 - I created the methods `toppings`, `addTopping`, and `removeTopping` to let other code manipulate the collection.
 - When other code calls the `toppings` method, I can give them an immutable copy of the toppings.
 
+#### Don’t use the “val + mutable collection” approach
+```scala
+val toppings = new collection.mutable.ArrayBuffer[Topping]()
+```
+- I didn’t want to expose toppings as an immutable collection outside of my `Pizza` class, which would have happened here, because the `val` would have generated an accessor method.
+- “Who should be responsible for managing the toppings on the pizza?” and Pizza clearly has the responsibility of maintaining its toppings.
+
+#### Don't choose “var + immutable collection” design
+```scala
+var toppings = Vector[Topping]()
+
+def addTopping(t: Topping) = toppings :+ t
+
+// bad: other code can mutate 'toppings'
+pizza.toppings = Vector(Cheese)
+```
+- it’s a little cumbersome to remove an element from a Vector (you have to filter the undesired toppings out of the originating Vector while assigning the result to a new Vector)
+- it lets toppings be reassigned outside of the Pizza class, which I don’t want
 
 ## Think “Expression-Oriented Programming”
 ## Use Match Expressions and Pattern Matching
