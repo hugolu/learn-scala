@@ -315,4 +315,21 @@ res7: List[Int] = List(1, 2, 3)
 - You can pass anonymous functions into the `collection` methods.
 
 ### Using Option with frameworks
+```scala
+def getAll(): List[Stock] = {
+  DB.withConnection { implicit connection =>
+    case Row(id: Int, symbol: String, Some(company: String))  => Stock(id, symbol, Some(company))
+    case Row(id: Int, symbol: String, None)                   => Stock(id, symbol, None)
+  }.toList
+}
+```
+
+#### allCatch
+```scala
+import scala.util.control.Exception._
+
+def readTextFile(f: String): Option[List[String]] = allCatch.opt(Source.fromFile(f).getLines.toList)
+```
+- `allCatch` is described as a Catch object “that catches everything.” The opt method returns `None` if an exception is caught (such as a FileNotFoundException), and a Some if the block of code succeeds.
+
 ### Using Try/Success/Failure when you need the error message
