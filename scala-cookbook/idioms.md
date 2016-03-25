@@ -294,5 +294,25 @@ Got 1
 ```
 
 ### Using Option with collections
+```scala
+scala> val list = List("1", "2", "foo", "3", "bar")
+list: List[String] = List(1, 2, foo, 3, bar)
+
+scala> list.map(toInt)
+res4: List[Option[Int]] = List(Some(1), Some(2), None, Some(3), None)
+
+scala> list.map(toInt).flatten
+res5: List[Int] = List(1, 2, 3)
+
+scala> list.flatMap(toInt)
+res6: List[Int] = List(1, 2, 3)
+
+scala> list.map(toInt).collect{case Some(i) => i}
+res7: List[Int] = List(1, 2, 3)
+```
+- `toInt` is defined to return `Option[Int]`.
+- Methods like `flatten`, `flatMap`, and others are built to work well with `Option` values.
+- You can pass anonymous functions into the `collection` methods.
+
 ### Using Option with frameworks
 ### Using Try/Success/Failure when you need the error message
