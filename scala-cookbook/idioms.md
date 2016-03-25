@@ -278,7 +278,21 @@ x: Option[Int] = Some(1)
 scala> val y = toInt("?")
 y: Option[Int] = None
 ```
-### Getting the value from an Option
+### Getting the value from an Option with `getOrElse`, `foreach`, or `match`
+```scala
+scala> val x = toInt("1").getOrElse(0)
+x: Int = 1
+
+scala> toInt("1").foreach{ i => println(s"Got $i") }
+Got 1
+
+scala> toInt("1") match {
+     |   case Some(i) => println(s"Got $i")
+     |   case None    => println("Got nothing")
+     | }
+Got 1
+```
+
 ### Using Option with collections
 ### Using Option with frameworks
 ### Using Try/Success/Failure when you need the error message
