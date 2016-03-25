@@ -88,6 +88,31 @@ val stockInstance = StockInstance(symbol, date, price, volume, high, low)
 3. Verify that the result is what you expected.
 
 ## Prefer Immutable Objects
+Prefer immutability:
+- Prefer immutable collections. For instance, use immutable sequences like `List` and `Vector` before reaching for the mutable `ArrayBuffer`.
+- Prefer immutable variables. That is, prefer `val` to `var`.
+
+There are at least two major benefits to using immutable variables (val) and immutable collections:
+- They represent a form of defensive coding, keeping your data from being changed accidentally.
+- They’re easier to reason about.
+
+### Using val + mutable, and var + immutable?
+```scala
+class Pizza {
+  private val _toppings = new collection.mutable.ArrayBuffer[Topping]()
+
+  def toppings = _toppings.toList
+  def addTopping(t: Topping) { _toppings += t }
+  def removeTopping(t: Topping) { _toppings -= t }
+}
+```
+- I made `_toppings` an `ArrayBuffer` because I knew that elements(toppings)would often be added and removed.
+- I made`_toppings` a `val` because there was no need for it to ever be reassigned.
+- I made it `private` so its accessor wouldn’t be visible outside of my class.
+- I created the methods `toppings`, `addTopping`, and `removeTopping` to let other code manipulate the collection.
+- When other code calls the `toppings` method, I can give them an immutable copy of the toppings.
+
+
 ## Think “Expression-Oriented Programming”
 ## Use Match Expressions and Pattern Matching
 ## Eliminate null Values from Your Code
