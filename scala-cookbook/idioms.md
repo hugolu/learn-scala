@@ -34,6 +34,58 @@ class Stock (var symbol: String, var company: String, var price: BigDecimal, var
 - The getHistory method returns a mutable data structure.
 
 ### Fixing the problems
+```scala
+case class Stock(symbol: String, company: String)
+case class StockInstance(symbol: String, datetime: String, price: BigDecimal, volume: Long)
+
+object NetworkUtils {
+  def getUrlContent(url: String): String = { ... }
+}
+
+object StockUtils {
+  def buildUrl(stockSymbol: String): String = { ... }
+  def getPrice(symbol: String, html: String): String = { ... }
+  def getVolume(symbol: String, html: String): String = { ... }
+  def getHigh(symbol: String, html: String): String = { ... }
+  def getLow(symbol: String, html: String): String = { ... }
+}
+
+object DateUtils {
+  def currentDate: String = { ... }
+  def currentTime: String = { ... }
+}
+```
+- separate two concepts that are buried in the class: `Stock`, `StockInstance`
+- use general-purpose object: `NetworkUtils`, `StockUtils`, `DateUtils`
+- use `get*` methods instead of `set*`: `getPrice`, `getVolume`, `getHigh`, `getLow`
+
+```scala
+val stock = new Stock("AAPL", "Apple")
+val url = StockUtils.buildUrl(stock.symbol)
+val html = NetUtils.getUrlContent(url)
+
+val price = StockUtils.getPrice(html)
+val volume = StockUtils.getVolume(html)
+val high = StockUtils.getHigh(html)
+val low = StockUtils.getLow(html)
+val date = DateUtils.currentDate
+val stockInstance = StockInstance(symbol, date, price, volume, high, low)
+```
+- retrieve the HTML that describes the stock from a web page
+- extract the desired stock information, get the date, and create the Stock instance
+
+### `set*` methods is harder to test
+1. Set the `html` field in the object.
+2. Call the current `set` method, such as `setPriceFromHtml`.
+3. Internally, this method reads the private `html` class field.
+4. When the method runs, it mutates a field in the class (`price`).
+5. You have to “get” that field to verify that it was changed.
+6. In more complicated classes, it’s possible that the `html` and `price` fields may be mutated by other methods in the class.
+
+### `get*` method is easier to test:
+1. Call the function, passing in a known value.
+2. Get a result back from the function.
+3. Verify that the result is what you expected.
 
 ## Prefer Immutable Objects
 ## Think “Expression-Oriented Programming”
