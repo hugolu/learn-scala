@@ -132,6 +132,22 @@ pizza.toppings = Vector(Cheese)
 - it lets toppings be reassigned outside of the Pizza class, which I don’t want
 
 ## Think “Expression-Oriented Programming”
+
+To understand EOP, you have to understand the difference between a statement and an expression. 
+- “Statements do not return results and are executed solely for their side effects, while expressions always return a result and often do not have side effects at all.”
+
+EOP:
+- “An expression-oriented programming language is a programming language where every (or nearly every) construction is an expression, and thus yields a value.”
+
+```scala
+// a series of expressions
+val url = StockUtils.buildUrl(symbol) val html = NetUtils.getUrlContent(url) val price = StockUtils.getPrice(html) val volume = StockUtils.getVolume(html) val high = StockUtils.getHigh(html)
+val low = StockUtils.getLow(html)
+val date = DateUtils.getDate
+val stockInstance = StockInstance(symbol, date, price, volume, high, low)
+```
+- The functions don’t mutate the data they’re given, and they don’t have side effects, so they’re easy to read, easy to reason about, and easy to test.
+
 ## Use Match Expressions and Pattern Matching
 ## Eliminate null Values from Your Code
 ## Using the Option/Some/None Pattern
