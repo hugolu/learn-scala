@@ -260,3 +260,25 @@ def getName: Option[String] = {
 - You’ll become more comfortable using `Option`, and as aresult, you’ll be able to take advantage of how it’s used in the collection libraries and other frameworks.
 
 ## Using the Option/Some/None Pattern
+
+### Returning an Option from a method
+```scala
+def toInt(s: String): Option[Int] = {
+  try {
+    Some(s.toInt)
+  } catch {
+    case e: Exception => None
+  }
+}
+```
+```scala
+scala> val x = toInt("1")
+x: Option[Int] = Some(1)
+
+scala> val y = toInt("?")
+y: Option[Int] = None
+```
+### Getting the value from an Option
+### Using Option with collections
+### Using Option with frameworks
+### Using Try/Success/Failure when you need the error message
