@@ -212,4 +212,51 @@ case MyActor extends Actor {
 ```
 
 ## Eliminate null Values from Your Code
+
+### Initialize var fields with Option, not null
+```scala
+case class Address(city: String)
+class User {
+  var name: String = _
+  var address: Address = _
+}
+
+val user = new User
+println(user.name)                              //> null
+println(user.address.city)	                    // java.lang.NullPointerException
+```
+```scala
+case class Address(city: String)
+class User {
+  var name: Option[String] = None
+  var address: Option[Address] = None
+}
+
+val user = new User                             //> user  : myTest.test09.User = myTest.test09$$anonfun$main$1$User$1@2e746d6d
+println(user.name.getOrElse("<not assigned>"))  //> <not assigned>
+user.address.foreach { a => println(a.city) }
+```
+- In the case of the `address`, if it’s not assigned, the `foreach` loop won’t be executed, so the print statements are never reached. 
+
+### Don’t return null from methods
+```scala
+def doSomething: Option[String] = { ... }
+def toInt(s: String): Option[Int] = { ... }
+def lookupPerson(name: String): Option[Person] = { ... }
+```
+### Converting a null into an Option, or something else
+```scala
+def getName: Option[String] = {
+  var name = javaPerson.getName
+  if (name == null) None else Some(name)
+}
+```
+
+### Benefits
+- You’ll eliminate NullPointerExceptions.
+- Your code will be safer.
+- You won’t have to write if statements to check for null values.
+- Adding an `Option[T]`return type declaration to  amethod is a terrific way to indicate that something is happening in the method such that the caller may receive a `None` instead of a `Some[T]`. This is a much better approach than returning null from a method that is expected to return an object.
+- You’ll become more comfortable using `Option`, and as aresult, you’ll be able to take advantage of how it’s used in the collection libraries and other frameworks.
+
 ## Using the Option/Some/None Pattern
