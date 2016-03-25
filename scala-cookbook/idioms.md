@@ -149,5 +149,67 @@ val stockInstance = StockInstance(symbol, date, price, volume, high, low)
 - The functions don’t mutate the data they’re given, and they don’t have side effects, so they’re easy to read, easy to reason about, and easy to test.
 
 ## Use Match Expressions and Pattern Matching
+
+### Replacement for the Java switch statement
+```scala
+val month = i match {
+  case 1  => "January"
+  case 2  => "February"
+  ...
+  case 11 => "November"
+  case 12 => "December"
+  case _  => "Invalid month"
+}
+```
+### Replacement for the Java unwieldy if/then statements
+```scala
+i match {
+  case 1 | 3 | 5 | 7 | 9  => println("odd")
+  case 2 | 4 | 6 | 8 | 10 => println("even"
+}
+```
+### In try/catch expressions
+```scala
+def readTextFile(filename: String): Option[List[String]] = {
+  try {
+    Some(Source.fromFile(filename).getLines.toList)
+  } catch {
+    case e: Exception => None
+  }
+}
+```
+### As the body of a function or method
+```scala
+def is isTrue(a: Any) = a match {
+  case 0 | "" => false
+  case _      => true
+}
+```
+### Use with Option/Some/None
+```scala
+def toInt(s: String): Option[Int] = {
+  try {
+    Some(s.toInt)
+  } catch {
+    case e: Exception => None
+  }
+}
+
+toInt(aString) match {
+  case Some(i)  => println(i)
+  case None     => println("Error")
+}
+```
+### In actors
+```scala
+case MyActor extends Actor {
+  def receive = {
+    case Cmd1 => handleCmd1
+    case Cmd2 => handleCmd2
+    case Cmd3 => handleCmd3
+  }
+}
+```
+
 ## Eliminate null Values from Your Code
 ## Using the Option/Some/None Pattern
