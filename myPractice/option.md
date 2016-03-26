@@ -59,3 +59,18 @@ def fun8(o: Option[Int]): Option[Int] = {
 fun8(x)                                         //> res12: Option[Int] = None
 fun8(y)                                         //> res13: Option[Int] = None
 ```
+
+## for comprehension
+```scala
+val o1 = Some(3): Option[Int]                   //> o1  : Option[Int] = Some(3)
+val o2 = Some(7): Option[Int]                   //> o2  : Option[Int] = Some(7)
+val o3 = None: Option[Int]                      //> o3  : Option[Int] = None
+
+def fun9(ox: Option[Int], oy: Option[Int]): Option[Int] =
+  for {
+    x <- ox
+    y <- oy
+  } yield x * y                                 //> fun9: (ox: Option[Int], oy: Option[Int])Option[Int]
+fun9(o1, o2)                                    //> res14: Option[Int] = Some(21)
+fun9(o1, o3)                                    //> res15: Option[Int] = None
+```
