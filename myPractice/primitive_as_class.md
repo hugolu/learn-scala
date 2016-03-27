@@ -1,4 +1,4 @@
-# Primitive as Collection
+# Primitive as Class
 
 reference: Lecture 4.2 - Objects Everywhere from [Functional Programming Principles in Scala](https://class.coursera.org/progfun-005/)
 
@@ -36,11 +36,41 @@ val n0 = Zero                                   //> n0  : myTest.Zero.type = 0
 val n1 = new Succ(n0)                           //> n1  : myTest.Succ = 1
 val n2 = new Succ(n1)                           //> n2  : myTest.Succ = 2
 val n3 = new Succ(n2)                           //> n3  : myTest.Succ = 3
+```
 
+```scala
 n0 + n1                                         //> res0: myTest.Nat = 1
-n1 + n0                                         //> res1: myTest.Succ = 1
-n2 + n1                                         //> res2: myTest.Succ = 3
+```
+- = `Zero.+(n1)`
+- = `n1`
 
+```scala
+n1 + n0                                         //> res1: myTest.Succ = 1
+```
+- = `new Succ(n1.predecessor + n0)`
+- = `new Succ(n0 + n0)`
+- = `new Succ(n0)`
+- = `n1`
+
+```scala
+n2 + n1                                         //> res2: myTest.Succ = 3
+```
+- = `new Succ(n2.predecessor + n1)` = `new Succ(n1 + n1)`
+- = `new Succ(new Succ(n1.predecessor + n1))` = `new Succ(new Succ(n0 + n1))`
+- = `new Succ(new Succ(n1))`
+- = `new Succ(n2)`
+- = `n3`
+
+```scala
 n1 - n0                                         //> res3: myTest.Nat = 1
+```
+- = `n1.-(n0)`
+- = `n1.-(Zero)`
+- = `n1`
+
+```scala
 n3 - n2                                         //> res4: myTest.Nat = 1
 ```
+- = `n3 - n2` = `n3.predecessor - n2.predecessor`
+- = `n2 - n1` = `n2.predecessor - n1.predecessor`
+- = `n1 - n0` = `n1`
