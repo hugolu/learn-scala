@@ -30,3 +30,7 @@ Now, the array is already sorted, but the algorithm does not know if it is compl
 ( 1 2 4 5 8 ) \to ( 1 2 4 5 8 )
 ( 1 2 4 5 8 ) \to ( 1 2 4 5 8 )
 ```
+
+## 思索
+
+scala list 的特性，並不適合執行 bubble sort (需要 iteration，而非 recursion)，怎麼實作還真的有點傷腦筋...
