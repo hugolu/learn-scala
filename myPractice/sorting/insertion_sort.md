@@ -34,3 +34,16 @@ def insert(x: Int, xs: List[Int]): List[Int] = xs match {
 val list = List(2, 4, 6, 8, 10, 9, 7, 5, 3, 1)  //> list  : List[Int] = List(2, 4, 6, 8, 10, 9, 7, 5, 3, 1)
 isort(list)                                     //> res0: List[Int] = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
 ```
+
+### `isort(xs)`
+
+![isort()](isort.png) (白色方塊表示已排序)
+
+- 邏輯順序：演算法從 list 最後一個元素開始處理，取前一個元素插入已排序好的序列。
+- 執行順序：取第一個元素，插入後面(即將執行排序的)序列。然後對(即將執行排序的)序列做相同的動作，不斷迭代直到(即將執行排序的)序列為空序列(`Nil`)。
+
+### `insert(x, xs)`
+
+![insrt()](insert.png)
+
+將`xs`拆成第一個元素(`y = xs.head`)與其他序列(`yx = xs.tail`)，比對`x`與`y`，如果`x < y`，則把`x`放到`xs`之前，否則交換`x`與`y`，把`x`插入`ys`。然後繼續迭代直到(將被插入元素的)序列為空序列(`Nil`)。
