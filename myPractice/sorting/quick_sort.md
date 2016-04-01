@@ -44,3 +44,19 @@ def qsort(list: List[Int]): List[Int] = {
 qsort(nums)                                     //> res0: List[Int] = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
 ```
 - 效能？有更好的解法嗎
+
+### 更優雅的解法
+內容來自 https://github.com/hugolu/learn-scala/blob/master/myPractice/qsort.md
+
+```scala
+val nums = List(2, 4, 6, 8, 10, 9, 7, 5, 3, 1)  //> nums  : List[Int] = List(2, 4, 6, 8, 10, 9, 7, 5, 3, 1)
+
+def qsort(list: List[Int]): List[Int] = list match {
+	case Nil => Nil
+	case x :: xs =>
+		val (small, large) = xs.partition(_ < x)
+		qsort(small) ::: (x :: qsort(large))
+}                                               //> qsort: (list: List[Int])List[Int]
+
+qsort(nums)                                     //> res0: List[Int] = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+```
