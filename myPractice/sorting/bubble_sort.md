@@ -31,6 +31,27 @@ Now, the array is already sorted, but the algorithm does not know if it is compl
 ( 1 2 4 5 8 ) \to ( 1 2 4 5 8 )
 ```
 
-## 思索
+## Scala Code
 
-scala list 的特性，並不適合執行 bubble sort (需要 iteration，而非 recursion)，怎麼實作還真的有點傷腦筋...
+Scala `List` 的特性不適合執行 bubble sort (需要 iteration，而非 recursion)，改用 Scala `Array` 實作。這個實作有 *side-effect* 會改變 `Array` 的內容。
+
+```scala
+val nums = Array(2, 4, 6, 8, 9, 7, 5, 3, 1)     //> nums  : Array[Int] = Array(2, 4, 6, 8, 9, 7, 5, 3, 1)
+
+def bsort(array: Array[Int]): Array[Int] = {
+  val n = array.length
+  for {
+    i <- 0 until n
+    j <- 0 until (n - 1 - i)
+    if (array(j) > array(j + 1))
+  } swap(array, j, j + 1)
+  array
+}                                               //> bsort: (array: Array[Int])Array[Int]
+def swap(array: Array[Int], x: Int, y: Int) = {
+  val temp = array(x)
+  array(x) = array(y)
+  array(y) = temp
+}                                               //> swap: (array: Array[Int], x: Int, y: Int)Unit
+
+bsort(nums)                                     //> res0: Array[Int] = Array(1, 2, 3, 4, 5, 6, 7, 8, 9)
+```
