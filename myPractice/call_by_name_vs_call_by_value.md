@@ -112,4 +112,4 @@ val s2 = s1.tail                                //> Stream(2, ?) is created
 val s3 = s2.tail                                //> Empty is created
                                                 //| s3  : myTest.Stream[Int] = Empty
 ```
-- `def cons[T](_head: T, _tail: => Stream[T])` 傳入的 `_tail` 是 call-by-value，只有真正透過 `.tail` 存取時才會去呼叫執行 `Stream.range(lo + 1, hi)` 產生新的 `Stream[T]`
+- `def cons[T](_head: T, _tail: => Stream[T])` 傳入的 `_tail` 是 call-by-name，只有真正透過 `.tail` 存取時才會去呼叫執行 `Stream.range(lo + 1, hi)` 產生新的 `Stream[T]`
