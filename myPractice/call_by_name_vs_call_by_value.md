@@ -73,7 +73,7 @@ cbn()                                           //> res3: Int = 797816830
 ----
 ## Stream
 
-補充[Functional Programming Principles in Scala](https://class.coursera.org/progfun-005)，Lecture 7.2 提到 `Stream` 的做法
+補充[Functional Programming Principles in Scala](https://class.coursera.org/progfun-005)，Lecture 7.2, 7,3 提到 `Stream` 的做法
 
 ```scala
 trait Stream[+A] {
@@ -81,16 +81,15 @@ trait Stream[+A] {
   def head: A
   def tail: Stream[A]
 
-	override def toString = if (isEmpty == true) "Empty" else s"Stream($head, ?)"
+  override def toString = if (isEmpty == true) "Empty" else s"Stream($head, ?)"
   println(s"$this is created")
 }
-
 
 object Stream {
   def cons[T](_head: T, _tail: => Stream[T]) = new Stream[T] {
     def isEmpty = false
     def head = _head
-    def tail = _tail
+    lazy val tail = _tail
   }
 
   lazy val empty = new Stream[Nothing] {
@@ -109,7 +108,10 @@ val s1 = Stream.range(1, 3)                     //> Stream(1, ?) is created
                                                 //| s1  : myTest.Stream[Int] = Stream(1, ?)
 val s2 = s1.tail                                //> Stream(2, ?) is created
                                                 //| s2  : myTest.Stream[Int] = Stream(2, ?)
+val ss = s1.tail                                //> ss  : myTest.Stream[Int] = Stream(2, ?)
+
 val s3 = s2.tail                                //> Empty is created
                                                 //| s3  : myTest.Stream[Int] = Empty
 ```
 - `def cons[T](_head: T, _tail: => Stream[T])` 傳入的 `_tail` 是 call-by-name，只有真正透過 `.tail` 存取時才會去呼叫執行 `Stream.range(lo + 1, hi)` 產生新的 `Stream[T]`
+- 使用 lazy value 儲存 `tail`, `Stream.cons` 實作上更有效率 (已經產生過的`Stream`不再重複產生)
