@@ -38,3 +38,40 @@ for {
     x % y == 0) map (y => (x, y)))              //> res3: scala.collection.immutable.IndexedSeq[(Int, Int)] = Vector((2,2), (3,3
                                                 //| ), (4,2), (4,4), (5,5))
 ```
+
+----
+## `filter` 與 `withFilter` 的差別
+
+http://docs.scala-lang.org/tutorials/FAQ/yield.html
+
+Scala 2.8 introduced a method called `withFilter`, whose main difference is that, instead of returning a new, filtered, collection, it filters on-demand.
+
+```scala
+val list = List.range(0, 3)                     //> list  : List[Int] = List(0, 1, 2)
+
+def isEven(n: Int): Boolean = {
+  println(s"$n is even?")
+  n % 2 == 0
+}                                               //> isEven: (n: Int)Boolean
+```
+
+```scala
+val list2 = list filter isEven                  //> 0 is even?
+                                                //| 1 is even?
+                                                //| 2 is even?
+                                                //| list2  : List[Int] = List(0, 2)
+list2 foreach println                           //> 0
+                                                //| 2
+```
+- `list2` 是透過 `filter` 得到的新的 collection
+
+```scala
+val list3 = list withFilter isEven              //> list3  : scala.collection.generic.FilterMonadic[Int,List[Int]] = scala.collection.TraversableLike$WithFilter@661c28c8
+
+list3 foreach println                           //> 0 is even?
+                                                //| 0
+                                                //| 1 is even?
+                                                //| 2 is even?
+                                                //| 2
+```
+- `list3` 只是一個 `FilterMonadic`，只有透過 `foreach` 取值的時候才會真正去執行 `withFilter`
