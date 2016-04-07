@@ -18,7 +18,26 @@ The Sieve of Eratosthenes is an ancient technique to calculate prime numbers. Th
 2 3   5   7        11    13          17    19       // 5 is prime, remove all multiples of 5
 ```
 
-## Scala code
+## Scala code in Imperative way
+```scala
+import scala.collection.mutable.ArrayBuffer
+
+val primes = ArrayBuffer[Int]()                 //> primes  : scala.collection.mutable.ArrayBuffer[Int] = ArrayBuffer()
+def nextPrime(primes: ArrayBuffer[Int]): Int = primes match {
+  case ArrayBuffer() => 2
+  case _ =>
+    def getPrime(n: Int): Int =
+      if (primes forall (p => n % p != 0)) n else getPrime(n + 1)
+    getPrime(primes.last)
+}                                               //> nextPrime: (primes: scala.collection.mutable.ArrayBuffer[Int])Int
+
+for (n <- 1 to 10)
+  primes += nextPrime(primes)
+
+primes.toList                                   //> res0: List[Int] = List(2, 3, 5, 7, 11, 13, 17, 19, 23, 29)
+```
+
+## Scala code in Functional way
 ```scala
 def sieve(s: Stream[Int]): Stream[Int] =
   s.head #:: sieve(s.tail filter (_ % s.head != 0))
