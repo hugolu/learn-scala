@@ -16,6 +16,7 @@ Using triple equals in `f(x) ≡ g(x)` as a mathematician uses `=` for equality.
 
 ### Breaking the Law
 If `a`, `b`, and `c` are rational numbers then multiplication (`*`) obeys the following laws:
+
 ```
 a * 1 ≡ a
 a * b ≡ b * a
@@ -25,7 +26,8 @@ Certainly it would be easy to create a class called "RationalNumber" and impleme
 
 ### WTF - What The Functor?
 For a functor of type `M[A]`, the map method takes a function from `A` to `B` and returns an `M[B]`. In other words, map converts an `M[A]` into an `M[B]` based on a function argument.
-```
+
+```scala
 class M[A] {
   def map[B](f: A => B):M[B] = ...
 }
@@ -33,11 +35,13 @@ class M[A] {
 
 ### First Functor Law: Identity
 Let's say I invent a function called identity like so
-```
+
+```scala
 def identity[A](x:A) = x
 ```
 This obviously has the property that for any `x`, 
-```
+
+```scala
 identity(x) ≡ x
 ```
 
@@ -45,22 +49,23 @@ for any functor `m`,
 
 | Rule | Equation |
 |------|----------|
-| F1 | m map identity ≡ m |
-| F1b | m map {x => identity(x)} ≡ m |
-| F1c | m map {x => x} ≡ m|
-| F1d | for (x <- m) yield x ≡ m |
+| F1 | `m map identity ≡ m` |
+| F1b | `m map {x => identity(x)} ≡ m` |
+| F1c | `m map {x => x} ≡ m` |
+| F1d | `for (x <- m) yield x ≡ m` |
 
 ### Second Functor Law: Composition
 The second functor law specifies the way several "maps" compose together.
 
 | Ruls | Equation |
 |------|----------|
-| F2 | m map g map f ≡ m map {x => f(g(x))} |
-| F2b | for (y<- (for (x <-m) yield g(x)) yield f(y) ≡ for (x <- m) yield f(g(x)) |
+| F2 | `m map g map f ≡ m map {x => f(g(x))}` |
+| F2b | `for (y<- (for (x <-m) yield g(x)) yield f(y) ≡ for (x <- m) yield f(g(x))` |
 
 ### Functors and Monads, Alive, Alive Oh
 As a reminder, a Scala monad has both map and flatMap methods with the following signatures
-```
+
+```scala
 class M[A] {
   def map[B](f: A => B):M[B] = ...
   def flatMap[B](f: A=> M[B]): M[B] = ...
@@ -68,7 +73,8 @@ class M[A] {
 ```
 
 Additionally, the laws I present here will be based on `unit`. `unit` stands for a single argument constructor or factory with the following signature
-```
+
+```scala
 def unit[A](x:A):M[A] = ...
 ```
 
