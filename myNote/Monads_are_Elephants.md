@@ -49,18 +49,18 @@ for any functor `m`,
 
 | Rule | Equation |
 |------|----------|
-| F1 | `m map identity ≡ m` |
-| F1b | `m map {x => identity(x)} ≡ m` |
-| F1c | `m map {x => x} ≡ m` |
-| F1d | `for (x <- m) yield x ≡ m` |
+| F1  | m map identity ≡ m |
+| F1b | m map {x => identity(x)} ≡ m |
+| F1c | m map {x => x} ≡ m |
+| F1d | for (x <- m) yield x ≡ m |
 
 ### Second Functor Law: Composition
 The second functor law specifies the way several "maps" compose together.
 
 | Ruls | Equation |
 |------|----------|
-| F2 | `m map g map f ≡ m map {x => f(g(x))}` |
-| F2b | `for (y<- (for (x <-m) yield g(x)) yield f(y) ≡ for (x <- m) yield f(g(x))` |
+| F2 | m map g map f ≡ m map {x => f(g(x))} |
+| F2b | for (y<- (for (x <-m) yield g(x)) yield f(y) ≡ for (x <- m) yield f(g(x)) |
 
 ### Functors and Monads, Alive, Alive Oh
 As a reminder, a Scala monad has both map and flatMap methods with the following signatures
@@ -79,5 +79,13 @@ def unit[A](x:A):M[A] = ...
 ```
 
 Normally it's handy to create a monad `M` as a case class or with a companion object with an appropriate `apply(x:A):M[A]` method so that the expression `M(x)` behaves as `unit(x)`.
+
+### The Functor/Monad Connection Law: The Zeroth Law
+In the very first installment of this series I introduced a relationship. This law doesn't do much for us alone, but it does create a connection between three concepts: unit, map, and flatMap.
+
+| Ruls | Equation |
+|------|----------|
+| FM1 | m map f ≡ m flatMap {x => unit(f(x))} |
+| FM1a | for (x <- m) yield f(x) ≡ for (x <- m; y <- unit(f(x))) yield y |
 
 ## Part 4
