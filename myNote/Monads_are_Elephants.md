@@ -123,6 +123,24 @@ M1c     for (x <- m; y <- unit(x)) yield y ≡ m
 ```
 
 ### The Second Monad Law: Unit
+Monads have a sort of reverse to the monad identity law.
 
+```
+M2      unit(x) flatMap f ≡ f(x)                    // or equivalently
+M2a     unit(x) flatMap {y => f(y)} ≡ f(x)
+```
+```
+M2b     for (y <- unit(x); result <- f(y)) yield result ≡ f(x)
+```
+
+This law has another implication for unit and how it relates to map
+```
+        unit(x) map f ≡ unit(x) map f                       // no, really, it does!
+        unit(x) map f ≡ unit(x) flatMap {y => unit(f(y))}   // by FM1
+M2c     unit(x) map f ≡ unit(f(x))                          // by M2a
+```
+```
+M2d     for (y <- unit(x)) yield f(y) ≡ unit(f(x))
+```
 
 ## Part 4
