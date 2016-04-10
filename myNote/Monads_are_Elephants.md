@@ -33,7 +33,7 @@ class M[A] {
 }
 ```
 
-### First Functor Law: Identity
+#### First Functor Law: Identity
 Let's say I invent a function called identity like so
 
 ```
@@ -53,7 +53,7 @@ F1c     m map {x => x} ≡ m
 F1d     for (x <- m) yield x ≡ m
 ```
 
-### Second Functor Law: Composition
+#### Second Functor Law: Composition
 The second functor law specifies the way several "maps" compose together.
 
 ```
@@ -79,7 +79,7 @@ def unit[A](x:A):M[A] = ...
 
 Normally it's handy to create a monad `M` as a case class or with a companion object with an appropriate `apply(x:A):M[A]` method so that the expression `M(x)` behaves as `unit(x)`.
 
-### The Functor/Monad Connection Law: The Zeroth Law
+#### The Functor/Monad Connection Law: The Zeroth Law
 In the very first installment of this series I introduced a relationship. This law doesn't do much for us alone, but it does create a connection between three concepts: unit, map, and flatMap.
 
 ```
@@ -87,7 +87,7 @@ FM1     m map f ≡ m flatMap {x => unit(f(x))}
 FM1a    for (x <- m) yield f(x) ≡ for (x <- m; y <- unit(f(x))) yield y
 ```
 
-### Flatten Revisited
+#### Flatten Revisited
 In the very first article I mentioned the concept of "flatten" or "join" as something that converts a monad of type `M[M[A]]` into `M[A]`, but didn't describe it formally. In that article I said that `flatMap` is a `map` followed by a `flatten`.
 
 ```
@@ -98,7 +98,7 @@ FL1     m flatMap f ≡ flatten(m map f)
 FL1a    flatten(m) ≡ m flatMap identity               // by F1
 ```
 
-### The First Monad Law: Identity
+#### The First Monad Law: Identity
 The first and simplest of the monad laws is the monad identity law
 
 ```
@@ -122,7 +122,7 @@ The same derivation works in reverse, too. Expressed in "for" notation, the mona
 M1c     for (x <- m; y <- unit(x)) yield y ≡ m
 ```
 
-### The Second Monad Law: Unit
+#### The Second Monad Law: Unit
 Monads have a sort of reverse to the monad identity law.
 
 ```
@@ -142,5 +142,28 @@ M2c     unit(x) map f ≡ unit(f(x))                          // by M2a
 ```
 M2d     for (y <- unit(x)) yield f(y) ≡ unit(f(x))
 ```
+
+##Flatten Revisited## The Third Monad Law: Composition
+The composition law for monads is a rule for how a series of flatMaps work together.
+```
+M3      m flatMap g flatMap f ≡ m flatMap {x => g(x) flatMap f} // or equivalently
+M3a     m flatMap {x => g(x)} flatMap {y => f(y)} ≡ m flatMap {x => g(x) flatMap {y => f(y) }}
+M3b     for (a <- m; b <- g(a); result <- f(b)) yield result ≡ for(a <- m; result <- for(b <- g(a); temp <- f(b)) yield temp) yield result
+```
+
+```
+m map g map f ≡ m map g map f // I'm pretty sure
+m map g map f ≡ m flatMap {x => unit(g(x))} flatMap {y => unit(f(y))} // by FM1, twice
+m map g map f ≡ m flatMap {x => unit(g(x)) flatMap {y => unit(f(y))}} // by M3a
+m map g map f ≡ m flatMap {x => unit(g(x)) map {y => f(y)}} // by FM1a
+m map g map f ≡ m flatMap {x => unit(f(g(x))} // by M2c
+F2. m map g map f ≡ m map {x => f(g(x))} // by FM1a
+```
+
+### Total Loser Zeros
+List has Nil (the empty list) and Option has None. Nil and None seem to have a certain similarity: they both represent a kind of emptiness. Formally they're called monadic zeros.
+
+A monad may have many zeros. For instance, imagine an Option-like monad called Result. A Result can either be a Success(value) or a Failure(msg). The Failure constructor takes a string indicating why the failure occurred. Every different failure object is a different zero for Result.
+
 
 ## Part 4
