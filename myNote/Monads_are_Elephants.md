@@ -143,7 +143,18 @@ M2c     unit(x) map f ≡ unit(f(x))                          // by M2a
 M2d     for (y <- unit(x)) yield f(y) ≡ unit(f(x))
 ```
 
-##Flatten Revisited## The Third Monad Law: Composition
+####Flatten Revisited
+In the very first article I mentioned the concept of "flatten" or "join" as something that converts a monad of type M[M[A]] into M[A], but didn't describe it formally. In that article I said that flatMap is a map followed by a flatten.
+
+```
+FL1     m flatMap f ≡ flatten(m map f)
+        flatten(m map identity) ≡ m flatMap identity // substitute identity for f
+```
+```
+FL1a    flatten(m) ≡ m flatMap identity // by F1
+```
+
+#### The Third Monad Law: Composition
 The composition law for monads is a rule for how a series of flatMaps work together.
 ```
 M3      m flatMap g flatMap f ≡ m flatMap {x => g(x) flatMap f} // or equivalently
