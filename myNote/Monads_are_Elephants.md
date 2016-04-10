@@ -176,5 +176,79 @@ List has Nil (the empty list) and Option has None. Nil and None seem to have a c
 
 A monad may have many zeros. For instance, imagine an Option-like monad called Result. A Result can either be a Success(value) or a Failure(msg). The Failure constructor takes a string indicating why the failure occurred. Every different failure object is a different zero for Result.
 
+#### The First Zero Law: Identity
 
+```
+MZ1     mzero flatMap f ≡ mzero
+```
+
+```
+        mzero map f ≡ mzero map f // identity
+        mzero map f ≡ mzero flatMap {x => unit(f(x)) // by FM1
+MZ1b    mzero map f ≡ mzero // by MZ1
+```
+
+#### The Second Zero Law: M to Zero in Nothing Flat
+```
+MZ2     m flatMap {x => mzero} ≡ mzero
+```
+
+#### The Third and Fourth Zero Laws: Plus
+```
+class M[A] {
+  ...
+  def plus(other: M[B >: A]): M[B] = ...
+}
+```
+
+```
+MZ3     mzero plus m ≡ m
+MZ4     m plus mzero ≡ m
+```
+
+#### Filtering Revisited
+```
+class M[A] {
+  def map[B](f: A => B):M[B] = ...
+  def flatMap[B](f: A=> M[B]): M[B] = ...
+  def filter(p: A=> Boolean): M[A] = ...
+}
+```
+
+```
+FIL1    m filter p ≡ m flatMap {x => if(p(x)) unit(x) else mzero}
+```
+
+```
+        m filter {x => true} ≡ m filter {x => true} // identity
+        m filter {x => true} ≡ m flatMap {x => if (true) unit(x) else mzero} // by FIL1
+        m filter {x => true} ≡ m flatMap {x => unit(x)} // by definition of if
+FIL1a   m filter {x => true} ≡ m // by M1
+```
+
+```
+        m filter {x => false} ≡ m filter {x => false} // identity
+        m filter {x => false} ≡ m flatMap {x => if (false) unit(x) else mzero} // by FIL1
+        m filter {x => false} ≡ m flatMap {x => mzero} // by definition of if
+FIL1b   m filter {x => false} ≡ mzero // by MZ1
+```
+
+### Side Effects
+Throughout this article I've implicitly assumed no side effects. Let's revisit our second functor law
+```
+m map g map f ≡ m map {x => (f(g(x)) }
+```
+
+### Conclusion for Part 3
+```
+FM1     m map f ≡ m flatMap {x => unit(f(x))}
+M1      m flatMap unit ≡ m
+M2	    unit(x) flatMap f ≡ f(x)
+M3  	  m flatMap g flatMap f ≡ m flatMap {x => g(x) flatMap f}
+MZ1	    mzero flatMap f ≡ mzero
+MZ2	    m flatMap {x => mzero} ≡ mzero
+MZ3	    mzero plus m ≡ m
+MZ4	    m plus mzero ≡ m
+FIL1	  m filter p ≡ m flatMap {x => if(p(x)) unit(x) else mzero}
+```
 ## Part 4
