@@ -243,12 +243,12 @@ m map g map f ≡ m map {x => (f(g(x)) }
 ```
 FM1     m map f ≡ m flatMap {x => unit(f(x))}
 M1      m flatMap unit ≡ m
-M2	    unit(x) flatMap f ≡ f(x)
-M3  	  m flatMap g flatMap f ≡ m flatMap {x => g(x) flatMap f}
-MZ1	    mzero flatMap f ≡ mzero
-MZ2	    m flatMap {x => mzero} ≡ mzero
-MZ3	    mzero plus m ≡ m
-MZ4	    m plus mzero ≡ m
-FIL1	  m filter p ≡ m flatMap {x => if(p(x)) unit(x) else mzero}
+M2      unit(x) flatMap f ≡ f(x)
+M3      m flatMap g flatMap f ≡ m flatMap {x => g(x) flatMap f}
+MZ1     mzero flatMap f ≡ mzero
+MZ2     m flatMap {x => mzero} ≡ mzero
+MZ3     mzero plus m ≡ m
+MZ4     m plus mzero ≡ m
+FIL1    m filter p ≡ m flatMap {x => if(p(x)) unit(x) else mzero}
 ```
 ## Part 4
