@@ -3,7 +3,7 @@
 - [Monads are Elephants Part 1](http://james-iry.blogspot.tw/2007/09/monads-are-elephants-part-1.html)
 - [Monads are Elephants Part 2](http://james-iry.blogspot.tw/2007/10/monads-are-elephants-part-2.html)
 - [Monads are Elephants Part 3](http://james-iry.blogspot.tw/2007/10/monads-are-elephants-part-3.html)
-- [Monads are Elephants Part 4](http://james-iry.blogspot.tw/2007_11_01_archive.html)
+- [Monads are Elephants Part 4](http://james-iry.blogspot.tw/2007/11/monads-are-elephants-part-4.html)
 
 ## Part 1
 
@@ -252,3 +252,168 @@ MZ4     m plus mzero ≡ m
 FIL1    m filter p ≡ m flatMap {x => if(p(x)) unit(x) else mzero}
 ```
 ## Part 4
+
+### Functional Programming and IO
+In functional programming there's a concept called referential transparency. Referential transparency means you can call a particular function anywhere and any time and the same arguments will always give the same results.
+
+There's one area where referential transparency would seem impossible to achieve: IO. But we can't get rid of IO just to accomplish referential transparency. 
+
+You might guess that monads provide a solution for referentially transparent IO given the topic of this series but I'm going to work my way up from some simple principles. I'll solve the problem for reading and writing strings on the console but the same solution can be extended to arbitrary kinds of IO like file and network.
+
+### The World In a Cup
+The slight-of-hand I'll use is to model only a few aspects of the world and just pretend WorldState knows about the rest of the world. Here are some aspects that would be useful
+
+1. The state of the world changes between IO functions.
+2. The world's state is what it is. You can't just create new ones whenever you want (val coolWorldState = new WorldState(){def jamesIsBillionaire = true}).
+3. The world is in exactly one state at any moment in time.
+
+Here's a rough sketch for property 1
+```scala
+//file RTConsole.scala  
+object RTConsole_v1 {  
+  def getString(state: WorldState) = (state.nextState, Console.readLine)
+  def putString(state: WorldState, s: String) = (state.nextState, Console.print(s))
+}
+```
+
+Here's how I'll implement property 2
+```scala
+//file RTIO.scala
+sealed trait WorldState{def nextState:WorldState}
+
+abstract class IOApplication_v1 {
+  private class WorldStateImpl(id:BigInt) extends WorldState {
+    def nextState = new WorldStateImpl(id + 1)
+  }
+  final def main(args:Array[String]):Unit = {
+    iomain(args, new WorldStateImpl(0))
+  }
+  def iomain(args:Array[String], startState:WorldState):(WorldState, _)
+}
+```
+
+Here's what hello world looks like given all this
+```scala
+// file HelloWorld.scala
+class HelloWorld_v1 extends IOApplication_v1 {
+  import RTConsole_v1._
+  def iomain(args:Array[String], startState:WorldState) = putString(startState, "Hello world")
+}
+```
+
+### That Darn Property 3
+```scala
+class Evil_v1 extends IOApplication_v1 {
+  import RTConsole_v1._
+  def iomain(args:Array[String], startState:WorldState) = {
+    val (stateA, a) = getString(startState)
+    val (stateB, b) = getString(startState)
+    assert(a == b)
+    (startState, b)
+  }
+}
+```
+
+Here I've called getString twice with the same inputs. If the code was referentially transparent then the result, a and b, should be the same but of course they won't be unless the user types the same thing twice. The problem is that "startState" is visible at the same time as the other world states stateA and stateB.
+
+### Inside Out
+As a first step towards a solution, I'm going to turn everything inside out. Instead of iomain being a function from WorldState to WorldState, iomain will return such a function and the main driver will execute it. Here's the code
+
+```scala
+//file RTConsole.scala
+object RTConsole_v2 {
+  def getString = {state:WorldState => (state.nextState, Console.readLine)}
+  def putString(s: String) = {state: WorldState => (state.nextState, Console.print(s))}
+}
+```
+
+```scala
+//file RTIO.scala
+sealed trait WorldState{def nextState:WorldState}
+
+abstract class IOApplication_v2 {
+  private class WorldStateImpl(id:BigInt) extends WorldState {
+    def nextState = new WorldStateImpl(id + 1)
+  }
+  final def main(args:Array[String]):Unit = {
+    val ioAction = iomain(args)
+    ioAction(new WorldStateImpl(0));
+  }
+  def iomain(args:Array[String]): WorldState => (WorldState, _)
+}
+```
+
+```scala
+//file HelloWorld.scala
+class HelloWorld_v2 extends IOApplication_v2 {
+  import RTConsole_v2._
+  def iomain(args:Array[String]) = putString("Hello world")
+}
+```
+
+### Oh That Darn Property 3
+```scala
+class Evil_v2 extends IOApplication_v2 {
+  import RTConsole_v2._
+  def iomain(args:Array[String]) = {
+    {startState: WorldState =>
+      val (statea, a) = getString(startState)
+      val (stateb, b) = getString(startState)
+      assert(a == b)
+      (startState, b)
+    }
+  }
+}
+```
+
+### Property 3 Squashed For Good
+```scala
+//file RTIO.scala
+sealed trait IOAction_v3[+A] extends Function1[WorldState, (WorldState, A)]
+
+object IOAction_v3 {
+  def apply[A](expression: => A):IOAction_v3[A] = new SimpleAction(expression)
+
+  private class SimpleAction [+A](expression: => A) extends IOAction_v3[A] {
+    def apply(state:WorldState) = (state.nextState, expression)
+  }
+}
+
+sealed trait WorldState{def nextState:WorldState}
+
+abstract class IOApplication_v3 {
+  private class WorldStateImpl(id:BigInt) extends WorldState {
+    def nextState = new WorldStateImpl(id + 1)
+  }
+  final def main(args:Array[String]):Unit = {
+    val ioAction = iomain(args)
+    ioAction(new WorldStateImpl(0));
+  }
+  def iomain(args:Array[String]):IOAction_v3[_]
+}
+```
+
+```scala
+//file RTConsole.scala
+object RTConsole_v3 {
+  def getString = IOAction_v3(Console.readLine)
+  def putString(s: String) = IOAction_v3(Console.print(s))
+}
+```
+
+```scala
+class HelloWorld_v3 extends IOApplication_v3 {
+  import RTConsole_v3._
+  def iomain(args:Array[String]) = putString("Hello world")
+}
+```
+
+### Ladies and Gentleman I Present the Mighty IO Monad
+
+### A Test Drive
+
+### Take a Deep Breath
+
+### IO Errors
+
+### Conclusion for Part 4
