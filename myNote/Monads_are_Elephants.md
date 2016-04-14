@@ -447,6 +447,13 @@ object Test extends App {
   ioApp.run
 }
 ```
+- `sealed trait WorldState { def nextState:WorldState }`: 模擬當下世界的狀態
+- `sealed trait IOAction_v3[+A] extends Function1[WorldState, (WorldState, A)]`：包裝過的function，隱藏Function1的輸入(WorldState)
+- `object IOAction_v3`：`new IOAction_v3`的factory method，產生的`IOAction_v3`類別中定義`apply`method
+- `abstract class IOApplication_v3`：把世界的運作包裝起來，只把`iomain`留給繼承者定義
+- `object RTConsole_v3`：定義IO方法，回傳 `IOAction_v3`，呼叫這些方法不會馬上執行`expression`內容
+- `object Test`：test driver，產生 `IOApplication_v3`，並呼叫`run`讓世界開始動起來
+
 ### Ladies and Gentleman I Present the Mighty IO Monad
 ```scala
 //file RTIO.scala
