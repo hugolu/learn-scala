@@ -409,6 +409,44 @@ class HelloWorld_v3 extends IOApplication_v3 {
 }
 ```
 
+我的解讀版本：
+```scala
+sealed trait IOAction_v3[+A] extends Function1[WorldState, (WorldState, A)]
+
+object IOAction_v3 {
+  def apply[A](expression: => A): IOAction_v3[A] = new IOAction_v3[A] {
+    def apply(state: WorldState) = (state.nextState, expression)
+  }
+}
+
+sealed trait WorldState { def nextState:WorldState }
+
+abstract class IOApplication_v3 {
+  private class WorldStateImpl(id: BigInt) extends WorldState {
+    def nextState = new WorldStateImpl(id + 1)
+  }
+
+  final def run = {
+    val ioAction = iomain
+    ioAction(new WorldStateImpl(0))
+  }
+
+  def iomain: IOAction_v3[_]
+}
+
+object RTConsole_v3 {
+  def getString = IOAction_v3 (scala.io.StdIn.readLine)
+  def putString(s: String) = IOAction_v3 (println(s))
+}
+
+object Test extends App {
+  import RTConsole_v3._
+  val ioApp = new IOApplication_v3 {
+    def iomain = putString("Hello world")
+  }
+  ioApp.run
+}
+```
 ### Ladies and Gentleman I Present the Mighty IO Monad
 ```scala
 //file RTIO.scala
