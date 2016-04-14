@@ -455,6 +455,10 @@ object Test extends App {
 - `object Test`：test driver，產生 `IOApplication_v3`，並呼叫`run`讓世界開始動起來
 
 ### Ladies and Gentleman I Present the Mighty IO Monad
+if we knew what flatMap was for this monad then the monad laws would tell us how to create map using it and unit. But what's flatMap going to be? The signature needs to look like `def flatMap[B](f: A=>IOAction[B]): IOAction[B]`. But what does it do?
+
+What we want it to do is **chain an action** to a function that returns an action and when activated causes the two actions to occur in order. In other words, `getString.flatMap{y => putString(y)}` should result in a new IOAction monad that, when activated, first activates the getString action then does the action that putString returns. 
+
 ```scala
 //file RTIO.scala
 sealed abstract class IOAction_v4[+A] extends Function1[WorldState, (WorldState, A)] {
