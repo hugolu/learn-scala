@@ -533,7 +533,7 @@ object IOAction_v4 {
   }
 }
 
-sealed trait WorldState{def nextState: WorldState}
+sealed trait WorldState { def nextState: WorldState }
 
 abstract class IOApplication_v4 {
   private class WorldStateImpl(id: BigInt) extends WorldState {
