@@ -512,6 +512,59 @@ class HelloWorld_v4 extends IOApplication_v4 {
 }
 ```
 
+我的解讀:
+```scala
+sealed abstract class IOAction_v4[+A] extends Function1[WorldState, (WorldState, A)] {
+  def map[B](f: A => B): IOAction_v4[B] = flatMap {x => IOAction_v4(f(x))}
+  def flatMap[B](f: A => IOAction_v4[B]): IOAction_v4[B]= new ChainedAction(this, f)
+
+  private class ChainedAction[+A, B](action1: IOAction_v4[A], f: A => IOAction_v4[B]) extends IOAction_v4[B] {
+    def apply(state1: WorldState) = {
+      val (state2, intermediateResult) = action1(state1);
+      val action2 = f(intermediateResult)
+      action2(state2)
+    }
+  }
+}
+
+object IOAction_v4 {
+  def apply[A](expression: => A): IOAction_v4[A] = new IOAction_v4[A] {
+    def apply(state: WorldState) = (state.nextState, expression)
+  }
+}
+
+sealed trait WorldState{def nextState: WorldState}
+
+abstract class IOApplication_v4 {
+  private class WorldStateImpl(id: BigInt) extends WorldState {
+    def nextState = new WorldStateImpl(id + 1)
+  }
+  final def run = {
+    val ioAction = createIOAction()
+    ioAction(new WorldStateImpl(0));
+  }
+  def createIOAction(): IOAction_v4[_]
+}
+
+object RTConsole_v4 {
+  def getString = IOAction_v4(scala.io.StdIn.readLine)
+  def putString(s: String) = IOAction_v4(println(s))
+}
+
+object Test extends App {
+  import RTConsole_v4._
+  val ioApp = new IOApplication_v4 {
+    def createIOAction() = for {
+      _ <- putString("This is an example of the IO monad.")
+      _ <- putString("What's your name?")
+      name <- getString
+      _ <- putString("Hello " + name)
+    } yield ()
+  }
+  ioApp.run
+}
+```
+
 ### A Test Drive
 
 ### Take a Deep Breath
