@@ -18,7 +18,9 @@ Monad 可以參數化。`List` 是種有用的概念，但你需要知道 `List`
 
 A higher order function is a function that takes a function as a parameter or returns a function as a result. Monads are containers which have several higher order functions defined. Or, since we're talking about Scala, monads have several higher order methods.
 
-One such method is map. If you know any functional languages then you're probably familiar with map in one form or another. The map method takes a function and applies it to each element in the container to return a new container. For instance
+高階函數是一個把函數當成參數傳入或把函數當成結果傳出的函數。Monad 這種容器包含許多高階函數。既然聊到 Scala，這麼說好了，Monad 擁有許多高階的方法 (method)。
+
+`map` 是其中一個方法。如果你知道任何函數式語言，也許熟悉用 `map` 做格式轉換。`map` 方法接收一個函數，把它作用在容器內的每個元素，然後回傳一個新的容器。例如，
 
 ```scala
 def double(x: Int) = 2 * x
@@ -28,7 +30,7 @@ val doubles = xs map double
 assert(doubles == List(2, 4, 6))
 ```
 
-Map does not change the kind of monad, but may change its parameterized type...
+`map` 不會改變 Monad 的種類，但可能改變參數類型...
 
 ```scala
 val one = Some(1)
@@ -36,7 +38,7 @@ val oneString = one map {_.toString}
 assert(oneString == Some("1"))
 ```
 
-Here the {_.toString} notation means that the toString method should be called on the element.
+此處 `{_.toString}` 表示容器內的元素會被呼叫到 `toString` 的方法。
 
 ## Monads are Combinable
 
