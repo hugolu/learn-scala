@@ -54,7 +54,7 @@ val result = opString map stringToInt
 
 Unfortunately, since we started with an Option and mapped its contained element with a function that results in another Option, the variable "result" is now an Option that contains an Option, ie result is an Option[Option[Int]]. That's probably not terribly useful in most cases.
 
-To motivate a solution, imagine if instead of Option we'd used List and ended up with List[List[Int]]] - in other words a list containing some number of lists. Given that, we just need "flatten" - a function which takes a list of lists (List[List[A]]) and returns a single list (List[A]) by concatenating everything together.1
+To motivate a solution, imagine if instead of Option we'd used List and ended up with List[List[Int]]] - in other words a list containing some number of lists. Given that, we just need "flatten" - a function which takes a list of lists (List[List[A]]) and returns a single list (List[A]) by concatenating everything together.<sup>[1](#footnote1)</sup>
 
 A flatten function for Option[Option[A]] works a bit differently.
 
@@ -69,7 +69,7 @@ If the outer option is None, then result is None. Otherwise the result is the in
 
 These two flatten functions have similar signatures: they take an M[M[A]] and turn it into an M[A]. But the way they do it is quite different. Other monads would have their own ways of doing flatten - possibly quite sophisticated ways. This possible sophistication is why explanations of monads will often use "join" instead of "flatten." "Join" neatly indicates that some aspect of the outer monad may be combined (joined) with some aspect of the inner monad. I'll stick with "flatten," though, because it fits with our container analogy.
 
-Now, Scala does not require you to write flatten explicitly. But it does require that each monad have a method called flatMap.2. What's flatMap? It's exactly what it sounds like: doing a map and then flattening the result.
+Now, Scala does not require you to write flatten explicitly. But it does require that each monad have a method called flatMap.<sup>[2](#footnote2)</sup> What's flatMap? It's exactly what it sounds like: doing a map and then flattening the result.
 
 ```scala
 class M[A] {
@@ -129,6 +129,5 @@ In part 2 I'll cover Scala's syntactic sugar for monads. In part 3 I'll present 
 
 ## Footnotes
 
-1. The Scala standard library includes a flatten method on List. It's pretty slick, but to explain it I would have to go into implicit conversions which would be a significant distraction. The slick part is that flatten makes sense on List[List[A]] but not on List[A], yet Scala's flatten method is defined on all Lists while still being statically type checked.
-
-2. I'm using a bit of shorthand here. Scala doesn't "require" any particular method names to make a monad. You can call your methods "germufaBitz" or "frizzleMuck". However, if you stick with map and flatMap then you'll be able to use Scala's "for comprehensions"
+1. <a name="footnote1"></a> The Scala standard library includes a flatten method on List. It's pretty slick, but to explain it I would have to go into implicit conversions which would be a significant distraction. The slick part is that flatten makes sense on List[List[A]] but not on List[A], yet Scala's flatten method is defined on all Lists while still being statically type checked.
+2. <a name="footnote2"></a> I'm using a bit of shorthand here. Scala doesn't "require" any particular method names to make a monad. You can call your methods "germufaBitz" or "frizzleMuck". However, if you stick with map and flatMap then you'll be able to use Scala's "for comprehensions"
