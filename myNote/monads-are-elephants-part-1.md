@@ -65,7 +65,7 @@ def flatten[A](outer:Option[Option[A]]) : Option[A] = outer match {
 
 如果外層 `Option` 是 `None`，結果就是 `None`。否則結果就是內層的 `Option`。
 
-這兩個 `flatten` 函數有相似之處：接受 `M[M[A]]`，傳回 `M[A]`，但運作方式很不一樣。其他 Monad 也有自己 `flatten` 的函數，可能用很複雜的方式做到。由於這種潛在複雜性，解釋 Monad 時常用 `join` 而不是 `flatten`。`join` 的概念清楚解釋外層 Monad 如何結合 (join) 內層 Monad。不過，接下來的文章我還是採用 `flatten` 這個術語，因為它比較適合對容器的類比。
+這兩個 `flatten` 函數有相似之處：接受 `M[M[A]]`，傳回 `M[A]`，但運作方式很不一樣。其他 Monad 也有自己 `flatten` 的函數，可能用很複雜的方式做到。由於這種潛在複雜性，解釋 Monad 時常用 `join` 而不是 `flatten`。`join` 的概念清楚解釋外層 Monad 如何結合 (`join`) 內層 Monad。不過，接下來的文章我還是採用 `flatten` 這個術語，因為它比較適合對容器的類比。
 
 Scala 不需要你明確寫 `flatten` 函數，但每個 Monad 都需要 `flatMap`。什麼是 `flatMap`？就像字面那樣，做完 `map` 後再做 `flatten`。
 
@@ -89,21 +89,21 @@ val result = opString flatMap stringToInt
 
 許多文章會用 `bind` 取代 `flatMap`，Haskell 會用 `>>=` 運算符號，都是一樣的概念。
 
-## Monads Can Be Built In Different Ways
+## Monad 能用不同的方式產生
 
-So we've seen how the flatMap method can be built using map. It's possible to go the other way: start with flatMap and create map based on it. In order to do so we need one more concept. In most papers on monads the concept is called "unit," in Haskell it's called "return." Scala is an object oriented language so the same concept might be called a single argument "constructor" or "factory." Basically, unit takes one value of type A and turns it into a monad of type M[A]. For List, unit(x) == List(x) and for Option, unit(x) == Some(x).
+剛看過用 `map` 做到 `flatMap`。另一個方向也能通喔：用 `flatMap` 做到 `map`。為了做到這件事，還需要一個概念。大部份文章叫它做 `unit`，在 Haskell 稱呼它為 `return`。Scala 是一種物件導向語言，所以相同的概念會稱作單一參數的建構函數或工廠函數。基本上，`unit` 接收型別 `A` 的值，傳回型別 `M[A]` 的 Monad。以 `List` 來說，`unit(x) == List(x)`。以 `Option` 來說，`unit(x) == Some(x)`。
 
-Scala does not require a separate "unit" function or method, and whether you write it or not is a matter of taste. In writing this version of map I'll explicitly write "unit" just to show how it fits into things.
+Scala 不需要單獨的 `unit` 函數或方法，寫不寫只是品味的問題。因為要弄這個版本的 `map`，我會明確地寫出 `unit` 並展示他的用途。
 
 ```scala
 class M[A](value: A) {
-  private def unit[B] (value : B) = new M(value)
-  def map[B](f: A => B) : M[B] = flatMap {x => unit(f(x))}
-  def flatMap[B](f: A => M[B]) : M[B] = ...
+  private def unit[B](value: B) = new M(value)
+  def map[B](f: A => B): M[B] = flatMap {x => unit(f(x))}
+  def flatMap[B](f: A => M[B]): M[B] = ...
 }
 ```
 
-In this version flatMap has to be built without reference to map or flatten - it will have to do both in one go. The interesting bit is map. It takes the function passed in (f) and turns it into a new function that is appropriate for flatMap. The new function looks like {x => unit(f(x))} meaning that first f is applied to x, then unit is applied to the result.
+這個版本的 `flatMap` 不用 `map` 或 `flatten`。有趣的部分是 `map`，它接收一個函數 (`f`) 然後傳給一個作用在 `flatMap` 裡的新函數。這個新函數看起來像 `{x => unit(f(x))}`，`f`先對`x`作用，然後`unit`再對其結果作用。
 
 ## Conclusion for Part I
 
