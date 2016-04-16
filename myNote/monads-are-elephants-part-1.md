@@ -45,8 +45,8 @@ assert(oneString == Some("1"))
 比方說，有個能夠取得參數的配置函式庫 (configuration library)。對於任何參數都能得到一個 `Option[String]` 的結果，換句話說，有沒有定義參數決定我們能不能獲得相對的字串。現在有個函數 `stringToInt` 接受字串作參數，如果傳入的字串可以解析則回傳 `Some[Int]`，如果無法解析則回傳 `None`。試著合併兩者的話會出現這樣的問題。
 
 ```scala
-val opString : Option[String] = config fetchParam "MaxThreads"
-def stringToInt(string:String) : Option[Int] = ...
+val opString: Option[String] = config fetchParam "MaxThreads"
+def stringToInt(string: String): Option[Int] = ...
 val result = opString map stringToInt
 ```
 
@@ -65,29 +65,29 @@ def flatten[A](outer:Option[Option[A]]) : Option[A] = outer match {
 
 如果外層 `Option` 是 `None`，結果就是 `None`。否則結果就是內層的 `Option`。
 
-These two flatten functions have similar signatures: they take an M[M[A]] and turn it into an M[A]. But the way they do it is quite different. Other monads would have their own ways of doing flatten - possibly quite sophisticated ways. This possible sophistication is why explanations of monads will often use "join" instead of "flatten." "Join" neatly indicates that some aspect of the outer monad may be combined (joined) with some aspect of the inner monad. I'll stick with "flatten," though, because it fits with our container analogy.
+這兩個 `flatten` 函數有相似之處：接受 `M[M[A]]`，傳回 `M[A]`，但運作方式很不一樣。其他 Monad 也有自己 `flatten` 的函數，可能用很複雜的方式做到。由於這種潛在複雜性，解釋 Monad 時常用 `join` 而不是 `flatten`。`join` 的概念清楚解釋外層 Monad 如何結合 (join) 內層 Monad。不過，接下來的文章我還是採用 `flatten` 這個術語，因為它比較適合對容器的類比。
 
-Now, Scala does not require you to write flatten explicitly. But it does require that each monad have a method called flatMap.<sup>[2](#footnote2)</sup> What's flatMap? It's exactly what it sounds like: doing a map and then flattening the result.
+Scala 不需要你明確寫 `flatten` 函數，但每個 Monad 都需要 `flatMap`。什麼是 `flatMap`？就像字面那樣，做完 `map` 後再做 `flatten`。
 
 ```scala
 class M[A] {
-  private def flatten[B](x:M[M[B]]) : M[B] = ...
-  def map[B](f: A => B) : M[B] = ...
-  def flatMap[B](f: A => M[B]) : M[B] = flatten(map(f))
+  private def flatten[B](x: M[M[B]]): M[B] = ...
+  def map[B](f: A => B): M[B] = ...
+  def flatMap[B](f: A => M[B]): M[B] = flatten(map(f))
 }
 ```
 
-With that, we can revisit our problematic code...
+有了那個，我們可以改寫有問題的程式碼...
 
 ```scala
-val opString : Option[String] = config fetchParam "MaxThreads"
-def stringToInt(string:String) : Option[Int] = ...
+val opString: Option[String] = config fetchParam "MaxThreads"
+def stringToInt(string: String): Option[Int] = ...
 val result = opString flatMap stringToInt
 ```
 
-Because of flatMap we end up with "result" being an Option[Int]. If we wanted, we could take result and flatMap it with a function from Int to Option[Foo]. And then we could faltMap that with a function from Foo to Option[Bar], etc.
+因為 `flatMap`，我們得到 `Option[Int]` 的結果。如果想要，還可以再做一次 `flatMap`，透過用能把 `Int` 轉成 `Option[Foo]` 的函數。然後再做 `flatMap`，透過把 `Foo` 轉成 `Option[Bar]` 的函數，等等。
 
-If you're keeping score, many papers on monads use the word "bind" instead of "flatMap" and Haskell uses the ">>=" operator. It's all the same concept.
+許多文章會用 `bind` 取代 `flatMap`，Haskell 會用 `>>=` 運算符號，都是一樣的概念。
 
 ## Monads Can Be Built In Different Ways
 
