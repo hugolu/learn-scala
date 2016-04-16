@@ -127,5 +127,5 @@ In part 2 I'll cover Scala's syntactic sugar for monads. In part 3 I'll present 
 
 ## Footnotes
 
-1. <a name="footnote1"></a> The Scala standard library includes a flatten method on List. It's pretty slick, but to explain it I would have to go into implicit conversions which would be a significant distraction. The slick part is that flatten makes sense on List[List[A]] but not on List[A], yet Scala's flatten method is defined on all Lists while still being statically type checked.
-2. <a name="footnote2"></a> I'm using a bit of shorthand here. Scala doesn't "require" any particular method names to make a monad. You can call your methods "germufaBitz" or "frizzleMuck". However, if you stick with map and flatMap then you'll be able to use Scala's "for comprehensions"
+1. <a name="footnote1"></a> Scala 標準函式庫包含 `List` 的 `flatten` 方法。這相當靈活，不過想多做解釋就會在隱式轉換上岔題。靈活的部分是 `flatten` 對 `List[List[A]]` 才有意義，而非 `List[A]`。Scala `flatten` 方法定義在所有的 `List` 中，同時又能進行靜態型別檢查。
+2. <a name="footnote2"></a> 這句話說得有點快，Scala 不*需要*用任何特定的方法來產生 Monad。你可以把你的方法叫做 `germufaBitz` 或 `frizzleMuck`。然而，如果你採用 `map` 與 `flatMap`，就能使用 Scala *for comprehensions*。
