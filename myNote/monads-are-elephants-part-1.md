@@ -105,15 +105,15 @@ class M[A](value: A) {
 
 這個版本的 `flatMap` 不用 `map` 或 `flatten`。有趣的部分是 `map`，它接收一個函數 (`f`) 然後傳給一個作用在 `flatMap` 裡的新函數。這個新函數看起來像 `{x => unit(f(x))}`，`f`先對`x`作用，然後`unit`再對其結果作用。
 
-## Conclusion for Part I
+## 第一部份的結論
 
-Scala monads must have map and flatMap methods. Map can be implemented via flatMap and a constructor or flatMap can be implemented via map and flatten.
+Scala Monad 必須具有 `map` 與 `flatMap` 方法。`map` 可以藉由 `flatMap` 與建構函數做到，或是 `flatMap` 可以透過 `map` 與 `flatten` 辦到。
 
-flatMap is the heart of our elephantine beast. When you're new to monads, it may help to build at least the first version of a flatMap in terms of map and flatten. Map is usually pretty straight forward. Figuring out what makes sense for flatten is the hard part.
+`flatMap` 是大象的心臟。如果你對 Monad 陌生，用 `map` 與 `flatten` 至少能做到 `flatMap`。`map` 通常很直覺，理解 `flatten` 的意義比較困難。
 
-As you move into monads that aren't collections you may find that flatMap should be implemented first and map should be implemented based on it and unit.
+當你接觸非集合 (collection) 的 Monad，你會發現應該先實做出 `flatMap`，然後再用它跟 `unit` 做出 `map`。
 
-In part 2 I'll cover Scala's syntactic sugar for monads. In part 3 I'll present the elephant's DNA: the monad laws. Finally, in part 4 I'll show a monad that's only barely a container. In the meantime, here's a cheat sheet for translating between computer science papers on monads, Haskell, and Scala.
+在第二部分，我會涵蓋有關 Monad 的語法糖。在第三部分，我會介紹大象的 DNA：Monad 的法則。最後第四部分，我用一個容器來展示 Monad。同時，這裏有張用來翻譯論文中有關 Monad、Haskell、Scala 的小抄。
 
 | Generic | Haskell | Scala |
 |---------|---------|-------|
@@ -125,7 +125,7 @@ In part 2 I'll cover Scala's syntactic sugar for monads. In part 3 I'll present 
 | `join` | `join` | `flatten` | 
 |  | `do` | `for` |
 
-## Footnotes
+## 腳注
 
 1. <a name="footnote1"></a> Scala 標準函式庫包含 `List` 的 `flatten` 方法。這相當靈活，不過想多做解釋就會在隱式轉換上岔題。靈活的部分是 `flatten` 對 `List[List[A]]` 才有意義，而非 `List[A]`。Scala `flatten` 方法定義在所有的 `List` 中，同時又能進行靜態型別檢查。
 2. <a name="footnote2"></a> 這句話說得有點快，Scala 不*需要*用任何特定的方法來產生 Monad。你可以把你的方法叫做 `germufaBitz` 或 `frizzleMuck`。然而，如果你採用 `map` 與 `flatMap`，就能使用 Scala *for comprehensions*。
