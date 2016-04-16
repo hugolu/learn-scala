@@ -4,13 +4,9 @@
 
 這篇文章將透過 Scala 的方式介紹 Monad。
 
-有篇瞎子摸象的寓言，抱著象腳的盲人說「這是一棵樹」，握著象鼻的盲人說「一條大蛇」，第三位盲人說「像是掃帚或扇子的東西」。
+瞎子摸象寓言中，抱住象腳的盲人說「這是一棵樹」，握著象鼻的盲人說「一條大蛇」，第三位盲人說「像是掃帚或扇子的東西」。自身的限制會阻止我們掌握全貌，就某方面來說我們都是盲人。這是禪。
 
-From this parable we can conclude this: the ancients believed that the visually impaired like to fondle large mammals. Fortunately we live in a more enlightened age.
-
-We're also supposed to learn something about how our limitations can prevent us from grasping the whole picture and that we're all blind in some way. It's so Zen.
-
-I think there's a third lesson to be learned - the opposite of the main intent: that it's possible to learn much about the big picture by getting a series of limited explanations. If you had never seen an elephant and people told you things like "it has legs as thick as tree trunks," "a nose like a snake," "a tail like a broom," "ears like fans," etc. then you'd soon have a pretty good understanding. Your conception wouldn't be perfect, but when you finally saw an elephant it would fit neatly into the mental picture you had slowly built up. Just as the elephant was about to step on you, you'd think "wow, the legs really are like trees."
+跟寓言想告訴我們相反的是，透過一連串有限的解釋，人們更有機會掌握全貌。如果你從來都沒看過大象，但有人跟你說「腿像樹幹一樣粗」、「鼻子長得像蛇」、「尾巴像掃帚」、「耳朵像扇子」，很快你就能明白。雖然對大象的概念並不完美，但最終你看到大象的時候，它能符合先前慢慢在你腦中建立的形象。當這頭大象要踩上你，你會想「哇！它的腿還真像棵樹」。
 
 ## Monads are Container Types
 
