@@ -4,17 +4,17 @@
 
 這篇文章將透過 Scala 的方式介紹 Monad。
 
-瞎子摸象寓言中，抱住象腳的盲人說「這是一棵樹」，握著象鼻的盲人說「一條大蛇」，第三位盲人說「像是掃帚或扇子的東西」。自身的限制會阻止我們掌握全貌，就某方面來說我們都是盲人。這是禪。
+瞎子摸象寓言中，抱住象腳的盲人說「這是一棵樹」，握著象鼻的盲人說「一條大蛇」，第三位盲人說「像是掃帚或扇子的東西」。自身的限制會我們無法掌握全貌，某方面來說我們全是盲人。這就是禪。
 
-跟寓言想告訴我們相反的是，透過一連串有限的解釋，人們更有機會掌握全貌。如果你從來都沒看過大象，但有人跟你說「腿像樹幹一樣粗」、「鼻子長得像蛇」、「尾巴像掃帚」、「耳朵像扇子」，很快你就能明白。雖然對大象的概念並不完美，但最終你看到大象的時候，它能符合先前慢慢在你腦中建立的形象。當這頭大象要踩上你，你會想「哇！它的腿還真像棵樹」。
+跟寓言想告訴我們相反的是，透過一連串有限的解釋，人們更有機會掌握全貌。如果你從來都沒看過大象，但有人跟你說「腿像樹幹一樣粗」、「鼻子長得像蛇」、「尾巴像掃帚」、「耳朵像扇子」，很快你就能明白。雖然對大象的概念並不完美，但最終你看到大象的時候，它能符合先前慢慢在你腦中建立的形象。這頭大象要踩扁你的時候，你還會想「哇！它的腿還真像棵樹」。
 
-## Monads are Container Types
+## Monad 是容器型別 (Container Type)
 
-One of the most commonly used container types is List and we'll spend some time with it. I also mentioned Option in a previous article. As a reminder, an Option is always either Some(value) or None. It might not be clear how List and Option are related, but if you consider an Option as a stunted List that can only have 0 or 1 elements, it helps. Trees and Sets can also be monads. But remember that monads are elephants, so with some monads you may have to squint a bit to see them as containers.
+`List` 是最常用的容器型別之一，我們會花點時間在這上面。先前文章提過 `Option` 也是，提醒一下，`Option` 總是 `Some(value)` 或是 `None`。或許 `List` 跟 `Option` 的關聯不是那麼清楚，但如果你把 `Option` 想像成只有一個或零個元素的 `List`，有助理解。`Tree`跟 `Set` 也是 Monad。但記住  Monad 是頭大象，對於某些 Monad 你需要瞇起眼睛把它們看是容器。
 
-Monads are parameterized. List is a useful concept, but you need to know what's in the List. A List of Strings (List[String]) is pretty different from a List of Ints (List[Int]). Obviously it can be useful to convert from one to the other. Which leads us to the next point.
+Monad 可以參數化。`List` 是種有用的概念，但你需要知道 `List` 裡面有什麼。字串串列 (`List[String]`) 跟整數串列 (`List[Int]`) 很不一樣。能將其中一種轉換成另一種，有很明顯的用處。這樣的轉換引導我們進入下個重點。
 
-## Monads Support Higher Order Functions
+## Monad 支援高階函數 (Higher Order Function)
 
 A higher order function is a function that takes a function as a parameter or returns a function as a result. Monads are containers which have several higher order functions defined. Or, since we're talking about Scala, monads have several higher order methods.
 
