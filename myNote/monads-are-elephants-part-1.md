@@ -40,9 +40,9 @@ assert(oneString == Some("1"))
 
 此處 `{_.toString}` 表示容器內的元素會被呼叫到 `toString` 的方法。
 
-## Monads are Combinable
+## Monads 可以合併
 
-Now let's say we have a configuration library that let's us fetch parameters. For any parameter we'll get back an Option[String] - in other words we may or may not get a string depending on whether the parameter is defined. Let's say we also have a function, stringToInt, which takes a String and returns Some[Int] if the string is parseable as an integer or None if it's not. If we try to combine them using map we run into trouble.
+比方說，有個能夠取得參數的配置函式庫 (configuration library)。對於任何參數都能得到一個 `Option[String]` 的結果，換句話說，有沒有定義參數決定我們能不能獲得相對的字串。現在有個函數 `stringToInt` 接受字串作參數，如果傳入的字串可以解析則回傳 `Some[Int]`，如果無法解析則回傳 `None`。試著合併兩者的話會出現這樣的問題。
 
 ```scala
 val opString : Option[String] = config fetchParam "MaxThreads"
@@ -50,11 +50,11 @@ def stringToInt(string:String) : Option[Int] = ...
 val result = opString map stringToInt
 ```
 
-Unfortunately, since we started with an Option and mapped its contained element with a function that results in another Option, the variable "result" is now an Option that contains an Option, ie result is an Option[Option[Int]]. That's probably not terribly useful in most cases.
+很不幸，用 `map` 方式轉換 `Option` 內容，結果得到一個包含 `Option` 的 `Option`，也就是 `Option[Option[Int]]`。大多數情況下沒啥鳥用。
 
-To motivate a solution, imagine if instead of Option we'd used List and ended up with List[List[Int]]] - in other words a list containing some number of lists. Given that, we just need "flatten" - a function which takes a list of lists (List[List[A]]) and returns a single list (List[A]) by concatenating everything together.<sup>[1](#footnote1)</sup>
+為了找出解決方法，來想像一下，假如我們用的是 `List` 然後得到 `List[List[Int]]`。這種情形下，我們需要用 `flatten` 來把 `List[List[Int]]` 攤平成 `List[Int]`。<sup>[1](#footnote1)</sup>
 
-A flatten function for Option[Option[A]] works a bit differently.
+`Option[Option[A]]` 的 `flatten` 函數運作方式有點不同。
 
 ```scala
 def flatten[A](outer:Option[Option[A]]) : Option[A] = outer match {
@@ -63,7 +63,7 @@ def flatten[A](outer:Option[Option[A]]) : Option[A] = outer match {
 }
 ```
 
-If the outer option is None, then result is None. Otherwise the result is the inner Option.
+如果外層 `Option` 是 `None`，結果就是 `None`。否則結果就是內層的 `Option`。
 
 These two flatten functions have similar signatures: they take an M[M[A]] and turn it into an M[A]. But the way they do it is quite different. Other monads would have their own ways of doing flatten - possibly quite sophisticated ways. This possible sophistication is why explanations of monads will often use "join" instead of "flatten." "Join" neatly indicates that some aspect of the outer monad may be combined (joined) with some aspect of the inner monad. I'll stick with "flatten," though, because it fits with our container analogy.
 
