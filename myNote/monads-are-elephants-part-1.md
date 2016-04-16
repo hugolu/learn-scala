@@ -2,9 +2,9 @@
 
 # 莫內是頭大象 之一
 
-Introductions to monads are bit of cottage industry on the Internet. So I figured, "why buck tradition?" But this article will present Scala's way of dealing with monads.
+這篇文章將透過 Scala 的方式介紹 Monad。
 
-An ancient parable goes that several blind men were experiencing their first elephant. "It's a tree," one said while wrapping his arms around its legs. "A large snake," another said while holding its trunk. A third said...um, something about a broom or a fan or whatever.
+有篇瞎子摸象的寓言，抱著象腳的盲人說「這是一棵樹」，握著象鼻的盲人說「一條大蛇」，第三位盲人說「像是掃帚或扇子的東西」。
 
 From this parable we can conclude this: the ancients believed that the visually impaired like to fondle large mammals. Fortunately we live in a more enlightened age.
 
