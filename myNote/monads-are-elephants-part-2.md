@@ -151,6 +151,82 @@ class M[A] {
 }
 ```
 
+In other words, foreach can just call map and throw away the results. That might not be the most runtime efficient way of doing things, though, so Scala allows you to define foreach your own way.
+
 ## 過濾式的 "For" (Filtering "For")
 
+So far our monads have built on a few key concepts. These three methods - map, flatMap, and forEach - allow almost all of what "for" can do.
+
+Scala's "for" statement has one more feature: "if" guards. As an example
+
+```scala
+val names = List("Abe", "Beth", "Bob", "Mary")
+val bNames = for (bName <- names;
+   if bName(0) == 'B'
+) yield bName + " is a name starting with B"
+
+assert(bNames == List(
+   "Beth is a name starting with B",
+   "Bob is a name starting with B"))
+```
+
+"if" guards get mapped to a method called filter. Filter takes a predicate function (a function that takes on argument and returns true or false) and creates a new monad without the elements that don't match the predicate. The for statement above gets translated into something like the following.
+
+```scala
+val bNames =
+   (names filter { bName => bName(0) == 'B' })
+   .map { bName =>
+      bName + " is a name starting with B"
+   }
+```
+
+First the list is filtered for names that start with B. Then that filtered list is mapped using a function that appends " is a name..."
+
+Not all monads can be filtered. Using the container analogy, filtering might remove all elements and some containers can't be empty. For such monads you don't need to create a filter method. Scala won't complain as long as you don't use an "if" guard in a "for" expression.
+
+I'll have more to say about filter, how to define it in purely monadic terms, and what kinds of monads can't be filtered in the next installment
+
 ## 第二部分結論
+
+"For" is a handy way to work with monads. Its syntax is particularly useful for working with Lists and other collections. But "for" is more general than that. It expands into map, flatMap, foreach, and filter. Of those, map and flatMap should be defined for any monad. The foreach method can be defined if you want the monad to be used imperatively and it's trivial to build. Filter can be defined for some monads but not for others.
+
+"m map f" can be implemented as "m flatMap {x => unit(x)}. "m foreach f" can be implemented in terms of map, or in terms of flatMap "m flatMap {x => unit(f(x));()}. Even "m filter p" can be implemented using flatMap (I'll show how next time). flatMap really is the heart of the beast.
+
+Remember, monads are elephants. The picture I've painted of monads so far emphasizes collections. In part 4, I'll present a monad that isn't a collection and only a container in an abstract way. But before part 4 can happen, part 3 needs to cover some properties that are true of all monads: the monadic laws.
+
+In the mean time, here's a cheat sheet showing how Haskell's do and Scala's for are related.
+
+<table>
+  <tr>
+    <th>Haskell</th>
+    <th>Scala</th>
+  </tr>
+  <tr>
+    <td><pre>do var1<- expn1
+   var2 <- expn2
+   expn3</pre></td>
+    <td><pre>for {var1 <- expn1;
+   var2 <- expn2;
+   result <- expn3
+} yield result</pre></td>
+  </tr>
+  <tr>
+    <td><pre>do var1 <- expn1
+   var2 <- expn2
+   return expn3</pre></td>
+    <td><pre>for {var1 <- expn1;
+   var2 <- expn2;
+} yield expn3</pre></td>
+  </tr>
+    <td><pre>do var1 <- expn1 >> expn2
+   return expn3</pre></td>
+    <td><pre>for {_ <- expn1;
+   var1 <- expn2
+} yield expn3</pre></td>
+  <tr>
+  </tr> 
+</table>
+
+## Footnotes
+
+1. <a name="footnote1"></a>The Scala spec actually specifies that "for" expands using pattern matching. Basically, the real spec expands the rules I present here to allow patterns on the left side of the <-. It would just muddy this article too much to delve too deeply into the subject.
