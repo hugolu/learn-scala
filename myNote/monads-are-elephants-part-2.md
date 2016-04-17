@@ -124,6 +124,33 @@ val qs =
 
 ## 命令式的 "For" (An Imperative "For")
 
+"For" also has an imperative version for the cases where you're only calling a function for its side effects. In it you just drop the yield statement.
+
+```scala
+val ns = List(1, 2)
+val os = List (4, 5)
+for (n <- ns; o <- os)  println(n * o)
+```
+
+The expansion rule is much like the yield based version but foreach is used instead of flatMap or map.
+
+```scala
+ns foreach {n => os foreach {o => println(n * o) }}  
+```
+
+Now, you don't have to implement foreach if you don't want to use the imperative form of "for", but foreach is trivial to implement since we already have map.
+
+```scala
+class M[A] {
+   def map[B](f: A=> B) : M[B] = ...
+   def flatMap[B](f: A => M[B]) : M[B] = ...
+   def foreach[B](f: A=> B) : Unit = {
+       map(f)
+       ()
+   }
+}
+```
+
 ## 過濾式的 "For" (Filtering "For")
 
 ## 第二部分結論
