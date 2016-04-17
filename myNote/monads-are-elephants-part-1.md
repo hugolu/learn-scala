@@ -10,17 +10,15 @@
 
 ## 莫內是容器型別 (Monads are Container Types)
 
-`List` 是最常用的容器型別之一，我們會花點時間在這上面。先前文章提過 `Option` 也是，提醒一下，`Option` 總是 `Some(value)` 或是 `None`。或許 `List` 跟 `Option` 的關聯不是那麼清楚，但如果你把 `Option` 想像成只有一個或零個元素的 `List`，有助理解。`Tree`跟 `Set` 也是 Monad。但記住  Monad 是頭大象，對於某些 Monad 你需要瞇起眼睛把它們看是容器。
+`List` 是最常用的容器型別之一，我們會花點時間在這上面。先前文章提過的 `Option` 也是，提醒一下，`Option` 的值只會是  `Some(value)` 或是 `None`。或許 `List` 跟 `Option` 的關聯不是那麼清楚，但如果你把 `Option` 想像成只有一個或零個元素的 `List`，這會有助於理解。`Tree` 跟 `Set` 也是 Monad。但記住 Monad 是頭大象，對於某些 Monad 你需要瞇起眼睛把它們看是容器。
 
-Monad 可以參數化。`List` 是種有用的概念，但你需要知道 `List` 裡面有什麼。字串串列 (`List[String]`) 跟整數串列 (`List[Int]`) 很不一樣。能將其中一種轉換成另一種，有很明顯的用處。這樣的轉換引導我們進入下個重點。
+Monad 可以參數化。`List` 是種有用的概念，但你需要知道 `List` 裡面有什麼。字串串列 (`List[String]`) 跟整數串列 (`List[Int]`) 很不一樣，能將其中一種轉換成另一種，有很明顯的用處。這種轉換引導我們進入下個重點。
 
 ## 莫內支援高階函數 (Monads Support Higher Order Functions)
 
-A higher order function is a function that takes a function as a parameter or returns a function as a result. Monads are containers which have several higher order functions defined. Or, since we're talking about Scala, monads have several higher order methods.
-
 高階函數是一個把函數當成參數傳入或把函數當成結果傳出的函數。Monad 這種容器包含許多高階函數。既然聊到 Scala，這麼說好了，Monad 擁有許多高階的方法 (method)。
 
-`map` 是其中一個方法。如果你知道任何函數式語言，也許熟悉用 `map` 做格式轉換。`map` 方法接收一個函數，把它作用在容器內的每個元素，然後回傳一個新的容器。例如，
+`map` 是其中一個方法。如果你知道任何函數式語言，也許熟悉用 `map` 做格式轉換。`map` 方法接收一個函數，把它作用在容器內的每個元素，然後傳回一個新的容器。例如，
 
 ```scala
 def double(x: Int) = 2 * x
@@ -38,7 +36,7 @@ val oneString = one map {_.toString}
 assert(oneString == Some("1"))
 ```
 
-此處 `{_.toString}` 表示容器內的元素會被呼叫到 `toString` 的方法。
+此處的 `{_.toString}` 表示容器內的元素會被呼叫到 `toString` 的方法。
 
 ## 莫內可以合併 (Monads are Combinable)
 
@@ -65,7 +63,7 @@ def flatten[A](outer:Option[Option[A]]) : Option[A] = outer match {
 
 如果外層 `Option` 是 `None`，結果就是 `None`。否則結果就是內層的 `Option`。
 
-這兩個 `flatten` 函數有相似之處：接受 `M[M[A]]`，傳回 `M[A]`，但運作方式很不一樣。其他 Monad 也有自己 `flatten` 的函數，可能用很複雜的方式做到。由於這種潛在複雜性，解釋 Monad 時常用 `join` 而不是 `flatten`。`join` 的概念清楚解釋外層 Monad 如何結合 (`join`) 內層 Monad。不過，接下來的文章我還是採用 `flatten` 這個術語，因為它比較適合對容器的類比。
+這兩個 `flatten` 函數有相似之處：接受 `M[M[A]]`，傳回 `M[A]`，但運作方式很不一樣。其他 Monad 也有自己 `flatten` 的函數，可能用很複雜的方式做到。由於這種潛在複雜性，解釋 Monad 常用 `join` 而不是 `flatten`。`join` 的概念清楚解釋外層 Monad 如何結合 (`join`) 內層 Monad。不過，接下來的文章我還是採用 `flatten` 這個術語，因為它比較適合類比在容器上。
 
 Scala 不需要你明確寫 `flatten` 函數，但每個 Monad 都需要 `flatMap`。什麼是 `flatMap`？就像字面那樣，做完 `map` 後再做 `flatten`。
 
@@ -91,7 +89,7 @@ val result = opString flatMap stringToInt
 
 ## 莫內能用不同的方式產生 (Monads Can Be Built In Different Ways)
 
-剛看過用 `map` 做到 `flatMap`。另一個方向也能通喔：用 `flatMap` 做到 `map`。為了做到這件事，還需要一個概念。大部份文章叫它做 `unit`，在 Haskell 稱呼它為 `return`。Scala 是一種物件導向語言，所以相同的概念會稱作單一參數的建構函數或工廠函數。基本上，`unit` 接收型別 `A` 的值，傳回型別 `M[A]` 的 Monad。以 `List` 來說，`unit(x) == List(x)`。以 `Option` 來說，`unit(x) == Some(x)`。
+剛看過用 `map` 做到 `flatMap`。另一個方向也能通喔：用 `flatMap` 做到 `map`。為了做到這件事，還需要一個概念。大部份文章叫它做 `unit`，在 Haskell 稱呼它為 `return`。Scala 是一種物件導向語言，所以相同的概念會稱作單一參數的建構函數 (constructor) 或工廠函數 (factory)。基本上，`unit` 接收型別 `A` 的值，傳回型別 `M[A]` 的 Monad。以 `List` 來說，`unit(x) == List(x)`。以 `Option` 來說，`unit(x) == Some(x)`。
 
 Scala 不需要單獨的 `unit` 函數或方法，寫不寫只是品味的問題。因為要弄這個版本的 `map`，我會明確地寫出 `unit` 並展示他的用途。
 
@@ -103,7 +101,7 @@ class M[A](value: A) {
 }
 ```
 
-這個版本的 `flatMap` 不用 `map` 或 `flatten`。有趣的部分是 `map`，它接收一個函數 (`f`) 然後傳給一個作用在 `flatMap` 裡的新函數。這個新函數看起來像 `{x => unit(f(x))}`，`f`先對`x`作用，然後`unit`再對其結果作用。
+這個版本的 `flatMap` 不使用 `map` 或 `flatten`。有趣的部分是 `map`，它接收一個函數 (`f`) 然後傳給一個作用在 `flatMap` 裡的新函數。這個新函數看起來像 `{x => unit(f(x))}`，`f`先對`x`作用，然後`unit`再對其結果作用。
 
 ## 第一部份的結論
 
@@ -113,7 +111,7 @@ Scala Monad 必須具有 `map` 與 `flatMap` 方法。`map` 可以藉由 `flatMa
 
 當你接觸非集合 (collection) 的 Monad，你會發現應該先實做出 `flatMap`，然後再用它跟 `unit` 做出 `map`。
 
-在第二部分，我會涵蓋有關 Monad 的語法糖。在第三部分，我會介紹大象的 DNA：Monad 的法則。最後第四部分，我用一個容器來展示 Monad。同時，這裏有張用來翻譯論文中有關 Monad、Haskell、Scala 的小抄。
+在第二部分，我會涵蓋有關 Scala Monad 的語法糖。在第三部分，我會介紹大象的 DNA：Monad 法則。最後第四部分，我用一個容器來展示 Monad。同時，這裏有張用來翻譯資訊科學文章中有關 Monad、Haskell、Scala 的小抄。
 
 | Generic | Haskell | Scala |
 |---------|---------|-------|
