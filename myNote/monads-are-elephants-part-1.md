@@ -4,17 +4,17 @@
 
 這篇文章將透過 Scala 的方式介紹 Monad。
 
-瞎子摸象寓言中，抱住象腳的盲人說「這是一棵樹」，握著象鼻的盲人說「一條大蛇」，第三位盲人說「像是掃帚或扇子的東西」。自身的限制會我們無法掌握全貌，某方面來說我們全是盲人。這就是禪。
+瞎子摸象寓言中，抱住象腳的盲人說「這是一棵樹」，握著象鼻的盲人說「一條大蛇」，第三位盲人說「像是掃帚或扇子的東西」。自身限制讓我們無法掌握事物的全貌，某方面來說我們都是盲人。這就是禪。
 
-跟寓言想告訴我們相反的是，透過一連串有限的解釋，人們更有機會掌握全貌。如果你從來都沒看過大象，但有人跟你說「腿像樹幹一樣粗」、「鼻子長得像蛇」、「尾巴像掃帚」、「耳朵像扇子」，很快你就能明白。雖然對大象的概念並不完美，但最終你看到大象的時候，它能符合先前慢慢在你腦中建立的形象。這頭大象要踩扁你的時候，你還會想「哇！它的腿還真像棵樹」。
+跟寓言故事想告訴我們相反的是，透過一連串有限的解釋，人們更有機會掌握全貌。如果你從來都沒看過大象，但有人跟你說「腿像樹幹一樣粗」、「鼻子長得像蛇」、「尾巴像掃帚」、「耳朵像扇子」，那麼很快你就能理解。雖然對大象的概念並不完美，但最終你看到大象的時候，它能符合先前慢慢在你腦中建立的形象。當這頭大象要踩扁你的時候，你還會想「哇！它的腿還真像棵樹」。
 
-## Monad 是容器型別 (Container Type)
+## 莫內是容器型別 (Monads are Container Types)
 
 `List` 是最常用的容器型別之一，我們會花點時間在這上面。先前文章提過 `Option` 也是，提醒一下，`Option` 總是 `Some(value)` 或是 `None`。或許 `List` 跟 `Option` 的關聯不是那麼清楚，但如果你把 `Option` 想像成只有一個或零個元素的 `List`，有助理解。`Tree`跟 `Set` 也是 Monad。但記住  Monad 是頭大象，對於某些 Monad 你需要瞇起眼睛把它們看是容器。
 
 Monad 可以參數化。`List` 是種有用的概念，但你需要知道 `List` 裡面有什麼。字串串列 (`List[String]`) 跟整數串列 (`List[Int]`) 很不一樣。能將其中一種轉換成另一種，有很明顯的用處。這樣的轉換引導我們進入下個重點。
 
-## Monad 支援高階函數 (Higher Order Function)
+## 莫內支援高階函數 (Monads Support Higher Order Functions)
 
 A higher order function is a function that takes a function as a parameter or returns a function as a result. Monads are containers which have several higher order functions defined. Or, since we're talking about Scala, monads have several higher order methods.
 
@@ -40,7 +40,7 @@ assert(oneString == Some("1"))
 
 此處 `{_.toString}` 表示容器內的元素會被呼叫到 `toString` 的方法。
 
-## Monads 可以合併
+## 莫內可以合併 (Monads are Combinable)
 
 比方說，有個能夠取得參數的配置函式庫 (configuration library)。對於任何參數都能得到一個 `Option[String]` 的結果，換句話說，有沒有定義參數決定我們能不能獲得相對的字串。現在有個函數 `stringToInt` 接受字串作參數，如果傳入的字串可以解析則回傳 `Some[Int]`，如果無法解析則回傳 `None`。試著合併兩者的話會出現這樣的問題。
 
@@ -89,7 +89,7 @@ val result = opString flatMap stringToInt
 
 許多文章會用 `bind` 取代 `flatMap`，Haskell 會用 `>>=` 運算符號，都是一樣的概念。
 
-## Monad 能用不同的方式產生
+## 莫內能用不同的方式產生 (Monads Can Be Built In Different Ways)
 
 剛看過用 `map` 做到 `flatMap`。另一個方向也能通喔：用 `flatMap` 做到 `map`。為了做到這件事，還需要一個概念。大部份文章叫它做 `unit`，在 Haskell 稱呼它為 `return`。Scala 是一種物件導向語言，所以相同的概念會稱作單一參數的建構函數或工廠函數。基本上，`unit` 接收型別 `A` 的值，傳回型別 `M[A]` 的 Monad。以 `List` 來說，`unit(x) == List(x)`。以 `Option` 來說，`unit(x) == Some(x)`。
 
