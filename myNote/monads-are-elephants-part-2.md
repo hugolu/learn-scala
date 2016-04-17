@@ -4,7 +4,7 @@
 
 在第一部分，我透過盲人摸象的寓言介紹 Scala Monad。通常我們認為盲人們不清楚大象的長相，但我提出另一個觀點，假如你聽過所有盲人的經驗你很快就能理解大象究竟是什麼。
 
-第二部分，我會深入探索 Scala Monad 相關的語法糖："for comprehensions"。
+第二部分，我將藉由探索 Scala Monad 相關的語法糖："for comprehensions"，戳一戳這頭大象。
 
 ## 來點 "For" (A Little "For")
 
