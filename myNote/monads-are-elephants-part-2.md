@@ -2,9 +2,9 @@
 
 # 莫內是頭大象 之二 (Monads are Elephants Part 2)
 
-In part 1, I introduced Scala's monads through the parable of the blind men and the elephant. Normally we're supposed to take the view that each blind man doesn't come close to understanding what an elephant is, but I presented the alternative view that if you heard all the blind men describe their experience then you'd quickly build a surprisingly good understanding of elephants.
+在第一部分，我透過盲人摸象的寓言介紹 Scala Monad。通常我們認為盲人們不清楚大象的長相，但我提出另一個觀點，假如你聽過所有盲人的經驗你很快就能理解大象究竟是什麼。
 
-In part 2 I'm going to poke at the beast some more by exploring Scala's monad related syntactic sugar: "for comprehensions."
+第二部分，我會深入探索 Scala Monad 相關的語法糖："for comprehensions"。
 
 ## 來點 "For" (A Little "For")
 
