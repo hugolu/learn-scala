@@ -130,32 +130,34 @@ val qs = ns flatMap {n =>
 
 "For" also has an imperative version for the cases where you're only calling a function for its side effects. In it you just drop the yield statement.
 
+"for" 也有命令式的版本，讓你在某些情況呼叫有副作用 (side effect) 的函數。使用上只要去掉 `yield` 即可
+
 ```scala
 val ns = List(1, 2)
-val os = List (4, 5)
-for (n <- ns; o <- os)  println(n * o)
+val os = List(4, 5)
+for (n <- ns; o <- os) println(n * o)
 ```
 
-The expansion rule is much like the yield based version but foreach is used instead of flatMap or map.
+這個表示式規則很像有 `yield` 的版本，但是用 `foreach` 取代 `flatMap` 或 `map`。
 
 ```scala
-ns foreach {n => os foreach {o => println(n * o) }}  
+ns foreach {n => os foreach {o => println(n * o)}}  
 ```
 
-Now, you don't have to implement foreach if you don't want to use the imperative form of "for", but foreach is trivial to implement since we already have map.
+如果不需使用命令式的 "for"，你就不必要實作 `foreach` 函數。有沒有 `foreach` 不是那麼重要，因為我們已經有 `map`。
 
 ```scala
 class M[A] {
-   def map[B](f: A=> B) : M[B] = ...
-   def flatMap[B](f: A => M[B]) : M[B] = ...
-   def foreach[B](f: A=> B) : Unit = {
-       map(f)
-       ()
-   }
+  def map[B](f: A=> B) : M[B] = ...
+  def flatMap[B](f: A => M[B]) : M[B] = ...
+  def foreach[B](f: A=> B) : Unit = {
+    map(f)
+    ()
+  }
 }
 ```
 
-In other words, foreach can just call map and throw away the results. That might not be the most runtime efficient way of doing things, though, so Scala allows you to define foreach your own way.
+換句話說，使用 `foreach` 可以直接呼叫 `map` 然後把結果丟掉就好，雖然這不是最有效率的做法，所以 Scala 允許你用自己的方式定義 `foreach`。
 
 ## 過濾式的 "For" (Filtering "For")
 
