@@ -1,6 +1,6 @@
 出處：[Monads are Elephants Part 1](http://james-iry.blogspot.tw/2007/09/monads-are-elephants-part-1.html)
 
-# 莫內是頭大象 之一
+# 莫內是頭大象 之一 (Monads are Elephants Part 1)
 
 這篇文章將透過 Scala 的方式介紹 Monad。
 
