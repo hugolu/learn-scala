@@ -42,34 +42,31 @@ expr flatMap {x => unit(resultExpr)}
 
 ## 更多 "For" (More "For")
 
-One expression in a "for" isn't terribly interesting. Let's add some more
+一個 "for" 裡面只有一個表示式 (expression) 稍嫌無趣。讓我們再加點東西進去
 
 ```scala
 val ns = List(1, 2)
-val os = List (4, 5)
-val qs = for (n <- ns; o <- os)
-   yield n * o
+val os = List(4, 5)
+val qs = for (n <- ns; o <- os) yield n * o
 assert (qs == List (1*4, 1*5, 2*4, 2*5))
 ```
 
-This "for" could be read "for [each] n [in] ns [and each] o [in] os yield n * o. This form of "for" looks a bit like nested loops but it's just a bit of map and flatMap.
+這個 "for" 可以讀作 "for [each] n [in] ns [and each] o [in] os yield n * o"。格式有點巢狀迴圈的感覺，但它是用 `map` 跟 `flatMap` 做出來的。
 
 ```scala
-val qs = ns flatMap {n =>
-   os map {o => n * o }}
+val qs = ns flatMap {n => os map {o => n * o }}
 ```
 
-It's worth while to spend a moment understanding why this works. Here's how it gets computed (red italics gets turned into bold green):
+這值得花些時間理解如何辦到的，以下是推導過程
 
 ```scala
-val qs = ns flatMap {n => 
-   os map {o => n * o }}
-
-val qs = ns flatMap {n => 
-   List(n * 4, n * 5)}
-
-val qs = 
-   List(1 * 4, 1 * 5, 2 * 4, 2 * 5)
+val qs = ns flatMap {n => os map {o => n * o}}
+```
+```scala
+val qs = ns flatMap {n => List(n * 4, n * 5)}
+```
+```scala
+val qs = List(1 * 4, 1 * 5, 2 * 4, 2 * 5)
 ```
 
 ## 更多表達式 (Now With More Expression)
