@@ -8,7 +8,7 @@
 
 ## 來點 "For" (A Little "For")
 
-A very simple "for" looks like this
+一個很簡單的 "for" 看起來像這樣
 
 ```scala
 val ns = List(1, 2)
@@ -16,25 +16,25 @@ val qs = for (n <- ns) yield n * 2
 assert (qs == List(2, 4))
 ```
 
-The "for" can be read as "for [each] n [in] ns yield n * 2." It looks like a loop, but it's not. This is our old friend map in disguise.
+這段 "for" 運算可以讀作 "for [each] n [in] ns yield n * 2"。看起來像迴圈，但事實上是用 `map` 偽裝的。
 
 ```scala
 val qs = ns map {n => n * 2}
 ```
 
-The rule here is simple
+規則很簡單
 
 ```scala
 for (x <- expr) yield resultExpr
 ```
 
-Expands to<sup>[1](#footnote1)</sup>
+展開成 <sup>[1](#footnote1)</sup>
 
 ```scala
 expr map {x => resultExpr}
 ```
 
-And as a reminder, that's equivalent to
+提醒一下，這等同於
 
 ```scala
 expr flatMap {x => unit(resultExpr)}
