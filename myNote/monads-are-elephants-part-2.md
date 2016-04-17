@@ -70,53 +70,60 @@ val qs = List(1 * 4, 1 * 5, 2 * 4, 2 * 5)
 ```
 
 ## 更多表達式 (Now With More Expression)
-Let's kick it up a notch.
+
+讓我們再進階一點。
 
 ```scala
-val qs =
-   for (n <- ns; o <- os; p <- ps)
-      yield n * o * p
+val qs = for (n <- ns; o <- os; p <- ps) yield n * o * p
 ```
 
-This "for" gets expanded into
+這個 "for" 被展開成
 
 ```scala
 val qs = ns flatMap {n =>
-   os flatMap {o =>
-      {ps map {p => n * o * p}}}}
+  os flatMap {o =>
+    ps map {p => n * o * p}
+  }
+}
 ```
-That looks pretty similar to our previous "for." That's because the rule is recursive
+
+看起來頗像之前的 "for"，因為規則是遞歸套用
 
 ```scala
-for(x1 <- expr1;...x <- expr)
-   yield resultExpr
+for(x1 <- expr1; ...; x <- expr) yield resultExpr
 ```
 
-expands to
+被展開成
 
 ```scala
 expr1 flatMap {x1 =>
-   for(...;x <- expr) yield resultExpr
+  for(...; x <- expr) yield resultExpr
 }
 ```
-This rule gets applied repeatedly until only one expression remains at which point the map form of expansion is used. Here's how the compiler expands the "val qs = for..." statement (again red italics turns to bold green)
+
+這規則被重複應用直到剩下一個表示式，然後套用 `map` 在這個表示式上。以下是 "val qs = for..." 被編譯器展開的過程
 
 ```scala
-val qs = 
-   for (n <- ns; o <- os; p <- ps)
-   yield n * o * p
-
-val qs = 
-   ns flatMap {n => for(o <- os; p <- ps)
-   yield n * o * p}
-
-val qs = 
-   ns flatMap {n => os flatMap {o => 
-   for(p <- ps) yield n * o * p}}
-
-val qs = 
-   ns flatMap {n => os flatMap {o => 
-   {ps map {p => n * o * p}}}
+val qs = for (n <- ns; o <- os; p <- ps) yield n * o * p
+```
+```scala
+val qs = ns flatMap {n => 
+  for(o <- os; p <- ps) yield n * o * p
+}
+```
+```scala
+val qs = ns flatMap {n =>
+  os flatMap {o => 
+    for(p <- ps) yield n * o * p
+  }
+}
+```
+```scala
+val qs = ns flatMap {n =>
+  os flatMap {o =>
+    ps map {p => n * o * p}
+  }
+}
 ```
 
 ## 命令式的 "For" (An Imperative "For")
