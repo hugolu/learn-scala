@@ -72,11 +72,11 @@ identity(x) ≡ x
 - F1b. `m map {x => identity(x)} ≡ m` // 或等效於
 - F1c. `m map {x => x} ≡ m`
 
-In other words, doing nothing much should result in no change. Brilliant! However, I should remind you that the expression on the left can return a different object and that object may even have a different internal structure. Just so long as you can't tell them apart.
+換句話說，沒做什麼事所以結果也沒改變。聰明！不過，我應該提醒你左邊表示式可以回傳不同的物件並且這個物件可以有不同的內部結構。只要讓你分辨不出兩者即可。
 
-If you were to create a functor that didn't follow this law then the following wouldn't hold true. To see why that would be confusing, pretend m is a List.
+如果你產生的 functor 沒有遵守這個法則，那麼以下規則也不為真。追根究底可能讓人困惑，你就假裝 `m` 是 `List` 吧。
 
-- F1d. for (x <- m) yield x ≡ m
+- F1d. `for (x <- m) yield x ≡ m`
 
 ## Functor 第二定律：結合性 (Second Functor Law: Composition)
 
