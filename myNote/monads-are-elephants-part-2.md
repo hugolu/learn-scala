@@ -189,28 +189,13 @@ val bNames = (names filter {bName => bName(0) == 'B'}).map
 
 ## 第二部分結論
 
-"For" is a handy way to work with monads. 
-Its syntax is particularly useful for working with Lists and other collections.
-But "for" is more general than that. 
-It expands into map, flatMap, foreach, and filter. 
-Of those, map and flatMap should be defined for any monad. 
-The foreach method can be defined if you want the monad to be used imperatively and it's trivial to build. 
-Filter can be defined for some monads but not for others.
+"for" 讓操作 Monad 更上手。尤其操作 `List` 跟其他集合，這樣的語法更有用。但 "for" 其實能更一般化，展開成 `map`、`flatMap`、`foreach` 跟 `filter`。任何 Monad 應該要定義 `map` 與 `flatMap`。想讓 Monad 用命令方式執行，可定義 `foreach`。`filter` 可以定義在某些 Monad 裡，但其他則不用。
 
+`m map f` 可以用 `m flatMap {x => unit(x)}` 辦到。`m foreach f` 可以用 `m flatMap {x => unit(f(x)); ()}` 做到。即使 `m filter p` 也可以使用 `flatMap` 搞定 (下回會說)。`flatMap` 實在是這頭野獸的心臟啊。
 
+記住，莫內是頭大象。到目前為止我所描繪的 Monad 都強調集合。第四部分，我會用抽象的容器來表現一個不是集合的 Monad。在第四部分開始前，還需要用第三部分來涵蓋對所有 Monad 來說都為真的特色：莫內法則 (the monadic laws)。
 
-"m map f" can be implemented as "m flatMap {x => unit(x)}. 
-"m foreach f" can be implemented in terms of map, or in terms of flatMap "m flatMap {x => unit(f(x));()}. 
-Even "m filter p" can be implemented using flatMap (I'll show how next time). 
-flatMap really is the heart of the beast.
-
-
-Remember, monads are elephants. 
-The picture I've painted of monads so far emphasizes collections.
-In part 4, I'll present a monad that isn't a collection and only a container in an abstract way.
-But before part 4 can happen, part 3 needs to cover some properties that are true of all monads: the monadic laws.
-
-In the mean time, here's a cheat sheet showing how Haskell's do and Scala's for are related.
+同時，這邊有一些 Haskell 與 Scala 關於 "for" 的對應表。
 
 <table>
   <tr>
