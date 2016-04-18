@@ -24,7 +24,8 @@
 
 ## 打破規則 (Breaking the Law)
 
-Inevitably somebody will wonder "what happens if I break law x?" The complete answer depends on what laws are broken and how, but I want to approach it holistically first. Here's a reminder of some laws from another branch of mathematics. If a, b, and c are rational numbers then multiplication (*) obeys the following laws:
+
+不可避免地，有人會問：「如果我打破規則x那會發生什麼？」完整的答案取決於什麼規律被打破，以及如何被打破，但我想先全面地接觸它。以下是另一個數學分支的規則提醒。如果 `a`、`b`、`c` 都是有理數，那麼乘法 (`*`) 遵守下面規則：
 
 ```
 a * 1 ≡ a
@@ -32,11 +33,11 @@ a * b ≡ b * a
 (a * b) * c ≡ a * (b * c)
 ```
 
-Certainly it would be easy to create a class called "RationalNumber" and implement a * operator. But if it didn't follow these laws the result would be confusing to say the least. Users of your class would try to plug it into formulas and would get the wrong answers. Frankly, it would be hard to break these laws and still end up with anything that even looks like multiplication of rational numbers.
+當然，創建一個名為 "有理數" 類別和實作 `*` 方法很容易。但是，如果沒有按照這些規則，得到的結果會讓人困惑。這個類別的用戶會試著將它代入公式而得到錯誤答案。坦白說，你很難打破這些規則還讓這些東西像是有理數乘法。
 
-Monads are not rational numbers. But they do have laws that help define them and their operations. Like arithmetic operations, they also have "formulas" that allow you to use them in interesting ways. For instance, Scala's "for" notation is expanded using a formula that depends on these laws. So breaking the monad laws is likely to break "for" or some other expectation that users of your class might have.
+Monad 不是有理數，但確實有能夠幫助我們定義與操作 Monad 的規則。像是算術運算，有所謂公式讓你用有趣的方式使用它們。例如，Scala "for" 可以根據這些規則展開，所以打破 Monad 法則就像打破使用者對 "for" 的預期。
 
-Enough intro. To explain the monad laws, I'll start with another weird word: functor.
+介紹夠了，為了解釋 Monad 法則，我會從另一個詭異的的詞開始：Functor。
 
 ## 花惹發 - 什麼是 functor (WTF - What The Functor?)
 
