@@ -41,15 +41,16 @@ Monad 不是有理數，但確實有能夠幫助我們定義與操作 Monad 的�
 
 ## 花惹發 - 什麼是 functor (WTF - What The Functor?)
 
-Usually articles that start with words like "monad" and "functor" quickly devolve into soup of Greek letters. That's because both are abstract concepts in a branch of mathematics called category theory and explaining them completely is a mathematical exercise. Fortunately, my task isn't to explain them completely but just to cover them in Scala.
+通常有 Monad 與 Functor 開頭的文章很快就會變成一碗希臘字母。這是因為兩者都是數學範疇論的抽象概念，完整解釋它們是一件數學上的苦差事。幸運的是，我的任務不是完全解釋它們，而是能在 Scala 中涵蓋它們就好。
 
-In Scala a functor is a class with a map method and a few simple properties. For a functor of type M[A], the map method takes a function from A to B and returns an M[B]. In other words, map converts an M[A] into an M[B] based on a function argument. It's important to think of map as performing a transformation and not necessarily having anything to do with loops. It might be implemented as a loop, but then again it might not.
+在 Scala 中，Functor 是一個有 `map` 方法和一些簡單操作特性的類別。例如型別 `M[A]` 的 Functor，其 `map` 方法是接收一個將 `A` 轉換成 `B` 的函數然後傳回 `M[B]`。換句話說，`map` 根據函數參數將 `M[A]` 轉換成 `M[B]`。把 `map` 想成執行轉換 (transformation) 而不需要處理任何迴圈 (loop)，這點很重要。或許它會實作迴圈，也或許不會。
 
-Map's signature looks like this
+
+`map` 的函數簽名 (signature) 看起來像這樣
 
 ```scala
 class M[A] {
-  def map[B](f: A => B):M[B] = ...
+  def map[B](f: A => B): M[B] = ...
 }
 ```
 
