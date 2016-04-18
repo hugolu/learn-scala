@@ -10,17 +10,17 @@
 
 ## 眾生平等 (Equality for All)
 
-Before I continue, I have to semi-formally explain what I mean when I use triple equals in these laws as in "f(x) ≡ g(x)." What I mean is what a mathematician might mean by "=" equality. I'm just avoiding single "=" to prevent confusion with assignment.
+開始之前，我必須半正式地解釋 "f(x) ≡ g(x)" 三重等號的含意，"≡" 指的是數學上的相等，是為了避免跟 "=" (assignment) 混淆。
 
-So I'm saying the expression on the left is "the same" as the expression on the right. That just leads to a question of what I mean by "the same."
+當我說左邊的表示式跟右邊的表示式 "相等"，問題是 "相等" 究竟是什麼意思。
 
-First, I'm not talking about reference identity (Scala's eq method). Reference identity would satisfy my definition, but it's too strong a requirement. Second, I don't necessarily mean == equality either unless it happens to be implemented just right.
+首先，我不是在說兩者的參考相同 (reference identity)。參考相同當然滿足定義，但這樣要求太強烈。再則，也不一定意味 `==` 相等，除非實作上剛好如此。
 
-What I do mean by "the same" is that two objects are indistinguishable without directly or indirectly using primitive reference equality, reference based hash code, or isInstanceOf.
+我指的 "相等" 是兩個物件無法直接或間接藉由原始參考相等(primitive reference equality)、參考雜湊值(reference based hash code)、或 `isInstanceOf` 來區分。
 
-In particular it's possible for the expression on the left to lead to an object with some subtle internal differences from the object on the right and still be "the same." For example, one object might use an extra layer of indirection to achieve the same results as the one on the right. The important part is that, from the outside, both objects must behave the same.
+事實上，有可能左邊表示式的物件跟右邊表示式的物件內部有些微不同，但仍然視為 "相等"。例如，一個物件使用額外間接層包覆跟右邊物件一樣的結果。重點是，從外面看起來，這兩個物件的行為一模一樣。
 
-One more note on "the same." All the laws I present implicitly assume that there are no side effects. I'll have more to say about side effects at the end of the article.
+再對 "相等" 多點註釋。所有我要講的法則都暗喻不存在任何副作用 (no side effects)。關於副作用我在文章最後會多講一些。
 
 ## 打破規則 (Breaking the Law)
 
