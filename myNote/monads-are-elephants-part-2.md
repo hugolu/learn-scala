@@ -161,36 +161,33 @@ class M[A] {
 
 ## 過濾式的 "For" (Filtering "For")
 
-So far our monads have built on a few key concepts. These three methods - map, flatMap, and forEach - allow almost all of what "for" can do.
+到目前為止，Monad 只建立在少數關鍵的概念上。三個方法 - `map`、`flatMap`、`foreach` - 幾乎辦到所有 "for" 能做的事。
 
-Scala's "for" statement has one more feature: "if" guards. As an example
+Scala "for" 還有一個特色："if" 看守者 (guard)。例如
 
 ```scala
 val names = List("Abe", "Beth", "Bob", "Mary")
 val bNames = for (bName <- names;
-   if bName(0) == 'B'
+  if bName(0) == 'B'
 ) yield bName + " is a name starting with B"
 
 assert(bNames == List(
-   "Beth is a name starting with B",
-   "Bob is a name starting with B"))
+  "Beth is a name starting with B",
+  "Bob is a name starting with B"))
 ```
 
-"if" guards get mapped to a method called filter. Filter takes a predicate function (a function that takes on argument and returns true or false) and creates a new monad without the elements that don't match the predicate. The for statement above gets translated into something like the following.
+"if" 看守者對應到 `filter` 方法。`filter` 接受斷言函式 (predicate function 為接受一個參數並傳回 `ture` 或 `false` 的函數) 而後產生一個新的 Monad，這個 Monad 不包含不符合斷言函數的元素。上述的 "for" 陳述 (statement) 被翻譯成下面這樣。
 
 ```scala
-val bNames =
-   (names filter { bName => bName(0) == 'B' })
-   .map { bName =>
-      bName + " is a name starting with B"
-   }
+val bNames = (names filter {bName => bName(0) == 'B'}).map
+    {bName => bName + " is a name starting with B"}
 ```
 
-First the list is filtered for names that start with B. Then that filtered list is mapped using a function that appends " is a name..."
+首先，`list` 裡的名字開頭有 'B' 的被過濾出來，然後被過濾的 `list` 使用一個函數映射，在名字後面加上 " is a name..."
 
-Not all monads can be filtered. Using the container analogy, filtering might remove all elements and some containers can't be empty. For such monads you don't need to create a filter method. Scala won't complain as long as you don't use an "if" guard in a "for" expression.
+不是所有的 Monad 都能被過濾。用容器類比，過濾可能移除所有元素，而有些容器不能是空的。對這些 Monad 你不需要產生 `filter` 方法，只要你在 "for" 表達式裡沒有使用 "if"，Scala 就不會抱怨。
 
-I'll have more to say about filter, how to define it in purely monadic terms, and what kinds of monads can't be filtered in the next installment
+我會在下個部分多聊點 `filter`，有關如何在 Monad 定義它，哪些 Monad 不能被過濾等等。
 
 ## 第二部分結論
 
