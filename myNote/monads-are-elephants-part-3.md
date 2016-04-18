@@ -8,7 +8,7 @@ So far we've been looking at the outside of monads in Scala. That's taken us a g
 
 This article is a lot to digest all at once. It probably makes sense to read it in chunks. It can also be useful to re-read by substituting a monad you already understand (like List) into the laws.
 
-## Equality for All
+## 眾生平等 (Equality for All)
 
 Before I continue, I have to semi-formally explain what I mean when I use triple equals in these laws as in "f(x) ≡ g(x)." What I mean is what a mathematician might mean by "=" equality. I'm just avoiding single "=" to prevent confusion with assignment.
 
@@ -22,7 +22,7 @@ In particular it's possible for the expression on the left to lead to an object 
 
 One more note on "the same." All the laws I present implicitly assume that there are no side effects. I'll have more to say about side effects at the end of the article.
 
-## Breaking the Law
+## 打破規則 (Breaking the Law)
 
 Inevitably somebody will wonder "what happens if I break law x?" The complete answer depends on what laws are broken and how, but I want to approach it holistically first. Here's a reminder of some laws from another branch of mathematics. If a, b, and c are rational numbers then multiplication (*) obeys the following laws:
 
@@ -38,7 +38,7 @@ Monads are not rational numbers. But they do have laws that help define them and
 
 Enough intro. To explain the monad laws, I'll start with another weird word: functor.
 
-## WTF - What The Functor?
+## 花惹發 - 什麼是 functor (WTF - What The Functor?)
 
 Usually articles that start with words like "monad" and "functor" quickly devolve into soup of Greek letters. That's because both are abstract concepts in a branch of mathematics called category theory and explaining them completely is a mathematical exercise. Fortunately, my task isn't to explain them completely but just to cover them in Scala.
 
@@ -52,7 +52,7 @@ class M[A] {
 }
 ```
 
-## First Functor Law: Identity
+## Functor 第一定律：同等性 (First Functor Law: Identity)
 
 Let's say I invent a function called identity like so
 
@@ -78,7 +78,7 @@ If you were to create a functor that didn't follow this law then the following w
 
 - F1d. for (x <- m) yield x ≡ m
 
-## Second Functor Law: Composition
+## Functor 第二定律：結合性 (Second Functor Law: Composition)
 
 The second functor law specifies the way several "maps" compose together.
 
@@ -96,7 +96,7 @@ In "for" notation this law looks like the following eye bleeder
 
 - F2b. for (y<- (for (x <-m) yield g(x)) yield f(y) ≡ for (x <- m) yield f(g(x))
 
-## Functors and Monads, Alive, Alive Oh
+## Functor 與 Monad，萬歲萬歲萬萬歲 (Functors and Monads, Alive, Alive Oh)
 
 As you may have guessed by now all monads are functors so they must follow the functor laws. In fact, the functor laws can be deduced from the monad laws. It's just that the functor laws are so simple that it's easier to get a handle on them and see why they should be true.
 
@@ -117,7 +117,7 @@ def unit[A](x:A):M[A] = ...
 
 "unit" shouldn't be taken as the literal name of a function or method unless you want it to be. Scala doesn't specify or use it but it's an important part of monads. Any function that satisfies this signature and behaves according to the monad laws will do. Normally it's handy to create a monad M as a case class or with a companion object with an appropriate apply(x:A):M[A] method so that the expression M(x) behaves as unit(x).
 
-## The Functor/Monad Connection Law: The Zeroth Law
+## Functor/Monad 連結定律：第零定律 (The Functor/Monad Connection Law: The Zeroth Law)
 
 In the very first installment of this series I introduced a relationship
 
@@ -129,7 +129,7 @@ This law can be expressed using "for" notation pretty nicely
 
 - FM1a. for (x <- m) yield f(x) ≡ for (x <- m; y <- unit(f(x))) yield y
 
-## Flatten Revisited
+## 再論 flatten (Flatten Revisited)
 
 In the very first article I mentioned the concept of "flatten" or "join" as something that converts a monad of type M[M[A]] into M[A], but didn't describe it formally. In that article I said that flatMap is a map followed by a flatten.
 
@@ -144,7 +144,7 @@ FL1a. flatten(m) ≡ m flatMap identity // by F1
 
 So flattening m is the same as flatMapping m with the identity function. I won't use the flatten laws in this article as flatten isn't required by Scala but it's a nice concept to keep in your back pocket when flatMap seems too abstract.
 
-## The First Monad Law: Identity
+## Monad 第一定律：同等性 (The First Monad Law: Identity)
 
 The first and simplest of the monad laws is the monad identity law
 
@@ -165,7 +165,7 @@ The same derivation works in reverse, too. Expressed in "for" notation, the mona
 
 - M1c. for (x <- m; y <- unit(x)) yield y ≡ m
 
-## The Second Monad Law: Unit
+## Monad 第二定律：單元 (The Second Monad Law: Unit)
 
 Monads have a sort of reverse to the monad identity law.
 
@@ -190,7 +190,7 @@ In other words, if we create a monad instance from a single argument x and then 
 
 - M2d. for (y <- unit(x)) yield f(y) ≡ unit(f(x))
 
-## The Third Monad Law: Composition
+## Monad 第三定律：結合性 (The Third Monad Law: Composition)
 
 The composition law for monads is a rule for how a series of flatMaps work together.
 
@@ -214,14 +214,14 @@ m map g map f ≡ m flatMap {x => unit(f(g(x))} // by M2c
 F2. m map g map f ≡ m map {x => f(g(x))} // by FM1a
 ```
 
-## Total Loser Zeros
+## 徹底的魯蛇 zero (Total Loser Zeros)
 
 List has Nil (the empty list) and Option has None. Nil and None seem to have a certain similarity: they both represent a kind of emptiness. Formally they're called monadic zeros.
 
 A monad may have many zeros. For instance, imagine an Option-like monad called Result. A Result can either be a Success(value) or a Failure(msg). The Failure constructor takes a string indicating why the failure occurred. Every different failure object is a different zero for Result.
 A monad may have no zeros. While all collection monads will have zeros (empty collections) other kinds of monads may or may not depending on whether they have a concept of emptiness or failure that can follow the zero laws.
 
-## The First Zero Law: Identity
+## zero 第一定律：相等性 (The First Zero Law: Identity)
 
 If mzero is a monadic zero then for any f it makes sense that
 
@@ -243,7 +243,7 @@ So taking a zero and mapping with any function also results in a zero. This law 
 unit(null) map {x => "Nope, not empty enough to be a zero"} ≡ unit("Nope, not empty enough to be a zero")
 ```
 
-## The Second Zero Law: M to Zero in Nothing Flat
+## zero 第二定律：M 到 Zero 沒啥好攤平的  (The Second Zero Law: M to Zero in Nothing Flat)
 
 The reverse of the zero identity law looks like this
 
@@ -251,7 +251,7 @@ The reverse of the zero identity law looks like this
 
 Basically this says that replacing everything with nothing results in nothing which um...sure. This law just formalizes your intuition about how zeros "flatten."
 
-## The Third and Fourth Zero Laws: Plus
+## zero 第三、四定律：加法 (The Third and Fourth Zero Laws: Plus)
 
 Monads that have zeros can also have something that works a bit like addition. For List, the "plus" equivalent is ":::" and for Option it's "orElse." Whatever it's called its signature will look this
 
@@ -269,7 +269,7 @@ Plus has the following two laws which should make sense: adding anything to a ze
 
 The plus laws don't say much about what "m plus n" is if neither is a monadic zero. That's left entirely up to you and will vary quite a bit depending on the monad. Typically, if concatenation makes sense for the monad then that's what plus will be. Otherwise, it will typically behave like an "or," returning the first non-zero value.
 
-## Filtering Revisited
+## 再論 filter (Filtering Revisited)
 
 In the previous installment I briefly mentioned that filter can be seen in purely monadic terms, and monadic zeros are just the trick to seeing how. As a reminder, a filterable monad looks like this
 
@@ -305,7 +305,7 @@ FIL1b. m filter {x => false} ≡ mzero // by MZ1
 
 Filtering with a constant false results in a monadic zero.
 
-## Side Effects
+## 副作用 (Side Effects)
 
 Throughout this article I've implicitly assumed no side effects. Let's revisit our second functor law
 
@@ -325,7 +325,7 @@ m foreach f ≡ ()
 
 Which would imply that foreach does nothing. In a purely functional sense that's true, it converts m and f into a void result. But foreach is meant to be used for side effects - it's an imperative construct.
 
-## Conclusion for Part 3
+## 第三部分結論 (Conclusion for Part 3)
 
 Up until now, I've focused on Option and List to let your intuition get a feel for monads. With this article you've finally seen what really makes a monad a monad. It turns out that the monad laws say nothing about collections; they're more general than that. It's just that the monad laws happen to apply very well to collections.
 
