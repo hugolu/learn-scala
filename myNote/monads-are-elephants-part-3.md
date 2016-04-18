@@ -2,11 +2,11 @@
 
 # 莫內是頭大象 之三 (Monads are Elephants Part 3)
 
-In this series I've presented an alternative view on the old parable about the blind men and the elephant. In this view, listening to the limited explanations from each of the blind men eventually leads to a pretty good understanding of elephants.
+在這一系列文章中，我已經透過瞎子摸象的方式呈現對 Monad 的觀點。藉由聆聽每個盲人對大象有限的解釋，逐漸認識大象。
 
-So far we've been looking at the outside of monads in Scala. That's taken us a great distance, but it's time to look inside. What really makes an elephant an elephant is its DNA. Monads have a common DNA of their own in the form of the monadic laws.
+到目前為止，我們看見了 Scala Monad 的外觀，但距離太過遙遠，該是看看內部的時候了。真正造就大象的是大象的 DNA；而莫內法則 (monad law) 就是 Monad 間有共同的 DNA。
 
-This article is a lot to digest all at once. It probably makes sense to read it in chunks. It can also be useful to re-read by substituting a monad you already understand (like List) into the laws.
+這篇文章有很多需要消化的部分，分次閱讀或許是個不錯的主意。拿你已理解的 Monad (例如 `List`) 帶入法則也很有用。
 
 ## 眾生平等 (Equality for All)
 
