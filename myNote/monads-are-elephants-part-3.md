@@ -24,7 +24,6 @@
 
 ## 打破規則 (Breaking the Law)
 
-
 不可避免地，有人會問：「如果我打破規則x那會發生什麼？」完整的答案取決於什麼規律被打破，以及如何被打破，但我想先全面地接觸它。以下是另一個數學分支的規則提醒。如果 `a`、`b`、`c` 都是有理數，那麼乘法 (`*`) 遵守下面規則：
 
 ```
@@ -45,7 +44,6 @@ Monad 不是有理數，但確實有能夠幫助我們定義與操作 Monad 的�
 
 在 Scala 中，Functor 是一個有 `map` 方法和一些簡單操作特性的類別。例如型別 `M[A]` 的 Functor，其 `map` 方法是接收一個將 `A` 轉換成 `B` 的函數然後傳回 `M[B]`。換句話說，`map` 根據函數參數將 `M[A]` 轉換成 `M[B]`。把 `map` 想成執行轉換 (transformation) 而不需要處理任何迴圈 (loop)，這點很重要。或許它會實作迴圈，也或許不會。
 
-
 `map` 的函數簽名 (signature) 看起來像這樣
 
 ```scala
@@ -56,23 +54,23 @@ class M[A] {
 
 ## Functor 第一定律：同等性 (First Functor Law: Identity)
 
-Let's say I invent a function called identity like so
+這麼說好了，我發明了一個函數叫做 `identity`，像這樣
 
 ```scala
 def identity[A](x:A) = x  
 ```
 
-This obviously has the property that for any x
+對於任何 `x` 有以下特性
 
 ```
 identity(x) ≡ x
 ```
 
-It doesn't do much and that's the point. It just returns its argument (of whatever type) with no change. So here's our first functor law: for any functor m
+它沒做什麼，這就是重點。它只不過是原封不動回傳它的參數 (不論是什麼型別)。這裏是我們第一個 functor 法則：對於任何 functor `m`
 
-- F1. m map identity ≡ m // or equivalently *
-- F1b. m map {x => identity(x)} ≡ m // or equivalently
-- F1c. m map {x => x} ≡ m
+- F1. `m map identity ≡ m` // 或等效於
+- F1b. `m map {x => identity(x)} ≡ m` // 或等效於
+- F1c. `m map {x => x} ≡ m`
 
 In other words, doing nothing much should result in no change. Brilliant! However, I should remind you that the expression on the left can return a different object and that object may even have a different internal structure. Just so long as you can't tell them apart.
 
