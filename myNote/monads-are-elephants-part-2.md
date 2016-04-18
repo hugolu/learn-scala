@@ -6,7 +6,7 @@
 
 第二部分，我將藉由探索 Scala Monad 相關的語法糖："for comprehensions"，戳一戳這頭大象。
 
-## 來點 "For" (A Little "For")
+## 來點 "for" (A Little "For")
 
 一個很簡單的 "for" 看起來像這樣
 
@@ -40,7 +40,7 @@ expr map {x => resultExpr}
 expr flatMap {x => unit(resultExpr)}
 ```
 
-## 更多 "For" (More "For")
+## 更多 "for" (More "For")
 
 一個 "for" 裡面只有一個表示式 (expression) 稍嫌無趣。讓我們再加點東西進去
 
@@ -126,9 +126,7 @@ val qs = ns flatMap {n =>
 }
 ```
 
-## 命令式的 "For" (An Imperative "For")
-
-"For" also has an imperative version for the cases where you're only calling a function for its side effects. In it you just drop the yield statement.
+## 命令式的 "for" (An Imperative "For")
 
 "for" 也有命令式的版本，讓你在某些情況呼叫有副作用 (side effect) 的函數。使用上只要去掉 `yield` 即可
 
@@ -159,7 +157,7 @@ class M[A] {
 
 換句話說，使用 `foreach` 可以直接呼叫 `map` 然後把結果丟掉就好，雖然這不是最有效率的做法，所以 Scala 允許你用自己的方式定義 `foreach`。
 
-## 過濾式的 "For" (Filtering "For")
+## 過濾式的 "for" (Filtering "For")
 
 到目前為止，Monad 只建立在少數關鍵的概念上。三個方法 - `map`、`flatMap`、`foreach` - 幾乎辦到所有 "for" 能做的事。
 
@@ -191,11 +189,26 @@ val bNames = (names filter {bName => bName(0) == 'B'}).map
 
 ## 第二部分結論
 
-"For" is a handy way to work with monads. Its syntax is particularly useful for working with Lists and other collections. But "for" is more general than that. It expands into map, flatMap, foreach, and filter. Of those, map and flatMap should be defined for any monad. The foreach method can be defined if you want the monad to be used imperatively and it's trivial to build. Filter can be defined for some monads but not for others.
+"For" is a handy way to work with monads. 
+Its syntax is particularly useful for working with Lists and other collections.
+But "for" is more general than that. 
+It expands into map, flatMap, foreach, and filter. 
+Of those, map and flatMap should be defined for any monad. 
+The foreach method can be defined if you want the monad to be used imperatively and it's trivial to build. 
+Filter can be defined for some monads but not for others.
 
-"m map f" can be implemented as "m flatMap {x => unit(x)}. "m foreach f" can be implemented in terms of map, or in terms of flatMap "m flatMap {x => unit(f(x));()}. Even "m filter p" can be implemented using flatMap (I'll show how next time). flatMap really is the heart of the beast.
 
-Remember, monads are elephants. The picture I've painted of monads so far emphasizes collections. In part 4, I'll present a monad that isn't a collection and only a container in an abstract way. But before part 4 can happen, part 3 needs to cover some properties that are true of all monads: the monadic laws.
+
+"m map f" can be implemented as "m flatMap {x => unit(x)}. 
+"m foreach f" can be implemented in terms of map, or in terms of flatMap "m flatMap {x => unit(f(x));()}. 
+Even "m filter p" can be implemented using flatMap (I'll show how next time). 
+flatMap really is the heart of the beast.
+
+
+Remember, monads are elephants. 
+The picture I've painted of monads so far emphasizes collections.
+In part 4, I'll present a monad that isn't a collection and only a container in an abstract way.
+But before part 4 can happen, part 3 needs to cover some properties that are true of all monads: the monadic laws.
 
 In the mean time, here's a cheat sheet showing how Haskell's do and Scala's for are related.
 
@@ -230,6 +243,6 @@ In the mean time, here's a cheat sheet showing how Haskell's do and Scala's for 
   </tr> 
 </table>
 
-## Footnotes
+## 腳注
 
-1. <a name="footnote1"></a>The Scala spec actually specifies that "for" expands using pattern matching. Basically, the real spec expands the rules I present here to allow patterns on the left side of the <-. It would just muddy this article too much to delve too deeply into the subject.
+1. <a name="footnote1"></a> Scala 規格書實際規定 "for" 要使用模式匹配 (pattern matching) 來展開。基本上，真正的規格會把我在這裡講的規則展開，允許模式放在 `<-` 的左邊。這部分講太多會模糊這篇文章的焦點。
