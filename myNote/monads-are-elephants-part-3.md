@@ -120,15 +120,15 @@ def unit[A](x: A): M[A] = ...
 
 ## Functor/Monad 連結定律：第零定律 (The Functor/Monad Connection Law: The Zeroth Law)
 
-In the very first installment of this series I introduced a relationship
+這一列的開頭，我介紹了一個關係
 
-- FM1. m map f ≡ m flatMap {x => unit(f(x))}
+- FM1. `m map f ≡ m flatMap {x => unit(f(x))}`
 
-This law doesn't do much for us alone, but it does create a connection between three concepts: unit, map, and flatMap.
+這法則沒做什麼，但連結了三個概念：`unit`、`map`、`flatMap`。
 
-This law can be expressed using "for" notation pretty nicely
+這法則可以用 "for" 漂亮的表示出來
 
-- FM1a. for (x <- m) yield f(x) ≡ for (x <- m; y <- unit(f(x))) yield y
+- FM1a. `for (x <- m) yield f(x) ≡ for (x <- m; y <- unit(f(x))) yield y`
 
 ## 再論 flatten (Flatten Revisited)
 
