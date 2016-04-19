@@ -132,18 +132,16 @@ def unit[A](x: A): M[A] = ...
 
 ## 再論 flatten (Flatten Revisited)
 
-In the very first article I mentioned the concept of "flatten" or "join" as something that converts a monad of type M[M[A]] into M[A], but didn't describe it formally. In that article I said that flatMap is a map followed by a flatten.
+很前面的文章，我提過 `flatten` 或 `join` 的概念像是某種把 `M[M[A]]` 轉換成 `M[A]` 的東西，不過還沒有正式描述。那篇文章我說 `flatMap` 是 `map` 之後接著做 `flatten`。
 
-- FL1. m flatMap f ≡ flatten(m map f)
+- FL1. `m flatMap f ≡ flatten(m map f)`
 
-This leads to a very simple definition of flatten
+這導出很簡單的 `flatten` 定義
 
-```scala
-flatten(m map identity) ≡ m flatMap identity // substitute identity for f
-FL1a. flatten(m) ≡ m flatMap identity // by F1
-```
+- `flatten(m map identity) ≡ m flatMap identity` // substitute identity for f
+- FL1a. `flatten(m) ≡ m flatMap identity` // by F1
 
-So flattening m is the same as flatMapping m with the identity function. I won't use the flatten laws in this article as flatten isn't required by Scala but it's a nice concept to keep in your back pocket when flatMap seems too abstract.
+所以 `flatten(m)` 如同 `m flatMap identify`。我不會在這篇文章中用 Flatten 法則，Scala 不是那麼需要 `flatten`，但要是 `flatMap` 太過抽象，這個放在你背包的好概念就可以拿出來用。
 
 ## Monad 第一定律：同等性 (The First Monad Law: Identity)
 
