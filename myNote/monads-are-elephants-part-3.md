@@ -99,24 +99,24 @@ assert result1 == result2
 
 ## Functor 與 Monad，萬歲萬歲萬萬歲 (Functors and Monads, Alive, Alive Oh)
 
-As you may have guessed by now all monads are functors so they must follow the functor laws. In fact, the functor laws can be deduced from the monad laws. It's just that the functor laws are so simple that it's easier to get a handle on them and see why they should be true.
+如同你現在猜測的，所有 Monad 都是 Functor，所以都要遵守 Functor 法則。事實上，Functor 法則可以由 Monad 法則推導而來。只是，Functor 法則很單純所以操作跟觀察它們比較容易。
 
-As a reminder, a Scala monad has both map and flatMap methods with the following signatures
+提醒一下，Scala Monad 有下面這樣的 `map` 和 `flatMap` 方法
 
 ```scala
 class M[A] {
- def map[B](f: A => B):M[B] = ...
- def flatMap[B](f: A=> M[B]): M[B] = ...
+  def map[B](f: A => B): M[B] = ...
+  def flatMap[B](f: A => M[B]): M[B] = ...
 }
 ```
 
-Additionally, the laws I present here will be based on "unit." "unit" stands for a single argument constructor or factory with the following signature
+事實上，此處介紹的法則將根據 `unit`。`unit` 表示單一參數的建構函數 (constructor) 或工廠函數 (factory)，有以下的函數簽名 (signature)
 
 ```scala
-def unit[A](x:A):M[A] = ...
+def unit[A](x: A): M[A] = ...
 ```
 
-"unit" shouldn't be taken as the literal name of a function or method unless you want it to be. Scala doesn't specify or use it but it's an important part of monads. Any function that satisfies this signature and behaves according to the monad laws will do. Normally it's handy to create a monad M as a case class or with a companion object with an appropriate apply(x:A):M[A] method so that the expression M(x) behaves as unit(x).
+`unit` 不該依照字面解釋，除非你真的想這樣。Scala 沒有指定或使用它，但它是 Monad 重要的一環。任何根據 Monad 法則滿足這個簽名與行為的函數都算 `unit`。正常來說，用 `case class` 或呼叫伴生物件(companion object) `apply(x: A): M[A]` 來產生 Monad `M` 很便利，所以表示式 `M(x)` 行為如同 `unit(x)`。
 
 ## Functor/Monad 連結定律：第零定律 (The Functor/Monad Connection Law: The Zeroth Law)
 
