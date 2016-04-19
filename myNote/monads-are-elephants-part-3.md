@@ -80,11 +80,11 @@ identity(x) ≡ x
 
 ## Functor 第二定律：結合性 (Second Functor Law: Composition)
 
-The second functor law specifies the way several "maps" compose together.
+第二定律規範多個 `map` 結合的方法。
 
-- F2. m map g map f ≡ m map {x => f(g(x))}
+- F2. `m map g map f ≡ m map {x => f(g(x))}`
 
-This just says that if you map with g and then map with f then it's exactly the same thing as mapping with the composition "f of g." This composition law allows a programmer to do things all at once or stretch them out into multiple statements. Based on this law, a programmer can always assume the following will work.
+如果你 `map` 函數 "g" 然後再 `map` 函數 "f"，就如同 `map` 組合的 "f of g"。這個組合法則允許程式一口氣做完所有的事，或拆成多個步驟。根據這條法則，你永遠可以假設以下程式可行。
 
 ```scala
 val result1 = m map (f compose g)
@@ -92,9 +92,10 @@ val temp = m map g
 val result2 =  temp map f
 assert result1 == result2
 ```
-In "for" notation this law looks like the following eye bleeder
 
-- F2b. for (y<- (for (x <-m) yield g(x)) yield f(y) ≡ for (x <- m) yield f(g(x))
+"for" 表示法中，這法則看起來像是下面這樣讓人眼睛脫窗的程式碼
+
+- F2b. `for (y <- (for (x <- m) yield g(x)) yield f(y) ≡ for (x <- m) yield f(g(x))`
 
 ## Functor 與 Monad，萬歲萬歲萬萬歲 (Functors and Monads, Alive, Alive Oh)
 
