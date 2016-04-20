@@ -132,11 +132,11 @@ def unit[A](x: A): M[A] = ...
 
 ## 再論 flatten (Flatten Revisited)
 
-很前面的文章，我提過 `flatten` 或 `join` 的概念像是某種把 `M[M[A]]` 轉換成 `M[A]` 的東西，不過還沒有正式描述。那篇文章我說 `flatMap` 是 `map` 之後接著做 `flatten`。
+很前面的文章，提過 `flatten` 或 `join` 的概念像是某種把 `M[M[A]]` 轉換成 `M[A]` 的東西，不過還沒有正式描述。那篇文章我說 `flatMap` 是 `map` 之後接著做 `flatten`。
 
 - FL1. `m flatMap f ≡ flatten(m map f)`
 
-這導出很簡單的 `flatten` 定義
+導出簡單的 `flatten` 定義
 
 - `flatten(m map identity) ≡ m flatMap identity` // substitute identity for f
 - FL1a. `flatten(m) ≡ m flatMap identity` // by F1
@@ -145,24 +145,24 @@ def unit[A](x: A): M[A] = ...
 
 ## Monad 第一定律：同等性 (The First Monad Law: Identity)
 
-The first and simplest of the monad laws is the monad identity law
+第一個也是簡單的 Monad 定律是 Monad 同等定律
 
-- M1. m flatMap unit ≡ m // or equivalently
-- M1a. m flatMap {x => unit(x)} ≡ m
+- M1. `m flatMap unit ≡ m` // or equivalently
+- M1a. `m flatMap {x => unit(x)} ≡ m`
 
-Where the connector law connected 3 concepts, this law focuses on the relationship between 2 of them. One way of reading this law is that, in a sense, flatMap undoes whatever unit does. Again the reminder that the object that results on the left may actually be a bit different internally as long as it behaves the same as "m."
+連結定律連接三個概念，這個定律聚焦在其中兩者關係。閱讀這個定律，其中一個方式是不管 `unit` 做過什麼 `flatMap` 就把它回復原狀。再次提醒，左邊結果確實內在有些不同，不過只要它行為上像 `m` 即可。
 
-Using this and the connection law, we can derive the functor identity law
+使用這個跟連接定律，能衍伸出 functor 同等定律
 
-```scala
-m flatMap {x => unit(x)} ≡ m // M1a
-m flatMap {x => unit(identity(x))}≡ m // identity
-F1b. m map {x => identity(x)} ≡ m // by FM1
-```
+- `m flatMap {x => unit(x)} ≡ m` // M1a
+- `m flatMap {x => unit(identity(x))}≡ m` // identity
+- F1b. `m map {x => identity(x)} ≡ m` // by FM1
 
 The same derivation works in reverse, too. Expressed in "for" notation, the monad identity law is pretty straight forward
 
-- M1c. for (x <- m; y <- unit(x)) yield y ≡ m
+反過來，相同推導也成立。用 "for" 來表示，Monad 同等定律相當直覺。
+
+- M1c. `for (x <- m; y <- unit(x)) yield y ≡ m`
 
 ## Monad 第二定律：單元 (The Second Monad Law: Unit)
 
