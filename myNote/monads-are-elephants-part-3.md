@@ -158,9 +158,7 @@ def unit[A](x: A): M[A] = ...
 - `m flatMap {x => unit(identity(x))}≡ m` // identity
 - F1b. `m map {x => identity(x)} ≡ m` // by FM1
 
-The same derivation works in reverse, too. Expressed in "for" notation, the monad identity law is pretty straight forward
-
-反過來，相同推導也成立。用 "for" 來表示，Monad 同等定律相當直覺。
+反過來，推導也成立。用 "for" 來表示，Monad 同等定律相當直覺。
 
 - M1c. `for (x <- m; y <- unit(x)) yield y ≡ m`
 
