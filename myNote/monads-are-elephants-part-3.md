@@ -169,23 +169,21 @@ Monad 有種同等性的逆定律。
 - M2. `unit(x) flatMap f ≡ f(x)` // or equivalently
 - M2a. `unit(x) flatMap {y => f(y)} ≡ f(x)`
 
-The law is basically saying that unit(x) must somehow preserve x in order to be able to figure out f(x) if f is handed to it. It's in precisely this sense that it's safe to say that any monad is a type of container (but that doesn't mean a monad is a collection!).
+基本上，這法則是說如果要用 `f`，`unit(x)` 就要保留 `x` 以便得到 `f(x)`。可以這麼說，任何 Monad 都是一種容器。（但不表示 Monad 是個集合！）
 
-In "for" notation, the unit law becomes
+用 "for" 來表示，Unit 法則變成
 
-- M2b. for (y <- unit(x); result <- f(y)) yield result ≡ f(x)
+- M2b. `for (y <- unit(x); result <- f(y)) yield result ≡ f(x)`
 
-This law has another implication for unit and how it relates to map
+這法則有個 `unit` 的另外暗喻，以及它如何關聯 `map`
 
-```scala
-unit(x) map f ≡ unit(x) map f // no, really, it does!
-unit(x) map f ≡ unit(x) flatMap {y => unit(f(y))} // by FM1
-M2c. unit(x) map f ≡ unit(f(x)) // by M2a
-```
+- `unit(x) map f ≡ unit(x) map f` // no, really, it does!
+- `unit(x) map f ≡ unit(x) flatMap {y => unit(f(y))}` // by FM1
+- M2c. `unit(x) map f ≡ unit(f(x))` // by M2a
 
-In other words, if we create a monad instance from a single argument x and then map it using f we should get the same result as if we had created the monad instance from the result of applying f to x. In for notation
+換句話說，從單一參數 `x` 產生 Monad 實體後用 `f` 做 `map`，得到的結果應該就如同用 `f` 應用到 `x` 的結果產生 Monad。 "for" 表示法如下
 
-- M2d. for (y <- unit(x)) yield f(y) ≡ unit(f(x))
+- M2d. `for (y <- unit(x)) yield f(y) ≡ unit(f(x))`
 
 ## Monad 第三定律：結合性 (The Third Monad Law: Composition)
 
