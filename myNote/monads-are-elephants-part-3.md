@@ -317,7 +317,7 @@ m filter {x => true} ≡ m                                                // 根
 
 以上是過濾 "true" 得到原來物件的結果。反之，
 
-```
+```scala
 m filter {x => false} ≡ m filter {x => false}                           // 同等性
 m filter {x => false} ≡ m flatMap {x => if (false) unit(x) else mzero}  // 根據 FIL1
 m filter {x => false} ≡ m flatMap {x => mzero}                          // 根據 if 定義
@@ -331,28 +331,21 @@ m filter {x => false} ≡ mzero                                           // 根
 
 雖然文章中，我假設沒有任何副作用。讓我們重新審視第二 Functor 定律
 
+```scala
+m map g map f ≡ m map {x => f(g(x))}
 ```
-m map g map f ≡ m map {x => (f(g(x))}
-```
 
-If m is a List with several elements, then the order of the operations will be different between the left and right side. 
-On the left, g will be called for every element and then f will be called for every element. 
-On the right, calls to f and g will be interleaved. 
-If f and g have side effects like doing IO or modifying the state of other variables then the system might behave differently if somebody "refactors" one expression into the other.
+如果 `m` 是有許多元素的 `List`，左右之間操作順序將會不同。公式左邊，`m` 裡每個元素都呼叫 `g` 處理，然後得到結果的每個元素再呼叫 `f` 處理。公式右邊，`f` 與 `g` 會交互呼叫。如果 `f` 與 `g` 存在副作用，像是 IO 或修改其他變數的狀態，如果某人把表示法從其中一個改成另一個，那麼系統可能會表現得不一樣。
 
-The moral of the story is this: avoid side effects when defining or using map, flatMap, and filter. 
-Stick to foreach for side effects.
-Its very definition is a big warning sign that reordering things might cause different behavior.
+這個故事的含義是：當定義或使用 `map`、`flatMap` 與 `filter`，要避免副作用存在。堅持用 `foreach` 會有副作用。這樣定義是個警訊，重新排序事情會導致不同的行為。
 
-Speaking of which, where are the foreach laws? Well, given that foreach returns no result, the only real rule I can express in this notation is
+說到這個，`foreach` 定律在哪裡？嗯，給定 `foreach` 沒有回傳結果，唯一能用表示法呈現的規則是
 
-```
+```scala
 m foreach f ≡ ()
 ```
 
-Which would imply that foreach does nothing. 
-In a purely functional sense that's true, it converts m and f into a void result. 
-But foreach is meant to be used for side effects - it's an imperative construct.
+這暗示 `foreach` 沒做什麼事。以純函數來說，這是對的，轉換 `m` 與 `f` 得到空結果。但是 `foreach` 意味著發生副作用 - 這是命令式的建構方式。
 
 ## 第三部分結論 (Conclusion for Part 3)
 
