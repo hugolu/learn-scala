@@ -351,7 +351,7 @@ m foreach f ≡ ()
 
 直到現在，我聚焦在 `Option` 跟 `List` 讓你直覺上對 Monad 有所感覺。透過這篇文章，你終於看見讓 Monad 成為 Monad 的東西。原来，Monad 法則不是在講集合，他們是更一般化的原則。只是剛好 Monad 法則能很貼切的套用在集合上。
 
-In part 4 I'm going to present a full grown adult elephant er monad that has nothing collection-like about it and is only a container if seen in the right light.
+第四部分，我會呈現一頭完全長大的成象，這跟集合一點都不像，用正確的眼光來看就只是一個容器而已。
 
 Here's the obligatory Scala to Haskell cheet sheet showing the more important laws
 
