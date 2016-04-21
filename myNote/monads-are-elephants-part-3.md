@@ -329,15 +329,20 @@ m filter {x => false} ≡ mzero                                           // 根
 
 ## 副作用 (Side Effects)
 
-Throughout this article I've implicitly assumed no side effects. Let's revisit our second functor law
+雖然文章中，我假設沒有任何副作用。讓我們重新審視第二 Functor 定律
 
 ```
-m map g map f ≡ m map {x => (f(g(x)) }
+m map g map f ≡ m map {x => (f(g(x))}
 ```
 
-If m is a List with several elements, then the order of the operations will be different between the left and right side. On the left, g will be called for every element and then f will be called for every element. On the right, calls to f and g will be interleaved. If f and g have side effects like doing IO or modifying the state of other variables then the system might behave differently if somebody "refactors" one expression into the other.
+If m is a List with several elements, then the order of the operations will be different between the left and right side. 
+On the left, g will be called for every element and then f will be called for every element. 
+On the right, calls to f and g will be interleaved. 
+If f and g have side effects like doing IO or modifying the state of other variables then the system might behave differently if somebody "refactors" one expression into the other.
 
-The moral of the story is this: avoid side effects when defining or using map, flatMap, and filter. Stick to foreach for side effects. Its very definition is a big warning sign that reordering things might cause different behavior.
+The moral of the story is this: avoid side effects when defining or using map, flatMap, and filter. 
+Stick to foreach for side effects.
+Its very definition is a big warning sign that reordering things might cause different behavior.
 
 Speaking of which, where are the foreach laws? Well, given that foreach returns no result, the only real rule I can express in this notation is
 
@@ -345,11 +350,16 @@ Speaking of which, where are the foreach laws? Well, given that foreach returns 
 m foreach f ≡ ()
 ```
 
-Which would imply that foreach does nothing. In a purely functional sense that's true, it converts m and f into a void result. But foreach is meant to be used for side effects - it's an imperative construct.
+Which would imply that foreach does nothing. 
+In a purely functional sense that's true, it converts m and f into a void result. 
+But foreach is meant to be used for side effects - it's an imperative construct.
 
 ## 第三部分結論 (Conclusion for Part 3)
 
-Up until now, I've focused on Option and List to let your intuition get a feel for monads. With this article you've finally seen what really makes a monad a monad. It turns out that the monad laws say nothing about collections; they're more general than that. It's just that the monad laws happen to apply very well to collections.
+Up until now, I've focused on Option and List to let your intuition get a feel for monads.
+With this article you've finally seen what really makes a monad a monad.
+It turns out that the monad laws say nothing about collections; they're more general than that.
+It's just that the monad laws happen to apply very well to collections.
 
 In part 4 I'm going to present a full grown adult elephant er monad that has nothing collection-like about it and is only a container if seen in the right light.
 
