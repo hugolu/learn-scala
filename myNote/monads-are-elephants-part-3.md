@@ -237,13 +237,13 @@ m map g map f ≡ m map {x => f(g(x))}                                    // 根
 
 Monad 也可以沒有 Zero。雖然所有的集合都有 Zero (空集合)，其他 Monad 依據是否需要空無或失敗的概念決定有或沒有 Zero。
 
-## zero 第一定律：相等性 (The First Zero Law: Identity)
+## zero 第一定律：同等性 (The First Zero Law: Identity)
 
 如果 `mzero` 是一種 Monadic Zero，對於任何 `f` 函數來說
 
 - MZ1. `mzero flatMap f ≡ mzero`
 
-翻譯一下：本來無一物，何處惹塵埃。
+翻譯蒟蒻：本來無一物，何處惹塵埃。
 
 這條定律衍伸另一個 Zero 定律。
 
@@ -265,15 +265,17 @@ unit ("Nope, not empty enough to be a zero")
 
 ## zero 第二定律：M 到 Zero 沒啥好攤平的  (The Second Zero Law: M to Zero in Nothing Flat)
 
-The reverse of the zero identity law looks like this
+Zero 同等性的反面看起來像這樣。
 
-- MZ2. m flatMap {x => mzero} ≡ mzero
+- MZ2. `m flatMap {x => mzero} ≡ mzero`
 
-Basically this says that replacing everything with nothing results in nothing which um...sure. This law just formalizes your intuition about how zeros "flatten."
+基本來說，用空空如也取代任何東西，結果當然也是空空如也。這定律只是形式化你對 Zero 怎麼攤平 (`flatten`) 的想像。
 
 ## zero 第三、四定律：加法 (The Third and Fourth Zero Laws: Plus)
 
-Monads that have zeros can also have something that works a bit like addition. For List, the "plus" equivalent is ":::" and for Option it's "orElse." Whatever it's called its signature will look this
+Monads that have zeros can also have something that works a bit like addition. 
+For List, the "plus" equivalent is ":::" and for Option it's "orElse."
+Whatever it's called its signature will look this
 
 ```scala
 class M[A] {
@@ -287,7 +289,10 @@ Plus has the following two laws which should make sense: adding anything to a ze
 - MZ3. mzero plus m ≡ m
 - MZ4. m plus mzero ≡ m
 
-The plus laws don't say much about what "m plus n" is if neither is a monadic zero. That's left entirely up to you and will vary quite a bit depending on the monad. Typically, if concatenation makes sense for the monad then that's what plus will be. Otherwise, it will typically behave like an "or," returning the first non-zero value.
+The plus laws don't say much about what "m plus n" is if neither is a monadic zero.
+That's left entirely up to you and will vary quite a bit depending on the monad. 
+Typically, if concatenation makes sense for the monad then that's what plus will be. 
+Otherwise, it will typically behave like an "or," returning the first non-zero value.
 
 ## 再論 filter (Filtering Revisited)
 
