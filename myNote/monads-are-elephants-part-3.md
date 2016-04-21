@@ -164,10 +164,10 @@ def unit[A](x: A): M[A] = ...
 
 ## Monad 第二定律：單元 (The Second Monad Law: Unit)
 
-Monads have a sort of reverse to the monad identity law.
+Monad 有種同等性的逆定律。
 
-- M2. unit(x) flatMap f ≡ f(x) // or equivalently
-- M2a. unit(x) flatMap {y => f(y)} ≡ f(x)
+- M2. `unit(x) flatMap f ≡ f(x)` // or equivalently
+- M2a. `unit(x) flatMap {y => f(y)} ≡ f(x)`
 
 The law is basically saying that unit(x) must somehow preserve x in order to be able to figure out f(x) if f is handed to it. It's in precisely this sense that it's safe to say that any monad is a type of container (but that doesn't mean a monad is a collection!).
 
