@@ -273,26 +273,30 @@ Zero 同等性的反面看起來像這樣。
 
 ## zero 第三、四定律：加法 (The Third and Fourth Zero Laws: Plus)
 
-Monads that have zeros can also have something that works a bit like addition. 
-For List, the "plus" equivalent is ":::" and for Option it's "orElse."
-Whatever it's called its signature will look this
+Monad 擁有 Zero，也能作用像加法的概念。例如 `List` 的加法等於 `:::`，`Option` 的加法是 `orElse`。不管叫什麼，它的簽名 (signature) 看起來會像
 
 ```scala
 class M[A] {
-   ...
-   def plus(other:M[B >: A]): M[B] = ...
+  ...
+  def plus(other: M[B >: A]): M[B] = ...
 }
 ```
 
-Plus has the following two laws which should make sense: adding anything to a zero is that thing.
+`Plus` 有以下兩條定律，任何東西跟 Zero 相加結果就是原來那個東西。
 
-- MZ3. mzero plus m ≡ m
-- MZ4. m plus mzero ≡ m
+- MZ3. `mzero plus m ≡ m`
+- MZ4. `m plus mzero ≡ m`
 
 The plus laws don't say much about what "m plus n" is if neither is a monadic zero.
 That's left entirely up to you and will vary quite a bit depending on the monad. 
 Typically, if concatenation makes sense for the monad then that's what plus will be. 
 Otherwise, it will typically behave like an "or," returning the first non-zero value.
+
+關於 "m plus n"，兩者是否都不是 Monadic Zero，加法定律沒有多講。
+這跟 Monad 有很大的關係，全由你決定。
+通常，如果對於 Monad 來說串聯有意義，加法就會有意義。
+反之，他會回傳
+
 
 ## 再論 filter (Filtering Revisited)
 
