@@ -2,10 +2,10 @@
 
 # 莫內是頭大象 之四 (Monads are Elephants Part 4)
 
-Until you experience an adult elephant first hand you won't really understand just how big they can be.
-If monads are elephants then so far in this series of articles I've only presented baby elephants like List and Option.
-But now it's time to see a full grown adult pachyderm.
-As a bonus, this one will even do a bit of circus magic.
+在親身經驗一頭成象前，你不會真的理解他們可以有多大。
+如果 Monad 是頭大象，那麼在這一系列文章中，我只讓你看到像 `List` 跟 `Option` 的小象。
+現在該是看看成年大象的時候。
+作為額外獎勵，這篇文章還會表演些馬戲團魔術。
 
 ## 函數編成與 IO (Functional Programming and IO)
 
