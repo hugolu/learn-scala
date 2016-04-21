@@ -231,10 +231,11 @@ m map g map f ≡ m map {x => f(g(x))}                                    // 根
 
 ## 徹底的魯蛇 zero (Total Loser Zeros)
 
-List has Nil (the empty list) and Option has None. Nil and None seem to have a certain similarity: they both represent a kind of emptiness. Formally they're called monadic zeros.
+`List` 有 `Nil` (空的串列)，`Option` 有 `None`。`Nil` 與 `None` 似乎有某些共通性：他們都表示某種空無 (emptiness) 的感覺。正式來說他們被叫做 Monadic Zero。
 
-A monad may have many zeros. For instance, imagine an Option-like monad called Result. A Result can either be a Success(value) or a Failure(msg). The Failure constructor takes a string indicating why the failure occurred. Every different failure object is a different zero for Result.
-A monad may have no zeros. While all collection monads will have zeros (empty collections) other kinds of monads may or may not depending on whether they have a concept of emptiness or failure that can follow the zero laws.
+一個 Monad 可以有很多 Zero。例如，想像類似 `Option` 的 Monad 被稱作結果 (Result)。一個結果可以是成功 `Success(value)` 或失敗 `Failuare(msg)`。失敗的建構函式接受一個字串說明為何失敗。每個不同的失敗物件都是針對不同失敗的 Zero。
+
+Monad 也可以沒有 Zero。雖然所有的集合都有 Zero (空集合)，其他 Monad 依據是否需要空無或失敗的概念決定有或沒有 Zero。
 
 ## zero 第一定律：相等性 (The First Zero Law: Identity)
 
