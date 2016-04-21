@@ -239,24 +239,28 @@ Monad 也可以沒有 Zero。雖然所有的集合都有 Zero (空集合)，其�
 
 ## zero 第一定律：相等性 (The First Zero Law: Identity)
 
-If mzero is a monadic zero then for any f it makes sense that
+如果 `mzero` 是一種 Monadic Zero，對於任何 `f` 函數來說
 
-- MZ1. mzero flatMap f ≡ mzero
+- MZ1. `mzero flatMap f ≡ mzero`
 
-Translated into Texan: if t'ain't nothin' to start with then t'ain't gonna be nothin' after neither.
+翻譯一下：本來無一物，何處惹塵埃。
 
-This law allows us to derive another zero law
+這條定律衍伸另一個 Zero 定律。
 
 ```scala
-mzero map f ≡ mzero map f // identity
-mzero map f ≡ mzero flatMap {x => unit(f(x)) // by FM1
-MZ1b. mzero map f ≡ mzero // by MZ1
+mzero map f ≡ mzero map f                     // 相等性
+mzero map f ≡ mzero flatMap {x => unit(f(x))  // 根據 FM1
+mzero map f ≡ mzero                           // 根據 MZ1
 ```
 
-So taking a zero and mapping with any function also results in a zero. This law makes clear that a zero is different from, say, unit(null) or some other construction that may appear empty but isn't quite empty enough. To see why look at this
+- MZ1b. `mzero map f ≡ mzero` // by MZ1
+
+所以把 Zero 那來 `map` 任何函數結果得到 Zero。這個定律澄清 Zero 不同於 `unit(null)` 或其他看起來像是空的卻又不夠空的建構函式。以下說明為何
 
 ```scala
-unit(null) map {x => "Nope, not empty enough to be a zero"} ≡ unit("Nope, not empty enough to be a zero")
+unit(null) map {x => "Nope, not empty enough to be a zero"}
+≡
+unit ("Nope, not empty enough to be a zero")
 ```
 
 ## zero 第二定律：M 到 Zero 沒啥好攤平的  (The Second Zero Law: M to Zero in Nothing Flat)
