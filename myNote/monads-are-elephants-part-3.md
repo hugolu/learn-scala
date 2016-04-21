@@ -287,52 +287,45 @@ class M[A] {
 - MZ3. `mzero plus m ≡ m`
 - MZ4. `m plus mzero ≡ m`
 
-The plus laws don't say much about what "m plus n" is if neither is a monadic zero.
-That's left entirely up to you and will vary quite a bit depending on the monad. 
-Typically, if concatenation makes sense for the monad then that's what plus will be. 
-Otherwise, it will typically behave like an "or," returning the first non-zero value.
-
-關於 "m plus n"，兩者是否都不是 Monadic Zero，加法定律沒有多講。
-這跟 Monad 有很大的關係，全由你決定。
-通常，如果對於 Monad 來說串聯有意義，加法就會有意義。
-反之，他會回傳
-
+關於 "m plus n"，如果兩者都不是 Monadic Zero，加法定律沒有多提。這跟 Monad 有很大的關係，全由你決定。通常，如果對於 Monad 來說串聯有意義，加法才會有意義。反之，他行為會像 "or" 回傳第一個非零的值。
 
 ## 再論 filter (Filtering Revisited)
 
-In the previous installment I briefly mentioned that filter can be seen in purely monadic terms, and monadic zeros are just the trick to seeing how. As a reminder, a filterable monad looks like this
+先前文章，我簡單提過 `filter` 可以單純視為 Monod 術語 (monadic term)，Monadic Zero 只是一個怎麼看的訣竅。提醒一下，一個可以過濾的 Monad 看起來像這樣。
 
 ```scala
 class M[A] {
-   def map[B](f: A => B):M[B] = ...
-   def flatMap[B](f: A=> M[B]): M[B] = ...
-   def filter(p: A=> Boolean): M[A] = ...
+  def map[B](f: A => B): M[B] = ...
+  def flatMap[B](f: A => M[B]): M[B] = ...
+  def filter(p: A => Boolean): M[A] = ...
 }
 ```
 
-The filter method is completely described in one simple law
+`filter` 有個簡單的方式描述如下
 
-- FIL1. m filter p ≡ m flatMap {x => if(p(x)) unit(x) else mzero}
+- FIL1. `m filter p ≡ m flatMap {x => if(p(x)) unit(x) else mzero}`
 
-We create an anonymous function that takes x and either returns unit(x) or mzero depending on what the predicate says about x. This anonymous function is then used in a flatMap. Here are a couple of results from this
+產生一個接收 `x` 根據判斷式結果回傳 `unit(x)` 或 `mzero` 的匿名函數。然後匿名函數用來做 `flatMap`。這裏有兩個從這個得到的結果。
 
 ```scala
-m filter {x => true} ≡ m filter {x => true} // identity
-m filter {x => true} ≡ m flatMap {x => if (true) unit(x) else mzero} // by FIL1
-m filter {x => true} ≡ m flatMap {x => unit(x)} // by definition of if
-FIL1a. m filter {x => true} ≡ m // by M1
+m filter {x => true} ≡ m filter {x => true}                             // 同等性
+m filter {x => true} ≡ m flatMap {x => if (true) unit(x) else mzero}    // 根據 FIL1
+m filter {x => true} ≡ m flatMap {x => unit(x)}                         // 根據 if 定義
+m filter {x => true} ≡ m                                                // 根據 M1
 ```
+- FIL1a. `m filter {x => true} ≡ m`
 
-So filtering with a constant "true" results in the same object. Conversely
+以上是過濾 "true" 得到原來物件的結果。反之，
 
 ```
-m filter {x => false} ≡ m filter {x => false} // identity
-m filter {x => false} ≡ m flatMap {x => if (false) unit(x) else mzero} // by FIL1
-m filter {x => false} ≡ m flatMap {x => mzero} // by definition of if
-FIL1b. m filter {x => false} ≡ mzero // by MZ1
+m filter {x => false} ≡ m filter {x => false}                           // 同等性
+m filter {x => false} ≡ m flatMap {x => if (false) unit(x) else mzero}  // 根據 FIL1
+m filter {x => false} ≡ m flatMap {x => mzero}                          // 根據 if 定義
+m filter {x => false} ≡ mzero                                           // 根據 MZ1
 ```
+- FIL1b.`m filter {x => false} ≡ mzero`
 
-Filtering with a constant false results in a monadic zero.
+以上是過濾 "false" 得到 Monadic Zero 的結果。
 
 ## 副作用 (Side Effects)
 
