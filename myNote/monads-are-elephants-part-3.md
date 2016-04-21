@@ -177,8 +177,10 @@ Monad 有種同等性的逆定律。
 
 這法則有個 `unit` 的另外暗喻，以及它如何關聯 `map`
 
-- `unit(x) map f ≡ unit(x) map f` // no, really, it does!
-- `unit(x) map f ≡ unit(x) flatMap {y => unit(f(y))}` // by FM1
+```scala
+unit(x) map f ≡ unit(x) map f                       // 不豪洨，真的，就醬！
+unit(x) map f ≡ unit(x) flatMap {y => unit(f(y))}   // 根據 FM1
+```
 - M2c. `unit(x) map f ≡ unit(f(x))` // by M2a
 
 換句話說，從單一參數 `x` 產生 Monad 實體後用 `f` 做 `map`，得到的結果應該就如同用 `f` 應用到 `x` 的結果產生 Monad。 "for" 表示法如下
@@ -187,17 +189,14 @@ Monad 有種同等性的逆定律。
 
 ## Monad 第三定律：結合性 (The Third Monad Law: Composition)
 
-The composition law for monads is a rule for how a series of flatMaps work together.
+Monad 結合定律規定一連串 `flatMap` 如何一起工作。
 
-- M3. m flatMap g flatMap f ≡ m flatMap {x => g(x) flatMap f} // or equivalently
-- M3a. m flatMap {x => g(x)} flatMap {y => f(y)} ≡ m flatMap {x => g(x) flatMap {y => f(y) }}
+- M3. `m flatMap g flatMap f ≡ m flatMap {x => g(x) flatMap f}` // or equivalently
+- M3a. `m flatMap {x => g(x)} flatMap {y => f(y)} ≡ m flatMap {x => g(x) flatMap {y => f(y)}}`
 
-It's the most complicated of all our laws and takes some time to appreciate. On the left side we start with a monad, m, flatMap it with g. 
-Then that result is flatMapped with f. 
-On the right side, we create an anonymous function that applies g to its argument and then flatMaps that result with f.
-Finally m is flatMapped with the anonymous function. Both have same result.
+上面這條是所有定律裡面最複雜的了，需要花點時間欣賞。左邊開始一個 Monad `m`，先用 `g` 函數對 `m` 做 `flatMap` ，然後再用 `f` 函數對其結果做 `flatMap`。右邊有個匿名函數，用 `g` 函數作用在匿名函數的參數 `x`，然後再用 `f` 函數對其結果做 `flatMap`，最後用匿名函數對 `m` 做 `flatMap`。左右兩邊結果一樣。
 
-In "for" notation, the composition law will send you fleeing in terror, so I recommend skipping it
+用 "for" 來表示，結合定律給人很恐怖的感覺，我建議跳過它。
 
 - M3b. `for (a <- m; b <- g(a); result <- f(b)) yield result ≡ for(a <- m; result <- for(b <- g(a); temp <- f(b)) yield temp) yield result`
 
@@ -218,18 +217,17 @@ for{
 } yield result
 ```
 
-From this law, we can derive the functor composition law. 
-Which is to say breaking the monad composition law also breaks the (simpler) functor composition. 
-The proof involves throwing several monad laws at the problem and it's not for the faint of heart
+從這定律延伸 Functor 結合定律。意思是說，違背 Monad 結合定律也違背 (較簡單的) Functor 結合定律。證明牽涉多個 Moand 定律，不適合心臟不好的朋友。
 
 ```scala
-m map g map f ≡ m map g map f // I'm pretty sure
-m map g map f ≡ m flatMap {x => unit(g(x))} flatMap {y => unit(f(y))} // by FM1, twice
-m map g map f ≡ m flatMap {x => unit(g(x)) flatMap {y => unit(f(y))}} // by M3a
-m map g map f ≡ m flatMap {x => unit(g(x)) map {y => f(y)}} // by FM1a
-m map g map f ≡ m flatMap {x => unit(f(g(x))} // by M2c
+m map g map f ≡ m map g map f                                           // 我很確定
+m map g map f ≡ m flatMap {x => unit(g(x))} flatMap {y => unit(f(y))}   // 根據 FM1, 兩次
+m map g map f ≡ m flatMap {x => unit(g(x)) flatMap {y => unit(f(y))}}   // 根據 M3a
+m map g map f ≡ m flatMap {x => unit(g(x)) map {y => f(y)}}             // 根據 FM1a
+m map g map f ≡ m flatMap {x => unit(f(g(x))}                           // 根據 M2c
+m map g map f ≡ m map {x => f(g(x))}                                    // 根據 FM1a
 ```
-- F2. `m map g map f ≡ m map {x => f(g(x))}` // by FM1a
+- F2. `m map g map f ≡ m map {x => f(g(x))}`
 
 ## 徹底的魯蛇 zero (Total Loser Zeros)
 
