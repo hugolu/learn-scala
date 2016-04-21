@@ -349,10 +349,7 @@ m foreach f ≡ ()
 
 ## 第三部分結論 (Conclusion for Part 3)
 
-Up until now, I've focused on Option and List to let your intuition get a feel for monads.
-With this article you've finally seen what really makes a monad a monad.
-It turns out that the monad laws say nothing about collections; they're more general than that.
-It's just that the monad laws happen to apply very well to collections.
+直到現在，我聚焦在 `Option` 跟 `List` 讓你直覺上對 Monad 有所感覺。透過這篇文章，你終於看見讓 Monad 成為 Monad 的東西。原来，Monad 法則不是在講集合，他們是更一般化的原則。只是剛好 Monad 法則能很貼切的套用在集合上。
 
 In part 4 I'm going to present a full grown adult elephant er monad that has nothing collection-like about it and is only a container if seen in the right light.
 
