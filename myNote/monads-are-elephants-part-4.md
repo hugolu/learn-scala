@@ -7,11 +7,11 @@
 現在該是看看成年大象的時候。
 作為額外獎勵，這篇文章還會表演些馬戲團魔術。
 
-## 函數編成與 IO (Functional Programming and IO)
+## 函數編程與 IO (Functional Programming and IO)
 
-In functional programming there's a concept called referential transparency. 
-Referential transparency means you can call a particular function anywhere and any time and the same arguments will always give the same results.
-As you might imagine, a referentially transparent function is easier to use and debug than one that isn't.
+函數編程中有個叫做引用透明性 (referential transparency) 的概念。
+引用透明性意指你能在任何地方、任何時間、使用相同的參數呼叫特定函數，都能得到相同的結果。
+如你想像，一個具有引用透明性的函數比不具引用透明性的函數更容易使用與除錯。
 
 There's one area where referential transparency would seem impossible to achieve: IO. 
 Several calls to the same readLine console function may result in any number of different strings depending on things like what the user ate for breakfast. 
