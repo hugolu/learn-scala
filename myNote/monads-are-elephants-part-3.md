@@ -192,13 +192,35 @@ The composition law for monads is a rule for how a series of flatMaps work toget
 - M3. m flatMap g flatMap f ≡ m flatMap {x => g(x) flatMap f} // or equivalently
 - M3a. m flatMap {x => g(x)} flatMap {y => f(y)} ≡ m flatMap {x => g(x) flatMap {y => f(y) }}
 
-It's the most complicated of all our laws and takes some time to appreciate. On the left side we start with a monad, m, flatMap it with g. Then that result is flatMapped with f. On the right side, we create an anonymous function that applies g to its argument and then flatMaps that result with f. Finally m is flatMapped with the anonymous function. Both have same result.
+It's the most complicated of all our laws and takes some time to appreciate. On the left side we start with a monad, m, flatMap it with g. 
+Then that result is flatMapped with f. 
+On the right side, we create an anonymous function that applies g to its argument and then flatMaps that result with f.
+Finally m is flatMapped with the anonymous function. Both have same result.
 
 In "for" notation, the composition law will send you fleeing in terror, so I recommend skipping it
 
-- M3b. for (a <- m;b <- g(a);result <- f(b)) yield result ≡ for(a <- m; result <- for(b < g(a); temp <- f(b)) yield temp) yield result
+- M3b. `for (a <- m; b <- g(a); result <- f(b)) yield result ≡ for(a <- m; result <- for(b <- g(a); temp <- f(b)) yield temp) yield result`
 
-From this law, we can derive the functor composition law. Which is to say breaking the monad composition law also breaks the (simpler) functor composition. The proof involves throwing several monad laws at the problem and it's not for the faint of heart
+(譯注：上面公式重新排版如下)
+```scala
+for {
+  a <- m
+  b <- g(a)
+  result <- f(b)
+} yield result
+≡ 
+for{
+  a <- m
+  result <- for {
+    b <- g(a)
+    temp <- f(b)
+  } yield temp
+} yield result
+```
+
+From this law, we can derive the functor composition law. 
+Which is to say breaking the monad composition law also breaks the (simpler) functor composition. 
+The proof involves throwing several monad laws at the problem and it's not for the faint of heart
 
 ```scala
 m map g map f ≡ m map g map f // I'm pretty sure
@@ -206,8 +228,8 @@ m map g map f ≡ m flatMap {x => unit(g(x))} flatMap {y => unit(f(y))} // by FM
 m map g map f ≡ m flatMap {x => unit(g(x)) flatMap {y => unit(f(y))}} // by M3a
 m map g map f ≡ m flatMap {x => unit(g(x)) map {y => f(y)}} // by FM1a
 m map g map f ≡ m flatMap {x => unit(f(g(x))} // by M2c
-F2. m map g map f ≡ m map {x => f(g(x))} // by FM1a
 ```
+- F2. `m map g map f ≡ m map {x => f(g(x))}` // by FM1a
 
 ## 徹底的魯蛇 zero (Total Loser Zeros)
 
