@@ -92,13 +92,13 @@ val result2 =  temp map f
 assert result1 == result2
 ```
 
-"for" 表示法中，這法則看起來像是下面這樣讓人眼睛脫窗的程式碼
+"for" 表示法中，這法則看起來像是下面這段讓人眼睛脫窗的程式碼
 
 - F2b. `for (y <- (for (x <- m) yield g(x)) yield f(y) ≡ for (x <- m) yield f(g(x))`
 
 ## Functor 與 Monad，萬歲萬歲萬萬歲 (Functors and Monads, Alive, Alive Oh)
 
-如同你現在猜測的，所有 Monad 都是 Functor，所以都要遵守 Functor 法則。事實上，Functor 法則可以由 Monad 法則推導而來。只是，Functor 法則很單純所以操作跟觀察它們比較容易。
+目前為止，如你猜想所有 Monad 都是 Functor，所以都要遵守 Functor 法則。事實上，Functor 法則可由 Monad 法則推導而來。只是，Functor 法則很單純所以操作跟觀察它們比較容易。
 
 提醒一下，Scala Monad 有下面這樣的 `map` 和 `flatMap` 方法
 
@@ -137,8 +137,11 @@ def unit[A](x: A): M[A] = ...
 
 導出簡單的 `flatten` 定義
 
-- `flatten(m map identity) ≡ m flatMap identity` // substitute identity for f
-- FL1a. `flatten(m) ≡ m flatMap identity` // by F1
+```scala
+m flatMap identity ≡ flatten(m map identity) // 用 identity 取代 f
+m flatMap identity ≡ flatten(m)              // 根據 F1
+```
+- FL1a. `flatten(m) ≡ m flatMap identity`
 
 所以 `flatten(m)` 如同 `m flatMap identify`。我不會在這篇文章中用 Flatten 法則，Scala 不是那麼需要 `flatten`，但要是 `flatMap` 太過抽象，這個放在你背包的好概念就可以拿出來用。
 
