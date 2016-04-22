@@ -131,7 +131,7 @@ def unit[A](x: A): M[A] = ...
 
 ## 再論 flatten (Flatten Revisited)
 
-很前面的文章，提過 `flatten` 或 `join` 的概念像是某種把 `M[M[A]]` 轉換成 `M[A]` 的東西，不過還沒有正式描述。那篇文章我說 `flatMap` 是 `map` 之後接著做 `flatten`。
+很前面的文章，提過 `flatten` 或 `join` 的概念像是某種把 `M[M[A]]` 轉換成 `M[A]` 的東西，但尚未正式描述。那篇文章我說 `flatMap` 是 `map` 之後接著做 `flatten`。
 
 - FL1. `m flatMap f ≡ flatten(m map f)`
 
@@ -149,16 +149,19 @@ m flatMap identity ≡ flatten(m)              // 根據 F1
 
 第一個也是簡單的 Monad 定律是 Monad 同等定律
 
-- M1. `m flatMap unit ≡ m` // or equivalently
+- M1. `m flatMap unit ≡ m` // 或等效於
 - M1a. `m flatMap {x => unit(x)} ≡ m`
 
 連結定律連接三個概念，這個定律聚焦在其中兩者關係。閱讀這個定律，其中一個方式是不管 `unit` 做過什麼 `flatMap` 就把它回復原狀。再次提醒，左邊結果確實內在有些不同，不過只要它行為上像 `m` 即可。
 
 使用這個跟連接定律，能衍伸出 functor 同等定律
 
-- `m flatMap {x => unit(x)} ≡ m` // M1a
-- `m flatMap {x => unit(identity(x))}≡ m` // identity
-- F1b. `m map {x => identity(x)} ≡ m` // by FM1
+```scala
+m flatMap {x => unit(x)} ≡ m           // M1a
+m flatMap {x => unit(identity(x))}≡ m  // identity
+m map {x => identity(x)} ≡ m           // 根據 FM1
+```
+- F1b. `m map {x => identity(x)} ≡ m`
 
 反過來，推導也成立。用 "for" 來表示，Monad 同等定律相當直覺。
 
