@@ -13,19 +13,19 @@
 引用透明性意指你能在任何地方、任何時間、使用相同的參數呼叫特定函數，都能得到相同的結果。
 如你想像，一個具有引用透明性的函數比不具引用透明性的函數更容易使用與除錯。
 
-There's one area where referential transparency would seem impossible to achieve: IO. 
-Several calls to the same readLine console function may result in any number of different strings depending on things like what the user ate for breakfast. 
-Sending a network packet may end in successful delivery or it might not.
+有個地方引用透明性似乎不可能辦到：IO。
+多次呼叫相同的控制台行讀取 (readLine console) 函數可能根據使用者早餐吃了什麼而得到任何不一樣的字串。
+發送網路封包可能成功傳送也可能沒有。
 
-But we can't get rid of IO just to accomplish referential transparency.
-A program without IO is just a complicated way to make your CPU hot.
+但我們不能只為了達成引用透明性而屏除 IO。
+一個沒有 IO 的程式只是個讓你 CPU 發熱的複雜方式。
 
-You might guess that monads provide a solution for referentially transparent IO given the topic of this series but I'm going to work my way up from some simple principles.
-I'll solve the problem for reading and writing strings on the console but the same solution can be extended to arbitrary kinds of IO like file and network.
+你可能猜測針對這一系列主題 Monad 提供了引用透明性的 IO，但我要從一些簡單的原則努力前進。
+我會解決讀取與寫入字串到控制台的問題，但相同的問題可以擴展成任意種類的 IO，像是檔案或網路。
 
-Of course, you may not think that referentially transparent IO is terribly important in Scala. 
-I'm not here to preach the one true way of purely functional referential transparency. 
-I'm here to talk about monads and it just so happens that the IO monad is very illustrative of how several monads work.
+當然，你可能不認為引用透明性對於 Scala 非常重要。
+我不會在此佈道純函式編程引用透明性的真理。
+我在這裡聊 Monad，剛好 IO Monad 能清楚說明 Monad 如何工作。
 
 ## 杯中世界 (The World In a Cup)
 
