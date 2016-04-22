@@ -29,10 +29,10 @@
 
 ## 杯中世界 (The World In a Cup)
 
-Reading a string from the console wasn't referentially transparent because readLine depends on the state of the user and "user" isn't one of its parameters.
-A file reading function would depend on the state of the file system.
-A function that reads a web page would depend on the state of the target web server, the Internet, and the local network.
-Equivalent output functions have similar dependencies.
+從控制台讀取字串不具引用透行性，因為讀取結果取決於使用者狀態而使用者不是參數之一。
+檔案讀取函數依賴檔案系統的狀態。
+網頁讀取函數依賴目標網站的狀態、網際網路、和區域網路。
+等效輸出函數有相似的相依性。
 
 All this could be summed up by creating a class called WorldState and making it both a parameter and a result for all IO functions.
 Unfortunately, the world is a big place.
