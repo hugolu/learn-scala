@@ -34,19 +34,19 @@
 網頁讀取函數依賴目標網站的狀態、網際網路、和區域網路。
 等效輸出函數有相似的相依性。
 
-All this could be summed up by creating a class called WorldState and making it both a parameter and a result for all IO functions.
-Unfortunately, the world is a big place.
-My first attempt to write a WorldState resulted in a compiler crash as it ran out of memory.
-So instead I'll try for something a bit smaller than modeling the whole universe.
-That's where a bit of circus magic comes in.
+全部可以總結到創建一個名為 `worldState` 使之同時成為參數與所有 IO 函數的結果。
+不幸的是，世界很大。
+我寫 `worldState` 的初次嘗試導致編譯器耗光記憶體而崩潰。
+所以取而代之，我將嘗試寫一些小一點的東西而不是模擬整個宇宙
+在此耍點馬戲團魔術。
 
-The slight-of-hand I'll use is to model only a few aspects of the world and just pretend WorldState knows about the rest of the world. Here are some aspects that would be useful
+我採用的方法是只去模擬世界的一小部分，而且假裝 `worldState` 知道世界其他的部分。這裏是某些有用的部分
 
-1. The state of the world changes between IO functions.
-2. The world's state is what it is. You can't just create new ones whenever you want (val coolWorldState = new WorldState(){def jamesIsBillionaire = true}).
-3. The world is in exactly one state at any moment in time.
+1. 世界狀態在 IO 函式間被改變。
+2. 世界狀態就是它的樣子。你不能任意創建一個你想要的新世界 (`val coolWorldState = new WorldState(){ def jamesIsBillionaire = true }`) 
+3. 任意瞬間，世界精準地處於一個狀態。
 
-Property 3 is a bit tricky so let's deal with properties 1 and 2 first.
+特性三有點狡猾，讓我們先處理特性一、二。
 
 Here's a rough sketch for property 1
 
