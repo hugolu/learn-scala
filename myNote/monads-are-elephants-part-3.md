@@ -239,7 +239,7 @@ m map g map f ≡ m map {x => f(g(x))}                                    // 根
 
 `List` 有 `Nil` (空的串列)，`Option` 有 `None`。`Nil` 與 `None` 似乎有某些共通性：他們都表示某種空無 (emptiness) 的感覺。正式來說他們被叫做 Monadic Zero。
 
-一個 Monad 可以有很多 Zero。例如，想像類似 `Option` 的 Monad 被稱作結果 (Result)。一個結果可以是成功 `Success(value)` 或失敗 `Failuare(msg)`。失敗的建構函式接受一個字串說明為何失敗。每個不同的失敗物件都是針對不同失敗的 Zero。
+一個 Monad 可以有很多 Zero。例如，想像類似 `Option` 的 Monad 被稱作結果 (Result)。一個結果可以是成功 `Success(value)` 或失敗 `Failure(msg)`。失敗的建構函式接受一個字串說明為何失敗。每個不同的失敗物件都是針對不同失敗的 Zero。
 
 Monad 也可以沒有 Zero。雖然所有的集合都有 Zero (空集合)，其他 Monad 依據是否需要空無或失敗的概念決定有或沒有 Zero。
 
@@ -259,7 +259,7 @@ mzero map f ≡ mzero flatMap {x => unit(f(x))  // 根據 FM1
 mzero map f ≡ mzero                           // 根據 MZ1
 ```
 
-- MZ1b. `mzero map f ≡ mzero` // by MZ1
+- MZ1b. `mzero map f ≡ mzero`
 
 所以把 Zero 那來 `map` 任何函數結果得到 Zero。這個定律澄清 Zero 不同於 `unit(null)` 或其他看起來像是空的卻又不夠空的建構函式。以下說明為何
 
