@@ -171,7 +171,7 @@ m map {x => identity(x)} ≡ m           // 根據 FM1
 
 Monad 有種同等性的逆定律。
 
-- M2. `unit(x) flatMap f ≡ f(x)` // or equivalently
+- M2. `unit(x) flatMap f ≡ f(x)` // 或等效於
 - M2a. `unit(x) flatMap {y => f(y)} ≡ f(x)`
 
 基本上，這法則是說如果要用 `f`，`unit(x)` 就要保留 `x` 以便得到 `f(x)`。可以這麼說，任何 Monad 都是一種容器。（但不表示 Monad 是個集合！）
@@ -185,8 +185,9 @@ Monad 有種同等性的逆定律。
 ```scala
 unit(x) map f ≡ unit(x) map f                       // 不豪洨，真的，就醬！
 unit(x) map f ≡ unit(x) flatMap {y => unit(f(y))}   // 根據 FM1
+unit(x) map f ≡ unit(f(x))                          // 根據 M2a
 ```
-- M2c. `unit(x) map f ≡ unit(f(x))` // by M2a
+- M2c. `unit(x) map f ≡ unit(f(x))`
 
 換句話說，從單一參數 `x` 產生 Monad 實體後用 `f` 做 `map`，得到的結果應該就如同用 `f` 應用到 `x` 的結果產生 Monad。 "for" 表示法如下
 
@@ -196,7 +197,7 @@ unit(x) map f ≡ unit(x) flatMap {y => unit(f(y))}   // 根據 FM1
 
 Monad 結合定律規定一連串 `flatMap` 如何一起工作。
 
-- M3. `m flatMap g flatMap f ≡ m flatMap {x => g(x) flatMap f}` // or equivalently
+- M3. `m flatMap g flatMap f ≡ m flatMap {x => g(x) flatMap f}` // 或等效於
 - M3a. `m flatMap {x => g(x)} flatMap {y => f(y)} ≡ m flatMap {x => g(x) flatMap {y => f(y)}}`
 
 上面這條是所有定律裡面最複雜的了，需要花點時間欣賞。左邊開始一個 Monad `m`，先用 `g` 函數對 `m` 做 `flatMap` ，然後再用 `f` 函數對其結果做 `flatMap`。右邊有個匿名函數，用 `g` 函數作用在匿名函數的參數 `x`，然後再用 `f` 函數對其結果做 `flatMap`，最後用匿名函數對 `m` 做 `flatMap`。左右兩邊結果一樣。
@@ -263,9 +264,7 @@ mzero map f ≡ mzero                           // 根據 MZ1
 所以把 Zero 那來 `map` 任何函數結果得到 Zero。這個定律澄清 Zero 不同於 `unit(null)` 或其他看起來像是空的卻又不夠空的建構函式。以下說明為何
 
 ```scala
-unit(null) map {x => "Nope, not empty enough to be a zero"}
-≡
-unit ("Nope, not empty enough to be a zero")
+unit(null) map {x => "Nope, not empty enough to be a zero"} ≡ unit ("Nope, not empty enough to be a zero")
 ```
 
 ## zero 第二定律：M 到 Zero 沒啥好攤平的  (The Second Zero Law: M to Zero in Nothing Flat)
@@ -320,7 +319,7 @@ m filter {x => true} ≡ m                                                // 根
 ```
 - FIL1a. `m filter {x => true} ≡ m`
 
-以上是過濾 "true" 得到原來物件的結果。反之，
+以上是過濾 `true` 得到原來物件的結果。反之，
 
 ```scala
 m filter {x => false} ≡ m filter {x => false}                           // 同等性
@@ -330,7 +329,7 @@ m filter {x => false} ≡ mzero                                           // 根
 ```
 - FIL1b.`m filter {x => false} ≡ mzero`
 
-以上是過濾 "false" 得到 Monadic Zero 的結果。
+以上是過濾 `false` 得到 Monadic Zero 的結果。
 
 ## 副作用 (Side Effects)
 
