@@ -2,7 +2,7 @@
 
 # 莫內是頭大象 之四 (Monads are Elephants Part 4)
 
-在親身經驗一頭成象前，你不會真的理解他們可以有多大。
+親身經驗一頭成象前，你不會真的理解他們可以有多大。
 如果 Monad 是頭大象，那麼在這一系列文章中，我只讓你看到像 `List` 跟 `Option` 的小象。
 現在該是看看成年大象的時候。
 作為額外獎勵，這篇文章還會表演些馬戲團魔術。
@@ -48,7 +48,7 @@
 
 特性三有點狡猾，讓我們先處理特性一、二。
 
-Here's a rough sketch for property 1
+這裏是特性一的概略描述
 
 ```scala
 //file RTConsole.scala
@@ -58,8 +58,8 @@ object RTConsole_v1 {
 }
 ```
 
-getString and putString use functions defined in scala.Console as raw primitive functions. 
-They take a world state and return a tuple consisting of a new world state and the result of the primitive IO.
+`getString` 跟 `putString` 作為原始函數 (raw primitive function) 定義在 `scala.Console` 。
+他們接收一個 `worldState` 並回傳一個包含 `worldState` 與 IO 結果的數組 (tuple)。
 
 Here's how I'll implement property 2
 
