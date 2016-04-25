@@ -157,27 +157,25 @@ class HelloWorld_v2 extends IOApplication_v2 {
 }
 ```
 
-At first glance we seem to have solved our problem because WorldState is nowhere to be found in HelloWorld. 
-But it turns out it's just been buried a bit.
+乍看之下，`worldState` 不存在於 `HelloWorld`，我們似乎解決了問題。
+但事實證明，這只是掩人耳目一下而已。
 
 ## 歐～ 該死的特性三 (Oh That Darn Property 3)
 
 ```scala
 class Evil_v2 extends IOApplication_v2 {
   import RTConsole_v2._
-  def iomain(args:Array[String]) = {
-    {startState:WorldState =>
-      val (statea, a) = getString(startState)
-      val (stateb, b) = getString(startState)
-      assert(a == b)
-      (startState, b)
-    }
+  def iomain(args: Array[String]) = { startState: WorldState =>
+    val (statea, a) = getString(startState)
+    val (stateb, b) = getString(startState)
+    assert(a == b)
+    (startState, b)
   }
 }
 ```
 
-Evil creates exactly the kind of function that iomain is supposed to return but once again things are broken. 
-As long as the programmer can create arbitrary IO functions he or she can see through the WorldState trick.
+產生 `iomain` 那種故意找碴的函數真是太邪惡了。
+只要程序員能夠創建任意 IO 函數就能看見 `WorldState` 正在運行。
 
 ## 特性三壓扁了好 (Property 3 Squashed For Good)
 
