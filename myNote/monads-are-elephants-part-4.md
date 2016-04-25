@@ -177,7 +177,7 @@ class Evil_v2 extends IOApplication_v2 {
 產生 `iomain` 那種故意找碴的函數真是太邪惡了。
 只要程式設計師能夠創建任意 IO 函數就能看見 `WorldState` 正在運行。
 
-## 特性三壓扁了好 (Property 3 Squashed For Good)
+## 特性三壓扁好了 (Property 3 Squashed For Good)
 
 我們要避免程式設計師用對的簽名創建任意函數。
 嗯... 現在我們需要做什麼？
@@ -337,23 +337,23 @@ object HelloWorld_v4 extends IOApplication_v4 {
 
 ## 深呼吸一口氣 (Take a Deep Breath)
 
-Now's a good moment to sum up what we've got. 
-IOApplication is pure plumbing. Users subclass it and create a method called iomain which is called by main. 
-What comes back is an IOAction - which could in fact be a single action or several actions chained together.
-This IOAction is just "waiting" for a WorldState object before it can do its work.
-The ChainedAction class is responsible for ensuring that the WorldState is changed and threaded through each chained action in turn.
+現在是總結我們學到什麼的好時機。
+`IOApplication` 是抽象類別 (pure plumbing)。使用者實作子類別並創建一個叫做 `iomain` 的方法，然後被 `main` 呼叫。
+回傳值是 `IOAction` - 事實上，它可能是單一動作或是串接在一起的多個動作。
+在這個 `IOAction` 能真正工作之前，它只是癡癡等待 `WorldState` 物件。
+`ChainedAction` 類別負責保證沿著每個串連的動作 `WorldState` 依序被改變。
 
-getString and putString don't actually get or put Strings as their names might indicate.
-Instead, they create IOActions.
-But, since IOAction is a monad we can stick it into a "for" statement and the result looks as if getString/putString really do what they say the do.
+`getString` 與 `putString` 不像他們名字所說，真正去存取字串。
+相反地，他們產生 `IOAction`。
+但既然 `IOAction` 是個 Monad，我們可以把它放到 "for" 敘述句中，而結果看起來就像 `getString`/`putString` 真的按照他們所說的那樣做。
 
-It's a good start; we've almost got a perfectly good monad in IOAction.
-We've got two problems.
-The first is that, because unit changes the world state we're breaking the monad laws slightly (e.g. m flatMap unit === m).
-That's kinda trivial in this case because it's invisible.
-But we might as well fix it.
+這是個好的開始，我們幾乎在 `IOAction` 上得到一個完美的 Monand。
+這裏有兩個問題。
+首先，因為 "unit" 改變世界狀態，有點違背 Monad 規則 (例如 `m flatMap unit ≡ m`)。
+這有點囉唆，因為在這情況下它應該是不可見的。
+但我們也會修正它。
 
-The second problem is that, in general, IO can fail and we haven't captured that just yet.
+第二個問題是，一般來說，IO 可能會失敗而我們還沒有捕捉這個。
 
 ## IO 錯誤 (IO Errors)
 
