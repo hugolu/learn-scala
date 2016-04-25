@@ -451,11 +451,11 @@ def filter(p: A => Boolean, msg: String): IOAction[A] = flatMap{x => if (p(x)) I
 def filter(p: A => Boolean): IOAction[A] = filter(p, "Filter mismatch")
 ```
 
-A zero also means we can create a monadic plus.
-As some infrastructure for creating it, HandlingAction is an action that wraps another action and if that action throws an exception then it sends that exception to a handler function.
-onError is a factory method for creating HandlingActions.
-Finally, "or" is the monadic plus.
-It basically says that if this action fails with an exception then try the alternative action.
+一個 Zero 也意味我們能產生 Monad 加法。
+作為產生 Zero 的基礎設施，`HandlingAction` 是種包裹另一個動作的動作，如果動作丟出例外，它把例外送到另一個處理函數。
+`onError` 是產生 `HandlingAction` 的工廠方法。
+最後，"or" 是 Monad 加法。
+基本上是說，如果這個動作因為例外失敗就嘗試另一個動作。
 
 ```scala
 private class HandlingAction[+A](action: IOAction[A], handler: Exception => IOAction[A]) extends IOAction[A] {
@@ -472,7 +472,7 @@ def onError[B >: A](handler: Exception => IOAction[B]): IOAction[B] = new Handli
 def or[B >: A](alternative: IOAction[B]): IOAction[B] = this onError {ex => alternative}
 ```
 
-The final version of IOApplication stays the same
+`IOApplication` 最終版本維持一樣
 
 ```scala
 sealed trait WorldState{def nextState:WorldState}
@@ -489,8 +489,8 @@ abstract class IOApplication {
 }
 ```
 
-RTConsole stays mostly the same, but I've added a putLine method as an analog to println.
-I've also changed getString to be a val. Why not? It's always the same action.
+`RTConsole` 幾乎維持原樣，但我加入 `putLine` 方法好比 `println`。
+我也把 `getString` 改為一個 `val`。為什麼？ 因為它總是做一樣的動作。
 
 ```scala
 //file RTConsole.scala
