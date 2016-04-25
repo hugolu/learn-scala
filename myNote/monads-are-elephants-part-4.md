@@ -408,59 +408,47 @@ It's kind of odd to make a distinction from SimpleAction, but we might as well g
 }
 ```
 
-IOAction's flatMap, and ChainedAction remain the same.
-Map changes to actually call the unit method so that it complies with the monad laws.
-I've also added two bits of convenience: >> and <<. 
-Where flatMap sequences this action with a function that returns an action, >> and << sequence this action with another action. 
-It's just a question of which result you get back.
->>, which can be pronounced "then", creates an action that returns the second result, so 'putString "What's your name" >> getString' creates an action that will display a prompt then return the user's response.
-Conversely, <<, which can be called "before" creates an action that will return the result from the first action.
+`IOAction` 的 `flatMap` 與 `ChainedAction` 維持原樣。
+改變 `map` 真正呼叫 `unit` 方法，以便符合 Monad 法則。
+加入兩個方便的方法：`>>` 與 `<<`。
+`flatMap` 將這個動作與一個回傳動作的函數串連起來，`>>` 與 `<<` 把這個動作與另一個動作串起來。
+這是個得到哪個結果的問題。
+`>>` 唸作 "then"，產生一個回傳第二個結果的動作，所以 `putString "What's your name" >> getString` 產生一個顯示提示的動作然後回傳使用者的反應。
+相反地，`<<` 唸作 "before"，產生一個回傳第一個動作結果的動作。
 
 ```scala
-sealed abstract class IOAction[+A]
-    extends Function1[WorldState, (WorldState, A)] {
-  def map[B](f:A => B):IOAction[B] =
-    flatMap {x => IOAction.unit(f(x))}
-  def flatMap[B](f:A => IOAction[B]):IOAction[B]=
-    new ChainedAction(this, f)
+sealed abstract class IOAction[+A] extends Function1[WorldState, (WorldState, A)] {
+  def map[B](f: A => B): IOAction[B] = flatMap {x => IOAction.unit(f(x))}
+  def flatMap[B](f: A => IOAction[B]): IOAction[B]= new ChainedAction(this, f)
 
-  private class ChainedAction[+A, B](
-      action1: IOAction[B],
-      f: B => IOAction[A]) extends IOAction[A] {
-    def apply(state1:WorldState) = {
-      val (state2, intermediateResult) =
-        action1(state1);
+  private class ChainedAction[+A, B](action1: IOAction[B], f: B => IOAction[A]) extends IOAction[A] {
+    def apply(state1: WorldState) = {
+      val (state2, intermediateResult) = action1(state1)
       val action2 = f(intermediateResult)
       action2(state2)
     }
   }
 
-  def >>[B](next: => IOAction[B]):IOAction[B] =
+  def >>[B](next: => IOAction[B]): IOAction[B] =
     for {
       _ <- this;
       second <- next
     } yield second
 
-  def <<[B](next: => IOAction[B]):IOAction[A] =
+  def <<[B](next: => IOAction[B]): IOAction[A] =
     for {
       first <- this;
       _ <- next
     } yield first
 ```
 
-Because we've got a zero now, it's possible to add a filter method by just following the monad laws.
-But here I've created two forms of filter method.
-One takes a user specified message to indicate why the filter didn't match whereas the other complies with Scala's required interface and uses a generic error message.
+因為現在有了 Zero，只要遵守 Monad 法則就有機會加入 `filter` 方法。
+但在此我創建兩個過濾的方法。
+一個接收使用者指定的訊息說明為何 `filter` 沒有匹配成功，另一個合乎 Scala 需要的介面並使用一般錯誤的訊息。
 
 ```scala
-def filter(
-    p: A => Boolean,
-    msg:String):IOAction[A] =
-  flatMap{x =>
-    if (p(x)) IOAction.unit(x)
-    else IOAction.fail(msg)}
-def filter(p: A => Boolean):IOAction[A] =
-  filter(p, "Filter mismatch")
+def filter(p: A => Boolean, msg: String): IOAction[A] = flatMap{x => if (p(x)) IOAction.unit(x) else IOAction.fail(msg)}
+def filter(p: A => Boolean): IOAction[A] = filter(p, "Filter mismatch")
 ```
 
 A zero also means we can create a monadic plus.
@@ -470,27 +458,18 @@ Finally, "or" is the monadic plus.
 It basically says that if this action fails with an exception then try the alternative action.
 
 ```scala
-private class HandlingAction[+A](
-    action:IOAction[A],
-    handler: Exception => IOAction[A])
-    extends IOAction[A] {
-  def apply(state:WorldState) = {
+private class HandlingAction[+A](action: IOAction[A], handler: Exception => IOAction[A]) extends IOAction[A] {
+  def apply(state: WorldState) = {
     try {
       action(state)
     } catch {
-      case e:Exception => handler(e)(state)
+      case e: Exception => handler(e)(state)
     }
   }
 }
 
-def onError[B >: A](
-    handler: Exception => IOAction[B]):
-    IOAction[B] =
-  new HandlingAction(this, handler)
-
-def or[B >: A](
-    alternative:IOAction[B]):IOAction[B] =
-  this onError {ex => alternative}
+def onError[B >: A](handler: Exception => IOAction[B]): IOAction[B] = new HandlingAction(this, handler)
+def or[B >: A](alternative: IOAction[B]): IOAction[B] = this onError {ex => alternative}
 ```
 
 The final version of IOApplication stays the same
@@ -499,15 +478,14 @@ The final version of IOApplication stays the same
 sealed trait WorldState{def nextState:WorldState}
 
 abstract class IOApplication {
-  private class WorldStateImpl(id:BigInt)
-      extends WorldState {
+  private class WorldStateImpl(id: BigInt) extends WorldState {
     def nextState = new WorldStateImpl(id + 1)
   }
-  final def main(args:Array[String]):Unit = {
+  final def main(args: Array[String]): Unit = {
     val ioaction = iomain(args)
     ioaction(new WorldStateImpl(0));
   }
-  def iomain(args:Array[String]):IOAction[_]
+  def iomain(args: Array[String]): IOAction[_]
 }
 ```
 
@@ -518,10 +496,8 @@ I've also changed getString to be a val. Why not? It's always the same action.
 //file RTConsole.scala
 object RTConsole {
   val getString = IOAction(Console.readLine)
-  def putString(s: String) =
-    IOAction(Console.print(s))
-  def putLine(s: String) =
-    IOAction(Console.println(s))
+  def putString(s: String) = IOAction(Console.print(s))
+  def putLine(s: String) = IOAction(Console.println(s))
 }
 ```
 
