@@ -95,15 +95,13 @@ class HelloWorld_v1 extends IOApplication_v1 {
 
 ## 該死的特性三 (That Darn Property 3)
 
-The 3rd property said that the world can only be in one state at any given moment in time.
-I haven't solved that one yet and here's why it's a problem
+第三個特性描述，在任何瞬間世界只能有一個狀態。
+我解決了一個問題，但還有另一個。
 
 ```scala
 class Evil_v1 extends IOApplication_v1 {
   import RTConsole_v1._
-  def iomain(
-      args: Array[String],
-      startState: WorldState) = {
+  def iomain(args: Array[String], startState: WorldState) = {
     val (stateA, a) = getString(startState)
     val (stateB, b) = getString(startState)
     assert(a == b)
@@ -112,9 +110,9 @@ class Evil_v1 extends IOApplication_v1 {
 }
 ```
 
-Here I've called getString twice with the same inputs. 
-If the code was referentially transparent then the result, a and b, should be the same but of course they won't be unless the user types the same thing twice.
-The problem is that "startState" is visible at the same time as the other world states stateA and stateB.
+在此，我對相同的輸入呼叫兩次 `getString`。
+如果這程式碼具有引用透明性，那麼結果 `a` 與 `b` 應該相同，但事實不是如此除非使用者輸入兩次相同的東西。
+問題是 `startState` 是可見的，在相同的時間點上有 `stateA` 與 `stateB` 兩個世界的狀態。
 
 ## 由裡而外 (Inside Out)
 
