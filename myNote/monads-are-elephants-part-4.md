@@ -253,40 +253,36 @@ class HelloWorld_v3 extends IOApplication_v3 {
 全部漏洞都被封起來。
 `main` 只傳遞一個 `WorldState` 給 `IOAction` 的 `apply` 方法，我們不能用客製化定義的 `apply` 創建任意 `IOAction` 的子類別。
 
-Unfortunately, we've got a combining problem.
-We can't combine multiple IOActions so we can't do something as simple as "What's your name", Bob, "Hello Bob."
+不幸地，我們得到了個組合的問題。
+我們不能組合多個 `IOAction` 所以我們不能做像 「你的名字是什麼？」，「Bob」，「哈囉 Bob」 這麼簡單的事情。
 
-Hmmmm, IOAction is a container for an expression and monads are containers.
-IOAction needs to be combined and monads are combinable.
-Maybe, just maybe...
+嗯～ `IOAction` 是個用來裝表達式的容器，而 Monad 是容器。
+`IOAction` 需要被組合，而 Monand 可以組合。
+或許，只是或許...
 
 ## 女士先生，為您介紹神奇的 IO Monad (Ladies and Gentleman I Present the Mighty IO Monad)
 
-The IOAction.apply factory method takes an expression of type A and returns an IOAction[A]. 
-It sure looks like "unit." 
-It's not, but it's close enough for now. And if we knew what flatMap was for this monad then the monad laws would tell us how to create map using it and unit. 
-But what's flatMap going to be? The signature needs to look like def flatMap[B](f: A=>IOAction[B]):IOAction[B]. 
-But what does it do?
+`IOAction.apply` 工廠方法接受一個型別 `A` 的表達式，然後傳回一個 `IOAction[A]`。
+這看起來像 "unit"。
+但它不是，不過目前來說很接近了。
+如果我們知道這個 Monad 的 `flatMap` 是什麼，那麼 Monad 法則告訴我們如何用它跟 "unit" 來產生 `map`。
+但 `flatMap` 會是什麼？
+函數簽名要看起來像 `def flatMap[B](f: A => IOAction[B]): IOAction[B]`。
+但它要做什麼呢？
 
-What we want it to do is chain an action to a function that returns an action and when activated causes the two actions to occur in order. 
-In other words, getString.flatMap{y => putString(y)} should result in a new IOAction monad that, when activated, first activates the getString action then does the action that putString returns. 
-Let's give it a whirl.
+要它做的事情是，把一個動作串接到函數，然後回傳一個動作，一旦開始執行兩個動作就會依序發生。
+換句話說，`getString.flatMap {y => putString(y)}` 應該得到一個新的 `IOAction` Monad，一旦 Monad 被啟動，首先啟動 `getString` 動作然後執行 `putString` 回傳的動作。
+讓它轉一圈看看。
 
 ```scala
 //file RTIO.scala
-sealed abstract class IOAction_v4[+A] extends
-    Function1[WorldState, (WorldState, A)] {
-  def map[B](f:A => B):IOAction_v4[B] =
-    flatMap {x => IOAction_v4(f(x))}
-  def flatMap[B](f:A => IOAction_v4[B]):IOAction_v4[B]=
-    new ChainedAction(this, f)
+sealed abstract class IOAction_v4[+A] extends Function1[WorldState, (WorldState, A)] {
+  def map[B](f: A => B): IOAction_v4[B] = flatMap {x => IOAction_v4(f(x))}
+  def flatMap[B](f: A => IOAction_v4[B]): IOAction_v4[B]= new ChainedAction(this, f)
 
-  private class ChainedAction[+A, B](
-      action1: IOAction_v4[B],
-      f: B => IOAction_v4[A]) extends IOAction_v4[A] {
-    def apply(state1:WorldState) = {
-      val (state2, intermediateResult) =
-        action1(state1);
+  private class ChainedAction[+A, B](action1: IOAction_v4[B], f: B => IOAction_v4[A]) extends IOAction_v4[A] {
+    def apply(state1: WorldState) = {
+      val (state2, intermediateResult) = action1(state1)
       val action2 = f(intermediateResult)
       action2(state2)
     }
@@ -294,34 +290,31 @@ sealed abstract class IOAction_v4[+A] extends
 }
 
 object IOAction_v4 {
-  def apply[A](expression: => A):IOAction_v4[A] =
-    new SimpleAction(expression)
+  def apply[A](expression: => A): IOAction_v4[A] = new SimpleAction(expression)
 
-  private class SimpleAction[+A](expression: => A)
-      extends IOAction_v4[A] {
-    def apply(state:WorldState) =
-      (state.nextState, expression)
+  private class SimpleAction[+A](expression: => A) extends IOAction_v4[A] {
+    def apply(state: WorldState) = (state.nextState, expression)
   }
 }
 
-// the rest remains the same
-sealed trait WorldState{def nextState:WorldState}
+// 其餘照舊
+sealed trait WorldState { def nextState: WorldState }
 
 abstract class IOApplication_v4 {
-  private class WorldStateImpl(id:BigInt) ...
+  private class WorldStateImpl(id: BigInt) ...
 ```
 
-The IOAction factory and SimpleAction remain the same. 
-The IOAction class gets the monad methods. 
-Per the monad laws, map is just defined in terms of flatMap and what we're using as unit for now. 
-flatMap defers all the hard work to a new IOAction implementation called ChainedAction.
+`IOAction` 工廠與 `SimpleAction` 照舊。
+`IOAction` 類別得到 Monad 方法。
+每條 Monad 法則，目前 `map` 只是用 `flatMap` 與 "unit" 來定義。
+`flatMap` 把全部苦差事推遲到一個叫做 `ChainedAction` 的 `IOAction` 實作上。
 
-The trick in ChainedAction is its apply method. 
-First it calls action1 with the first world state. 
-This results in a second world state and an intermediate result. 
-The function it was chained to needs that result and in return the function generates another action: action2. 
-action2 is called with the second world state and the tuple that come out is the end result. 
-Remember that none of this will happen until the main driver passes in an initial WorldState object.
+`ChainedAction` 的訣竅在於它 `apply` 的方法。
+首先用第一個世界狀態呼叫 `action1`。
+這產生第二個世界狀態與一個中間結果。
+`apply` 這函數被串接成，需要第一次呼叫的結果，然後返回一個產生下個動作 `action2` 的函數。
+用第二個世界狀態呼叫 `action2`，最終產生一個數組。
+記住，直到 `main` 傳入一個初始化的 `WorldState` 物件前，所有一切都不會發生。
 
 ## 測試驅動器 (A Test Drive)
 
