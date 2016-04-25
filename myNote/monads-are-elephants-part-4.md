@@ -248,14 +248,10 @@ class HelloWorld_v3 extends IOApplication_v3 {
 }
 ```
 
-A little thought shows that there's no way to create an Evil IOApplication now.
-A programmer simply has no access to a WorldState.
-It has become totally sealed away.
-The main driver will only pass a WorldState to an IOAction's apply method, and we can't create arbitrary IOAction subclasses with custom definitions of apply.
-
-稍微想想，現在沒有產生邪惡 `IOApplication` 的方式。
-程式設計師沒有接觸 WorldState 的機會。
+稍加思考，現在沒有產生邪惡 `IOApplication` 的方式。
+程式設計師沒有接觸 `WorldState` 的機會。
 全部漏洞都被封起來。
+`main` 只傳遞一個 `WorldState` 給 `IOAction` 的 `apply` 方法，我們不能用客製化定義的 `apply` 創建任意 `IOAction` 的子類別。
 
 Unfortunately, we've got a combining problem.
 We can't combine multiple IOActions so we can't do something as simple as "What's your name", Bob, "Hello Bob."
