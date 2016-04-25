@@ -318,25 +318,22 @@ abstract class IOApplication_v4 {
 
 ## 測試驅動器 (A Test Drive)
 
-At some point you may have wondered why getString and putString weren't renamed to something like createGetStringAction/createPutStringAction since that's in fact what they do. 
-For an answer, look at what happens when we stick 'em in our old friend "for".
+某一點上，你可能懷疑為何 `getString` 與 `putString` 不改名叫做 `createGetStringAction`/`createPutStringAction`，因為事實上它們就是做這些事情。
+有個答案是，如果把他們放到 "for" 表示式中，你看看會發生什麼事情。
 
 ```scala
 object HelloWorld_v4 extends IOApplication_v4 {
   import RTConsole_v4._
-  def iomain(args:Array[String]) = {
-    for{
-        _ <- putString(
-            "This is an example of the IO monad.");
-        _ <- putString("What's your name?");
-        name <- getString;
-        _ <- putString("Hello " + name)
-    } yield ()
-  }
+  def iomain(args: Array[String]) = for {
+    _ <- putString("This is an example of the IO monad.")
+    _ <- putString("What's your name?")
+    name <- getString
+    _ <- putString("Hello " + name)
+  } yield ()
 }
 ```
 
-It's as if "for" and getString/putString work together to create a mini language just for creating a complex IOActions.
+就像 "for" 與 `getString`/`putString` 一起工作，用精簡的語言產生一個複雜的 `IOAction` 。
 
 ## 深呼吸一口氣 (Take a Deep Breath)
 
