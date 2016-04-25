@@ -61,41 +61,35 @@ object RTConsole_v1 {
 `getString` 跟 `putString` 作為原始函數 (raw primitive function) 定義在 `scala.Console` 。
 他們接收一個 `worldState` 並回傳一個包含 `worldState` 與 IO 結果的數組 (tuple)。
 
-Here's how I'll implement property 2
+這裏顯示如何實作特性二
 
 ```scala
 //file RTIO.scala
-sealed trait WorldState{def nextState:WorldState}
+sealed trait WorldState{def nextState: WorldState}
 
 abstract class IOApplication_v1 {
-  private class WorldStateImpl(id:BigInt)
-      extends WorldState {
+  private class WorldStateImpl(id: BigInt) extends WorldState {
     def nextState = new WorldStateImpl(id + 1)
   }
-  final def main(args:Array[String]):Unit = {
+  final def main(args: Array[String]): Unit = {
     iomain(args, new WorldStateImpl(0))
   }
-  def iomain(
-      args:Array[String],
-      startState:WorldState):(WorldState, _)
+  def iomain(args: Array[String], startState: WorldState): (WorldState, _)
 }
 ```
 
-WorldState is a sealed trait; it can only be extended within the same file.
-IOApplication defines the only implementation privately so nobody else can instantiate it.
-IOApplication also defines a main function that can't be overridden and calls a function named iomain that must be implemented in a subclass.
-All of this is plumbing that is meant to be hidden from programmers that use the IO library.
+`worldState` 是個密封特徵 (sealed trait)；它只能在同一個檔案中被擴充。
+`IOApplication` 定義私有的類別 (the only implementation privately)，所以沒人能實例化它。
+`IOApplication` 也定義一個無法被覆載 (override) 的 `main` 函數，並呼叫必須實作在繼承的子類別的 `iomain` 函數。
+一切都是為了對使用 IO 函式庫的程序員做隱藏。
 
-Here's what hello world looks like given all this
+有了上面這些材料，這裏顯示 hello world 的長相
 
 ```scala
 // file HelloWorld.scala
 class HelloWorld_v1 extends IOApplication_v1 {
   import RTConsole_v1._
-  def iomain(
-        args:Array[String],
-        startState:WorldState) =
-    putString(startState, "Hello world")
+  def iomain(args: Array[String], startState: WorldState) = putString(startState, "Hello world")
 }
 ```
 
@@ -108,8 +102,8 @@ I haven't solved that one yet and here's why it's a problem
 class Evil_v1 extends IOApplication_v1 {
   import RTConsole_v1._
   def iomain(
-      args:Array[String],
-      startState:WorldState) = {
+      args: Array[String],
+      startState: WorldState) = {
     val (stateA, a) = getString(startState)
     val (stateB, b) = getString(startState)
     assert(a == b)
