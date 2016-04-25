@@ -65,7 +65,7 @@ object RTConsole_v1 {
 
 ```scala
 //file RTIO.scala
-sealed trait WorldState{def nextState: WorldState}
+sealed trait WorldState { def nextState: WorldState }
 
 abstract class IOApplication_v1 {
   private class WorldStateImpl(id: BigInt) extends WorldState {
@@ -116,49 +116,44 @@ class Evil_v1 extends IOApplication_v1 {
 
 ## 由裡而外 (Inside Out)
 
-s a first step towards a solution, I'm going to turn everything inside out. 
-Instead of iomain being a function from WorldState to WorldState, iomain will return such a function and the main driver will execute it. 
-Here's the code
+作為解決問題的第一步，我打算由裡而外實作一切。
+原本 `iomain` 是個輸入 `worldState` 輸出 `worldState` 的函數，取而代之把 `iomain` 改成傳回函數，然後由 `main` 來執行。
+這裏是程式碼。
 
 ```scala
 //file RTConsole.scala
 object RTConsole_v2 {
-  def getString = {state:WorldState =>
-    (state.nextState, Console.readLine)}
-  def putString(s: String) = {state: WorldState =>
-    (state.nextState, Console.print(s))}
+  def getString = {state: WorldState => (state.nextState, Console.readLine)}
+  def putString(s: String) = {state: WorldState => (state.nextState, Console.print(s))}
 }
 ```
 
-getString and putString no longer get or put a string - instead they each return a new function that's "waiting" to be executed once a WorldState is provided.
+`getString` 與 `putString` 不再負責取得與寫入字串 - 而是各自回傳一個新的函數，這函數直到提供 `worldState` 才會被執行。
 
 ```scala
 //file RTIO.scala
-sealed trait WorldState{def nextState:WorldState}
+sealed trait WorldState { def nextState:  WorldState }
 
 abstract class IOApplication_v2 {
-  private class WorldStateImpl(id:BigInt)
-      extends WorldState {
+  private class WorldStateImpl(id: BigInt) extends WorldState {
     def nextState = new WorldStateImpl(id + 1)
   }
-  final def main(args:Array[String]):Unit = {
+  final def main(args: Array[String]): Unit = {
     val ioAction = iomain(args)
     ioAction(new WorldStateImpl(0));
   }
-  def iomain(args:Array[String]):
-    WorldState => (WorldState, _)
+  def iomain(args: Array[String]): WorldState => (WorldState, _)
 }
 ```
 
-IOApplication's main driver calls iomain to get the function it will execute, then executes that function with an initial WorldState. 
-HelloWorld doesn't change too much except it no longer takes a WorldState.
+`IOApplication` 的 `main` 呼叫 `iomain` 取得將要執行的函數，然後用一個初始的 `worldState` 執行這個函數。
+除了不再接受 `WorldState` 以外，`HelloWorld` 沒改變太多。
 
 ```scala
 //file HelloWorld.scala
 class HelloWorld_v2 extends IOApplication_v2 {
   import RTConsole_v2._
-  def iomain(args:Array[String]) =
-    putString("Hello world")
+  def iomain(args: Array[String]) = putString("Hello world")
 }
 ```
 
