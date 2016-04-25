@@ -361,8 +361,8 @@ object HelloWorld_v4 extends IOApplication_v4 {
 所以我們需要將原本失敗的概念 (exception) 對應到我們的 Monad。
 在這一點上，我要走另一條目前為止尚未走過的路：我要用註解方式寫一個函式庫的最終版本。
 
-The IOAction object remains a convenient module to hold several factories and private implementations (which could be anonymous classes, but it's easier to explain with names).
-SimpleAction remains the same and IOAction's apply method is a factory for them.
+`IOAction` 物件保留工廠方法與私有實作的方便模組。
+`SimpleAction` 維持原樣，`IOAction` 的 `apply` 方法是它們的工廠方法。
 
 ```scala
 //file RTIO.scala
@@ -378,6 +378,10 @@ UnitAction is a class for unit actions - actions that return the specified value
 unit is a factory method for it. 
 It's kind of odd to make a distinction from SimpleAction, but we might as well get in good monad habits now for monads where it does matter.
 
+`UnitAction` 是單元動作類別 - 動作回傳指定結果卻不改變世界狀態。
+`unit` 是它的工廠方法。
+要跟 `SimpleAction` 有所區隔有點怪怪的，但現在要培養對 Monad 來說很重要的好習慣。
+
 ```scala
   private class UnitAction[+A](value: A) extends IOAction[A] {
     def apply(state:WorldState) = (state, value)
@@ -386,10 +390,11 @@ It's kind of odd to make a distinction from SimpleAction, but we might as well g
   def unit[A](value: A): IOAction[A] = new UnitAction(value)
 ```
 
-FailureAction is a class for our zeros. 
-It's an IOAction that always throws an exception. 
-UserException is one such possible exception. The fail and ioError methods are factory methods for creating zeroes. 
-Fail takes a string and results in an action that will raise a UserException whereas ioError takes an arbitrary exception and results in an action that will throw that exception.
+`FailureAction` 是針對 Zero 的類別。
+這是一個永遠會丟出例外 (exception) 的 `IOAction`。
+`UserException` 是一個可能的例外。
+`fail` 與 `ioError` 方法是產生 Zero 的工廠方法。
+`fail` 接收一個字串，回傳一個會產生 `UserException` 的動作；而 `ioError` 接收任意例外，回傳一個會丟出例外的動作。
 
 ```scala
   private class FailureAction(e: Exception) extends IOAction[Nothing] {
