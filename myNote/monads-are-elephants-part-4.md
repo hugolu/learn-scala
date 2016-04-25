@@ -501,9 +501,10 @@ object RTConsole {
 }
 ```
 
-And now a HelloWorld application to exercise some of this new functionality.
-sayHello creates an action from a string.
-If the string is a recognized name then the result is an appropriate (or inappropriate) greeting. Otherwise it's a failure action.
+現在 `HelloWorld` 行使一些新功能。
+`sayHello` 從字串產生一個動作。
+如果字串是一個可辨識的名字，結果會是適當 (或不適當) 的問候。
+否則就是一個失敗的動作。
 
 Ask is a convenience method that creates an action that will display a specified string then get one.
 The >> operator ensures that the action's result will be the result of getString.
@@ -533,26 +534,21 @@ object HelloWorld extends IOApplication {
     case _ => fail("match exception")
   }
 
-  def ask(q:String) =
-    putString(q) >> getString
+  def ask(q:String) = putString(q) >> getString
 
   def processString(s:String) = s match {
     case "quit" => putLine("Catch ya later")
-    case _ => (sayHello(s) or
-        putLine(s + ", I don't know you.")) >>
-
-        loop
+    case _ => (sayHello(s) or putLine(s + ", I don't know you.")) >> loop
   }
 
   val loop:IOAction[Unit] =
     for {
-      name <- ask("What's your name? ");
+      name <- ask("What's your name? ")
       _ <- processString(name)
     } yield ()
 
   def iomain(args:Array[String]) = {
-    putLine(
-        "This is an example of the IO monad.") >>
+    putLine("This is an example of the IO monad.") >>
     putLine("Enter a name or 'quit'") >>
     loop
   }
