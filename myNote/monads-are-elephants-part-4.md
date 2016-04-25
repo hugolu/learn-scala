@@ -222,13 +222,13 @@ abstract class IOApplication_v3 {
 }
 ```
 
-The IOAction object is just a nice factory to create SimpleActions. 
-SimpleAction's constructor takes a lazy expression as an argument, hence the "=> A" annotation.
-That expression won't be evaluated until SimpleAction's apply method is called.
-To call SimpleAction's apply method, a WorldState must be passed in.
-What comes out is a tuple with the new WorldState and the result of the expression.
+`IOAction object` 是個產生 `SimpleAction` 的好工廠。
+`SimpleAction` 的建構函數接受一個惰性表達式 (lazy expression) 作為參數，所以使用 `=> A` 的註記方式。
+直到 `SimpleAction` 方法被呼叫前，表達式不會被拿來求值。
+要呼叫 `SimpleAction` 的 `apply` 方法，必須傳入 `WorldState`。
+回傳的東西是數組 (tuple)，包含新的世界狀態與表達式的結果。
 
-Here's what our IO methods look like now
+這裏是 IO 方法現在看起來的樣子
 
 ```scala
 //file RTConsole.scala
@@ -239,13 +239,12 @@ object RTConsole_v3 {
 }
 ```
 
-And finally our HelloWorld class doesn't change a bit
+最後，我們的 `HelloWorld` 類別一點都沒變。
 
 ```scala
 class HelloWorld_v3 extends IOApplication_v3 {
   import RTConsole_v3._
-  def iomain(args:Array[String]) =
-    putString("Hello world")
+  def iomain(args: Array[String]) = putString("Hello world")
 }
 ```
 
@@ -253,6 +252,10 @@ A little thought shows that there's no way to create an Evil IOApplication now.
 A programmer simply has no access to a WorldState.
 It has become totally sealed away.
 The main driver will only pass a WorldState to an IOAction's apply method, and we can't create arbitrary IOAction subclasses with custom definitions of apply.
+
+稍微想想，現在沒有產生邪惡 `IOApplication` 的方式。
+程式設計師沒有接觸 WorldState 的機會。
+全部漏洞都被封起來。
 
 Unfortunately, we've got a combining problem.
 We can't combine multiple IOActions so we can't do something as simple as "What's your name", Bob, "Hello Bob."
