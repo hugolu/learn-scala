@@ -347,7 +347,7 @@ object HelloWorld_v4 extends IOApplication_v4 {
 相反地，他們產生 `IOAction`。
 但既然 `IOAction` 是個 Monad，我們可以把它放到 "for" 敘述句中，而結果看起來就像 `getString`/`putString` 真的按照他們所說的那樣做。
 
-這是個好的開始，我們幾乎在 `IOAction` 上得到一個完美的 Monand。
+這是個好的開始，我們快要在 `IOAction` 上得到一個完美的 Monand。
 這裏有兩個問題。
 首先，因為 "unit" 改變世界狀態，有點違背 Monad 規則 (例如 `m flatMap unit ≡ m`)。
 這有點囉唆，因為在這情況下它應該是不可見的。
@@ -357,9 +357,9 @@ object HelloWorld_v4 extends IOApplication_v4 {
 
 ## IO 錯誤 (IO Errors)
 
-In monadic terms, failure is represented by a zero.
-So all we need to do is map the native concept of failure (exceptions) to our monad.
-At this point I'm going to take a different tack from what I've been doing so far: I'll write one final version of the library with comments inline as I go.
+以 Monad 術語來說，失敗會用 Zero 表示。
+所以我們需要將原本失敗的概念 (exception) 對應到我們的 Monad。
+在這一點上，我要走另一條目前為止尚未走過的路：我要用註解方式寫一個函式庫的最終版本。
 
 The IOAction object remains a convenient module to hold several factories and private implementations (which could be anonymous classes, but it's easier to explain with names).
 SimpleAction remains the same and IOAction's apply method is a factory for them.
@@ -367,14 +367,11 @@ SimpleAction remains the same and IOAction's apply method is a factory for them.
 ```scala
 //file RTIO.scala
 object IOAction {
-  private class SimpleAction[+A](expression: => A)
-      extends IOAction[A] {
-    def apply(state:WorldState) =
-      (state.nextState, expression)
+  private class SimpleAction[+A](expression: => A) extends IOAction[A] {
+    def apply(state: WorldState) = (state.nextState, expression)
   }
 
-  def apply[A](expression: => A):IOAction[A] =
-    new SimpleAction(expression)
+  def apply[A](expression: => A): IOAction[A] = new SimpleAction(expression)
 ```
 
 UnitAction is a class for unit actions - actions that return the specified value but don't change the world state. 
@@ -382,14 +379,11 @@ unit is a factory method for it.
 It's kind of odd to make a distinction from SimpleAction, but we might as well get in good monad habits now for monads where it does matter.
 
 ```scala
-private class UnitAction[+A](value: A)
-    extends IOAction[A] {
-  def apply(state:WorldState) =
-    (state, value)
-}
-
-def unit[A](value:A):IOAction[A] =
-  new UnitAction(value)
+  private class UnitAction[+A](value: A) extends IOAction[A] {
+    def apply(state:WorldState) = (state, value)
+  }
+  
+  def unit[A](value: A): IOAction[A] = new UnitAction(value)
 ```
 
 FailureAction is a class for our zeros. 
@@ -398,18 +392,14 @@ UserException is one such possible exception. The fail and ioError methods are f
 Fail takes a string and results in an action that will raise a UserException whereas ioError takes an arbitrary exception and results in an action that will throw that exception.
 
 ```scala
-private class FailureAction(e:Exception)
-      extends IOAction[Nothing] {
-    def apply(state:WorldState) = throw e
+  private class FailureAction(e: Exception) extends IOAction[Nothing] {
+    def apply(state: WorldState) = throw e
   }
 
-  private class UserException(msg:String)
-    extends Exception(msg)
+  private class UserException(msg: String) extends Exception(msg)
 
-  def fail(msg:String) =
-    ioError(new UserException(msg))
-  def ioError[A](e:Exception):IOAction[A] =
-    new FailureAction(e)
+  def fail(msg: String) = ioError(new UserException(msg))
+  def ioError[A](e: Exception): IOAction[A] = new FailureAction(e)
 }
 ```
 
