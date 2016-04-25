@@ -81,7 +81,7 @@ abstract class IOApplication_v1 {
 `worldState` 是個密封特徵 (sealed trait)；它只能在同一個檔案中被擴充。
 `IOApplication` 定義私有的類別 (the only implementation privately)，所以沒人能實例化它。
 `IOApplication` 也定義一個無法被覆載 (override) 的 `main` 函數，並呼叫必須實作在繼承的子類別的 `iomain` 函數。
-一切都是為了對使用 IO 函式庫的程序員做隱藏。
+一切都是為了對使用 IO 函式庫的程式設計師做隱藏。
 
 有了上面這些材料，這裏顯示 hello world 的長相
 
@@ -175,58 +175,50 @@ class Evil_v2 extends IOApplication_v2 {
 ```
 
 產生 `iomain` 那種故意找碴的函數真是太邪惡了。
-只要程序員能夠創建任意 IO 函數就能看見 `WorldState` 正在運行。
+只要程式設計師能夠創建任意 IO 函數就能看見 `WorldState` 正在運行。
 
 ## 特性三壓扁了好 (Property 3 Squashed For Good)
 
-All we need to do is prevent the programmer from creating arbitrary functions with the right signature. 
-Um...we need to do what now?
+我們要避免程式設計師用對的簽名創建任意函數。
+嗯... 現在我們需要做什麼？
 
-Okay, as we saw with WorldState it's easy to prevent programmers from creating subclasses. 
-So let's turn our function signature into a trait.
+好的，如果所見使用 `WorldState` 能輕易避免程式設計師產生子類別。
+所以讓我們把函數簽名改成特徵 (trait)。
 
 ```scala
-sealed trait IOAction[+A] extends
-  Function1[WorldState, (WorldState, A)]
-
-private class SimpleAction[+A](
-   expression: => A) extends IOAction[A]...
+sealed trait IOAction[+A] extends Function1[WorldState, (WorldState, A)]
+private class SimpleAction[+A](expression: => A) extends IOAction[A]...
 ```
 
-Unlike WorldState we do need to create IOAction instances. 
-For example, getString and putString are in a separate file but they would need to create new IOActions.
-We just need them to do so safely.
-It's a bit of a dilemma until we realize that getString and putString have two separate pieces: the piece that does the primitive IO and the piece that turns the input world state into the next world state. 
-A bit of a factory method might help keep things clean, too.
+不像 `WorldState` 我們需要創建 `IOAction` 實例。
+例如，`getString` 與 `putString` 放在單獨的文件但他們需要產生新的 `IOAction`。
+我們只是要安全的做這件事。
+這有點兩難，除非我們理解 `getString` 與 `putString` 做的事情拆成兩塊：一塊做基本 IO、另一塊接收一個世界狀態回傳下一個世界狀態。
+用點工廠方法也有助於程式邏輯整潔。
 
 ```scala
 //file RTIO.scala
-sealed trait IOAction_v3[+A] extends
-  Function1[WorldState, (WorldState, A)]
+sealed trait IOAction_v3[+A] extendsFunction1[WorldState, (WorldState, A)]
 
 object IOAction_v3 {
-  def apply[A](expression: => A):IOAction_v3[A] =
-    new SimpleAction(expression)
+  def apply[A](expression: => A): IOAction_v3[A] = new SimpleAction(expression)
 
-  private class SimpleAction [+A](
-      expression: => A) extends IOAction_v3[A] {
-    def apply(state:WorldState) =
-      (state.nextState, expression)
+  private class SimpleAction [+A](expression: => A) extends IOAction_v3[A] {
+    def apply(state: WorldState) = (state.nextState, expression)
   }
 }
 
-sealed trait WorldState{def nextState:WorldState}
+sealed trait WorldState { def nextState: WorldState }
 
 abstract class IOApplication_v3 {
-  private class WorldStateImpl(id:BigInt)
-      extends WorldState {
+  private class WorldStateImpl(id: BigInt) extends WorldState {
     def nextState = new WorldStateImpl(id + 1)
   }
-  final def main(args:Array[String]):Unit = {
+  final def main(args: Array[String]): Unit = {
     val ioAction = iomain(args)
     ioAction(new WorldStateImpl(0));
   }
-  def iomain(args:Array[String]):IOAction_v3[_]
+  def iomain(args: Array[String]): IOAction_v3[_]
 }
 ```
 
