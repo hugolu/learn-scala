@@ -506,48 +506,46 @@ object RTConsole {
 如果字串是一個可辨識的名字，結果會是適當 (或不適當) 的問候。
 否則就是一個失敗的動作。
 
-Ask is a convenience method that creates an action that will display a specified string then get one.
-The >> operator ensures that the action's result will be the result of getString.
+`ask` 是個方便的方法，產生顯示指定字串然後取得字串的動作。
+`>>` 確保動作的結果會是 `getString` 的結果。
 
-processsString takes an arbitrary string and, if it's 'quit' then it creates an action that will say goodbye and be done.
-On any other string sayHello is called.
-The result is combined with another action using 'or' in case sayHello fails.
-Either way the action is sequenced with the loop action.
+`processString` 接收任意字串，如果字串是 `quit` 它會產生一個道別與完成的動作；其餘狀況，`sayHello` 會被呼叫。
+以防 `sayHello` 失敗，使用 `or` 合併結果與另一個動作。
 
-Loop is interesting.
-It's defined as a val just because it can be - a def would work just as well.
-So it's not quite a loop in the sense of being a recursive function, but it is a recursive value since it's defined in terms of processString which in turn is defined based on loop.
+`loop` 很有趣。
+它被定義成 `val`，因為定義成 `def` 也可以作用。
+所以作為遞歸函數意義上它不太算是迴圈 (loop)，但它是一個遞歸值，因為它的定義用到 `processString` 而 `processString` 的定義又根據 `loop`。
 
-The iomain function kicks everything off by creating an action that will display an intro then do what the loop action specifies.
+藉由創建動作 (顯示簡介然後執行迴圈動作指定的事情)，`iomain` 函數啟動一切。
 
-**Warning: because of the way the library is implemented this loop will eventually blow the stack. Do not use it in production code. Read the comments to see why.**
+**警告：因為函式庫用迴圈實作，最終會撐爆堆疊 (stack)。不要用在生產程式碼上。閱讀評論看看原因**
 
 ```scala
 object HelloWorld extends IOApplication {
   import IOAction._
   import RTConsole._
 
-  def sayHello(n:String) = n match {
+  def sayHello(n: String) = n match {
     case "Bob" => putLine("Hello, Bob")
     case "Chuck" => putLine("Hey, Chuck")
     case "Sarah" => putLine("Helloooo, Sarah")
     case _ => fail("match exception")
   }
 
-  def ask(q:String) = putString(q) >> getString
+  def ask(q: String) = putString(q) >> getString
 
-  def processString(s:String) = s match {
+  def processString(s: String) = s match {
     case "quit" => putLine("Catch ya later")
     case _ => (sayHello(s) or putLine(s + ", I don't know you.")) >> loop
   }
 
-  val loop:IOAction[Unit] =
+  val loop: IOAction[Unit] =
     for {
       name <- ask("What's your name? ")
       _ <- processString(name)
     } yield ()
 
-  def iomain(args:Array[String]) = {
+  def iomain(args: Array[String]) = {
     putLine("This is an example of the IO monad.") >>
     putLine("Enter a name or 'quit'") >>
     loop
