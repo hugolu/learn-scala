@@ -75,8 +75,7 @@ class HelloWorld_v1 extends IOApplication_v1 {
 
 ## 該死的特性三 (That Darn Property 3)
 
-第三個特性描述，在任何瞬間世界只能有一個狀態。
-我解決了一個問題，但還有另一個。
+第三個特性說，在任何瞬間世界只能有一個狀態。我解決了一個問題，但還有另一個。
 
 ```scala
 class Evil_v1 extends IOApplication_v1 {
@@ -90,15 +89,11 @@ class Evil_v1 extends IOApplication_v1 {
 }
 ```
 
-在此，我對相同的輸入呼叫兩次 `getString`。
-如果這程式碼具有引用透明性，那麼結果 `a` 與 `b` 應該相同，但事實不是如此除非使用者輸入兩次相同的東西。
-問題是 `startState` 是可見的，在相同的時間點上有 `stateA` 與 `stateB` 兩個世界的狀態。
+在此，我對相同的輸入呼叫兩次 `getString`。如果這程式碼具有引用透明性，那麼結果 `a` 與 `b` 應該相同，但事實並非如此除非使用者輸入兩次相同的東西。問題在於 `startState` 是可見的，在相同的時間點上存在 `stateA` 與 `stateB` 兩種狀態。
 
-## 由裡而外 (Inside Out)
+## 由內而外 (Inside Out)
 
-作為解決問題的第一步，我打算由裡而外實作一切。
-原本 `iomain` 是個輸入 `worldState` 輸出 `worldState` 的函數，取而代之把 `iomain` 改成傳回函數，然後由 `main` 來執行。
-這裏是程式碼。
+作為解決問題的第一步，我打算由內而外實作一切。原本 `iomain` 是個輸入 `worldState` 輸出 `worldState` 的函數，取而代之， `iomain` 傳回這樣的函數，然後由 `main` 來執行。這裏是程式碼。
 
 ```scala
 //file RTConsole.scala
@@ -126,8 +121,7 @@ abstract class IOApplication_v2 {
 }
 ```
 
-`IOApplication` 的 `main` 呼叫 `iomain` 取得將要執行的函數，然後用一個初始的 `worldState` 執行這個函數。
-除了不再接受 `WorldState` 以外，`HelloWorld` 沒改變太多。
+`IOApplication` 的 `main` 呼叫 `iomain` 取得將要執行的函數，然後用一個初始的 `worldState` 執行這個函數。除了不再接受 `WorldState` 以外，`HelloWorld` 沒改變太多。
 
 ```scala
 //file HelloWorld.scala
@@ -137,8 +131,7 @@ class HelloWorld_v2 extends IOApplication_v2 {
 }
 ```
 
-乍看之下，`worldState` 不存在於 `HelloWorld`，我們似乎解決了問題。
-但事實證明，這只是掩人耳目一下而已。
+乍看之下，`worldState` 不存在於 `HelloWorld`，我們似乎解決了問題。但事實證明，這只是掩人耳目一下而已。
 
 ## 歐～ 該死的特性三 (Oh That Darn Property 3)
 
