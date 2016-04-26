@@ -555,17 +555,17 @@ object HelloWorld extends IOApplication {
 
 ## 第四部分結論 (Conclusion for Part 4)
 
-In this article I've called the IO monad 'IOAction' to make it clear that instances are actions that are waiting to be performed. 
-Many will find the IO monad of little practical value in Scala. 
-That's okay, I'm not here to preach about referential transparency. 
-However, the IO monad is one of the simplest monads that's clearly not a collection in any sense.
+在本文我稱 IO Monad 叫做 `IOAction`，為了講清楚 `IOAction` 的實例是等待被執行的動作。
+很多人發現 IO Monad 在 Scala 上實用性不高。
+沒關係，我不是在這裡宣揚引用透明性。
+然而，IO Monad 是最簡單的 Monad 之一，任何意義上顯然不是集合。
 
-Still, instances of the IO monad can be seen as containers. 
-But instead of containing values they contain expressions. 
-flatMap and map in essence turn the embedded expressions into more complex expressions.
+儘管如此，IO Monad 的實例可以視為容器。
+但是他們不存值而是存放表達式。
+`flatMap` 與 `map` 本質上將嵌入式表達式 (embedded expression) 變成更複雜的形式。
 
-Perhaps a more useful mental model is to see instances of the IO monad as computations or functions.
-flatMap can be seen as applying a function to the computation to create a more complex computation.
+或許更有用的心智模型是把 IO Monad 實例視為計算或函數。
+`flatMap` 可以看成在計算上套用函數以產生更複雜的計算。
 
-In the last part of this series I'll cover a way to unify the container and computation models.
-But first I want to reinforce how useful monads can be by showing an application that uses an elephantine herd of monads to do something a bit more complicated.
+在這一系列的最後我涵蓋了統一容器與計算模型的方法。
+通過展示使用 Monand 做一些更複雜的事情，強調 Monad 有多好用。
