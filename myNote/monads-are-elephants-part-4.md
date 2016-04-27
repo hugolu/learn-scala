@@ -189,11 +189,7 @@ abstract class IOApplication_v3 {
 }
 ```
 
-`IOAction object` 是個產生 `SimpleAction` 的好工廠。
-`SimpleAction` 的建構函數接受一個惰性表達式 (lazy expression) 作為參數，所以使用 `=> A` 的註記方式。
-直到 `SimpleAction` 方法被呼叫前，表達式不會被拿來求值。
-要呼叫 `SimpleAction` 的 `apply` 方法，必須傳入 `WorldState`。
-回傳的東西是數組 (tuple)，包含新的世界狀態與表達式的結果。
+`IOAction object` 正是個產生 `SimpleAction` 的好工廠。`SimpleAction` 的建構函數接受一個惰性表達式 (lazy expression) 作為參數，所以使用 `=> A` 的註記方式。在 `SimpleAction` 的 `apply` 方法被呼叫前，那個表達式不會被拿來求值。要呼叫 `SimpleAction` 的 `apply` 方法，必須傳入一個 `WorldState`。回傳的東西是數組 (tuple)，包含新的世界狀態與表達式的結果。
 
 這裏是 IO 方法現在看起來的樣子
 
@@ -201,12 +197,11 @@ abstract class IOApplication_v3 {
 //file RTConsole.scala
 object RTConsole_v3 {
   def getString = IOAction_v3(Console.readLine)
-  def putString(s: String) =
-    IOAction_v3(Console.print(s))
+  def putString(s: String) = IOAction_v3(Console.print(s))
 }
 ```
 
-最後，我們的 `HelloWorld` 類別一點都沒變。
+最後，我們的 `HelloWorld` 類別一點都沒變
 
 ```scala
 class HelloWorld_v3 extends IOApplication_v3 {
@@ -215,17 +210,11 @@ class HelloWorld_v3 extends IOApplication_v3 {
 }
 ```
 
-稍加思考，現在沒有產生邪惡 `IOApplication` 的方式。
-程式設計師沒有接觸 `WorldState` 的機會。
-全部漏洞都被封起來。
-`main` 只傳遞一個 `WorldState` 給 `IOAction` 的 `apply` 方法，我們不能用客製化定義的 `apply` 創建任意 `IOAction` 的子類別。
+略加思考，現在沒有方法能產生邪惡的 `IOApplication`。程式設計師沒有接觸 `WorldState` 的機會，它被密封起來了。`main` 只傳遞一個 `WorldState` 給 `IOAction` 的 `apply` 方法，我們不能用客製化定義的 `apply` 創建任意 `IOAction` 的子類別。
 
-不幸地，我們得到了個組合的問題。
-我們不能組合多個 `IOAction` 所以我們不能做像 「你的名字是什麼？」，「Bob」，「哈囉 Bob」 這麼簡單的事情。
+不幸地，我們碰到了組合的問題。我們不能組合多個 `IOAction`，所以我們不能做像 「你的名字是什麼？」「Bob」「哈囉 Bob」 這麼簡單的事情。
 
-嗯～ `IOAction` 是個用來裝表達式的容器，而 Monad 是容器。
-`IOAction` 需要被組合，而 Monand 可以組合。
-或許，只是或許...
+嗯～ `IOAction` 是個用來裝表達式的容器，而 Monad 是容器。`IOAction` 需要被組合，而 Monand 可以組合。或許，只是或許...
 
 ## 女士先生，為您介紹神奇的 IO Monad (Ladies and Gentleman I Present the Mighty IO Monad)
 
