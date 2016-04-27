@@ -218,17 +218,9 @@ class HelloWorld_v3 extends IOApplication_v3 {
 
 ## 女士先生，為您介紹神奇的 IO Monad (Ladies and Gentleman I Present the Mighty IO Monad)
 
-`IOAction.apply` 工廠方法接受一個型別 `A` 的表達式，然後傳回一個 `IOAction[A]`。
-這看起來像 "unit"。
-但它不是，不過目前來說很接近了。
-如果我們知道這個 Monad 的 `flatMap` 是什麼，那麼 Monad 法則告訴我們如何用它跟 "unit" 來產生 `map`。
-但 `flatMap` 會是什麼？
-函數簽名要看起來像 `def flatMap[B](f: A => IOAction[B]): IOAction[B]`。
-但它要做什麼呢？
+`IOAction.apply` 工廠方法接受一個型別 `A` 的表達式，然後傳回一個 `IOAction[A]`。它看起來像 "unit"。但它不是，不過目前來說很接近了。如果我們知道這個 Monad 的 `flatMap` 是什麼，那麼 Monad 法則告訴我們如何用它跟 "unit" 來產生 `map`。但 `flatMap` 會是什麼？函數簽名要看起來像 `def flatMap[B](f: A => IOAction[B]): IOAction[B]`。但它做什麼呢？
 
-要它做的事情是，把一個動作串接到函數，然後回傳一個動作，一旦開始執行兩個動作就會依序發生。
-換句話說，`getString.flatMap {y => putString(y)}` 應該得到一個新的 `IOAction` Monad，一旦 Monad 被啟動，首先啟動 `getString` 動作然後執行 `putString` 回傳的動作。
-讓它轉一圈看看。
+要它做的事情是，把一個動作串接到函數，然後回傳一個動作，一旦 (IO Monad) 被啟動兩個動作會依序發生。換句話說，`getString.flatMap {y => putString(y)}` 應該得到一個新的 `IOAction` Monad，一旦 Monad 被啟動，首先啟動 `getString` 動作然後執行 `putString` 回傳的動作。來試試看。
 
 ```scala
 //file RTIO.scala
@@ -260,17 +252,10 @@ abstract class IOApplication_v4 {
   private class WorldStateImpl(id: BigInt) ...
 ```
 
-`IOAction` 工廠與 `SimpleAction` 照舊。
-`IOAction` 類別得到 Monad 方法。
-每條 Monad 法則，目前 `map` 只是用 `flatMap` 與 "unit" 來定義。
-`flatMap` 把全部苦差事推遲到一個叫做 `ChainedAction` 的 `IOAction` 實作上。
+`IOAction` 工廠與 `SimpleAction` 照舊。`IOAction` 類別有 Monad 方法 (譯注：`map` & `flatMap`)。按照 Monad 法則，目前 `map` 只是用 `flatMap` 與 "unit" 來定義。`flatMap` 把全部的苦差事都推到一個叫做 `ChainedAction` 的 `IOAction` 實作上。
 
-`ChainedAction` 的訣竅在於它 `apply` 的方法。
-首先用第一個世界狀態呼叫 `action1`。
-這產生第二個世界狀態與一個中間結果。
-`apply` 這函數被串接成，需要第一次呼叫的結果，然後返回一個產生下個動作 `action2` 的函數。
-用第二個世界狀態呼叫 `action2`，最終產生一個數組。
-記住，直到 `main` 傳入一個初始化的 `WorldState` 物件前，所有一切都不會發生。
+`ChainedAction` 的花招在於它 `apply` 的方法。首先用第一個世界狀態呼叫 `action1`。這產生第二個世界狀態與一個中間結果。
+`apply` 這函數被串接成需要第一次呼叫的結果，然後返回一個產生下個動作 `action2` 的函數。用第二個世界狀態呼叫 `action2`，最終產生一個數組。記住，直到 `main` 傳入一個初始化的 `WorldState` 物件前，所有一切都不會發生。
 
 ## 測試驅動器 (A Test Drive)
 
