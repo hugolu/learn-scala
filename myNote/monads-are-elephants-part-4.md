@@ -210,7 +210,7 @@ class HelloWorld_v3 extends IOApplication_v3 {
 }
 ```
 
-略加思考，現在沒有方法能產生邪惡的 `IOApplication`。程式設計師沒有接觸 `WorldState` 的機會，它被密封起來了。`main` 只傳遞一個 `WorldState` 給 `IOAction` 的 `apply` 方法，我們不能用客製化定義的 `apply` 創建任意 `IOAction` 的子類別。
+稍加思索，現在沒有方法能產生邪惡的 `IOApplication`。程式設計師沒有接觸 `WorldState` 的機會，它被密封起來了。`main` 只傳遞一個 `WorldState` 給 `IOAction` 的 `apply` 方法，我們不能用客製化定義的 `apply` 創建任意 `IOAction` 的子類別。
 
 不幸地，我們碰到了組合的問題。我們不能組合多個 `IOAction`，所以我們不能做像 「你的名字是什麼？」「Bob」「哈囉 Bob」 這麼簡單的事情。
 
@@ -259,8 +259,7 @@ abstract class IOApplication_v4 {
 
 ## 測試驅動器 (A Test Drive)
 
-某一點上，你可能懷疑為何 `getString` 與 `putString` 不改名叫做 `createGetStringAction`/`createPutStringAction`，因為事實上它們就是做這些事情。
-有個答案是，如果把他們放到 "for" 表示式中，你看看會發生什麼事情。
+某一點上，你可能懷疑為何 `getString` 與 `putString` 不改名叫做 `createGetStringAction`/`createPutStringAction`，因為事實上它們就是做這些事情。要回答這問題，你把他們放到 "for" 表示式中看看會發生什麼事情。
 
 ```scala
 object HelloWorld_v4 extends IOApplication_v4 {
@@ -273,8 +272,7 @@ object HelloWorld_v4 extends IOApplication_v4 {
   } yield ()
 }
 ```
-
-就像 "for" 與 `getString`/`putString` 一起工作，用精簡的語言產生一個複雜的 `IOAction` 。
+似乎用 "for" 與 `getString`/`putString` 產生一個精簡的語言，能用來創建一個複雜的 `IOAction` 。
 
 ## 深呼吸一口氣 (Take a Deep Breath)
 
