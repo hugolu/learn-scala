@@ -276,21 +276,11 @@ object HelloWorld_v4 extends IOApplication_v4 {
 
 ## 深呼吸一口氣 (Take a Deep Breath)
 
-現在是總結我們學到什麼的好時機。
-`IOApplication` 是抽象類別 (pure plumbing)。使用者實作子類別並創建一個叫做 `iomain` 的方法，然後被 `main` 呼叫。
-回傳值是 `IOAction` - 事實上，它可能是單一動作或是串接在一起的多個動作。
-在這個 `IOAction` 能真正工作之前，它只是癡癡等待 `WorldState` 物件。
-`ChainedAction` 類別負責保證沿著每個串連的動作 `WorldState` 依序被改變。
+現在是總結學了什麼的好時機。`IOApplication` 是抽象類別 (pure plumbing)。使用者實作子類別並創建一個叫做 `iomain` 的方法，然後被 `main` 呼叫。回傳值是 `IOAction` - 事實上，它可能是單一動作或是串接在一起的多個動作。在這個 `IOAction` 能真正工作之前，它只是癡癡等待 `WorldState` 物件。`ChainedAction` 類別負責保證沿著每個串連的動作 `WorldState` 依序被改變。
 
-`getString` 與 `putString` 不像他們名字所說，真正去存取字串。
-相反地，他們產生 `IOAction`。
-但既然 `IOAction` 是個 Monad，我們可以把它放到 "for" 敘述句中，而結果看起來就像 `getString`/`putString` 真的按照他們所說的那樣做。
+`getString` 與 `putString` 不像他們名字所說，真正去存取字串。相反地，他們產生 `IOAction`。但既然 `IOAction` 是個 Monad，我們可以把它放到 "for" 敘述句中，而結果看起來就像 `getString`/`putString` 真的按照他們所說的那樣做。
 
-這是個好的開始，我們快要在 `IOAction` 上得到一個完美的 Monand。
-這裏有兩個問題。
-首先，因為 "unit" 改變世界狀態，有點違背 Monad 規則 (例如 `m flatMap unit ≡ m`)。
-這有點囉唆，因為在這情況下它應該是不可見的。
-但我們也會修正它。
+這是個好開始，我們快要在 `IOAction` 上得到一個完美的 Monand。這裏有兩個問題。首先，因為 "unit" 會改變世界狀態，有點違背 Monad 規則 (例如 `m flatMap unit ≡ m`)。這情形有點囉唆，因為它是不可見的。但我們也會修正它。
 
 第二個問題是，一般來說，IO 可能會失敗而我們還沒有捕捉這個。
 
