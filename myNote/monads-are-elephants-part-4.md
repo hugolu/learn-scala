@@ -147,27 +147,21 @@ class Evil_v2 extends IOApplication_v2 {
 }
 ```
 
-產生 `iomain` 那種故意找碴的函數真是太邪惡了。
-只要程式設計師能夠創建任意 IO 函數就能看見 `WorldState` 正在運行。
+產生 `iomain` 那種故意找碴的函數實在太邪惡了。只要程式設計師能夠創建任意 IO 函數就能看見 `WorldState` 正在運行。
 
 ## 特性三壓扁好了 (Property 3 Squashed For Good)
 
-我們要避免程式設計師用對的簽名創建任意函數。
-嗯... 現在我們需要做什麼？
+我們要避免程式設計師用對的簽名創建任意函數。嗯... 現在我們需要做什麼？
 
-好的，如果所見使用 `WorldState` 能輕易避免程式設計師產生子類別。
-所以讓我們把函數簽名改成特徵 (trait)。
+好的，如所見使用 `WorldState` 能輕易避免程式設計師產生子類別。所以讓我們把函數簽名改成特徵 (trait)。
+> 簽名改成特徵: `WorldState => (WorldState, _)` ⇒ `Function1[WorldState, (WorldState, A)]`
 
 ```scala
 sealed trait IOAction[+A] extends Function1[WorldState, (WorldState, A)]
 private class SimpleAction[+A](expression: => A) extends IOAction[A]...
 ```
 
-不像 `WorldState` 我們需要創建 `IOAction` 實例。
-例如，`getString` 與 `putString` 放在單獨的文件但他們需要產生新的 `IOAction`。
-我們只是要安全的做這件事。
-這有點兩難，除非我們理解 `getString` 與 `putString` 做的事情拆成兩塊：一塊做基本 IO、另一塊接收一個世界狀態回傳下一個世界狀態。
-用點工廠方法也有助於程式邏輯整潔。
+不像 `WorldState` 我們需要創建 `IOAction` 實例。例如，`getString` 與 `putString` 放在單獨的文件但他們需要產生新的 `IOAction`，我們只是要他們安全地做這件事。這有點兩難，除非我們理解 `getString` 與 `putString` 有兩部分：一部分做基本 IO、另一部分接收一個世界狀態傳回下個世界狀態。使用工廠方法也或許有助於程式邏輯整潔。
 
 ```scala
 //file RTIO.scala
