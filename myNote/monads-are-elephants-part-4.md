@@ -286,12 +286,9 @@ object HelloWorld_v4 extends IOApplication_v4 {
 
 ## IO 錯誤 (IO Errors)
 
-以 Monad 術語來說，失敗會用 Zero 表示。
-所以我們需要將原本失敗的概念 (exception) 對應到我們的 Monad。
-在這一點上，我要走另一條目前為止尚未走過的路：我要用註解方式寫一個函式庫的最終版本。
+以 Monad 術語來說，失敗用 Zero 表示。所以我們需要將原本失敗的概念 (exception) 對應到我們的 Monad。在這一點上，我要採取與到目前為止不一樣的策略：要用註解內嵌寫一個函式庫的最終版本 (I'll write one final version of the library with comments inline as I go.)。
 
-`IOAction` 物件保留工廠方法與私有實作的方便模組。
-`SimpleAction` 維持原樣，`IOAction` 的 `apply` 方法是它們的工廠方法。
+`IOAction` 物件保留工廠方法與私有實作的方便模組。`SimpleAction` 維持原樣，`IOAction` 的 `apply` 方法是它們的工廠方法。
 
 ```scala
 //file RTIO.scala
@@ -307,9 +304,7 @@ UnitAction is a class for unit actions - actions that return the specified value
 unit is a factory method for it. 
 It's kind of odd to make a distinction from SimpleAction, but we might as well get in good monad habits now for monads where it does matter.
 
-`UnitAction` 是單元動作類別 - 動作回傳指定結果卻不改變世界狀態。
-`unit` 是它的工廠方法。
-要跟 `SimpleAction` 有所區隔有點怪怪的，但現在要培養對 Monad 來說很重要的好習慣。
+`UnitAction` 是單元動作類別 - 動作回傳指定結果卻不改變世界狀態，`unit` 是它的工廠方法。要跟 `SimpleAction` 有所區隔感覺怪怪的，但現在要培養對 Monad 來說重要的好習慣。
 
 ```scala
   private class UnitAction[+A](value: A) extends IOAction[A] {
@@ -319,11 +314,7 @@ It's kind of odd to make a distinction from SimpleAction, but we might as well g
   def unit[A](value: A): IOAction[A] = new UnitAction(value)
 ```
 
-`FailureAction` 是針對 Zero 的類別。
-這是一個永遠會丟出例外 (exception) 的 `IOAction`。
-`UserException` 是一個可能的例外。
-`fail` 與 `ioError` 方法是產生 Zero 的工廠方法。
-`fail` 接收一個字串，回傳一個會產生 `UserException` 的動作；而 `ioError` 接收任意例外，回傳一個會丟出例外的動作。
+`FailureAction` 是針對 Zero 的類別。這是一個永遠會丟出例外 (exception) 的 `IOAction`。`UserException` 是個可能的例外。`fail` 與 `ioError` 方法是產生 Zero 的工廠方法。`fail` 接收一個字串，回傳一個會產生 `UserException` 的動作；而 `ioError` 接收任意例外，回傳一個會丟出例外的動作。
 
 ```scala
   private class FailureAction(e: Exception) extends IOAction[Nothing] {
@@ -337,13 +328,7 @@ It's kind of odd to make a distinction from SimpleAction, but we might as well g
 }
 ```
 
-`IOAction` 的 `flatMap` 與 `ChainedAction` 維持原樣。
-改變 `map` 真正呼叫 `unit` 方法，以便符合 Monad 法則。
-加入兩個方便的方法：`>>` 與 `<<`。
-`flatMap` 將這個動作與一個回傳動作的函數串連起來，`>>` 與 `<<` 把這個動作與另一個動作串起來。
-這是個得到哪個結果的問題。
-`>>` 唸作 "then"，產生一個回傳第二個結果的動作，所以 `putString "What's your name" >> getString` 產生一個顯示提示的動作然後回傳使用者的反應。
-相反地，`<<` 唸作 "before"，產生一個回傳第一個動作結果的動作。
+`IOAction` 的 `flatMap` 與 `ChainedAction` 維持原樣。改變 `map` 真正呼叫 `unit` 方法，以便符合 Monad 法則。也加入兩個方便的方法：`>>` 與 `<<`。`flatMap` 將這個動作與一個回傳動作的函數串連起來，`>>` 與 `<<` 把這個動作與另一個動作串起來。這是個會得到哪個結果的問題。`>>` 唸作 "then"，產生一個回傳第二個結果的動作，所以 `putString "What's your name" >> getString` 產生一個顯示提示的動作然後回傳使用者的反應。相反地，`<<` 唸作 "before"，產生一個回傳第一個動作結果的動作。
 
 ```scala
 sealed abstract class IOAction[+A] extends Function1[WorldState, (WorldState, A)] {
@@ -371,20 +356,14 @@ sealed abstract class IOAction[+A] extends Function1[WorldState, (WorldState, A)
     } yield first
 ```
 
-因為現在有了 Zero，只要遵守 Monad 法則就有機會加入 `filter` 方法。
-但在此我創建兩個過濾的方法。
-一個接收使用者指定的訊息說明為何 `filter` 沒有匹配成功，另一個合乎 Scala 需要的介面並使用一般錯誤的訊息。
+因為現在有了 Zero，只要遵守 Monad 法則就有機會加入 `filter` 方法。但在此我創建了兩個過濾的方法。一個接收使用者指定的訊息說明為何 `filter` 沒有匹配成功，另一個合乎 Scala 需要的介面並使用一般錯誤的訊息。
 
 ```scala
 def filter(p: A => Boolean, msg: String): IOAction[A] = flatMap{x => if (p(x)) IOAction.unit(x) else IOAction.fail(msg)}
 def filter(p: A => Boolean): IOAction[A] = filter(p, "Filter mismatch")
 ```
 
-一個 Zero 也意味我們能產生 Monad 加法。
-作為產生 Zero 的基礎設施，`HandlingAction` 是種包裹另一個動作的動作，如果動作丟出例外，它把例外送到另一個處理函數。
-`onError` 是產生 `HandlingAction` 的工廠方法。
-最後，"or" 是 Monad 加法。
-基本上是說，如果這個動作因為例外失敗就嘗試另一個動作。
+一個 Zero 也意味我們能產生 Monad 加法。作為產生 Zero 的基礎設施，`HandlingAction` 是種包裹另一個動作的動作，如果動作丟出例外，它把例外送到另一個處理函數。`onError` 是產生 `HandlingAction` 的工廠方法。最後，"or" 是 Monad 加法。基本上是說，如果這個動作因為例外失敗就嘗試另一個動作。
 
 ```scala
 private class HandlingAction[+A](action: IOAction[A], handler: Exception => IOAction[A]) extends IOAction[A] {
@@ -418,8 +397,7 @@ abstract class IOApplication {
 }
 ```
 
-`RTConsole` 幾乎維持原樣，但我加入 `putLine` 方法好比 `println`。
-我也把 `getString` 改為一個 `val`。為什麼？ 因為它總是做一樣的動作。
+`RTConsole` 幾乎維持原樣，但我加入類比 `println` 的 `putLine` 方法。我也把 `getString` 改為一個 `val`。為什麼？ 因為它總是做一樣的動作。
 
 ```scala
 //file RTConsole.scala
@@ -430,20 +408,13 @@ object RTConsole {
 }
 ```
 
-現在 `HelloWorld` 行使一些新功能。
-`sayHello` 從字串產生一個動作。
-如果字串是一個可辨識的名字，結果會是適當 (或不適當) 的問候。
-否則就是一個失敗的動作。
+現在 `HelloWorld` 行使一些新功能。`sayHello` 從字串產生一個動作。如果字串是一個可辨識的名字，結果會是適當 (或不適當) 的問候。否則就是一個失敗的動作。
 
-`ask` 是個方便的方法，產生顯示指定字串然後取得字串的動作。
-`>>` 確保動作的結果會是 `getString` 的結果。
+`ask` 是個方便的方法，產生顯示指定字串然後取得字串的動作。`>>` 確保動作的結果會是 `getString` 的結果。
 
-`processString` 接收任意字串，如果字串是 `quit` 它會產生一個道別與完成的動作；其餘狀況，`sayHello` 會被呼叫。
-以防 `sayHello` 失敗，使用 `or` 合併結果與另一個動作。
+`processString` 接收任意字串，如果字串是 `quit` 它會產生一個道別與完成的動作；其餘狀況 `sayHello` 會被呼叫。以防 `sayHello` 失敗，使用 `or` 合併其結果與另一個動作。
 
-`loop` 很有趣。
-它被定義成 `val`，因為定義成 `def` 也可以作用。
-所以作為遞歸函數意義上它不太算是迴圈 (loop)，但它是一個遞歸值，因為它的定義用到 `processString` 而 `processString` 的定義又根據 `loop`。
+`loop` 很有趣。它被定義成 `val`，因為定義成 `def` 也可以作用。所以作為遞歸函數意義上它不太算是迴圈 (loop)，但它是一個遞歸值，因為它的定義用到 `processString` 而 `processString` 的定義又根據 `loop`。
 
 藉由創建動作 (顯示簡介然後執行迴圈動作指定的事情)，`iomain` 函數啟動一切。
 
