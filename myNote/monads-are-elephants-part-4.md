@@ -61,7 +61,7 @@ abstract class IOApplication_v1 {
 }
 ```
 
-`worldState` 是個密封特徵 (sealed trait)；它只能在同一個檔案中被擴充。`IOApplication` 定義私有的類別 (the only implementation privately)，所以沒人能實例化它。`IOApplication` 也定義一個無法被覆載 (override) 的 `main` 函數，並呼叫必須實作在繼承的子類別的 `iomain` 函數。隱藏一切不讓使用 IO 函式庫的程式設計師知道細節。
+`worldState` 是個密封特徵 (sealed trait)，它只能在同一檔案中被擴充 (extended)。`IOApplication` 定義私有的類別 (譯注：`private class WorldStateImpl`)，所以其他人不能實例化它。`IOApplication` 也定義一個無法被覆載 (override) 的 `main` 函數，`main` 函數會呼叫 `iomain` 函數，而 `iomain`函數必須在繼承的子類別實作出來。盡量隱藏一切不讓使用 IO 函式庫的程式設計師知道細節。
 
 有了這些，hello world 看起來像
 
