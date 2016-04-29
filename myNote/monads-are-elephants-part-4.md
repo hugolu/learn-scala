@@ -154,14 +154,14 @@ class Evil_v2 extends IOApplication_v2 {
 要避免程式設計師用對的簽名創建任意函數。嗯... 現在我們需要做什麼？
 
 好的，如所見使用 `WorldState` 能輕易避免程式設計師產生子類別。所以讓我們把函數簽名改成特徵 (trait)。
-> 函數簽名改成特徵: `WorldState => (WorldState, _)` ⇒ `Function1[WorldState, (WorldState, A)]`
+> 譯注：函數簽名 ⇒ 特徵: `WorldState => (WorldState, _)` ⇒ `Function1[WorldState, (WorldState, A)]`
 
 ```scala
 sealed trait IOAction[+A] extends Function1[WorldState, (WorldState, A)]
 private class SimpleAction[+A](expression: => A) extends IOAction[A]...
 ```
 
-不像 `WorldState` 我們需要創建 `IOAction` 實例。例如，`getString` 與 `putString` 放在單獨的文件但他們需要產生新的 `IOAction`，我們只是要他們安全地做這件事。這有點兩難，除非理解 `getString` 與 `putString` 有兩部分：一部分做基本 IO、另一部分接收一個世界狀態傳回下個世界狀態。使用工廠方法也或許有助於程式邏輯整潔。
+不像 `WorldState` 我們需要創建 `IOAction` 實例。例如，`getString` 與 `putString` 放在單獨的文件但他們需要產生新的 `IOAction`，我們只是要他們安全地進行。這有點兩難，除非理解 `getString` 與 `putString` 有兩部分：**一部分做基本 IO、另一部分接收一個世界狀態傳回下個世界狀態**。 (譯注：這句話很重要，寫下來放在旁邊，稍後的文章需要常常拿出來對照)  使用工廠方法也或許有助於程式邏輯整潔。
 
 ```scala
 //file RTIO.scala
