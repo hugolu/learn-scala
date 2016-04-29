@@ -190,6 +190,7 @@ abstract class IOApplication_v3 {
 ```
 
 `IOAction object` 正是個產生 `SimpleAction` 的好工廠。`SimpleAction` 的建構函數接受一個惰性表達式 (lazy expression) 作為參數，所以使用 `=> A` 的註記方式。在 `SimpleAction` 的 `apply` 方法被呼叫前，那個表達式不會被拿來求值。要呼叫 `SimpleAction` 的 `apply` 方法，必須傳入一個 `WorldState`。回傳的東西是數組 (tuple)，包含新的世界狀態與表達式的結果。
+> 譯注：看到這裡會覺得為什麼不用 `IOAction object` 直接產生 `IOAction` 物件，卻還要再擴充一層產生 `SimpleAction` 物件，理由在後面才會出現。先劇透一下，因為後面還會用 `IOAction` 擴充其他類別...
 
 這裏是 IO 方法現在看起來的樣子
 
