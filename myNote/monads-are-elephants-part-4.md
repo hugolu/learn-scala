@@ -165,7 +165,7 @@ private class SimpleAction[+A](expression: => A) extends IOAction[A]...
 
 ```scala
 //file RTIO.scala
-sealed trait IOAction_v3[+A] extendsFunction1[WorldState, (WorldState, A)]
+sealed trait IOAction_v3[+A] extends Function1[WorldState, (WorldState, A)]
 
 object IOAction_v3 {
   def apply[A](expression: => A): IOAction_v3[A] = new SimpleAction(expression)
