@@ -223,7 +223,7 @@ class HelloWorld_v3 extends IOApplication_v3 {
 
 `IOAction.apply` 工廠方法接受一個型別 `A` 的表達式，然後傳回一個 `IOAction[A]`。它看起來像 "unit"。但它不是，不過目前來說很接近了。如果我們知道這個 Monad 的 `flatMap` 是什麼，那麼 Monad 法則告訴我們如何用它跟 "unit" 來產生 `map`。但 `flatMap` 會是什麼？函數簽名要看起來像 `def flatMap[B](f: A => IOAction[B]): IOAction[B]`。但它做什麼呢？
 
-要它做的事情是，把一個動作 (action) 串接到函數，然後回傳一個動作，一旦 (IO Monad) 被啟動兩個動作會依序發生。換句話說，`getString.flatMap {y => putString(y)}` 應該得到一個新的 `IOAction` Monad，一旦 Monad 被啟動，首先啟動 `getString` 動作然後執行 `putString` 回傳的動作。來試試看。
+要它做的事情是，把一個動作串接到會回傳一個動作的函數 (原文：chain an action to a function that returns an action)，然後一旦 (IO Monad) 被啟動兩個動作會依序發生。換句話說，`getString.flatMap {y => putString(y)}` 應該得到一個新的 `IOAction` Monad，一旦 Monad 被啟動，首先啟動 `getString` 動作然後執行 `putString` 回傳的動作。來試試看。
 
 ```scala
 //file RTIO.scala
