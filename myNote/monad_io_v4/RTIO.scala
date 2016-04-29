@@ -1,4 +1,5 @@
 //file RTIO.scala
+
 sealed abstract class IOAction_v4[+A] extends Function1[WorldState, (WorldState, A)] {
   def map[B](f: A => B): IOAction_v4[B] = flatMap { x => IOAction_v4(f(x)) }
   def flatMap[B](f: A => IOAction_v4[B]): IOAction_v4[B] = new ChainedAction(this, f)

@@ -1,4 +1,5 @@
 //file RTIO.scala
+
 object IOAction {
   private class SimpleAction[+A](expression: => A) extends IOAction[A] {
     def apply(state: WorldState) = (state.nextState, expression)
