@@ -103,7 +103,7 @@ object RTConsole_v2 {
 }
 ```
 
-`getString` 與 `putString` 不再負責取得與寫入字串 - 而是各自回傳一個新的函數，這函數直到提供 `worldState` 才會被執行。
+`getString` 與 `putString` 不再負責取得與寫入字串 - 而是各自回傳一個新的函數 (譯注：匿名函數)，這函數直到提供 `worldState` 才會被執行。
 
 ```scala
 //file RTIO.scala
@@ -121,7 +121,7 @@ abstract class IOApplication_v2 {
 }
 ```
 
-`IOApplication` 的 `main` 呼叫 `iomain` 取得將要執行的函數，然後用一個初始的 `worldState` 執行這個函數。除了不再接受 `WorldState` 以外，`HelloWorld` 沒改變太多。
+`IOApplication` 的 `main` 呼叫 `iomain` 取得將要執行的函數，然後用一個初始的 `worldState` 執行那個函數。除了不再接受 `WorldState` 以外，`HelloWorld` 沒改變太多。
 
 ```scala
 //file HelloWorld.scala
@@ -131,7 +131,7 @@ class HelloWorld_v2 extends IOApplication_v2 {
 }
 ```
 
-乍看之下，`worldState` 不存在於 `HelloWorld`，我們似乎解決了問題。但事實證明，這只是掩人耳目一下而已。
+乍看之下，`worldState` 不存在於 `HelloWorld`，我們似乎解決了問題。但事實證明，這只是稍微遮住而已。
 
 ## 歐～ 該死的特性三 (Oh That Darn Property 3)
 
@@ -147,21 +147,21 @@ class Evil_v2 extends IOApplication_v2 {
 }
 ```
 
-產生 `iomain` 那種故意找碴的函數實在太邪惡了。只要程式設計師能夠創建任意 IO 函數就能看見 `WorldState` 正在運行。
+產生 `iomain` 那種故意找碴的函數實在太邪惡了。只要程式設計師能夠創建任意 IO 函數就能看見 `WorldState` 運行狀況。
 
 ## 特性三壓扁好了 (Property 3 Squashed For Good)
 
-我們要避免程式設計師用對的簽名創建任意函數。嗯... 現在我們需要做什麼？
+要避免程式設計師用對的簽名創建任意函數。嗯... 現在我們需要做什麼？
 
 好的，如所見使用 `WorldState` 能輕易避免程式設計師產生子類別。所以讓我們把函數簽名改成特徵 (trait)。
-> 簽名改成特徵: `WorldState => (WorldState, _)` ⇒ `Function1[WorldState, (WorldState, A)]`
+> 函數簽名改成特徵: `WorldState => (WorldState, _)` ⇒ `Function1[WorldState, (WorldState, A)]`
 
 ```scala
 sealed trait IOAction[+A] extends Function1[WorldState, (WorldState, A)]
 private class SimpleAction[+A](expression: => A) extends IOAction[A]...
 ```
 
-不像 `WorldState` 我們需要創建 `IOAction` 實例。例如，`getString` 與 `putString` 放在單獨的文件但他們需要產生新的 `IOAction`，我們只是要他們安全地做這件事。這有點兩難，除非我們理解 `getString` 與 `putString` 有兩部分：一部分做基本 IO、另一部分接收一個世界狀態傳回下個世界狀態。使用工廠方法也或許有助於程式邏輯整潔。
+不像 `WorldState` 我們需要創建 `IOAction` 實例。例如，`getString` 與 `putString` 放在單獨的文件但他們需要產生新的 `IOAction`，我們只是要他們安全地做這件事。這有點兩難，除非理解 `getString` 與 `putString` 有兩部分：一部分做基本 IO、另一部分接收一個世界狀態傳回下個世界狀態。使用工廠方法也或許有助於程式邏輯整潔。
 
 ```scala
 //file RTIO.scala
@@ -200,6 +200,7 @@ object RTConsole_v3 {
   def putString(s: String) = IOAction_v3(Console.print(s))
 }
 ```
+> 譯注：`def getString`/`def putString` 存放由 `IOAction_v3 object` 產生的 `SimpleAction` 物件
 
 最後，我們的 `HelloWorld` 類別一點都沒變
 
@@ -209,6 +210,7 @@ class HelloWorld_v3 extends IOApplication_v3 {
   def iomain(args: Array[String]) = putString("Hello world")
 }
 ```
+> 譯注：`putString("Hello world")` 回傳一個 `SimpleAction` 物件，真正執行 `Console.print("Hello world")` 是在 `main` 呼叫 `ioAction(new WorldStateImpl(0))` 的時候。
 
 稍加思索，現在沒有方法能產生邪惡的 `IOApplication`。程式設計師沒有接觸 `WorldState` 的機會，它被密封起來了。`main` 只傳遞一個 `WorldState` 給 `IOAction` 的 `apply` 方法，我們不能用客製化定義的 `apply` 創建任意 `IOAction` 的子類別。
 
