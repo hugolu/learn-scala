@@ -164,8 +164,8 @@ class Option[+T](value: T) {
   def map[R](transform: T => R): Option[_] = {
     if (value != null) new Option(transform(value)) else new Option(null)
   }
-  def orElse(defaultValue: T) {
-    if (value != null) value else defaultValue
+  def orElse[R >: T](default: R) = {
+    if (value != null) value else default
   }
 }
 
@@ -174,9 +174,65 @@ def getCityName(account: Account): String = {
   val optAddress = optAccount.map(_.address)
   val optCity = optAddress.map(_.city)          //won't compile: value city is not a member of Any
   val optName = optCity.map(_.name)             //won't compile: value name is not a member of Any
-  optName.getOrElse("Unknown")                  //won't compile: value getOrElse is not a member of myTest.test03.Option[Any]
+  optName.orElse("Unknown")                     //won't compile: value getOrElse is not a member of myTest.test03.Option[Any]
 }
 ```
 - `optAddress` 是 `optAccount.map(_.address)` 的產物，其值的型別可能是 `Option[Address]` 也可能是 `Option[Null]`，因為 [Variance](http://docs.scala-lang.org/tutorials/tour/variances.html) 的關係，最後型別會是 `Optioin[Any]`，這沒有問題。
 - 問題出在接下來的部分，`optAddress` 型別既然是 `Option[Any]` 那就沒辦法解釋 `_.city`，所以編譯失敗。
 - 接下來編譯不過，都是一樣的原因。
+
+___
+## Example 2: Transactional
+不囉唆，直接上 code。
+
+先定義資料庫 (`Database`) 、帳戶 (`Account`)，還有一些例外
+```scala
+class Database {
+	var isRollback: Boolean = false
+	def beginTransaction() = println("beginTransaction")
+	def rollback() = { isRollback = true; println("rollback") }
+	def commit() = println("commit")
+}
+
+class DepositTooFastException extends Exception
+class InsufficientBalanceException extends Exception
+
+class Account(var value: Int) {
+	override def toString = s"Account($value)"
+	def withdraw(num: Int) = if (value < num) throw new InsufficientBalanceException else value -= num
+	def deposit(num: Int) = if (num > 100) throw new DepositTooFastException else value += num
+}
+```
+
+再定義轉帳函數，基本上跟 Java code 沒什麼不同，唯一差別是 `database` 不是 global variable (這樣寫太恐怖了，哪一天怎麼死的都不知道)
+```scala
+def transfer(database: Database, account1: Account, account2: Account) = {
+  database.beginTransaction()
+
+  try {
+    account1.withdraw(100)
+    try {
+      account2.deposit(100)
+    } catch {
+      case e: DepositTooFastException => database.rollback()
+    }
+  } catch {
+    case e: InsufficientBalanceException => database.rollback()
+  }
+
+  if (database.isRollback == false) {
+    database.commit()
+  }
+}
+```
+
+程式寫得不怎麼樣，跑跑範例結果如下
+```scala
+val database = new Database                     //> database  : myTest.test08.Database myTest.test08$$anonfun$main$1$Database$1@4437a770
+val account1 = new Account(200)                 //> account1  : myTest.test08.Account = Account(200)
+val account2 = new Account(200)                 //> account2  : myTest.test08.Account = Account(200)
+transfer(database, account1, account2)          //> beginTransaction
+                                                //| commit
+account1                                        //> res0: myTest.test08.Account = Account(100)
+account2                                        //> res1: myTest.test08.Account = Account(300)
+```
