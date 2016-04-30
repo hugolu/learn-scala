@@ -97,3 +97,10 @@ opt3.map(Integer.parseInt)                      //> java.lang.NumberFormatExcept
 - `opt2 = None: Option[Null]` 經過轉換得到 `None: Option[Null]` (`Null` 再怎麼 `map` 還是 `Null`)
 - `opt3 = Some(null): Some[Null]` 轉換發生例外 (`parseInt` 無法解析 `null`)
 
+#### `Option` 的 `flatMap`
+```scala
+  opt1.flatMap(x => Option(Integer.parseInt(x)))  //> res0: Option[Int] = Some(1234)
+  opt2.flatMap(x => Option(Integer.parseInt(x)))  //> res1: Option[Int] = None
+  opt3.flatMap(x => Option(Integer.parseInt(x)))  //> java.lang.NumberFormatException: null
+                                                  //| 	at java.lang.Integer.parseInt(Integer.java:454)
+                                                  //| 	at
