@@ -177,3 +177,6 @@ def getCityName(account: Account): String = {
   optName.getOrElse("Unknown")                  //won't compile: value getOrElse is not a member of myTest.test03.Option[Any]
 }
 ```
+- `optAddress` 是 `optAccount.map(_.address)` 的產物，其值的型別可能是 `Option[Address]` 也可能是 `Option[Null]`，因為 [Variance](http://docs.scala-lang.org/tutorials/tour/variances.html) 的關係，最後型別會是 `Optioin[Any]`，這沒有問題。
+- 問題出在接下來的部分，`optAddress` 型別既然是 `Option[Any]` 那就沒辦法解釋 `_.city`，所以編譯失敗。
+- 接下來編譯不過，都是一樣的原因。
