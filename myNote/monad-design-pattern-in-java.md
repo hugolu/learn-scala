@@ -136,3 +136,44 @@ def getCityName(account: Account): String = Option(account).
   flatMap(x => Option(x.name)).
   getOrElse("Unknown")                          //> getCityName: (account: myTest.test05.Account)String
 ```
+
+#### 跟原文不一樣，怎麼不用 `map` 就好
+原本我也想用 `map` 交差了事，但事情不是憨人所想那麼簡單
+```scala
+def getCityName(account: Account): String = {
+  val optAccount = Option(account)
+  val optAddress = optAccount.map(_.address)
+  val optCity = optAddress.map(_.city)
+  val optName = optCity.map(_.name)
+  optName.getOrElse("Unknown")
+}                                               //> getCityName: (account: myTest.test03.Account)String
+
+val acc1 = Account(Address(City("Taipei")))     //> acc1  : myTest.test03.Account = Account(Address(City(Taipei)))
+val acc2 = Account(null)                        //> acc2  : myTest.test03.Account = Account(null)
+
+getCityName(acc1)                               //> res0: String = Taipei
+getCityName(acc2)                               //> java.lang.NullPointerException
+                                                //| 	at myTest.test03$$anonfun$main$1$$anonfun$2.apply(myTest.test03.scala:16)
+                                                //| 	at ...
+```
+- `getCityName` 在處理 `acc2` 的時候，因為 `acc2.address` 是 `null`，想取 `acc2.address.city` 的值發生 `NullPointerException` 
+
+參照原文寫法也有問題
+```scala
+class Option[+T](value: T) {
+  def map[R](transform: T => R): Option[_] = {
+    if (value != null) new Option(transform(value)) else new Option(null)
+  }
+  def orElse(defaultValue: T) {
+    if (value != null) value else defaultValue
+  }
+}
+
+def getCityName(account: Account): String = {
+  val optAccount = new Option(account)
+  val optAddress = optAccount.map(_.address)
+  val optCity = optAddress.map(_.city)          //won't compile: value city is not a member of Any
+  val optName = optCity.map(_.name)             //won't compile: value name is not a member of Any
+  optName.getOrElse("Unknown")                  //won't compile: value getOrElse is not a member of myTest.test03.Option[Any]
+}
+```
