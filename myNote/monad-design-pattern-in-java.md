@@ -42,14 +42,7 @@ getCityName(acc2)                               //> res1: String = Unknown
 ```scala
 acc2.address.city                               //> java.lang.NullPointerException
                                                 //| 	at myTest.test01$$anonfun$main$1.apply$mcV$sp(myTest.test01.scala:23)
-                                                //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$$anonfun$$exe
-                                                //| cute$1.apply$mcV$sp(WorksheetSupport.scala:76)
-                                                //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$.redirected(W
-                                                //| orksheetSupport.scala:65)
-                                                //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$.$execute(Wor
-                                                //| ksheetSupport.scala:75)
-                                                //| 	at myTest.test01$.main(myTest.test01.scala:3)
-                                                //| 	at myTest.test01.main(myTest.test01.scala)
+                                                //| 	at ...
 ```
 
 ### 解法一
@@ -73,3 +66,34 @@ def getCityName(account: Account) = {
 ㄟ～ 先 pass 好了，我真的不知道怎麼硬套 😓
 
 ### 解法二
+使用 `Option` 來包裝反覆出現的 `null`。
+
+繼續之前，要先提一下 Scala `Option` 的一些特性。
+
+#### `Option` 定義
+- [`Option`](http://www.scala-lang.org/api/current/#scala.Option) 是個抽象類別
+- [`Some`](http://www.scala-lang.org/api/current/#scala.Some) 繼承 `Option`，表示裡面有東西
+- [`Noen`](http://www.scala-lang.org/api/current/#scala.None$) 也是繼承 `Option`，但裡面放 [`Nothing`](http://www.scala-lang.org/api/current/#scala.Nothing) 空空如也
+
+```scala
+val opt1 = Option("1234")                       //> opt1  : Option[String] = Some(1234)
+val opt2 = Option(null)                         //> opt2  : Option[Null] = None
+val opt3 = Some(null)                           //> opt3  : Some[Null] = Some(null)
+```
+- `Option("1234")` 等於 `Some("1234")`
+- `Option(null)` 會被解釋成 `None`
+- `Some(null)` 不是 `None`，它表示 `Some` 裡面的值是 `null`
+
+#### `Option` 的 `map`
+```scala
+opt1.map(Integer.parseInt)                      //> res0: Option[Int] = Some(1234)
+opt2.map(Integer.parseInt)                      //> res1: Option[Int] = None
+opt3.map(Integer.parseInt)                      //> java.lang.NumberFormatException: null
+                                                //| 	at java.lang.Integer.parseInt(Integer.java:454)
+                                                //| 	at ...
+```
+- [`Integer.parseInt`](http://www.tutorialspoint.com/java/lang/integer_parseint.htm) 接受字串，回傳數字。如果不能解析，會丟出 `NumberFormatException` 例外
+- `opt1 = Some(1234): Option[String]` 經過轉換得到 `Some(1234): Option[Int]`
+- `opt2 = None: Option[Null]` 經過轉換得到 `None: Option[Null]` (`Null` 再怎麼 `map` 還是 `Null`)
+- `opt3 = Some(null): Some[Null]` 轉換發生例外 (`parseInt` 無法解析 `null`)
+
