@@ -85,6 +85,9 @@ val opt3 = Some(null)                           //> opt3  : Some[Null] = Some(nu
 - `Some(null)` 不是 `None`，它表示 `Some` 裡面的值是 `null`
 
 #### `Option` 的 `map`
+
+嘗試使用 `parseInt` 轉換 `Option` 的內容。[`Integer.parseInt`](http://www.tutorialspoint.com/java/lang/integer_parseint.htm) 接受字串，回傳數字。如果不能解析，會丟出 `NumberFormatException` 例外。
+
 ```scala
 opt1.map(Integer.parseInt)                      //> res0: Option[Int] = Some(1234)
 opt2.map(Integer.parseInt)                      //> res1: Option[Int] = None
@@ -92,15 +95,44 @@ opt3.map(Integer.parseInt)                      //> java.lang.NumberFormatExcept
                                                 //| 	at java.lang.Integer.parseInt(Integer.java:454)
                                                 //| 	at ...
 ```
-- [`Integer.parseInt`](http://www.tutorialspoint.com/java/lang/integer_parseint.htm) 接受字串，回傳數字。如果不能解析，會丟出 `NumberFormatException` 例外
-- `opt1 = Some(1234): Option[String]` 經過轉換得到 `Some(1234): Option[Int]`
-- `opt2 = None: Option[Null]` 經過轉換得到 `None: Option[Null]` (`Null` 再怎麼 `map` 還是 `Null`)
-- `opt3 = Some(null): Some[Null]` 轉換發生例外 (`parseInt` 無法解析 `null`)
+- `opt1 = Some(1234): Option[String]` 經過 `map` 得到 `Some(1234): Option[Int]`
+- `opt2 = None: Option[Null]` 經過 `map` 得到 `None: Option[Null]` (`Null` 再怎麼 `map` 還是 `Null`)
+- `opt3 = Some(null): Some[Null]` 進行 `map` 發生例外 (`parseInt` 無法解析 `null`)
 
 #### `Option` 的 `flatMap`
+- `Option` 的 `map` 定義：`final def map[B](f: (A) ⇒ B): Option[B]`
+- `Option` 的 `flatMap` 定義：`final def flatMap[B](f: (A) ⇒ Option[B]): Option[B]`
+
+仔細觀察 `Option` 的 `map` 與 `flatMap` 會發現，雖然兩者都用 `f` 函數轉換 `Option` 的內容，但是 `flatMap` 的 `f` 回傳 `Option[B]`，因為 `flatMap` 等於 `map` 後再 `flatten`，所以結果還是 `Option[B]`。`flatMap` 用法範例如下
+
 ```scala
-  opt1.flatMap(x => Option(Integer.parseInt(x)))  //> res0: Option[Int] = Some(1234)
-  opt2.flatMap(x => Option(Integer.parseInt(x)))  //> res1: Option[Int] = None
-  opt3.flatMap(x => Option(Integer.parseInt(x)))  //> java.lang.NumberFormatException: null
-                                                  //| 	at java.lang.Integer.parseInt(Integer.java:454)
-                                                  //| 	at
+opt1.flatMap(x => Option(Integer.parseInt(x)))  //> res0: Option[Int] = Some(1234)
+opt2.flatMap(x => Option(Integer.parseInt(x)))  //> res1: Option[Int] = None
+opt3.flatMap(x => Option(Integer.parseInt(x)))  //> java.lang.NumberFormatException: null
+                                                //| 	at java.lang.Integer.parseInt(Integer.java:454)
+                                                //| 	at ...
+```
+
+#### `Option` 版本的 `getCityName`
+先來保守一點的做法：
+```scala
+def getCityName(account: Account): String = {
+  val optAccount = Option(account)
+  val optAddress = optAccount.flatMap(x => Option(x.address))
+  val optCity = optAddress.flatMap(x => Option(x.city))
+  val optName = optCity.flatMap(x => Option(x.name))
+  optName.getOrElse("Unknown")
+}
+
+getCityName(acc1)                               //> res0: String = Taipei
+getCityName(acc2)                               //> res1: String = Unknown
+```
+
+簡潔一點的做法：
+```scala
+def getCityName(account: Account): String = Option(account).
+  flatMap(x => Option(x.address)).
+  flatMap(x => Option(x.city)).
+  flatMap(x => Option(x.name)).
+  getOrElse("Unknown")                          //> getCityName: (account: myTest.test05.Account)String
+```
