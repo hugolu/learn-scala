@@ -181,7 +181,6 @@ def getCityName(account: Account): String = {
 - 問題出在接下來的部分，`optAddress` 型別既然是 `Option[Any]` 那就沒辦法解釋 `_.city`，所以編譯失敗。
 - 接下來編譯不過，都是一樣的原因。
 
-___
 ## Example 2: Transactional
 不囉唆，直接上 code。
 
@@ -314,3 +313,49 @@ getCityName(acc1)                               //> res0: String = Taipei
 getCityName(acc2)                               //> res1: String = Unknown
 ```
 
+## Example 3: Stream
+
+第三個例子，是收集一群帳號裡的所有台灣電話。每個帳號有多支手機，每支手機儲存多個號碼，資料結構有點噁心。
+```scala
+case class Account(name: String, phones: List[Phone])
+case class Phone(numbers: List[String])
+
+val accounts = List(
+	Account(
+		"UserA",
+		List(
+			Phone(List("+88411111111", "+88522222222", "+88633333333")),
+			Phone(List("+88444444444", "+88555555555", "+88666666666")),
+			Phone(List("+88477777777", "+88588888888", "+88699999999"))
+		)),
+	Account(
+		"UserB",
+		List(
+			Phone(List("+88511111111", "+88622222222", "+88733333333")),
+			Phone(List("+88544444444", "+88655555555", "+88766666666")),
+			Phone(List("+88577777777", "+88688888888", "+88799999999"))
+		)),
+ 	Account(
+		"UserC",
+		List(
+			Phone(List("+88611111111", "+88722222222", "+88833333333")),
+			Phone(List("+88644444444", "+88755555555", "+88866666666")),
+			Phone(List("+88677777777", "+88788888888", "+88899999999"))
+		))
+)
+```
+
+用 "for" 迴圈來找出台灣電話號碼
+```scala
+def taiwanPhoneNumbers(accounts: List[Account]) =
+  for {
+    account <- accounts
+    phone <- account.phones
+    number <- phone.numbers
+    if number.startsWith("+886")
+  } yield number
+
+taiwanPhoneNumbers(accounts)                    //> res0: List[String] = List(+88633333333, +88666666666, +88699999999, +886222
+                                                //| 22222, +88655555555, +88688888888, +88611111111, +88644444444, +88677777777
+                                                //| )
+```
