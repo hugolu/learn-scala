@@ -187,58 +187,107 @@ ___
 
 先定義資料庫 (`Database`) 、帳戶 (`Account`)，還有一些例外
 ```scala
-class Database {
-	var isRollback: Boolean = false
-	def beginTransaction() = println("beginTransaction")
-	def rollback() = { isRollback = true; println("rollback") }
-	def commit() = println("commit")
-}
-
-class DepositTooFastException extends Exception
-class InsufficientBalanceException extends Exception
-
+  class Database {
+    var isRollback: Boolean = false
+    def beginTransaction() = println("beginTransaction")
+    def rollback() = { isRollback = true; println("rollback") }
+    def commit() = println("commit")
+  }
+  val database = new Database 
+```
+```scala
 class Account(var value: Int) {
 	override def toString = s"Account($value)"
 	def withdraw(num: Int) = if (value < num) throw new InsufficientBalanceException else value -= num
 	def deposit(num: Int) = if (num > 100) throw new DepositTooFastException else value += num
 }
 ```
-
-再定義轉帳函數，基本上跟 Java code 沒什麼不同，唯一差別是使用 `trait Function2` 產生 `Transfer`，初始化產生 `transfer` 時將 `database` 帶入 (`database` 不是 global variable，這樣寫太恐怖了，哪一天怎麼死的都不知道)。
 ```scala
-class Transfer(database: Database) extends Function2[Account, Account, Unit] {
-  def apply(account1: Account, account2: Account) {
-    database.beginTransaction()
+class DepositTooFastException extends Exception
+class InsufficientBalanceException extends Exception
+```
 
+再定義轉帳函數，基本上跟 Java code 沒什麼不同
+```scala
+def transfer(account1: Account, account2: Account) {
+  database.beginTransaction()
+
+  try {
+    account1.withdraw(100)
     try {
-      account1.withdraw(100)
-      try {
-        account2.deposit(100)
-      } catch {
-        case e: DepositTooFastException => database.rollback()
-      }
+      account2.deposit(100)
     } catch {
-      case e: InsufficientBalanceException => database.rollback()
+      case e: DepositTooFastException => database.rollback()
     }
+  } catch {
+    case e: InsufficientBalanceException => database.rollback()
+  }
 
-    if (database.isRollback == false) {
-      database.commit()
-    }
+  if (database.isRollback == false) {
+    database.commit()
   }
 }
-
-val database = new Database
-def transfer = new Transfer(database)
 ```
 
 程式寫得不怎麼樣，跑跑範例結果如下
 ```scala
-val account1 = new Account(200)                 //> account1  : myTest.test11.Account = Account(200)
-val account2 = new Account(200)                 //> account2  : myTest.test11.Account = Account(200)
+  val account1 = new Account(200)                 //> account1  : myTest.test11.Account = Account(200)
+  val account2 = new Account(200)                 //> account2  : myTest.test11.Account = Account(200)
 
-transfer(account1, account2)                    //> beginTransaction
-                                                //| commit
-account1                                        //> res0: myTest.test11.Account = Account(100)
-account2                                        //> res1: myTest.test11.Account = Account(300)
+  println(account1, account2)                     //> (Account(200),Account(200))
+  transfer(account1, account2)                    //> beginTransaction
+                                                  //| commit
+  println(account1, account2)                     //> (Account(100),Account(300))
 ```
-- 呼叫 `transfer(account1, account2)` 等同於呼叫 `transfer.apply(account1, account2)`
+
+### 套用 Example 1: Option 的做法
+
+實作一個 `Transactional` 的容器，可以根據交易內容操作資料庫、改變自身狀態
+```scala
+class TransactionException extends Exception
+
+object TxState extends Enumeration {
+  type TxState = Value
+  val BEGIN, ROLLBACK, COMMIT = Value
+}
+
+import TxState._
+class Transactional(txState: TxState) {
+  def map(transform: TxState => TxState): Transactional = {
+    if (txState != BEGIN) return this
+
+    try {
+      val result = transform(txState)
+      new Transactional(result)
+    } catch {
+      case e: TransactionException =>
+        database.rollback()
+        new Transactional(ROLLBACK)
+    }
+  }
+
+  def commit() = {
+    map { state =>
+      database.commit()
+      COMMIT
+    }
+  }
+}
+
+object Transcational {
+  def begin() = {
+    database.beginTransaction()
+    new Transactional(BEGIN)
+  }
+}
+```
+
+使用 `Transaction` 隱藏 `try/catch` 細節並管理交易裝態。執行結果與前一版本雷同，不再重複。
+```scala
+def transfer(account1: Account, account2: Account) = Transcational.begin().
+  map({ txState => account1.withdraw(100); txState }).
+  map({ txState => account2.deposit(100); txState }).
+  commit()
+```
+
+> 這個範例讓我修改得很痛苦，一來 `transfer` 與 `Transactional` 可以任意存取 `database`，二來 `Transactional.map` 居然把內部的狀態 `txState` 傳給外面的匿名函數處理，這都讓我深感不安，但目前 Scala 範例看得還不夠多，沒能力修改成理想的樣子只能依樣畫葫蘆 :(
