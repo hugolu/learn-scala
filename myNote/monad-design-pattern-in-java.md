@@ -291,3 +291,26 @@ def transfer(account1: Account, account2: Account) = Transcational.begin().
 ```
 
 > 這個範例讓我修改得很痛苦，一來 `transfer` 與 `Transactional` 可以任意存取 `database`，二來 `Transactional.map` 居然把內部的狀態 `txState` 傳給外面的匿名函數處理，這都讓我深感不安，但目前 Scala 範例看得還不夠多，沒能力修改成理想的樣子只能依樣畫葫蘆 :(
+
+### flatMap －展開轉換
+
+誤打誤撞，`Option` 的 `flatMap` 在 Example 1 就玩過了，這個部分蛋糕一塊
+```scala
+case class City(name: String)
+case class Address(city: City)
+case class Account(address: Address) {
+  def city() = Option(address).flatMap(x => Option(x.city))
+}
+
+def getCityName(account: Account): String = Option(account).
+  flatMap(x => x.city()).
+  flatMap(x => Option(x.name)).
+  getOrElse("Unknown")                          //> getCityName: (account: myTest.test13.Account)String
+
+val acc1 = Account(Address(City("Taipei")))     //> acc1  : myTest.test13.Account = Account(Address(City(Taipei)))
+val acc2 = Account(null)                        //> acc2  : myTest.test13.Account = Account(null)
+
+getCityName(acc1)                               //> res0: String = Taipei
+getCityName(acc2)                               //> res1: String = Unknown
+```
+
