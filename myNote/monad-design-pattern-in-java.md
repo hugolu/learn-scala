@@ -204,35 +204,41 @@ class Account(var value: Int) {
 }
 ```
 
-再定義轉帳函數，基本上跟 Java code 沒什麼不同，唯一差別是 `database` 不是 global variable (這樣寫太恐怖了，哪一天怎麼死的都不知道)
+再定義轉帳函數，基本上跟 Java code 沒什麼不同，唯一差別是使用 `trait Function2` 產生 `Transfer`，初始化產生 `transfer` 時將 `database` 帶入 (`database` 不是 global variable，這樣寫太恐怖了，哪一天怎麼死的都不知道)。
 ```scala
-def transfer(database: Database, account1: Account, account2: Account) = {
-  database.beginTransaction()
+class Transfer(database: Database) extends Function2[Account, Account, Unit] {
+  def apply(account1: Account, account2: Account) {
+    database.beginTransaction()
 
-  try {
-    account1.withdraw(100)
     try {
-      account2.deposit(100)
+      account1.withdraw(100)
+      try {
+        account2.deposit(100)
+      } catch {
+        case e: DepositTooFastException => database.rollback()
+      }
     } catch {
-      case e: DepositTooFastException => database.rollback()
+      case e: InsufficientBalanceException => database.rollback()
     }
-  } catch {
-    case e: InsufficientBalanceException => database.rollback()
-  }
 
-  if (database.isRollback == false) {
-    database.commit()
+    if (database.isRollback == false) {
+      database.commit()
+    }
   }
 }
+
+val database = new Database
+def transfer = new Transfer(database)
 ```
 
 程式寫得不怎麼樣，跑跑範例結果如下
 ```scala
-val database = new Database                     //> database  : myTest.test08.Database myTest.test08$$anonfun$main$1$Database$1@4437a770
-val account1 = new Account(200)                 //> account1  : myTest.test08.Account = Account(200)
-val account2 = new Account(200)                 //> account2  : myTest.test08.Account = Account(200)
-transfer(database, account1, account2)          //> beginTransaction
+val account1 = new Account(200)                 //> account1  : myTest.test11.Account = Account(200)
+val account2 = new Account(200)                 //> account2  : myTest.test11.Account = Account(200)
+
+transfer(account1, account2)                    //> beginTransaction
                                                 //| commit
-account1                                        //> res0: myTest.test08.Account = Account(100)
-account2                                        //> res1: myTest.test08.Account = Account(300)
+account1                                        //> res0: myTest.test11.Account = Account(100)
+account2                                        //> res1: myTest.test11.Account = Account(300)
 ```
+- 呼叫 `transfer(account1, account2)` 等同於呼叫 `transfer.apply(account1, account2)`
