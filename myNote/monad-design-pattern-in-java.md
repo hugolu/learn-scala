@@ -315,34 +315,15 @@ getCityName(acc2)                               //> res1: String = Unknown
 
 ## Example 3: Stream
 
-第三個例子，是收集一群帳號裡的所有台灣電話。每個帳號有多支手機，每支手機儲存多個號碼，資料結構有點噁心。
+第三個例子，是收集一群帳號裡的所有台灣電話。每個帳號擁有多支手機，每支手機對應一個號碼。
 ```scala
-case class Account(name: String, phones: List[Phone])
-case class Phone(numbers: List[String])
+  case class Account(name: String, phones: List[Phone])
+  case class Phone(number: String)
 
-val accounts = List(
-	Account(
-		"UserA",
-		List(
-			Phone(List("+88411111111", "+88522222222", "+88633333333")),
-			Phone(List("+88444444444", "+88555555555", "+88666666666")),
-			Phone(List("+88477777777", "+88588888888", "+88699999999"))
-		)),
-	Account(
-		"UserB",
-		List(
-			Phone(List("+88511111111", "+88622222222", "+88733333333")),
-			Phone(List("+88544444444", "+88655555555", "+88766666666")),
-			Phone(List("+88577777777", "+88688888888", "+88799999999"))
-		)),
- 	Account(
-		"UserC",
-		List(
-			Phone(List("+88611111111", "+88722222222", "+88833333333")),
-			Phone(List("+88644444444", "+88755555555", "+88866666666")),
-			Phone(List("+88677777777", "+88788888888", "+88899999999"))
-		))
-)
+  val accounts = List(
+    Account("UserA", List(Phone("+88411111111"), Phone("+88522222222"), Phone("+88633333333"))),
+    Account("UserB", List(Phone("+88544444444"), Phone("+88655555555"), Phone("+88766666666"))),
+    Account("UserC", List(Phone("+88677777777"), Phone("+88788888888"), Phone("+88899999999"))))
 ```
 
 用 "for" 迴圈來找出台灣電話號碼
@@ -351,11 +332,9 @@ def taiwanPhoneNumbers(accounts: List[Account]) =
   for {
     account <- accounts
     phone <- account.phones
-    number <- phone.numbers
+    number = phone.number
     if number.startsWith("+886")
   } yield number
 
-taiwanPhoneNumbers(accounts)                    //> res0: List[String] = List(+88633333333, +88666666666, +88699999999, +886222
-                                                //| 22222, +88655555555, +88688888888, +88611111111, +88644444444, +88677777777
-                                                //| )
+taiwanPhoneNumbers(accounts)                    //> res0: List[String] = List(+88633333333, +88655555555, +88677777777)
 ```
