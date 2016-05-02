@@ -2,7 +2,7 @@
 
 來源：https://ingramchen.io/blog/2014/11/monad-design-pattern-in-java.html
 
-文章開頭先講一下我的企圖。這陣子一直在看 Scala Monad 的文章，昨天 [Ian Chiu](https://www.facebook.com/ian.chiu621) 丟給我這篇文章，剛好解答了我對 Scala Monad 的某些疑惑，引起我的興趣，雖然看得懂 Java code 但骨子裡還是有點排斥這個囉唆的語言 (個人觀感，不討戰)，索性來把這篇文章的範例翻譯成 Scala 版本，文字解說請參考原文。
+文章開頭先講一下我的企圖。這陣子一直在看 Scala Monad 的文章，前幾天 [Ian Chiu](https://www.facebook.com/ian.chiu621) 丟給我這篇文章，剛好解答了我對 Scala Monad 的某些疑惑，引起我的興趣，雖然看得懂 Java code 但骨子裡還是有點排斥這個囉唆的語言 (個人觀感，不討戰)，索性來把這篇文章的範例翻譯成 Scala 版本，文字解說請參考原文。
 
 以下正文。
 ___
@@ -397,3 +397,60 @@ taiwanPhoneNumbers2(accounts)                   //> res4: List[String] = List(+8
 
 為什麼？因為 Scala for comprehension 就是由 `flatMap`、`map`、`filter` 組成的啊
 
+## Monad Design Pattern
+
+重點筆記: 「三個範例，分別解決不同的運算問題，但是解法是相似的，都是設計一個狀態的容器，加上 flatMap() method 來接受轉換的函式。具備這樣特徵的容器我們稱之為 Monad」
+```scala
+class Monad[+T](state: T) {
+  def flatMap[R](transform: T => Monad[R]) = { /* 封裝反覆出現的運算 */ }
+  def map[R](transform: T => R) = flatMap { state => new Monad(transform(state)) }
+}
+```
+
+### Monad 的適用範圍
+
+以下原文重點筆記：
+- 程式有反覆出現的運算
+- 運算常常會出現巢狀的結構
+- 運算很容易寫錯，最好可以 compile 時就先抓到
+- 運算過程中，某個值的狀態會改變
+> 後兩個比較不明顯
+
+### Monad 的優點
+
+以下原文重點筆記：
+- 去除重複累贅的程式碼
+- 將運算結構提升到型別這個層級 (這就是讓人望之卻步的**抽象**)
+- Compile 時就能檢查出來
+	- 將那散佈在程式碼各處的運算，集中並凸顯 (把原本散在 if, for loop, try/catch 裡面的，放到 `flapMap`/`map`/`filter`)
+	- 封裝底層的實作
+	- 將 side effect 外包 給 Monad，主程式只有重要的邏輯 (不知道 Scala 是不是也這樣處理 [side effect](http://alvinalexander.com/scala/scala-idiom-methods-functions-no-side-effects))
+- Monad 的 flatMap 是可以組合，連串呼叫的，程式碼易讀性好。
+- 允許加上 domain 裏有意義，高階的 method (指的應該是在 Monad 中添加方法)
+
+### Monad 的缺點
+
+以下原文重點筆記：
+- 它最大的缺點是它是侵入式的，一旦開始採用後，你的 API 就會被迫改變
+
+以下 Java code
+```java
+//原本 API 很乾淨的：
+City getCity() {...}
+
+//加上 Monad 的保護，API 非改不可，有時候這不是你想要的
+Optional<City> city() {...}
+
+//如果出現了需要混用不同 Monad 的情境，就完了
+//試想，這 API 能看嗎?
+Transactional<Optional<City>> tryCreateCity(String cityName) {...}
+```
+
+以下 Scala code，雖然 type of return value 改變了，但是函數可讀性還是比 Java 好一點點點... (心虛)
+```scala
+def getCity() = {...}
+
+def getCity(): Option[City] = {...}
+
+def tryCreateCity(cityName: String): Transactional[Option[City]] = {...}
+```
