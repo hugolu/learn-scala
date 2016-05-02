@@ -459,22 +459,24 @@ def tryCreateCity(cityName: String): Transactional[Option[City]] = {...}
 
 惡名昭彰的 callback hell：
 ```scala
+type Consumer[T] = Function1[T, Unit]
+
 class HttpClient {
-  def getHtml(url: String, callback: String => Unit) = {
+  def getHtml(url: String, callback: Consumer[String]) = {
     val html = "<html><body>hello world</body></html>"
     callback(html)
   }
 }
 
 class FileUtil {
-  def writeFile(fileName: String, data: String, callback: Boolean => Unit) = {
+  def writeFile(fileName: String, data: String, callback: Consumer[Boolean]) = {
     println(s"""write "$data" in $fileName""")
     callback(true)
   }
 }
 
 class MailClient {
-  def sendEmail(email: String, callback: Boolean => Unit) = {
+  def sendEmail(email: String, callback: Consumer[Boolean]) = {
     println(s"mail to $email")
     callback(true)
   }
@@ -500,3 +502,7 @@ crawlPage("http://example.com/index.html")      //> write "<html><body>hello wor
                                                 //| result: true
 ```
 > 在 `crawlPage` 裡面使用 `httpClient`、`fileUtil`、`mailClient` 全域變數，真的很不 OK 啊～ (抱頭)
+
+問題：前面的範例裏，Monad 解決了 if、for、try catch，那重複的 callback，能夠解開嗎？
+
+### Promise Monad
