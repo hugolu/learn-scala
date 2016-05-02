@@ -506,3 +506,39 @@ crawlPage("http://example.com/index.html")      //> write "<html><body>hello wor
 問題：前面的範例裏，Monad 解決了 if、for、try catch，那重複的 callback，能夠解開嗎？
 
 ### Promise Monad
+
+第一次嘗試將 Java 範例翻譯成 Scala，遭遇了語言上的問題。在 `flatMap` 中要將 `transform` 儲存在 `pendingTransform` 時，`pendingTransform` 必須是 `T => Promise[_]`。然而在 `complete` 呼叫 `pendingTransform(value)` 得到的 `promiseR` 型別是 `Promise[_]`，導致 `promiseR.flatMap { nextValue => ... }` 中無法判別 `nextValue` 的型別，而發生編譯時期錯誤。我需要繼續補齊 [Principles of Reactive Programming](https://class.coursera.org/reactive-002/lecture) 的知識才能完成這篇。
+```scala
+class Promise[T](var value: T) {
+  var pendingTransform: T => Promise[_]
+  var chainPromise: Promise[_]
+
+  def flatMap[R](transform: T => Promise[R]) = {
+    if (value != null) {
+      transform(value)
+    } else {
+      pendingTransform = transform
+      chainPromise = new Promise(null)
+      chainPromise
+    }
+  }
+  
+  def map[R](transform: T => R) = {
+    flatMap(value => new Promise(transform(value)))
+  }
+
+  def complete(value: T): Unit = {
+    if (pendingTransform == null) {
+      this.value = value
+    } else {
+      val promiseR = pendingTransform(value)
+      promiseR.flatMap { nextValue =>
+        chainPromise.complete(nextValue)	// won't compile: type mismatch; found : nextValue.type (with underlying type _$1) required: _$2 where type _$2
+        null
+      }
+    }
+  }
+}
+```
+
+<<< 未完待續 >>>
