@@ -454,3 +454,49 @@ def getCity(): Option[City] = {...}
 
 def tryCreateCity(cityName: String): Transactional[Option[City]] = {...}
 ```
+
+## Example 4: Promise
+
+惡名昭彰的 callback hell：
+```scala
+class HttpClient {
+  def getHtml(url: String, callback: String => Unit) = {
+    val html = "<html><body>hello world</body></html>"
+    callback(html)
+  }
+}
+
+class FileUtil {
+  def writeFile(fileName: String, data: String, callback: Boolean => Unit) = {
+    println(s"""write "$data" in $fileName""")
+    callback(true)
+  }
+}
+
+class MailClient {
+  def sendEmail(email: String, callback: Boolean => Unit) = {
+    println(s"mail to $email")
+    callback(true)
+  }
+}
+
+val httpClient = new HttpClient                 //> httpClient  : myTest.test15.HttpClient = myTest.test15$$anonfun$main$1$HttpClient$1@74359b24
+val fileUtil = new FileUtil                     //> fileUtil  : myTest.test15.FileUtil = myTest.test15$$anonfun$main$1$FileUtil$1@2e746d6d
+val mailClient = new MailClient                 //> mailClient  : myTest.test15.MailClient = myTest.test15$$anonfun$main$1$MailClient$1@76de43f3
+
+def crawlPage(url: String) =
+  httpClient.getHtml(url, html => {
+    val fileName = "Page1.html"
+    fileUtil.writeFile(fileName, html, success => {
+      val email = "my@gmail.com"
+      mailClient.sendEmail(email, sent => {
+        println("result: " + sent);
+      })
+    })
+  })                                            //> crawlPage: (url: String)Unit
+
+crawlPage("http://example.com/index.html")      //> write "<html><body>hello world</body></html>" in Page1.html
+                                                //| mail to my@gmail.com
+                                                //| result: true
+```
+> 在 `crawlPage` 裡面使用 `httpClient`、`fileUtil`、`mailClient` 全域變數，真的很不 OK 啊～ (抱頭)
