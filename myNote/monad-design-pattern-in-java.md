@@ -338,3 +338,62 @@ def taiwanPhoneNumbers(accounts: List[Account]) =
 
 taiwanPhoneNumbers(accounts)                    //> res0: List[String] = List(+88633333333, +88655555555, +88677777777)
 ```
+
+### 容器 `Stream`
+
+設計新容器 Stream 解決重複的運算結構：
+```scala
+case class Stream[T](val values: List[T]) {
+  def flatMap[R](transform: T => Stream[R]) = {
+    import scala.collection.mutable.ArrayBuffer
+    val array = ArrayBuffer[R]()
+
+    for (value <- values) {
+      val transformed = transform(value)
+      for (result <- transformed.values) {
+        array += result
+      }
+    }
+    Stream(array.toList)
+  }
+
+  def map[R](transform: T => R) = flatMap { value =>
+    Stream(List(transform(value)))
+  }
+
+  def filter(predicate: T => Boolean) = flatMap { value =>
+    if (predicate(value) == true) Stream(List(value)) else Stream(List[T]())
+  }
+
+  def toList() = values
+}
+```
+
+使用簡單的資料結構驗證一下
+```scala
+val stream = Stream(List(1, 2, 3))              //> stream  : myTest.test14.Stream[Int] = Stream(List(1, 2, 3))
+
+stream.map(x => x * 2)                          //> res1: myTest.test14.Stream[Int] = Stream(List(2, 4, 6))
+stream.flatMap(x => Stream(List(x - 1, x + 1))) //> res2: myTest.test14.Stream[Int] = Stream(List(0, 2, 1, 3, 2, 4))
+stream.filter(x => x % 2 != 0)                  //> res3: myTest.test14.Stream[Int] = Stream(List(1, 3))
+```
+
+套用到找電話的範例
+```scala
+def taiwanPhoneNumbers2(accounts: List[Account]) =
+  Stream(accounts).
+    flatMap(account => Stream(account.phones)).
+    map(phone => phone.number).
+    filter(number => number.startsWith("+886")).
+    toList()                                    //> taiwanPhoneNumbers2: (accounts: List[myTest.test14.Account])List[String]
+
+taiwanPhoneNumbers2(accounts)                   //> res4: List[String] = List(+88633333333, +88655555555, +88677777777)
+```
+
+這跟使用 Scala for comprehension 解法很類似
+- `flatMap(account => Stream(account.phones))` 類似於 "for" 裡面的 `account <- account; phone <- account.phones`
+- `map(phone => phone.number)` 類似於 "for" 裡面的 `number = phone.number`
+- `filter(number => number.startsWith("+886"))` 類似於 "for" 裡面的 `if number.startsWith("+886")`
+
+為什麼？因為 Scala for comprehension 就是由 `flatMap`、`map`、`filter` 組成的啊
+
