@@ -301,10 +301,6 @@ object IOAction {
   def apply[A](expression: => A): IOAction[A] = new SimpleAction(expression)
 ```
 
-UnitAction is a class for unit actions - actions that return the specified value but don't change the world state. 
-unit is a factory method for it. 
-It's kind of odd to make a distinction from SimpleAction, but we might as well get in good monad habits now for monads where it does matter.
-
 `UnitAction` 是單元動作類別 - 動作回傳指定結果卻不改變世界狀態，`unit` 是它的工廠方法。要跟 `SimpleAction` 有所區隔感覺怪怪的，但現在要培養對 Monad 來說重要的好習慣。
 
 ```scala
@@ -329,7 +325,7 @@ It's kind of odd to make a distinction from SimpleAction, but we might as well g
 }
 ```
 
-`IOAction` 的 `flatMap` 與 `ChainedAction` 維持原樣。改變 `map` 真正呼叫 `unit` 方法，以便符合 Monad 法則。也加入兩個方便的方法：`>>` 與 `<<`。`flatMap` 將這個動作與一個回傳動作的函數串連起來，`>>` 與 `<<` 把這個動作與另一個動作串起來。這是個會得到哪個結果的問題。`>>` 唸作 "then"，產生一個回傳第二個結果的動作，所以 `putString "What's your name" >> getString` 產生一個顯示提示的動作然後回傳使用者的反應。相反地，`<<` 唸作 "before"，產生一個回傳第一個動作結果的動作。
+`IOAction` 的 `flatMap` 與 `ChainedAction` 維持原樣。改變 `map` 真正呼叫 `unit` 方法，以便符合 Monad 法則。我也加入兩個方便的方法：`>>` 與 `<<`。相比 `flatMap` 是將動作與一個回傳動作的函數串連起來，而 `>>` 與 `<<` 把動作與另一個動作串起來，問題是得到哪個結果？`>>` 唸作 "then"，產生一個回傳第二個結果的動作，所以 `putString "What's your name" >> getString` 產生一個顯示提示的動作然後回傳使用者的反應。相反地，`<<` 唸作 "before"，產生一個回傳第一個動作結果的動作。
 
 ```scala
 sealed abstract class IOAction[+A] extends Function1[WorldState, (WorldState, A)] {
