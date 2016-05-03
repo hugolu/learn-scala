@@ -211,7 +211,7 @@ class HelloWorld_v3 extends IOApplication_v3 {
   def iomain(args: Array[String]) = putString("Hello world")
 }
 ```
-> 譯注：`putString("Hello world")` 回傳一個 `SimpleAction` 物件，真正執行 `Console.print("Hello world")` 是在 `main` 呼叫 `ioAction(new WorldStateImpl(0))` 的時候。
+> 譯注：`putString("Hello world")` 回傳一個 `SimpleAction` 物件，真正執行 `Console.print("Hello world")` 是在 `main` 呼叫 `ioAction(new WorldStateImpl(0))` 的時候 (實際執行 `SimpleAction.apply(worldState)` 然後得到 `(worldState.next, Console.print("Hello world")`)。
 
 稍加思索，現在沒有方法能產生邪惡的 `IOApplication`。程式設計師沒有接觸 `WorldState` 的機會，它被密封起來了。`main` 只傳遞一個 `WorldState` 給 `IOAction` 的 `apply` 方法，我們不能用客製化定義的 `apply` 創建任意 `IOAction` 的子類別。
 
