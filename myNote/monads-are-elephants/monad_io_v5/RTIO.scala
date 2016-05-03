@@ -27,7 +27,7 @@ sealed abstract class IOAction[+A] extends Function1[WorldState, (WorldState, A)
   def map[B](f: A => B): IOAction[B] = flatMap { x => IOAction.unit(f(x)) }
   def flatMap[B](f: A => IOAction[B]): IOAction[B] = new ChainedAction(this, f)
 
-  private class ChainedAction[+A, B](action1: IOAction[B], f: B => IOAction[A]) extends IOAction[A] {
+  private class ChainedAction[A, +B](action1: IOAction[A], f: A => IOAction[B]) extends IOAction[B] {
     def apply(state1: WorldState) = {
       val (state2, intermediateResult) = action1(state1)
       val action2 = f(intermediateResult)
