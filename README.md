@@ -14,3 +14,7 @@
 推薦線上課程：
 - [Functional Programming Principles in Scala](https://class.coursera.org/progfun-005) - 訓練 functional programming 的思維方式
 - [Principles of Reactive Programming](https://class.coursera.org/reactive-002) - 介紹 concurrent programming 的程式技巧
+
+進階內容：
+- [Monads are Elephants](https://github.com/hugolu/learn-scala/blob/master/myNote/monads-are-elephants/README.md) - 由淺入深討論 Monad 的系列文章，最後用 Monad IO 範例完整介紹 Monad 實作與應用
+- [Monad Design Pattern in Scala](https://github.com/hugolu/learn-scala/blob/master/myNote/monad-design-pattern-in-java.md) - 原文由 Java code 實作介紹 Monad 原理與設計模式，我用 Scala 重寫範例
