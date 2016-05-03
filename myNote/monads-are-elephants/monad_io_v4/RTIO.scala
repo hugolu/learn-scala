@@ -4,7 +4,7 @@ sealed abstract class IOAction_v4[+A] extends Function1[WorldState, (WorldState,
   def map[B](f: A => B): IOAction_v4[B] = flatMap { x => IOAction_v4(f(x)) }
   def flatMap[B](f: A => IOAction_v4[B]): IOAction_v4[B] = new ChainedAction(this, f)
 
-  private class ChainedAction[+A, B](action1: IOAction_v4[A], f: A => IOAction_v4[B]) extends IOAction_v4[B] {
+  private class ChainedAction[A, +B](action1: IOAction_v4[A], f: A => IOAction_v4[B]) extends IOAction_v4[B] {
     def apply(state1: WorldState) = {
       val (state2, intermediateResult) = action1(state1)
       val action2 = f(intermediateResult)
