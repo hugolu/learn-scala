@@ -254,11 +254,10 @@ sealed trait WorldState { def nextState: WorldState }
 abstract class IOApplication_v4 {
   private class WorldStateImpl(id: BigInt) ...
 ```
+> 譯注：懷疑 `class ChainedAction[+A, B](action1: IOAction_v4[B], f: B => IOAction_v4[A]) extends IOAction_v4[A]` 定義錯誤，更正請參考 monad_io_v4 RTIO.scala
 
-`IOAction` 工廠與 `SimpleAction` 照舊。`IOAction` 類別有 Monad 方法 (譯注：`map` & `flatMap`)。按照 Monad 法則，目前 `map` 只是用 `flatMap` 與 "unit" 來定義。`flatMap` 把全部的苦差事都推到一個叫做 `ChainedAction` 的 `IOAction` 實作上。
-
-`ChainedAction` 的花招在於它 `apply` 的方法。首先用第一個世界狀態呼叫 `action1`。這產生第二個世界狀態與一個中間結果。
-`apply` 這函數被串接成需要第一次呼叫的結果，然後返回一個產生下個動作 `action2` 的函數。用第二個世界狀態呼叫 `action2`，最終產生一個數組。記住，直到 `main` 傳入一個初始化的 `WorldState` 物件前，所有一切都不會發生。
+`IOAction` 工廠與 `SimpleAction` 照舊。`IOAction` 類別有 Monad 方法 (譯注：`map` & `flatMap`)。按照 Monad 法則，目前 `map` 只是用 `flatMap` 與 "unit" 來定義。`flatMap` 把全部的苦差事都推到一個叫做 `ChainedAction` 的 `IOAction` 實作上。`ChainedAction` 的花招在於它 `apply` 的方法。首先用第一個世界狀態呼叫 `action1`，產生第二個世界狀態與一個中間結果 (譯注：`val (state2, intermediateResult) = action1(state1)`)。被串接的函數 `f` 需要那個中間結果，然後返回一個產生下個動作 `action2` 的函數 (譯注：`val action2 = f(intermediateResult)`)。用第二個世界狀態呼叫 `action2`，最終產生一個數組 (譯注：`action2(state2)`)。
+記住，直到 `main` 傳入一個初始化的 `WorldState` 物件前，所有一切都不會發生。
 
 ## 測試驅動器 (A Test Drive)
 
