@@ -95,3 +95,24 @@ case JObj(bindings) =>
 ```
 
 `map` 預期型別是 `JBinding => String`，匿名函數的型別是輸入 `(key: String, value: JSON)`、輸出 `String`。在此 `JBinding` 定義為 `type JBinding = (String, JSON)`。
+
+### Functions are Objects
+
+在 Scala 中，函數是一級函數，也是物件。所以 `JBbinding => String` 的型別事實上是 `Function1[JBinding, String]`。
+
+`Function1` 是 trait
+```scala
+trait Function1[-A, +R] {
+  def apply(x: A): R
+}
+```
+
+`JBinding` 跟 `String` 是 type parameters，所以`{ case (key, value) => key + ”: ” + value }` 被展開成
+```scala
+new Function1[JBinding, String] {
+  def apply(x: JBinding) = x match {
+    case (key, value) => key + ": " + show(value)
+  }
+}
+```
+
