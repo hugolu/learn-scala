@@ -82,5 +82,16 @@ show(data)                                      //> res0: String = {"firstName":
 
 如果單獨嘗試這段程式，會得到錯誤訊息：“missing parameter type for expanded function The argument types of an anonymous function must be fully known. (SLS 8.5) Expected type was: ?”
 
-`map` 預期型別是 `JBinding => String`，匿名函數的型別是輸入 `(String, JSON)`、輸出 `String`，在此 `JBinding` 定義為
-- `type JBinding = (String, JSON)`
+把相關的程式碼拉出來看
+```scala
+abstract class JSON
+case class JObj (bindings: Map[String, JSON]) extends JSON
+
+case JObj(bindings) =>
+  val assocs = bindings map {
+    case (key, value) => "\"" + key + "\": " + show(value)
+  }
+  "{" + (assocs mkString ", ") + "}"
+```
+
+`map` 預期型別是 `JBinding => String`，匿名函數的型別是輸入 `(key: String, value: JSON)`、輸出 `String`。在此 `JBinding` 定義為 `type JBinding = (String, JSON)`。
