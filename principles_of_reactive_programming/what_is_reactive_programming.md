@@ -2,7 +2,7 @@
 
 ## 改變中的需求
 
-|   | 10年前 | 現在 |
+|   | 十年前 | 現在 |
 |---|--------|------|
 | 伺服器節點 | 數十個 | 數千個 |
 | 反應時間 | 數秒 | 數毫秒 |
@@ -11,9 +11,9 @@
 
 ## 需要新的架構
 
-之前：管理伺服器與容器
+之前：使用像 Java Enterprise 架構管理伺服器與應用程式容器 (猜測類似 [Tomcat](https://zh.wikipedia.org/wiki/Apache_Tomcat) 的容器)
 
-現在：響應式應用
+現在：響應式應用程式
 - 事件驅動 (event-driven)
 - 可擴充性 (scalable)
 - 有彈性的 (resilient)
@@ -21,12 +21,14 @@
 
 ### 響應式 (Reactive)
 
-[Merriam Webster] reactive: “readily responsive to a stimulus”. (對刺激快速反應)
+Reactive: 對刺激快速做出反應
 
-- 對事件做出反應 (事件驅動)
-- 對覆載做出反應 (可擴充性)
-- 對失敗做出反應 (有彈性的)
-- 對用戶做出反應 (反應敏捷)
+- 對**事件**做出反應 ⇒ 事件驅動
+- 對**覆載**做出反應 ⇒ 可擴充性
+- 對**失敗**做出反應 ⇒ 有彈性的
+- 對**用戶**做出反應 ⇒ 反應敏捷
+
+Event-driven enables scalable, resilient, responsive. Scalable enables responsive. Resilient enables reponsive.
 
 ### 事件驅動
 
