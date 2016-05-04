@@ -80,3 +80,7 @@ show(data)                                      //> res0: String = {"firstName":
 
 `{ case (key, value) => key + ”: ” + value }` 的型別是什麼？
 
+如果單獨嘗試這段程式，會得到錯誤訊息：“missing parameter type for expanded function The argument types of an anonymous function must be fully known. (SLS 8.5) Expected type was: ?”
+
+`map` 預期型別是 `JBinding => String`，匿名函數的型別是輸入 `(String, JSON)`、輸出 `String`，在此 `JBinding` 定義為
+- `type JBinding = (String, JSON)`
