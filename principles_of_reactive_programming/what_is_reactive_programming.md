@@ -36,7 +36,7 @@ Event-driven enables scalable, resilient, responsive. Scalable enables responsiv
 - 強耦合、難以編寫
 
 現在：系統由寬鬆耦合的事件處理器構成
-- 事件可以非同步處理，不需 blocking
+- 事件可以非同步處理，不需 blocking (效率自然較佳)
 
 ### 可擴充性
 
@@ -82,13 +82,13 @@ class Counter implements ActionListener {
 ```
 
 問題：
-- 需要共享可變更的狀態
-- 沒辦法組合
-- 會導致 call-backs 地獄
+- 需要共享可變更的狀態 (`var count`)
+- 沒辦法組合簡單的 lisenter
+- 導致 call-backs 地獄 (構成網狀 callback 結構，問題難以追蹤)
 
 ### 怎麼做更好
 
-使用函式編程的基本結構得到可組合的事件抽象概念。
+使用函式編程的基本結構得到**可組合**的事件抽象概念。
 - 事件是一級類別
 - 事件通常以訊息方式呈現
 - 事件處理器也是一級類別
