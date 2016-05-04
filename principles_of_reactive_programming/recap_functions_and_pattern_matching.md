@@ -78,7 +78,7 @@ show(data)                                      //> res0: String = {"firstName":
 
 ### Case Blocks
 
-`{ case (key, value) => key + ”: ” + value }` 的型別是什麼？
+`{ case (key, value) => key + ": " + value }` 的型別是什麼？
 
 如果單獨嘗試這段程式，會得到錯誤訊息：“missing parameter type for expanded function The argument types of an anonymous function must be fully known. (SLS 8.5) Expected type was: ?”
 
@@ -107,7 +107,7 @@ trait Function1[-A, +R] {
 }
 ```
 
-`JBinding` 跟 `String` 是 type parameters，所以`{ case (key, value) => key + ”: ” + value }` 被展開成
+`JBinding` 跟 `String` 是 type parameters，所以`{ case (key, value) => "\"" + key + "\": " + show(value) }` 被展開成
 ```scala
 new Function1[JBinding, String] {
   def apply(x: JBinding) = x match {
