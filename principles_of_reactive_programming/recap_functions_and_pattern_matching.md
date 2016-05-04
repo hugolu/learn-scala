@@ -29,7 +29,15 @@ case class JNum (num: Double)                 extends JSON
 case class JStr (str: String)                 extends JSON
 case class JBool(b: Boolean)                  extends JSON
 case object JNull                             extends JSON
+```
+- `JSeq` is a sequence of JSON objects.
+- `JObj` contains the bindings which are a map from strings. (field name to JSON object)
+- `JNum` captures a number, which is a double in Scala.
+- `JStr` captures a string.
+- `JBool` captures a Boolean.
+- `JNull`represents the null value.
 
+```scala
 val data = JObj(Map(
   "firstName" -> JStr("John"),
   "lastName" -> JStr("Smith"),
@@ -67,3 +75,8 @@ show(data)                                      //> res0: String = {"firstName":
                                                 //| umbers": [{"type": "home", "number": "212 555-1234"}, {"type": "fax", "numb
                                                 //| er": "646 555-4567"}]}
 ```
+
+### Case Blocks
+
+`{ case (key, value) => key + ”: ” + value }` 的型別是什麼？
+
