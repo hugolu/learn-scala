@@ -46,3 +46,24 @@ val data = JObj(Map(
       "type" -> JStr("fax"), "number" -> JStr("646 555-4567")
     )) )) ))
 ```
+
+`show` 回傳表示 `JSON` 物件的字串
+```scala
+def show(json: JSON): String = json match {
+  case JSeq(elems)    => "[" + (elems map show mkString ", ") + "]"
+  case JObj(bindings) =>
+    val assocs = bindings map {
+      case (key, value) => "\"" + key + "\": " + show(value)
+    }
+    "{" + (assocs mkString ", ") + "}"
+  case JNum(num)      => num.toString
+  case JStr(str)      => '\"' + str + '\"'
+  case JBool(b)       => b.toString
+  case JNull          => "null"
+}
+
+show(data)                                      //> res0: String = {"firstName": "John", "lastName": "Smith", "address": {"stre
+                                                //| etAddress": "21 2nd Street", "state": "NY", "postalCode": 10021.0}, "phoneN
+                                                //| umbers": [{"type": "home", "number": "212 555-1234"}, {"type": "fax", "numb
+                                                //| er": "646 555-4567"}]}
+```
