@@ -54,3 +54,45 @@ abstract class List[+T] {
 
 ## For-Expressions
 
+```scala
+(1 until n) flatMap (i =>
+  (1 until i) filter (j => isPrime(i + j)) map
+    (j => (i, j)))
+```
+等同於
+```scala
+for {
+  i <- 1 until n
+  j <- 1 until i
+  if isPrime(i + j)
+} yield (i, j)
+```
+"for" 表示式更易於理解
+
+### 翻譯 for (1)
+```scala
+for (x <- e1) yield e2
+```
+被翻譯成
+```scala
+e1.map(x => e2)
+```
+
+### 翻譯 for (2)
+```scala
+for (x <- e1 if f; s) yield e2
+```
+`f` is a filter and `s` is a (potentially empty) sequence of generators and filters，"for" 被翻譯為
+```scala
+for (x <- e1.withFilter(x => f); s) yield e2
+```
+- `withFilter` 可以看成一種 `filter`，但不會產生 list 的中間產物
+
+### 翻譯 for (3)
+```scala
+for (x <- e1; y <- e2; s) yield e3
+```
+被翻譯成
+```scala
+e1.flatMap(x => for(y <- e2; s) yield e3)
+```
