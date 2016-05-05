@@ -51,3 +51,6 @@ abstract class List[+T] {
 事實上，collection 這些方法實作上各有不同
 - 要能套用到任意 collection type，不只是 list
 - 要做到 tail-recursive (避免 stack overflow)
+
+## For-Expressions
+
