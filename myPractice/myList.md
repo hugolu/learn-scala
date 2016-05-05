@@ -82,7 +82,7 @@ listC.prepend(new C)                            //> res2: week4.List[week4.test.
   - ```def prepend[A](elem: A): List[A]```
 
 ___
-## add map()
+## 加入 `map`, `flatMap`, `filter`
 
 ```scala
 abstract class List[+T] {
@@ -90,28 +90,43 @@ abstract class List[+T] {
   def head: T
   def tail: List[T]
   def ::[U >: T](x: U): List[U]
-  def map[U >: T, R](f: U => R): List[R] = if (this.isEmpty == true) Nil else f(this.head) :: this.tail.map(f)
+  def ++[U >: T](other: List[U]): List[U] =
+    if (this.isEmpty == true) other else head :: (tail ++ other)
+  def map[U >: T, R](f: U => R): List[R] =
+    if (this.isEmpty == true) Nil else f(this.head) :: this.tail.map(f)
+  def flatMap[U >: T, R](f: U => List[R]): List[R] =
+    if (this.isEmpty == true) Nil else f(this.head) ++ this.tail.flatMap(f)
+  def filter(f: T => Boolean): List[T] =
+  	if (this.isEmpty == true) Nil else {
+  		if (f(this.head) == true) this.head :: this.tail.filter(f) else this.tail.filter(f)
+  	}
 }
 
 object Nil extends List[Nothing] {
-  def isEmpty: Boolean = true
-  def head: Nothing = throw new Error("Nil.head")
-  def tail: Nothing = throw new Error("Nil.tail")
   override def toString = "Nil"
+  def isEmpty = true
+  def head = throw new NoSuchElementException("Nil.head")
+  def tail = throw new NoSuchElementException("Nil.tail")
   def ::[T](x: T): List[T] = new Cons(x, this)
 }
 
 class Cons[T](val head: T, val tail: List[T]) extends List[T] {
+  override def toString = head + " :: " + tail
   def isEmpty: Boolean = false
-  override def toString = head + "->" + tail
   def ::[U >: T](x: U): List[U] = new Cons(x, this)
 }
 
 object List {
   def apply[T](args: T*): List[T] = if (args.size == 0) Nil else new Cons(args.head, apply(args.tail: _*))
 }
+```
 
-val list = List(1, 2, 3, 4)                     //> list  : myTest.test22.List[Int] = 1->2->3->4->Nil
-
-list.map((x: Int) => x * 2)                     //> res0: myTest.test22.List[Int] = 2->4->6->8->Nil
+測試結果
+```scala
+val list1 = List(1, 2, 3)                       //> list1  : myTest.List[Int] = 1 :: 2 :: 3 :: Nil
+val list2 = List(4, 5, 6)                       //> list2  : myTest.List[Int] = 4 :: 5 :: 6 :: Nil
+val list3 = list1 ++ list2                      //> list3  : myTest.List[Int] = 1 :: 2 :: 3 :: 4 :: 5 :: 6 :: Nil
+list1.map { (x: Int) => x * 2 }                 //> res0: myTest.List[Int] = 2 :: 4 :: 6 :: Nil
+list1.flatMap { (x: Int) => List(x - x, x + 1) }//> res1: myTest.List[Int] = 0 :: 2 :: 0 :: 3 :: 0 :: 4 :: Nil
+list3.filter { (x: Int) => x % 2 == 0 }         //> res2: myTest.List[Int] = 2 :: 4 :: 6 :: Nil
 ```
