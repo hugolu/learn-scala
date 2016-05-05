@@ -3,7 +3,7 @@
 筆記兼翻譯 Coursera [Principles of Reactive Programming](https://class.coursera.org/reactive-002) 課程
 
 - [What is Reactive Programming?](what_is_reactive_programming.md)
-- [Recap: Recap- Collections](recap_functions_and_pattern_matching.md)
+- [Recap: Functions and Pattern Matching](recap_functions_and_pattern_matching.md)
 - [Recap: Collections](recap_collections.md)
 - [Functional Random Generators](functional_random_generators.md)
 - [Monads](monads.md)
