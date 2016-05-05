@@ -116,3 +116,84 @@ new Function1[JBinding, String] {
 }
 ```
 
+### Subclassing Functions
+
+剛剛提過函數是一級函數，所以函數型別也可以繼承。
+
+例如，Map 是從 key 得到 value 的函數
+```scala
+val nums = Map((1, "one"), (2, "two"), (3, "three"))
+
+nums(1)                                         //> res0: String = one
+```
+
+看起來 Map 的定義就像 (我認為 scala 不是真的這麼做的)
+```scala
+trait Map[Key, Value] extends (Key => Value)
+```
+
+例如，seq 是從 index 得到 value 的函數
+```scala
+val nums = Seq("one", "two", "three")
+
+nums(0)                                         //> res0: String = one
+```
+
+看起來 Seq 的定義就像
+```scala
+trait Seq[Elem] extends (Int => Elem)
+```
+
+### Partial Matches
+
+`{ case "ping" => "pong" }` 這個 pattern matching 區塊，加上型別定義可以被解釋成
+```scala
+val f: String => String = { case "ping" => "pong" }
+```
+
+事實上，完整展開會是長這樣
+```scala
+val f: String => String = new Function1[String, String] {
+	def apply(x: String): String = x match {
+		case "ping" => "pong"
+	}
+}
+```
+
+所以 `f` 可以定義成
+```scala
+val f: Function1[String, String] = { case "ping" => "pong" }
+```
+
+使用情況如下
+```scala
+f("ping")                                       //> res0: String = pong
+
+f("abc")                                        //> scala.MatchError: abc (of class java.lang.String)
+                                                //| 	at myTest.test17$$anonfun$main$1$$anonfun$1.apply(myTest.test17.scala:8)
+                                                //| 
+                                                //| 	at ...
+```
+- 因為 pattern matching 沒有處理 `"abc"`，所以發生 `MatchError`
+
+### Partial Function
+
+可以使用 Partial Function 判斷給定的參數是否定義在函數中，修改剛剛 `f` 的定義
+```
+val f: PartialFunction[String, String] = { case "ping" => "pong" }
+```
+
+`PartialFunction` 定義如下
+```scala
+trait PartialFunction[-A, +R] extends Function1[-A, +R] {
+  def apply(x: A): R
+  def isDefinedAt(x: A): Boolean
+}
+```
+
+呼叫 `isDefinedAt` 確定傳入參數有沒有定義
+```scala
+f.isDefinedAt("ping")                           //> res0: Boolean = true
+f.isDefinedAt("abc")                            //> res1: Boolean = false
+```
+
