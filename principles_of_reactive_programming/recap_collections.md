@@ -44,4 +44,10 @@ abstract class List[+T] {
     case Nil      => Nil
   }
 }
+```
 
+`List` 還有其他實作的方式，可參考 https://github.com/hugolu/learn-scala/blob/master/myPractice/myList.md
+
+事實上，collection 這些方法實作上各有不同
+- 要能套用到任意 collection type，不只是 list
+- 要做到 tail-recursive (避免 stack overflow)
