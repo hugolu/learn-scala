@@ -164,3 +164,22 @@ x <- expr withFilter {
 - `withFilter` 作用在 `expr`，得到符合條件的元素
 - `map` 在作用在符合條件的元素上
 
+### Exercise
+```scala
+val N = 5                                       //> N  : Int = 5
+
+for {
+  x <- 2 to N
+  y <- 2 to x
+  if (x % y == 0)
+} yield (x, y)                                  //> res0: scala.collection.immutable.IndexedSeq[(Int, Int)] = Vector((2,2), (3,3
+                                                //| ), (4,2), (4,4), (5,5))
+```
+
+應該被翻譯成
+```scala
+(2 to N) flatMap (x =>
+  (2 to x) withFilter (y => (x % y) == 0) map (y => (x, y)))
+                                                //> res1: scala.collection.immutable.IndexedSeq[(Int, Int)] = Vector((2,2), (3,3
+                                                //| ), (4,2), (4,4), (5,5))
+```
