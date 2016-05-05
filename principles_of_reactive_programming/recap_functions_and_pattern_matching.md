@@ -20,7 +20,7 @@ Scala 偏好用 case classes 來定義複合的資料
 }
 ```
 
-可以用以下資料結構表示
+使用以下資料結構表示
 ```scala
 abstract class JSON
 case class JSeq (elems: List[JSON])           extends JSON
@@ -146,7 +146,7 @@ trait Seq[Elem] extends (Int => Elem)
 
 ### Partial Matches
 
-`{ case "ping" => "pong" }` 這個 pattern matching 區塊，加上型別定義可以被解釋成
+`{ case "ping" => "pong" }` 這個 pattern matching 區塊，加上型別定義被解釋成
 ```scala
 val f: String => String = { case "ping" => "pong" }
 ```
@@ -160,7 +160,7 @@ val f: String => String = new Function1[String, String] {
 }
 ```
 
-所以 `f` 可以定義成
+所以 `f` 也可以定義成
 ```scala
 val f: Function1[String, String] = { case "ping" => "pong" }
 ```
@@ -178,7 +178,7 @@ f("abc")                                        //> scala.MatchError: abc (of cl
 
 ### Partial Function
 
-可以使用 Partial Function 判斷給定的參數是否定義在函數中，修改剛剛 `f` 的定義
+使用 Partial Function 判斷給定的參數是否定義在函數中，修改剛剛 `f` 的定義
 ```
 val f: PartialFunction[String, String] = { case "ping" => "pong" }
 ```
@@ -242,3 +242,29 @@ f(List(1,2,3))                                  //> res1: String = 1 :: 2 :: Lis
 
 ### Exercise(2)
 
+給定以下函數
+```scala
+val g: PartialFunction[List[Int], String] = {
+  case Nil => "one"
+  case x :: rest =>
+    rest match {
+      case Nil => "two"
+    }
+}
+```
+
+`g.isDefinedAt(List(1,2,3))` 結果為何？
+1. true
+2. false
+
+答案還是是 `true`
+
+但是呼叫 `apply` 的時候，會發生 `MatchError`，問題出在第二層 match 沒有定義處理 `List(2, 3)`
+```scala
+g.isDefinedAt(List(1, 2, 3))                    //> res0: Boolean = true
+g(List(1, 2, 3))                                //> scala.MatchError: List(2, 3) (of class scala.collection.immutable.$colon$co
+                                                //| lon)
+                                                //| 	at myTest.test17$$anonfun$main$1$$anonfun$1.applyOrElse(myTest.test17.sc
+                                                //| ala:43)
+                                                //| 	at ...
+```
