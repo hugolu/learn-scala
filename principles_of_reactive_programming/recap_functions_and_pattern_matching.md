@@ -268,3 +268,21 @@ g(List(1, 2, 3))                                //> scala.MatchError: List(2, 3)
                                                 //| ala:43)
                                                 //| 	at ...
 ```
+
+___
+回過頭來看一開始解析 JSON 資料結構的函數 `show`，有關 `binding map` 這段
+```scala
+case JObj(bindings) =>
+  val assocs = bindings map {
+    case (key, value) => "\"" + key + "\": " + show(value)
+  }
+  "{" + (assocs mkString ", ") + "}"
+```
+
+用更單純的範例來示範取值：你可以用 pattern matching 的方式，也可以把 map 元素當成 tuple 自行解釋
+```scala
+val nums = Map((1, "one"), (2, "two"), (3, "three"))
+
+nums.map { case (k, v) => k + ": " + v }        //> res0: scala.collection.immutable.Iterable[String] = List(1: one, 2: two, 3: three)
+nums.map { kv => kv._1 + ": " + kv._2 }         //> res1: scala.collection.immutable.Iterable[String] = List(1: one, 2: two, 3: three)
+```
