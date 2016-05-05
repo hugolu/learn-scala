@@ -96,3 +96,71 @@ for (x <- e1; y <- e2; s) yield e3
 ```scala
 e1.flatMap(x => for(y <- e2; s) yield e3)
 ```
+
+## For-expressions & Pattern Matching
+
+```scala
+abstract class JSON
+case class JSeq(elems: List[JSON]) extends JSON
+case class JObj(bindings: Map[String, JSON]) extends JSON
+case class JNum(num: Double) extends JSON
+case class JStr(str: String) extends JSON
+case class JBool(b: Boolean) extends JSON
+case object JNull extends JSON
+
+val john = JObj(Map(
+  "firstName" -> JStr("John"),
+  "lastName" -> JStr("Smith"),
+  "address" -> JObj(Map(
+    "streetAddress" -> JStr("21 2nd Street"),
+    "state" -> JStr("NY"),
+    "postalCode" -> JNum(10021))),
+  "phoneNumbers" -> JSeq(List(
+    JObj(Map(
+      "type" -> JStr("home"), "number" -> JStr("212 555-1234"))),
+    JObj(Map(
+      "type" -> JStr("fax"), "number" -> JStr("646 555-4567")))))))
+
+val hugo = JObj(Map(
+  "firstName" -> JStr("Hugo"),
+  "lastName" -> JStr("Lu"),
+  "address" -> JObj(Map(
+    "streetAddress" -> JStr("12 1st Street"),
+    "state" -> JStr("TP"),
+    "postalCode" -> JNum(10101))),
+  "phoneNumbers" -> JSeq(List(
+    JObj(Map(
+      "type" -> JStr("home"), "number" -> JStr("886 123-1234"))),
+    JObj(Map(
+      "type" -> JStr("fax"), "number" -> JStr("886 123-4567")))))))
+
+val data = List(john, hugo)
+
+```
+
+找出電話開頭為"212"的人
+```scala
+for {
+  JObj(bindings) <- data
+  JSeq(phones) = bindings("phoneNumbers")
+  JObj(phone) <- phones
+  JStr(digits) = phone("number")
+  if digits startsWith "212"
+} yield (bindings("firstName"), bindings("lastName"))
+                                                //> res0: List[(myTest.test20.JSON, myTest.test20.JSON)] = List((JStr(John),JSt
+                                                //| r(Smith)))
+
+```
+
+For-expression generator `pat <- expr` 左手邊也可能是個 pattern，被翻譯成
+```scala
+x <- expr withFilter {
+    case pat  => true
+    case _    => false
+  } map {
+    case pat  => x
+  }
+```
+- `withFilter` 作用在 `expr`，得到符合條件的元素
+- `map` 在作用在符合條件的元素上
+
