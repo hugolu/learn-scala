@@ -197,3 +197,48 @@ f.isDefinedAt("ping")                           //> res0: Boolean = true
 f.isDefinedAt("abc")                            //> res1: Boolean = false
 ```
 
+### Partial Function Objects
+
+`val f: PartialFunction[String, String] = { case "ping" => "pong" }` 是 `PartialFunction` 的物件，Scala compiler 幫忙展開成
+```scala
+val f: PartialFunction[String, String] = new PartialFunction[String, String] {
+  def apply(x: String) = x match {
+    case "ping" => "pong"
+  }
+
+  def isDefinedAt(x: String) = x match {
+    case "ping" => true
+    case _      => false
+  }
+}
+```
+
+### Exercise(1)
+
+給定以下函數
+```scala
+val f: PartialFunction[List[Int], String] = {
+  case Nil            => "one"
+  case x :: y :: rest => "two"
+}
+```
+
+`f.isDefinedAt(List(1,2,3))` 結果為何？
+1. true
+2. false
+
+答案是 `true`
+
+修改程式驗證一下
+```scala
+val f: PartialFunction[List[Int], String] = {
+  case Nil            => "Nil"
+  case x :: y :: rest => s"$x :: $y :: $rest"
+}                                               //> f  : PartialFunction[List[Int],String] = <function1>
+
+f.isDefinedAt(List(1, 2, 3))                    //> res0: Boolean = true
+f(List(1,2,3))                                  //> res1: String = 1 :: 2 :: List(3)
+```
+
+### Exercise(2)
+
