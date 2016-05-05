@@ -164,6 +164,33 @@ x <- expr withFilter {
 - `withFilter` 作用在 `expr`，得到符合條件的元素
 - `map` 在作用在符合條件的元素上
 
+#### 自我練習
+```scala
+class Box(n: Int)
+case class A(n: Int) extends Box(n)
+case class B(n: Int) extends Box(n)
+
+val list = List(A(12), B(34), A(56), B(78))     //> list  : List[Product with Serializable with myTest.test23.Box] = List(A(12),
+                                                //|  B(34), A(56), B(78))
+for {
+  B(n) <- list
+} yield n                                       //> res0: List[Int] = List(34, 78)
+
+for {
+  x <- list withFilter {
+    case B(n) => true
+    case _    => false
+  } map {
+    case B(n) => n
+  }
+} yield x                                       //> res1: List[Int] = List(34, 78)
+```
+
+感覺 Martin 講得有點不對，應該是 `expr` 經過 `withFilter` 找出適合的 `pat`，然後透過 `map { case pat => ... }` 取出想要的 `elem`，而不是取得 `x`。
+
+在這個範例 `withFilter` 作用在 `list` 上，然後 `map` 作用在剛剛的中間結果，取得 `n` 後透過 `yield` 生出來。
+
+
 ### Exercise
 ```scala
 val N = 5                                       //> N  : Int = 5
