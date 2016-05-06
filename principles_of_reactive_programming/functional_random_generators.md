@@ -129,7 +129,8 @@ pairs.generate                                  //> res8: (Int#1107, Int#1107) =
 val booleans = for (x <- integers) yield x > 0
 ```
 
-根據 `for(x <- e1) yield e2` ≡ `e2 map { x => e1 }`
+根據 `map` 轉換規則
+- `for(x <- e1) yield e2` ≡ `e2 map { x => e1 }`
 ```scala
 val booleans = integers map { x => x > 0 }
 ```
@@ -158,7 +159,9 @@ def pairs[T, U](t: Generator[T], u: Generator[U]) = for {
 } yield (x, y)
 ```
 
-根據 `for (x <- e1; y <- e2; s) yield e3` ≡ `e1.flatMap(x => for (y <- e2; s) yield e3)`，`for(x <- e1) yield e2` ≡ `e2 map { x => e1 }`
+根據 `flatMap` & `map` 轉換規則
+- `for (x <- e1; y <- e2; s) yield e3` ≡ `e1.flatMap(x => for (y <- e2; s) yield e3)`
+- `for(x <- e1) yield e2` ≡ `e2 map { x => e1 }`
 ```scala
 def pairs[T, U](t: Generator[T], u: Generator[U]) = t flatMap { x => u map { y => (x, y) } }
 ```
