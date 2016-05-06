@@ -80,7 +80,8 @@ val booleans = integers map (x => x > 0)
 
 def pairs[T, U](t: Generator[T], u: Generator[U]) = t flatMap(x => u map (y => (x, y)))
 ```
-> 我覺得 `def pairs` 是筆誤，應該寫成 `val pairs`。當然用 `def` 也可以啦，但是每次呼叫就要重新求值(evaluate)，太沒效率了。
+- `val booleans`: `integers` 透過 `map` 方式轉換成布林**產生器**
+- `def pairs`: 接收兩個 `integers`，回傳整數對產生器，是個用來創造產生器的**函數**
 
 所以需要提供 `map` 與 `flatMap` 方法！
 
@@ -135,7 +136,8 @@ val booleans = for (x <- integers) yield x > 0
 val booleans = integers map { x => x > 0 }
 ```
 
-根據 `def map[S](f: T => S) = new Generator[S] { def generate = f(self.generate) }`
+根據 `map` 方法定義
+- `def map[S](f: T => S) = new Generator[S] { def generate = f(self.generate) }`
 ```scala
 val booleans = new Generator[Boolean] {
   def generate = (x: Int => x > 0)(integers.generate)
@@ -160,10 +162,37 @@ def pairs[T, U](t: Generator[T], u: Generator[U]) = for {
 ```
 
 根據 `flatMap` & `map` 轉換規則
-- `for (x <- e1; y <- e2; s) yield e3` ≡ `e1.flatMap(x => for (y <- e2; s) yield e3)`
-- `for(x <- e1) yield e2` ≡ `e2 map { x => e1 }`
+- `for (x <- e1; y <- e2; s) yield e3` ≡ `e1.flatMap { x => for (y <- e2; s) yield e3 }`
+- `for (x <- e1) yield e2` ≡ `e2 map { x => e1 }`
 ```scala
-def pairs[T, U](t: Generator[T], u: Generator[U]) = t flatMap { x => u map { y => (x, y) } }
+def pairs[T, U](t: Generator[T], u: Generator[U]) = t flatMap {
+  x => u map { y => (x, y) }
+}
+```
+
+根據 `map` 方法定義
+- `def map[S](f: T => S) = new Generator[S] { def generate = f(self.generate) }`
+- where `f = { y => (x, y) }`
+```scala
+def pairs[T, U](t: Generator[T], u: Generator[U]) = t flatMap {
+  x => new Generator[(U, T)] { def generate = (x, u.generate) }
+}
+```
+
+根據 `flatMap` 方法定義
+- `def flatMap[S](f: T => Generator[S])= new Generator[S] { def generate = f(self.generate).generate }`
+- where `f = { x => new Generator[(U, T)] { def generate = (x, u.generate) }`
+```scala
+def pairs[T, U](t: Generator[T], u: Generator[U]) = new Generator[(T, U)] {
+  def generate = (new Generator[(T, U)] { def generate = (t.generate, u.generate) }).generate
+}
+```
+
+`(new Generator[(T, U)]).generate` 產生 `(t.generate, u.generate)`
+```scala
+def pairs[T, U](t: Generator[T], u: Generator[U]) = new Generator[(T, U)] {
+  def generate = (t.generate, u.generate)
+}
 ```
 
 <<< 未完待續 >>>
