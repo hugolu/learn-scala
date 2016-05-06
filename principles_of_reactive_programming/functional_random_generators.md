@@ -240,4 +240,9 @@ fruits.generate                                 //> res18: String#242 = banana
 fruits.generate                                 //> res19: String#242 = banana
 fruits.generate                                 //> res20: String#242 = cherry
 ```
+
+### List Generator
+
+組合技：產生 List (可能有內容，也可能空的)
+
 <<< 未完待續 >>>
