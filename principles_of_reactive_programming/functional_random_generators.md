@@ -204,4 +204,40 @@ def pairs[T, U](t: Generator[T], u: Generator[U]) = new Generator[(T, U)] {
 }
 ```
 
+### 其他產生器範例
+
+```scala
+def single[T](x: T) = new Generator[T] { def generate = x }
+
+val singles = single("hello")
+singles.generate                                //> res9: String#242 = hello
+singles.generate                                //> res10: String#242 = hello
+singles.generate                                //> res11: String#242 = hello
+```
+
+```scala
+val positives = integers map { x => if (x > 0) x else -x }
+
+positives.generate                              //> res12: Int#1107 = 395292324
+positives.generate                              //> res13: Int#1107 = 1109994896
+positives.generate                              //> res14: Int#1107 = 225955989
+```
+
+```scala
+def choose(lo: Int, hi: Int): Generator[Int] = for (x <- positives) yield lo + x % (hi - lo)
+
+val chooses = choose(10, 20)
+chooses.generate                                //> res15: Int#1107 = 15
+chooses.generate                                //> res16: Int#1107 = 15
+chooses.generate                                //> res17: Int#1107 = 14
+```
+
+```scala
+def oneOf[T](xs: T*): Generator[T] = for (idx <- choose(0, xs.length)) yield xs(idx)
+
+val fruits = oneOf("apple", "banana", "cherry")
+fruits.generate                                 //> res18: String#242 = banana
+fruits.generate                                 //> res19: String#242 = banana
+fruits.generate                                 //> res20: String#242 = cherry
+```
 <<< 未完待續 >>>
