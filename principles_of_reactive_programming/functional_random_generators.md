@@ -80,6 +80,7 @@ val booleans = integers map (x => x > 0)
 
 def pairs[T, U](t: Generator[T], u: Generator[U]) = t flatMap(x => u map (y => (x, y)))
 ```
+> 我覺得 `def pairs` 是筆誤，應該寫成 `val pairs`。當然用 `def` 也可以啦，但是每次呼叫就要重新求值(evaluate)，太沒效率了。
 
 所以需要提供 `map` 與 `flatMap` 方法！
 
@@ -118,3 +119,48 @@ pairs.generate                                  //> res6: (Int#1107, Int#1107) =
 pairs.generate                                  //> res7: (Int#1107, Int#1107) = (769104506,-1841858564)
 pairs.generate                                  //> res8: (Int#1107, Int#1107) = (-1553100971,590271155)
 ```
+
+傑克，這真是太神奇了！趕快來推導一下
+
+### 布林產生器
+
+原本 for-expression 版本
+```scala
+val booleans = for (x <- integers) yield x > 0
+```
+
+根據 `for(x <- e1) yield e2` ≡ `e2 map { x => e1 }`
+```scala
+val booleans = integers map { x => x > 0 }
+```
+
+根據 `def map[S](f: T => S) = new Generator[S] { def generate = f(self.generate) }`
+```scala
+val booleans = new Generator[Boolean] {
+  def generate = (x: Int => x > 0)(integers.generate)
+}
+```
+
+根據 `x` ≡ `integers.generate`
+```scala
+val booleans = new Generator[Boolean] {
+  def generate = integers.generate > 0
+}
+```
+
+### 整數對產生器
+
+原本 for-expression 版本
+```scala
+def pairs[T, U](t: Generator[T], u: Generator[U]) = for {
+  x <- t
+  y <- u
+} yield (x, y)
+```
+
+根據 `for (x <- e1; y <- e2; s) yield e3` ≡ `e1.flatMap(x => for (y <- e2; s) yield e3)`，`for(x <- e1) yield e2` ≡ `e2 map { x => e1 }`
+```scala
+def pairs[T, U](t: Generator[T], u: Generator[U]) = t flatMap { x => u map { y => (x, y) } }
+```
+
+<<< 未完待續 >>>
