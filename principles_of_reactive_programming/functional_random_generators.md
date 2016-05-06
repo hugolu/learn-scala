@@ -137,7 +137,9 @@ val booleans = integers map { x => x > 0 }
 ```
 
 根據 `map` 方法定義
-- `def map[S](f: T => S) = new Generator[S] { def generate = f(self.generate) }`
+- `def map[S](f: T => S) = new Generator[S] { def generate = f(self.generate) }`, where
+- `T => S` ≡ `T => U`
+- `f = { x => x > 0 }`
 ```scala
 val booleans = new Generator[Boolean] {
   def generate = (x: Int => x > 0)(integers.generate)
@@ -171,8 +173,14 @@ def pairs[T, U](t: Generator[T], u: Generator[U]) = t flatMap {
 ```
 
 根據 `map` 方法定義
-- `def map[S](f: T => S) = new Generator[S] { def generate = f(self.generate) }`
-- where `f = { y => (x, y) }`
+- `def map[S](f: T => S) = new Generator[S] { def generate = f(self.generate) }`, where
+- `T => S` ≡ `U => (U, T)`
+- `f = { y => (x, y) }`
+```scala
+def pairs[T, U](t: Generator[T], u: Generator[U]) = t flatMap {
+  x => new Generator[(U, T)] { def generate = (x: T, y: U)(u.generate) }
+}
+```
 ```scala
 def pairs[T, U](t: Generator[T], u: Generator[U]) = t flatMap {
   x => new Generator[(U, T)] { def generate = (x, u.generate) }
@@ -180,8 +188,9 @@ def pairs[T, U](t: Generator[T], u: Generator[U]) = t flatMap {
 ```
 
 根據 `flatMap` 方法定義
-- `def flatMap[S](f: T => Generator[S])= new Generator[S] { def generate = f(self.generate).generate }`
-- where `f = { x => new Generator[(U, T)] { def generate = (x, u.generate) }`
+- `def flatMap[S](f: T => Generator[S])= new Generator[S] { def generate = f(self.generate).generate }`, where
+- `T => Generator[S]` ≡ `T => Generator[(T, U])`
+- `f = { x => new Generator[(U, T)] { def generate = (x, u.generate) }`
 ```scala
 def pairs[T, U](t: Generator[T], u: Generator[U]) = new Generator[(T, U)] {
   def generate = (new Generator[(T, U)] { def generate = (t.generate, u.generate) }).generate
