@@ -245,4 +245,21 @@ fruits.generate                                 //> res20: String#242 = cherry
 
 組合技：產生 List (可能有內容，也可能空的)
 
+```scala
+def lists: Generator[List[Int]] = for {
+  isEmpty <- booleans
+  list <- if (isEmpty) emptyLists else nonEmptyLists
+} yield list
+
+def emptyLists = single(Nil)
+
+def nonEmptyLists = for {
+  head <- integers
+  tail <- lists
+} yield head :: tail
+
+lists.generate                                  //> res21: List#545717[Int#1107] = List()
+lists.generate                                  //> res22: List#545717[Int#1107] = List(-1502195284)
+lists.generate                                  //> res23: List#545717[Int#1107] = List(136304174, 823170112, -908792429)
+```
 <<< 未完待續 >>>
