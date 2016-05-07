@@ -262,4 +262,31 @@ lists.generate                                  //> res21: List#545717[Int#1107]
 lists.generate                                  //> res22: List#545717[Int#1107] = List(-1502195284)
 lists.generate                                  //> res23: List#545717[Int#1107] = List(136304174, 823170112, -908792429)
 ```
+
+### Tree Generator
+
+```scala
+trait Tree
+case class Inner(leaf: Tree, right: Tree) extends Tree
+case class Leaf(x: Int) extends Tree
+
+def trees: Generator[Tree] = for {
+	isLeaf <- booleans
+	tree <- if (isLeaf) leafs else inners
+} yield tree
+
+def leafs: Generator[Leaf] = for {
+	x <- integers
+} yield Leaf(x)
+
+def inners: Generator[Inner] = for {
+	l <- trees
+	r <- trees
+} yield Inner(l, r)
+
+
+trees.generate                            //> res24: myTest#27.test24#2438936.Tree#5927749 = Inner(Leaf(1493212505),Inner(Leaf(-1746873448),Leaf(2124703850)))
+trees.generate                            //> res25: myTest#27.test24#2438936.Tree#5927749 = Leaf(1392404615)
+trees.generate                            //> res26: myTest#27.test24#2438936.Tree#5927749 = Inner(Leaf(1227358752),Inner(Inner(Inner(Inner(Inner(Inner(Leaf(-661742618),Leaf(1796993099)),Inner(Inner(Inner(Inner(Inner(Leaf(545580286),Leaf(-1960481325)),Inner(Leaf(-781903228),Leaf(1213806331))),Leaf(-2119345189)),Leaf(-993956323)),Inner(Leaf(-842508617),Leaf(46759649)))),Leaf(-401949709)),Leaf(862711250)),Leaf(-1228855276)),Inner(Inner(Inner(Leaf(-1092150647),Inner(Inner(Inner(Inner(Leaf(-445515240),Leaf(-796674427)),Leaf(137369267)),Inner(Leaf(-820157410),Inner(Leaf(-355070272),Leaf(1175353547)))),Leaf(-584813611))),Leaf(-1312457555)),Inner(Inner(Leaf(-1344348981),Leaf(1026943691)),Leaf(1908757408)))))
+```
 <<< 未完待續 >>>
