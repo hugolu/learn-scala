@@ -330,4 +330,37 @@ test(pair(lists, lists)) {
                                                 //| test24.scala:110)
 ```
 
-<<< 未完待續 >>>
+### ScalaCheck
+
+參考 https://www.scalacheck.org/
+
+延續剛剛隨機測試的概念，ScalaCheck工具透過 `properties` 檢驗 postcondition 是否成立。
+
+下載 ScalaCheck jar 檔，放在 `lib/`，測試程式放在 `src/test/scala/`。
+
+src/test/scala/testList.scala:
+```scala
+import org.scalacheck.Properties
+import org.scalacheck.Prop.forAll
+
+object StringSpecification extends Properties("List") {
+
+	property("concatenate") = forAll {
+		(a: List[Int], b: List[Int]) => a.size + b.size == (a ++ b).size
+	}
+
+}
+```
+
+執行結果
+```shell
+$ sbt test
+[info] Set current project to  (in build file:/private/tmp/scalaCheck/)
+[info] Updating {file:/private/tmp/scalaCheck/}scalacheck...
+[info] Resolving jline#jline;2.12.1 ...
+[info] Done updating.
+[info] Compiling 1 Scala source to /private/tmp/scalaCheck/target/scala-2.11/test-classes...
+[info] + List.concatenate: OK, passed 100 tests.
+[info] Passed: Total 1, Failed 0, Errors 0, Passed 1
+[success] Total time: 7 s, completed 2016/5/8 上午 11:01:50
+```
