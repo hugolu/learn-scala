@@ -52,12 +52,14 @@ booleans.generate                               //> res5: Boolean#2529 = false
 
 #### 整數對產生器
 ```scala
-val pairs = new Generator[(Int, Int)] {
-  val rand = new java.util.Random
-  def generate = (integers.generate, integers.generate)
-}
+def pair[T, U](t: Generator[T], u: Generator[U]): Generator[(T, U)] = for {
+	x <- t
+	y <- u
+} yield (x, y)
 ```
 ```scala
+val pairs = pair(integers, integers)
+
 pairs.generate                                  //> res6: (Int#1107, Int#1107) = (1929895468,-1861069052)
 pairs.generate                                  //> res7: (Int#1107, Int#1107) = (67910442,-323151241)
 pairs.generate                                  //> res8: (Int#1107, Int#1107) = (-42523306,-811035502)
@@ -207,7 +209,7 @@ def pairs[T, U](t: Generator[T], u: Generator[U]) = new Generator[(T, U)] {
 ### 其他產生器範例
 
 ```scala
-def single[T](x: T) = new Generator[T] { def generate = x }
+def single[T](x: T): Generator[T] = new Generator[T] { def generate = x }
 
 val singles = single("hello")
 singles.generate                                //> res9: String#242 = hello
@@ -243,7 +245,7 @@ fruits.generate                                 //> res20: String#242 = cherry
 
 ### List Generator
 
-組合技：產生 List (可能有內容，也可能空的)
+思考方向：根據 `booleans.generate` 的結果，一個 list 可能是空的 (`Nil`)，也可能是有值 (`head :: tail`) 後面再接另一個 list，重複迭代下去。
 
 ```scala
 def lists: Generator[List[Int]] = for {
@@ -265,6 +267,8 @@ lists.generate                                  //> res23: List#545717[Int#1107]
 
 ### Tree Generator
 
+思考方向：根據 `booleans.generate` 的結果，一個 tree 可能是 `Leaf` (包含一個 Int)，也可能是 `Inner` 左右兩邊再接 tree，重複迭代下去。
+
 ```scala
 trait Tree
 case class Inner(leaf: Tree, right: Tree) extends Tree
@@ -284,9 +288,46 @@ def inners: Generator[Inner] = for {
 	r <- trees
 } yield Inner(l, r)
 
-
 trees.generate                            //> res24: myTest#27.test24#2438936.Tree#5927749 = Inner(Leaf(1493212505),Inner(Leaf(-1746873448),Leaf(2124703850)))
 trees.generate                            //> res25: myTest#27.test24#2438936.Tree#5927749 = Leaf(1392404615)
 trees.generate                            //> res26: myTest#27.test24#2438936.Tree#5927749 = Inner(Leaf(1227358752),Inner(Inner(Inner(Inner(Inner(Inner(Leaf(-661742618),Leaf(1796993099)),Inner(Inner(Inner(Inner(Inner(Leaf(545580286),Leaf(-1960481325)),Inner(Leaf(-781903228),Leaf(1213806331))),Leaf(-2119345189)),Leaf(-993956323)),Inner(Leaf(-842508617),Leaf(46759649)))),Leaf(-401949709)),Leaf(862711250)),Leaf(-1228855276)),Inner(Inner(Inner(Leaf(-1092150647),Inner(Inner(Inner(Inner(Leaf(-445515240),Leaf(-796674427)),Leaf(137369267)),Inner(Leaf(-820157410),Inner(Leaf(-355070272),Leaf(1175353547)))),Leaf(-584813611))),Leaf(-1312457555)),Inner(Inner(Leaf(-1344348981),Leaf(1026943691)),Leaf(1908757408)))))
 ```
+
+### Application: Random Testing
+
+所謂 unit test
+- 某些輸入待測函數的測試數據，與後置條件 (postcondition)
+- 後置條件是期望結果的特性
+- 檢查待測函數是否遵守後置條件
+
+問題：能不能用隨機輸入取代測試輸入
+
+```scala
+def test[T](g: Generator[T], numTimes: Int = 100)(test: T => Boolean): Unit = {
+  for (i <- 0 until numTimes) {
+    val value = g.generate
+    assert(test(value), "test failed for " + value)
+  }
+  println("passed " + numTimes + " tests")
+}
+```
+
+以下這個測試方式對嗎？
+```scala
+test(pair(lists, lists)) {
+  case (xs, ys) => (xs ++ ys).length > xs.length
+}
+```
+
+不對，因為當 list 為 Nil 時長度為 0，postcondition 不成立
+```scala
+test(pair(lists, lists)) {
+  case (xs, ys) => (xs ++ ys).length > xs.length
+}                                               //> java.lang.AssertionError: assertion failed: test failed for (List(315471556
+                                                //| ),List())
+                                                //| 	at scala.Predef$.assert(Predef.scala:165)
+                                                //| 	at myTest.test24$$anonfun$main$1$$anonfun$test$1$1.apply$mcVI$sp(myTest.
+                                                //| test24.scala:110)
+```
+
 <<< 未完待續 >>>
