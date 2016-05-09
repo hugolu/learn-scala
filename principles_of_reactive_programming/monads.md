@@ -78,3 +78,37 @@ Some(x) flatMap f
     
 ==  f(x)
 ```
+
+檢查是否符合 Right unit 法則: `opt flatMap Some == opt`
+```scala
+opt flatMap Some
+
+==  opt match {
+      case Some(x)  => Some(x)
+      case None     => None
+    }
+
+== opt
+```
+
+檢查是否符合 Associative 法則: `opt flatMap f flatMap g == opt flatMap (x => f(x) flatMap g)`
+```scala
+opt flatMap f flatMap g
+
+==  opt match { case Some(x) => f(x) case None => None }
+        match { case Some(y) => g(y) case None => None }
+
+==  opt match {
+      case Some(x) =>
+        f(x) match { case Some(y) => g(y) case None => None }
+      case None =>
+        None match { case Some(y) => g(y) case None => None }
+    }
+
+== opt match {
+      case Some(x) => f(x) flatMap g
+      case None => None
+    }
+
+== opt flatMap (x => f(x) flatMap g)
+```
