@@ -38,3 +38,43 @@ m map f == m flatMap (x => unit(f(x)))
 
 ## Monad 法則
 
+要成為 Monad，必須滿足三個法則
+
+Associativity (結合性)
+```scala
+m flatMap f faltMap g == m flatMap (x => f(x) flatMap g)
+```
+
+Left unit (左單元性)
+```scala
+unit(x) flatMap f == f(x)
+```
+
+Right unit (右單元性)
+```scala
+m flatMap unit == m
+```
+
+### 透過 `Option`，檢驗 Monad 法則
+
+`Option` 的 `flatMap` 定義為
+```scala
+abstract class Option[+T] {
+  def flatMap[U](f: T => Option[U]): Option[U] = this match {
+    case Some(x)  => f(x)
+    case None     => None
+  }
+}
+```
+
+檢查是否符合 Left unit 法則: `Some(x) flatMap f == f(x)`
+```scala
+Some(x) flatMap f
+
+==  Some(x) match {
+      case Some(x)  => f(x)
+      case None     => None
+    }
+    
+==  f(x)
+```
