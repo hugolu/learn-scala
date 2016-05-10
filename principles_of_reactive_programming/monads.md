@@ -40,17 +40,17 @@ m map f == m flatMap (x => unit(f(x)))
 
 要成為 Monad，必須滿足三個法則
 
-Associativity (結合性)
+### Associativity (結合性)
 ```scala
 m flatMap f faltMap g == m flatMap (x => f(x) flatMap g)
 ```
 
-Left unit (左單元性)
+### Left unit (左單元性)
 ```scala
 unit(x) flatMap f == f(x)
 ```
 
-Right unit (右單元性)
+### Right unit (右單元性)
 ```scala
 m flatMap unit == m
 ```
@@ -115,10 +115,9 @@ opt flatMap f flatMap g
 
 ## Significance of the Law for for-expressions
 
-1. Associativity：巢狀結構的 for-expression
+### Associativity：巢狀結構的 for-expression
 ```scala
-for (y <- for (x <- m; y <- f(x)) yield y
-     z <- g(y)) yield z
+for (y <- (for (x <- m; y <- f(x)) yield y) z <- g(y)) yield z
 
 == for {
     x <- m
@@ -126,3 +125,22 @@ for (y <- for (x <- m; y <- f(x)) yield y
     z <- g(y)
   } yield z
 ```
+
+根據 for-expression 翻譯規則，`for (x <- e1; y <- e2) yield e3` == `e1 flatMap(x => for (y <- e2) yield e3)`，所以 `for (x <- m; y <- y(x)) yield y` 被翻譯成 `m flatMap(x => for (y <- f(x)) yield y)`，等於 `m flatMap(x => f(x))`，等於`m flatMap f`。
+
+把上面巢狀結構的 for-expression 轉換到 `flatMap` domain 驗證
+```scala
+(m flatMap f) flatMap g
+
+== m flatMap(x => f(x) flatMap(y =>  g(y))) == m flatMap(x => f(x) flatMap g)
+```
+
+### Right unit
+
+```scala
+for (x <- m) yield x == m
+```
+
+### Left unit
+
+沒有對應的 for-expression
