@@ -45,7 +45,7 @@ class ExampleSpec extends FlatSpec with Matchers {
 }
 ```
 
-開始測試
+執行測試
 ```shell
 $ sbt test
 [info] Set current project to  (in build file:/private/tmp/test/)
@@ -63,4 +63,37 @@ $ sbt test
 [info] Tests: succeeded 2, failed 0, canceled 0, ignored 0, pending 0
 [info] All tests passed.
 [success] Total time: 8 s, completed 2016/5/10 下午 02:39:18
+```
+
+## 配合 scalac 使用
+
+建立測試目錄
+```shell
+$ mkdir test
+$ cd test
+```
+
+下載 ScalaTest jar 檔
+```shell
+$ wget https://oss.sonatype.org/content/groups/public/org/scalatest/scalatest_2.11/2.2.6/scalatest_2.11-2.2.6.jar
+```
+
+編譯待測程式
+```shell
+$ scalac -cp scalatest_2.11-2.2.6.jar ExampleSpec.scala
+```
+
+執行測試
+```shell
+$ scala -cp scalatest_2.11-2.2.6.jar org.scalatest.run ExampleSpec
+Run starting. Expected test count is: 2
+ExampleSpec:
+A Stack
+- should pop values in last-in-first-out order
+- should throw NoSuchElementException if an empty stack is popped
+Run completed in 173 milliseconds.
+Total number of tests run: 2
+Suites: completed 1, aborted 0
+Tests: succeeded 2, failed 0, canceled 0, ignored 0, pending 0
+All tests passed.
 ```
