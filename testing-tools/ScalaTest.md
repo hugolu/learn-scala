@@ -2,7 +2,8 @@
 
 官網：http://www.scalatest.org/
 
-## 配合 sbt 使用
+## 開始
+### 配合 sbt 使用
 
 設定 sbt project 目錄
 ```shell
@@ -65,7 +66,7 @@ $ sbt test
 [success] Total time: 8 s, completed 2016/5/10 下午 02:39:18
 ```
 
-## 配合 scalac 使用
+### 配合 scalac 使用
 
 建立測試目錄
 ```shell
@@ -97,3 +98,21 @@ Suites: completed 1, aborted 0
 Tests: succeeded 2, failed 0, canceled 0, ignored 0, pending 0
 All tests passed.
 ```
+
+## 選擇測試風格
+
+### FunSuite
+
+### FlatSpec
+
+### FunSpec
+
+### WordSpec
+
+### FreeSpec
+
+### Spec
+
+### PropSpec
+
+### FeatureSpec
