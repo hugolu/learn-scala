@@ -77,6 +77,18 @@ object Main extends App {
 
 ## Running Tests with SBT and ScalaTest
 
+build.sbt:
+```
+name := "BasicProjectWithScalaTest"
+version := "1.0"
+scalaVersion := "2.10.0"
+libraryDependencies += "org.scalatest" % "scalatest_2.10" % "1.9.1" % "test"
+```
+
+以下兩個設定相同，`%%` 表示自動在 `scalatest` 後面加上 Scala 版本
+- `libraryDependencies += "org.scalatest" % "scalatest_2.10" % "1.9.1" % "test"`
+- `libraryDependencies += "org.scalatest" %% "scalatest" % "1.9.1" % "test"`
+
 template of test cases:
 ```scala
 import org.scalatest.FunSuite
