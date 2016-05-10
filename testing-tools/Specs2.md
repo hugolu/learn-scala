@@ -1,6 +1,8 @@
 # Specs2
 
-官網：https://etorreborre.github.io/specs2/website/SPECS2-3.8/index.html
+官網
+- https://etorreborre.github.io/specs2/website/SPECS2-3.8/index.html
+- https://github.com/etorreborre/specs2
 
 ## 配合 sbt 使用
 
@@ -66,3 +68,5 @@ $ sbt test
 ```
 
 ## 配合 scalac 使用
+
+沒找到直接用 scalac 的方式 :(
