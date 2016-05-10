@@ -102,6 +102,39 @@ All tests passed.
 ## 選擇測試風格
 
 ### FunSuite
+**xUnit**測試風格
+
+src/test/scala/setsuite.scala:
+```scala
+import org.scalatest.FunSuite
+
+class SetSuite extends FunSuite {
+  test("An empty Set should have size 0") {
+    assert(Set.empty.size == 0)
+  }
+
+  test("Invoking head on an empty Set should produce NoSuchElementException") {
+    intercept[NoSuchElementException] {
+      Set.empty.head
+    }
+  }
+}
+```
+
+```shell
+$ sbt
+[info] Set current project to  (in build file:/private/tmp/test/)
+> testOnly SetSuite
+[info] SetSuite:
+[info] - An empty Set should have size 0
+[info] - Invoking head on an empty Set should produce NoSuchElementException
+[info] Run completed in 301 milliseconds.
+[info] Total number of tests run: 2
+[info] Suites: completed 1, aborted 0
+[info] Tests: succeeded 2, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[success] Total time: 1 s, completed 2016/5/11 上午 12:06:39
+```
 
 ### FlatSpec
 
