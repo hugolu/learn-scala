@@ -144,3 +144,73 @@ for (x <- m) yield x == m
 ### Left unit
 
 沒有對應的 for-expression
+
+## 另一種型別 `Try`
+
+類似 `Option` 的 `Some` 與 `None`，各為有含值的 `Success(value)` 與有例外的 `Failuare(ex)`。
+
+```scala
+abstract class Try[+T]
+
+case class Success[T](x: T)         extends Try[T]
+case class Failure(ex: Exception)   extends Try[Nothing]
+```
+
+`Try(expr)` 裡面可以放任意計算式 `expr`，回傳值為 `Success(someValue)` 或 `Failure(someException)`。以下實作，注意 `apply` 傳入參數型別為 `=> T` (call by name)，呼叫時才會真正做計算。
+```scala
+object Try {
+  def apply[T](expr: => T): Try[T] = {
+    try Success(expr)
+  } catch {
+    case NonFatal(ex) => Failure(ex)
+  }
+}
+```
+
+### 複合的 Try
+```scala
+for {
+  x <- computeX
+  y <- computeY
+} yield f(x, y)
+```
+
+- 如果 `computeX` 與 `computeY` 成功得到值 `Success(x)` 與 `Success(y)`，最後產生結果 `Success(f(x,y))`
+- 如果其中一個因為例外 ex 導致失敗，最終結果為 `Failure(ex)`
+
+### `flatMap` 與 `map`
+
+```scala
+abstract class Try[+T] {
+  def flatMap[U](f: T => Try[U]): Try[U] = this match {
+    case Success(x) => try f(x) catch { case NonFatal(ex) => Failure(ex) }
+    case fail: Failure => fail
+  }
+  
+  def map[U](f: T => U): Try[U] = this match {
+    case Success(x) => Try(f(x))
+    case fail: Failure => fail
+  }
+}
+```
+
+```scala
+t map f == t flatMap (x => Try(f(x))) == t flatMap (f andThen Try)
+```
+
+### 練習: 如果 `Try` 的 `unit = Try`，它是 Monad 嗎？
+
+不是，因為不滿足 left unit law
+
+```scala
+Try(expr) flatMap f != f(expr)
+```
+
+左邊不會發生 non-fatal exception，但右邊會。
+
+## 結論
+
+1. for-expression 不只對集合有用
+2. 許多型別定義 `flatMap`, `map`, `withFilter`，與 for-expression 操作 (`Generator`, `Option`, `Try`)
+3. 許多定義 `flatMap` 的型別是 Monad；如果也定義 `withFilter` 就稱做 Monad with Zero
+4. 三條重要的 Monad 法則可用來檢查 library API 的設計
