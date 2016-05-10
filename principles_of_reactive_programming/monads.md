@@ -112,3 +112,17 @@ opt flatMap f flatMap g
 
 == opt flatMap (x => f(x) flatMap g)
 ```
+
+## Significance of the Law for for-expressions
+
+1. Associativity：巢狀結構的 for-expression
+```scala
+for (y <- for (x <- m; y <- f(x)) yield y
+     z <- g(y)) yield z
+
+== for {
+    x <- m
+    y <- f(x)
+    z <- g(y)
+  } yield z
+```
