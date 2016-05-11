@@ -114,7 +114,7 @@ sbt `testOnly` (or `test-only`) 接收空白分隔的測試列表，例如進入
 ### FunSuite
 **xUnit**測試風格
 
-For teams coming from xUnit, FunSuite feels comfortable and familiar while still giving some of the benefits of BDD: FunSuite makes it easy to write descriptive test names, natural to write focused tests, and generates specification-like output that can facilitate communication among stakeholders.
+對於來自 xUnit 的團隊來說，[FunSuite](http://doc.scalatest.org/2.2.6/#org.scalatest.FunSuite) 讓人感到舒適與熟悉，此外也提供 BDD 的好處。FunSuite 易於描述測試名稱、寫出聚焦的測試、產生像是規格的輸出利於與人溝通。
 
 ```scala
 import org.scalatest.FunSuite
