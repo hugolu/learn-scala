@@ -66,6 +66,16 @@ $ sbt test
 [success] Total time: 8 s, completed 2016/5/10 下午 02:39:18
 ```
 
+sbt `testOnly` (or `test-only`) 接收空白分隔的測試列表，例如進入 sbt REPL 後執行
+```sbt
+> testOnly org.example.MyTest1 org.example.MyTest2
+```
+
+也支援萬用字元
+```scala
+> testOnly org.example.My*
+```
+
 ### 配合 scalac 使用
 
 建立測試目錄
@@ -101,18 +111,8 @@ All tests passed.
 
 ## 選擇測試風格
 
-sbt `testOnly` (or `test-only`) 接收空白分隔的測試列表，例如進入 sbt REPL 後執行
-```sbt
-> testOnly org.example.MyTest1 org.example.MyTest2
-```
-
-也支援萬用字元
-```scala
-> testOnly org.example.My*
-```
 
 ### FunSuite
-**xUnit**測試風格
 
 對於來自 xUnit 的團隊來說，[FunSuite](http://doc.scalatest.org/2.2.6/#org.scalatest.FunSuite) 讓人感到舒適與熟悉，此外也提供 BDD 的好處。FunSuite 易於描述測試名稱、寫出聚焦的測試、產生像是規格的輸出利於與人溝通。
 
@@ -138,8 +138,8 @@ class SetFunSuite extends FunSuite {
 ```
 
 ### FlatSpec
-**BDD**測試風格
-A good first step for teams wishing to move from xUnit to BDD, FlatSpec's structure is flat like xUnit, so simple and familiar, but the test names must be written in a specification style: "X should Y," "A must B," etc.
+
+適合想從 xUnit 轉換到 BDD 的團隊嚐鮮，[FlatSpec](http://doc.scalatest.org/2.2.6/#org.scalatest.FlatSpec) 平面化結構像 xUnit，所以用來簡單、熟悉，但測試名字必須寫成規格的形式："X should Y", "A must B" 等等。
 
 ```scala
 import org.scalatest.FlatSpec
@@ -164,7 +164,8 @@ class SetFlatSpec extends FlatSpec {
 ```
 
 ### FunSpec
-For teams coming from Ruby's RSpec tool, FunSpec will feel very familiar; More generally, for any team that prefers BDD, FunSpec's nesting and gentle guide to structuring text (with describe and it) provides an excellent general-purpose choice for writing specification-style tests.
+
+針對來自 Ruby RSpec 工具的團隊，[FunSpec](http://doc.scalatest.org/2.2.6/#org.scalatest.FunSpec) 看來很熟悉。普遍來說，對於偏好 BDD 的團隊想書寫出規格化風格的測試，FunSpec 巢狀形式與結構化文本的引導(使用 `describe`與`it`)提供了通用的選擇。
 
 ```scala
 import org.scalatest.FunSpec
