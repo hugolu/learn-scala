@@ -101,8 +101,20 @@ All tests passed.
 
 ## 選擇測試風格
 
+sbt `testOnly` (or `test-only`) 接收空白分隔的測試列表，例如進入 sbt REPL 後執行
+```sbt
+> testOnly org.example.MyTest1 org.example.MyTest2
+```
+
+也支援萬用字元
+```scala
+> testOnly org.example.My*
+```
+
 ### FunSuite
 **xUnit**測試風格
+
+For teams coming from xUnit, FunSuite feels comfortable and familiar while still giving some of the benefits of BDD: FunSuite makes it easy to write descriptive test names, natural to write focused tests, and generates specification-like output that can facilitate communication among stakeholders.
 
 src/test/scala/setsuite.scala:
 ```scala
@@ -121,22 +133,26 @@ class SetSuite extends FunSuite {
 }
 ```
 
-```shell
-$ sbt
-[info] Set current project to  (in build file:/private/tmp/test/)
-> testOnly SetSuite
-[info] SetSuite:
-[info] - An empty Set should have size 0
-[info] - Invoking head on an empty Set should produce NoSuchElementException
-[info] Run completed in 301 milliseconds.
-[info] Total number of tests run: 2
-[info] Suites: completed 1, aborted 0
-[info] Tests: succeeded 2, failed 0, canceled 0, ignored 0, pending 0
-[info] All tests passed.
-[success] Total time: 1 s, completed 2016/5/11 上午 12:06:39
-```
-
 ### FlatSpec
+**BDD**測試風格
+A good first step for teams wishing to move from xUnit to BDD, FlatSpec's structure is flat like xUnit, so simple and familiar, but the test names must be written in a specification style: "X should Y," "A must B," etc.
+
+src/test/scala/setspec.scala:
+```scala
+import org.scalatest.FlatSpec
+
+class SetSpec extends FlatSpec {
+  "An empty Set" should "have size 0" in {
+    assert(Set.empty.size == 0)
+  }
+
+  it should "produce NoSuchElementException when head is invoked" in {
+    intercept[NoSuchElementException] {
+      Set.empty.head
+    }
+  }
+}
+```
 
 ### FunSpec
 
