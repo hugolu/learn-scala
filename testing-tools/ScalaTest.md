@@ -195,7 +195,8 @@ class SetFunSpec extends FunSpec {
 ```
 
 ### WordSpec
-For teams coming from specs or specs2, WordSpec will feel familiar, and is often the most natural way to port specsN tests to ScalaTest. WordSpec is very prescriptive in how text must be written, so a good fit for teams who want a high degree of discipline enforced upon their specification text.
+
+對於來自 specs 或 specs2 的團隊，會對 [WordSpec](http://doc.scalatest.org/2.2.6/#org.scalatest.WordSpec) 有熟悉感，通常也是把 specsN 測試移植到 ScalaTest 最自然的方法。WordSpec 對於測試的書寫規範很嚴謹，適合高度紀律的團隊。
 
 ```scala
 import org.scalatest.WordSpec
@@ -224,7 +225,8 @@ class SetWordSpec extends WordSpec {
 ```
 
 ### FreeSpec
-Because it gives absolute freedom (and no guidance) on how specification text should be written, FreeSpec is a good choice for teams experienced with BDD and able to agree on how to structure the specification text.
+
+給予絕對的自由度，不引導規格文本如何書寫，[FreeSpec](http://doc.scalatest.org/2.2.6/#org.scalatest.FreeSpec) 適合對 BDD 有經驗的團隊，有共識如何建構規格化測試。
 
 ```scala
 import org.scalatest.FreeSpec
@@ -255,6 +257,7 @@ class SetFreeSpec extends FreeSpec {
 ```
 
 ### Spec
+
 Spec allows you to define tests as methods, which saves one function literal per test compared to style classes that represent tests as functions. Fewer function literals translates into faster compile times and fewer generated class files, which can help minimize build times. As a result, using Spec can be a good choice in large projects where build times are a concern as well as when generating large numbers of tests programatically via static code generators.
 
 ```scala
@@ -285,6 +288,7 @@ class SetSpec extends Spec {
 ```
 
 ### PropSpec
+
 PropSpec is perfect for teams that want to write tests exclusively in terms of property checks; also a good choice for writing the occasional test matrix when a different style trait is chosen as the main unit testing style.
 
 ```scala
@@ -321,6 +325,7 @@ class SetPropSpec extends PropSpec with TableDrivenPropertyChecks with Matchers 
 ```
 
 ### FeatureSpec
+
 Trait FeatureSpec is primarily intended for acceptance testing, including facilitating the process of programmers working alongside non-programmers to define the acceptance requirements.
 
 ```scala
