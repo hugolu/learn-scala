@@ -119,7 +119,7 @@ For teams coming from xUnit, FunSuite feels comfortable and familiar while still
 ```scala
 import org.scalatest.FunSuite
 
-class SetSuite extends FunSuite {
+class SetFunSuite extends FunSuite {
   test("An empty Set should have size 0") {
     assert(Set.empty.size == 0)
   }
@@ -130,6 +130,11 @@ class SetSuite extends FunSuite {
     }
   }
 }
+```
+```
+[info] SetFunSuite:
+[info] - An empty Set should have size 0
+[info] - Invoking head on an empty Set should produce NoSuchElementException
 ```
 
 ### FlatSpec
@@ -150,6 +155,12 @@ class SetFlatSpec extends FlatSpec {
     }
   }
 }
+```
+```
+[info] SetFlatSpec:
+[info] An empty Set
+[info] - should have size 0
+[info] - should produce NoSuchElementException when head is invoked
 ```
 
 ### FunSpec
@@ -174,6 +185,13 @@ class SetFunSpec extends FunSpec {
   }
 }
 ```
+```
+[info] SetFunSpec:
+[info] A Set
+[info]   when empty
+[info]   - should have size 0
+[info]   - should produce NoSuchElementException when head is invoked
+```
 
 ### WordSpec
 For teams coming from specs or specs2, WordSpec will feel familiar, and is often the most natural way to port specsN tests to ScalaTest. WordSpec is very prescriptive in how text must be written, so a good fit for teams who want a high degree of discipline enforced upon their specification text.
@@ -196,11 +214,172 @@ class SetWordSpec extends WordSpec {
   }
 }
 ```
+```
+[info] SetWordSpec:
+[info] A Set
+[info]   when empty
+[info]   - should have size 0
+[info]   - should produce NoSuchElementException when head is invoked
+```
 
 ### FreeSpec
+Because it gives absolute freedom (and no guidance) on how specification text should be written, FreeSpec is a good choice for teams experienced with BDD and able to agree on how to structure the specification text.
+
+```scala
+import org.scalatest.FreeSpec
+
+class SetFreeSpec extends FreeSpec {
+
+  "A Set" - {
+    "when empty" - {
+      "should have size 0" in {
+        assert(Set.empty.size == 0)
+      }
+
+      "should produce NoSuchElementException when head is invoked" in {
+        intercept[NoSuchElementException] {
+          Set.empty.head
+        }
+      }
+    }
+  }
+}
+```
+```
+[info] SetFreeSpec:
+[info] A Set
+[info]   when empty
+[info]   - should have size 0
+[info]   - should produce NoSuchElementException when head is invoked
+```
 
 ### Spec
+Spec allows you to define tests as methods, which saves one function literal per test compared to style classes that represent tests as functions. Fewer function literals translates into faster compile times and fewer generated class files, which can help minimize build times. As a result, using Spec can be a good choice in large projects where build times are a concern as well as when generating large numbers of tests programatically via static code generators.
+
+```scala
+import org.scalatest.Spec
+
+class SetSpec extends Spec {
+  object `A Set` {
+    object `when empty` {
+      def `should have size 0` {
+        assert(Set.empty.size == 0)
+      }
+
+      def `should produce NoSuchElementException when head is invoked` {
+        intercept[NoSuchElementException] {
+          Set.empty.head
+        }
+      }
+    }
+  }
+}
+```
+```
+[info] SetSpec:
+[info] A Set
+[info]   when empty
+[info]   - should have size 0
+[info]   - should produce NoSuchElementException when head is invoked
+```
 
 ### PropSpec
+PropSpec is perfect for teams that want to write tests exclusively in terms of property checks; also a good choice for writing the occasional test matrix when a different style trait is chosen as the main unit testing style.
+
+```scala
+import org.scalatest._
+import prop._
+import scala.collection.immutable._
+
+class SetPropSpec extends PropSpec with TableDrivenPropertyChecks with Matchers {
+  val examples =
+    Table(
+      "Set",
+      BitSet.empty,
+      HashSet.empty[Int],
+      TreeSet.empty[Int]
+    )
+
+  property("an empty Set should have size 0") {
+    forAll(examples) { set =>
+      set.size should be (0)
+    }
+  }
+
+  property("invoking head on an empty set should produce NoSuchElementException") {
+    forAll(examples) { set =>
+      a [NoSuchElementException] should be thrownBy { set.head }
+    }
+  }
+}
+```
+```
+[info] SetPropSpec:
+[info] - an empty Set should have size 0
+[info] - invoking head on an empty set should produce NoSuchElementException
+```
 
 ### FeatureSpec
+Trait FeatureSpec is primarily intended for acceptance testing, including facilitating the process of programmers working alongside non-programmers to define the acceptance requirements.
+
+```scala
+import org.scalatest._
+
+class TVSet {
+  private var on: Boolean = false
+  def isOn: Boolean = on
+  def pressPowerButton() = { on = !on }
+}
+
+class TVFeatureSpec extends FeatureSpec with GivenWhenThen {
+  info("As a TV set owner")
+  info("I want to be able to turn the TV on and off")
+  info("So I can watch TW when I want")
+  info("And save energy when I'm not watching TV")
+
+  feature("TV power button") {
+    scenario("User presses power button when TV is off") {
+
+      Given("a TV set that is switched off")
+      val tv = new TVSet
+      assert(!tv.isOn)
+
+      When("the power button is pressed")
+      tv.pressPowerButton()
+
+      Then("the TV should switch on")
+      assert(tv.isOn)
+    }
+
+    scenario("User presses power button when TV is on") {
+
+      Given("a TV set that is switched on")
+      val tv = new TVSet
+      tv.pressPowerButton()
+      assert(tv.isOn)
+
+      When("the power button is pressed")
+      tv.pressPowerButton()
+
+      Then("the TV should switch off")
+      assert(!tv.isOn)
+    }
+  }
+}
+```
+```
+[info] TVFeatureSpec:
+[info] As a TV set owner
+[info] I want to be able to turn the TV on and off
+[info] So I can watch TW when I want
+[info] And save energy when I'm not watching TV
+[info] Feature: TV power button
+[info]   Scenario: User presses power button when TV is off
+[info]     Given a TV set that is switched off
+[info]     When the power button is pressed
+[info]     Then the TV should switch on
+[info]   Scenario: User presses power button when TV is on
+[info]     Given a TV set that is switched on
+[info]     When the power button is pressed
+[info]     Then the TV should switch off
+```
