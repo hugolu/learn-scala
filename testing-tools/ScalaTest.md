@@ -258,7 +258,7 @@ class SetFreeSpec extends FreeSpec {
 
 ### Spec
 
-Spec allows you to define tests as methods, which saves one function literal per test compared to style classes that represent tests as functions. Fewer function literals translates into faster compile times and fewer generated class files, which can help minimize build times. As a result, using Spec can be a good choice in large projects where build times are a concern as well as when generating large numbers of tests programatically via static code generators.
+[Spec](http://doc.scalatest.org/2.2.6/#org.scalatest.Spec) 允許你把測試定義成方法，相較於風格類別把測試當成函數，Spec 每個測試省下一個函數字面文字 (function literal)。較少的 function literal 翻譯，較快的編譯時間，產生較少的類別檔案，有助於縮短建構 (build) 時間。因此，當建構時間是考量重點、透過靜態程式碼產生器產生大量測試，針對大型專案使用 Spec 是個好的選擇。
 
 ```scala
 import org.scalatest.Spec
@@ -289,7 +289,7 @@ class SetSpec extends Spec {
 
 ### PropSpec
 
-PropSpec is perfect for teams that want to write tests exclusively in terms of property checks; also a good choice for writing the occasional test matrix when a different style trait is chosen as the main unit testing style.
+[ProcSpec](http://doc.scalatest.org/2.2.6/#org.scalatest.PropSpec) 非常適合想用屬性檢查 (property check) 寫出各種組合測試的團隊；當不同風格特徵 (style trait) 被選為主單元測試風格時，這也是用來寫出測試矩陣的好選擇。
 
 ```scala
 import org.scalatest._
@@ -326,7 +326,7 @@ class SetPropSpec extends PropSpec with TableDrivenPropertyChecks with Matchers 
 
 ### FeatureSpec
 
-Trait FeatureSpec is primarily intended for acceptance testing, including facilitating the process of programmers working alongside non-programmers to define the acceptance requirements.
+[FeatureSpec](http://doc.scalatest.org/2.2.6/#org.scalatest.FeatureSpec) 主要針對驗收測試 (acceptance testing)，包含促進程式設計師與非程式設計人員一起定義驗收需求。
 
 ```scala
 import org.scalatest._
