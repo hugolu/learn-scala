@@ -116,7 +116,6 @@ sbt `testOnly` (or `test-only`) 接收空白分隔的測試列表，例如進入
 
 For teams coming from xUnit, FunSuite feels comfortable and familiar while still giving some of the benefits of BDD: FunSuite makes it easy to write descriptive test names, natural to write focused tests, and generates specification-like output that can facilitate communication among stakeholders.
 
-src/test/scala/flatspec.scala:
 ```scala
 import org.scalatest.FunSuite
 
@@ -137,7 +136,6 @@ class SetSuite extends FunSuite {
 **BDD**測試風格
 A good first step for teams wishing to move from xUnit to BDD, FlatSpec's structure is flat like xUnit, so simple and familiar, but the test names must be written in a specification style: "X should Y," "A must B," etc.
 
-src/test/scala/flatspec.scala:
 ```scala
 import org.scalatest.FlatSpec
 
@@ -157,7 +155,6 @@ class SetFlatSpec extends FlatSpec {
 ### FunSpec
 For teams coming from Ruby's RSpec tool, FunSpec will feel very familiar; More generally, for any team that prefers BDD, FunSpec's nesting and gentle guide to structuring text (with describe and it) provides an excellent general-purpose choice for writing specification-style tests.
 
-src/test/scala/funspec.scala
 ```scala
 import org.scalatest.FunSpec
 
@@ -179,6 +176,26 @@ class SetFunSpec extends FunSpec {
 ```
 
 ### WordSpec
+For teams coming from specs or specs2, WordSpec will feel familiar, and is often the most natural way to port specsN tests to ScalaTest. WordSpec is very prescriptive in how text must be written, so a good fit for teams who want a high degree of discipline enforced upon their specification text.
+
+```scala
+import org.scalatest.WordSpec
+
+class SetWordSpec extends WordSpec {
+  "A Set" when {
+    "empty" should {
+      "have size 0" in {
+        assert(Set.empty.size == 0)
+      }
+      "produce NoSuchElementException when head is invoked" in {
+        intercept[NoSuchElementException] {
+          Set.empty.head
+        }
+      }
+    }
+  }
+}
+```
 
 ### FreeSpec
 
