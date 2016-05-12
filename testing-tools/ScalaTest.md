@@ -111,7 +111,6 @@ All tests passed.
 
 ## 選擇測試風格
 
-
 ### FunSuite
 
 對於來自 xUnit 的團隊來說，[FunSuite](http://doc.scalatest.org/2.2.6/#org.scalatest.FunSuite) 讓人感到舒適與熟悉，此外也提供 BDD 的好處。FunSuite 易於描述測試名稱、寫出聚焦的測試、產生像是規格的輸出利於與人溝通。
@@ -389,3 +388,35 @@ class TVFeatureSpec extends FeatureSpec with GivenWhenThen {
 [info]     When the power button is pressed
 [info]     Then the TV should switch off
 ```
+
+## 為專案定義基礎類別
+
+與其逐一定義單元測試的trait
+```scala
+package com.mycompany.myproject
+
+import org.scalatest._
+
+class TestMySpec extends FlatSpec with Matchers with OptionValues with Inside with Inspectors {
+  // tests here
+}
+```
+
+不如為測試程式產生一個基礎類別(非trait, 以加速編譯時間)
+```scala
+package com.mycompany.myproject
+
+import org.scalatest._
+
+abstract class UnitSpec extends FlatSpec with Matchers with OptionValues with Inside with Inspectors
+```
+```scala
+package com.mycompany.myproject
+
+import org.scalatest._
+
+class TestMySpec extends UnitSpec {
+  // tests here
+}
+```
+
