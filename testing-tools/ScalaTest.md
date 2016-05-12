@@ -420,3 +420,5 @@ class TestMySpec extends UnitSpec {
 }
 ```
 
+大部份專案使用多種基礎型別，每一種專注不同的測試。你可以有一種針對資料庫的整合測試(可能叫做`DbSpec`)，另一種針對actor system的整合測試(可能叫做`ActorSysSpec`)，另一種同時需要資料庫與actor system(可能叫做`DbActorSysSpec`)，等等。一開始，你只需要創建一個單元測試的基礎類別。
+
