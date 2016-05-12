@@ -422,3 +422,49 @@ class TestMySpec extends UnitSpec {
 
 大部份專案使用多種基礎型別，每一種專注不同的測試。你可以有一種針對資料庫的整合測試(可能叫做`DbSpec`)，另一種針對actor system的整合測試(可能叫做`ActorSysSpec`)，另一種同時需要資料庫與actor system(可能叫做`DbActorSysSpec`)，等等。一開始，你只需要創建一個單元測試的基礎類別。
 
+## 開始第一個測試
+
+在測試類別中定義測試，這個類別擴充像 `FlatSpec` 的風格類別。
+```scala
+import org.scalatest.FlatSpec
+
+class FirstSpec extends FlatSpec {
+  // tests go here...
+}
+```
+
+在 `FlatSpec` 中，每個測試由測試句子組成，定義需要的行為與一段測試程式碼。測試句子需要主詞("A Stack")、動詞(`should`, `must`, `can`)、與其他部分。如下面的例子
+```scala
+"A Stack" should "pop values in last-in-first-out order"
+```
+
+相同主題多個測試，可使用`it`參考之前定義的主題。
+```scala
+it should "throw NoSuchElementException if an empty stack is popped"
+```
+
+測試句子後面，把測試的程式碼放在花掛號裡面`{}`
+```
+import collection.mutable.Stack
+import org.scalatest._
+
+class StackSpec extends FlatSpec {
+
+  "A Stack" should "pop values in last-in-first-out order" in {
+    val stack = new Stack[Int]
+    stack.push(1)
+    stack.push(2)
+    assert(stack.pop() === 2)
+    assert(stack.pop() === 1)
+  }
+
+  it should "throw NoSuchElementException if an empty stack is popped" in {
+    val emptyStack = new Stack[String]
+    intercept[NoSuchElementException] {
+      emptyStack.pop()
+    }
+  }
+}
+```
+
+接下來看是要用 sbt 或是 scalac/scala 進行測試。
