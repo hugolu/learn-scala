@@ -109,8 +109,22 @@ Tests: succeeded 2, failed 0, canceled 0, ignored 0, pending 0
 All tests passed.
 ```
 
+使用 ScalaTest 測試專案的三個步驟：
+
+1. [選擇測試風格](https://github.com/hugolu/learn-scala/blob/master/testing-tools/ScalaTest.md#選擇測試風格)
+2. [為專案定義基礎類別](https://github.com/hugolu/learn-scala/blob/master/testing-tools/ScalaTest.md#為專案定義基礎類別)
+3. [開始第一個測試](https://github.com/hugolu/learn-scala/blob/master/testing-tools/ScalaTest.md#開始第一個測試)
+
 ## 選擇測試風格
 
+- [FunSuite](https://github.com/hugolu/learn-scala/blob/master/testing-tools/ScalaTest.md#funsuite)
+- [FlatSpec](https://github.com/hugolu/learn-scala/blob/master/testing-tools/ScalaTest.md#flatspec)
+- [FunSpec](https://github.com/hugolu/learn-scala/blob/master/testing-tools/ScalaTest.md#funspec)
+- [WordSpec](https://github.com/hugolu/learn-scala/blob/master/testing-tools/ScalaTest.md#wordspec)
+- [FreeSpec](https://github.com/hugolu/learn-scala/blob/master/testing-tools/ScalaTest.md#freespec)
+- [Spec](https://github.com/hugolu/learn-scala/blob/master/testing-tools/ScalaTest.md#spec)
+- [PropSpec](https://github.com/hugolu/learn-scala/blob/master/testing-tools/ScalaTest.md#propspec)
+- [FeatureSpec](https://github.com/hugolu/learn-scala/blob/master/testing-tools/ScalaTest.md#featurespec)
 ### FunSuite
 
 對於來自 xUnit 的團隊來說，[FunSuite](http://doc.scalatest.org/2.2.6/#org.scalatest.FunSuite) 讓人感到舒適與熟悉，此外也提供 BDD 的好處。FunSuite 易於描述測試名稱、寫出聚焦的測試、產生像是規格的輸出利於與人溝通。
@@ -467,4 +481,4 @@ class StackSpec extends FlatSpec {
 }
 ```
 
-接下來看是要用 sbt 或是 scalac/scala 進行測試。
+接下來看是要用 [sbt](https://github.com/hugolu/learn-scala/blob/master/testing-tools/ScalaTest.md#配合-sbt-使用) 或是 [scalac/scala](https://github.com/hugolu/learn-scala/blob/master/testing-tools/ScalaTest.md#配合-scalac-使用) 進行測試。
