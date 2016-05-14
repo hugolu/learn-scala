@@ -59,11 +59,11 @@ if (0 == 0) 9 else iterate(0-1, square, square(3))
 - 兩者都會得到 `9` 的答案
 
 ## Stateful Objects
-這個世界由物件構成，每個物件都由隨著時間變化的狀態。
+這個世界由物件構成，每個物件都有隨著時間變化的狀態。
 
 如果物件會被本身的歷史影響，就是擁有狀態 (state) 的物件。
 
-例如你的戶頭，可以提領100元嗎？這個問題的答案取決於戶頭過去的歷史。
+例如，你的戶頭可以提領100元嗎？這個問題的答案取決於戶頭過去的歷史。
 
 每個可變的狀態由變數構成
 ```scala
@@ -76,3 +76,35 @@ var count = 111
 x = "hi"
 count = count + 1
 ```
+
+### State in Objects
+
+```scala
+class BankAccount {
+  private var balance = 0
+  def deposit(amount: Int): Unit = {
+    if (amount > 0) balance = balance + amount
+  }
+  def withdraw(amount: Int): Int =
+    if (0 < amount && amount <= balance) {
+      balance = balance - amount
+      balance
+    } else throw new Error("insufficient funds")
+}
+```
+
+`BankAccount` 定義 `balance` 的變數，表示目前帳戶的餘額。`deposit` 與 `withdraw` 方法會透過賦值改變餘額。注意，`balance` 是私有類別的變數不能從外面直接存取。
+
+建立一個帳戶
+```scala
+val account = new BankAccount
+```
+
+以下是對帳戶的操作
+```scala
+account deposit 50
+account withdraw 20                             //> res1: Int = 30
+account withdraw 20                             //> res2: Int = 10
+account withdraw 15                             //> java.lang.Error: insufficient funds
+```
+- 同樣操作，得到不同結果。很明顯，`account`是具有狀態的物件。
