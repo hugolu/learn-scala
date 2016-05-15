@@ -83,3 +83,14 @@ val y = x
 
 然後找不到任何操作可以區別 `x` 與 `y` 有何不同，這個例子中 `x` 與 `y` 就是相同。
 
+### 賦值與取代模型
+
+根據取代模型，我們可以用定義的表示式取代變數的名字(replace the name of a value by the expression that defines it)
+```scala
+val x = new BankAccount
+val y = x
+```
+
+第二行 `x` 用 `new BankAccount` 取代時，這將導致不同的結果。
+
+所以，當使用賦值，取代模型不再有效。
