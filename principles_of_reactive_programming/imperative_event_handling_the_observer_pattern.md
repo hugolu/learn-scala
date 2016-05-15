@@ -83,3 +83,19 @@ b deposit 30
 c.totalBalance                                  //> res2: Int = 50
 ```
 
+### 觀察者模式的優點
+
+- 對 view 與 model 的狀態解耦合
+- 允許有多種view跟觀察的狀態
+- 設定容易
+
+### 觀察者模式的缺點
+
+- 強制使用命令式的風格，因為 handler 的回傳型別是 Unit (暗示有副作用發生)
+- 很多移動的部分需要協調 (subscriber 要跟 publisher 註冊，publisher 發生變化要通知 subscriber)
+- 同步讓事情變得複雜 (如果 view 跟兩個 model 註冊，當兩個 model 同時產生變化，通知 view 更新資訊會發生 race condition
+- view 仍然跟 model 的狀態緊緊耦合，一旦 model 發生變化，view 馬上會更新狀態
+
+有趣的量化結果(根據 Adobe 2008 年的報告)
+- 1/3 的程式碼使用 event handling
+- 1/2 的 bug 出現在這些程式碼中
