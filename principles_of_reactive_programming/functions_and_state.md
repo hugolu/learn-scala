@@ -131,7 +131,7 @@ def cons[T](hd: T, tl: => Stream[T]) = new Stream[T] {
   - 使用 `Option` 保存 `tl` 求值內容，不需每次都要再重新求值
 
 問題：`cons` 是有狀態的物件嗎？
-- No - `Stream` 不是擁有狀態的物件
+- No - `Stream` 不是擁有狀態的物件，雖然使用了 `tlOpt` 儲存呼叫 `Some(tl)` 的結果，但是外面的世界察覺不出來。
 - Yes - 第二次呼叫 `tail` 時答案來自第一次計算儲存下來的結果，也就是說 `tail` 操作過程取決於發生過的歷史。
 
 
