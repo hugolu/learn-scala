@@ -118,5 +118,41 @@ b()             // 會得到6
 
 ### 範例
 
-用訊號重寫上一節的範例 `BandAccount`，用訊號維護 `balance`，定義 `consolidate` 函數產生給定帳戶的餘額總和。然後跟 publish/subscribe 實作比較，有什麼可節省的東西？
+用訊號重寫上一節的範例 `BandAccount`，用訊號維護 `balance`，定義 `consolidated` 函數產生給定帳戶的餘額總和。然後跟 publish/subscribe 實作比較，有什麼可節省的東西？
+> 目前為止還沒有定義 `Signal`，下面的程式沒有真的執行過，只是照影片中範例打出來
 
+```scala
+class BankAccount {
+  val balance = Var(0)
+  def deposit(amount: Int): Unit =
+    if (amount > 0) {
+      val b = balance()
+      balance() = b + amount
+    }
+  def withdraw(amount: Int): Unit = 
+    if (0 < amount && amount <= balance()) {
+      val b = balance()
+      balance() = b - amount
+    } else throw new Error("insufficient funds")
+}
+```
+```scala
+def consolidated(accts: List[BankAccount]): Signal[Int] =
+  Signal(accts.map(_.balance()).sum)
+
+val a = new BankAccount()
+val b = new BankAccount()
+val c = consolidated(List(a,b))
+
+c()                                     //> 0
+a deposit 20
+c()                                     //> 20
+b deposit 30
+c()                                     //> 50
+
+val xchange = Signal(246.00)
+val inDollar = Signal(c() * xchange())
+inDollar()                              //> 12300.0
+b withdraw 10
+inDollar()                              //> 9840.0
+```
