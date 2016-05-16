@@ -72,3 +72,51 @@ val sig = Signal(3)
 sig.update(5)
 ```
 - 完成更新後，`sig` 將回傳5而非3。
+
+### 旁白：更新訊號
+
+在 scala，更新的動作可以用賦值 (assignment) 表示。例如陣列 `arr`
+```scala
+arr(i) = 0
+```
+被翻譯成
+```scala
+arr.update(i, 0)
+```
+呼叫的更新函式可被想成
+```scala
+class Array[T] {
+  def update(idx: Int, value: T): Unit
+  ...
+}
+```
+
+一般來說，indexed assignment 像是 `f(E1, ..., En) = E` 被翻譯成 `f.update(E1, ..., En, E)`。如果`n=0`:`f.update()=E` 簡寫為`f()=E`。因此 `sig.update(5)` 被縮寫為 `sig() = 5`。
+
+### 訊號與變數
+
+`Var` 型別的訊號看起來有點像變數，`sig()` 被取值 (dereferencing)，`sig() = newValue` 被更新。
+
+但有個關鍵的差異：訊號間的關係可以自動維護，在未來所有時間點上。但變數沒有這樣的機制，要手動傳遞更新的訊息。
+
+變數：
+```scala
+a = 2
+b = 2 * a
+a = a + 1
+b               // 不會自動變成6
+b = 2 * a       // 必須手動更新
+```
+
+訊號：
+```scala
+a() = 2
+b() = 2 * a()
+a() = 3
+b()             // 會得到6
+```
+
+### 範例
+
+用訊號重寫上一節的範例 `BandAccount`，用訊號維護 `balance`，定義 `consolidate` 函數產生給定帳戶的餘額總和。然後跟 publish/subscribe 實作比較，有什麼可節省的東西？
+
