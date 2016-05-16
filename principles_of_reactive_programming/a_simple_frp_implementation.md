@@ -47,7 +47,7 @@ How do we record dependencies in observers?
 
 - When evaluating a signal-valued expression, need to know which signal caller get defined or updated by the expression.
 - If we know that, the executing a `sig()` means adding caller to the observers of `sig`.
-- When signal sig's value changes, all previously observing signals are re-evaluated and the set `sig.observers` is cleared.
+- When signal `sig`'s value changes, all previously observing signals are re-evaluated and the set `sig.observers` is cleared.
 - Re-evaluation will re-enter a calling signal caller in `sig.observers`, as long as caller's value still depends on `sig`.
 
 ### Who's Calling?
@@ -90,7 +90,7 @@ Together:
 object NoSignal extends Signal[Nothing](???) { ... }
 
 object Signal {
-  private val caler = new StackableVariable[Signal[_]](NoSignal)
+  private val caller = new StackableVariable[Signal[_]](NoSignal)
   def apply[T](expr: => T) = new Signal(expr)
 }
 ```
@@ -99,7 +99,7 @@ object Signal {
 ```scala
 class Signal[T](expr: => T) {
   import signal._
-  private var myExpre: () => T = _
+  private var myExpr: () => T = _
   private var myValue: T = _
   private var observers: Set[Signal[_]] = Set()
   update(expr)
