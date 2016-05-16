@@ -121,3 +121,63 @@ class Signal[T](expr: => T) {
 }
 ```
 
+### Exercise
+
+The Signal class still lacks an essential part. Which is it?
+
+- Error handling
+- Reevaluating callers
+- Constructing observers
+
+### Reevaluating Callers
+
+A signal's current value can change when
+- somebody calls an update operation on a Var, or
+- the value of a dependent signal changes
+ 
+Propagating requires a more refined implementation of computeValue:
+
+```scala
+protected def computeValue(): Unit =
+  myValue = caller.withValue(this)(myExpr())
+```
+
+```scala
+protected def computeValue(): Unit = {
+  newValue = caller.withValue(this)(myExpr())
+  if (myValue != newValue) {
+    myValue = newValue
+    val obs = observers
+    observers = Set()
+    obs.foreach(_.computeValue())
+  }
+}
+```
+
+### Handling NoSignal
+
+computeValue needs to be disabled for NoSignal because we cannnot eveluate an expression of type Nothing:
+
+```scala
+object NoSignal extends Signal[Nothing](???) {
+  override def computeValue() = ()
+}
+```
+
+### Handling Vars
+
+Recall the Var is a Signal which can be updated by the client program.
+
+In face, all necessary functionality is already present in class Signal; we just need to expose it:
+
+```scala
+class Var[T](expr: => T) extends Signal[T](expr) {
+  override def update(expr: => T): Unit = super.update(expr)
+}
+
+object Var {
+  def apply[T](expr: => T) = new Var(expr)
+}
+```
+
+### The Signal Class
