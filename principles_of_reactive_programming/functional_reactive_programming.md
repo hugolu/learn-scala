@@ -156,3 +156,48 @@ inDollar()                              //> 12300.0
 b withdraw 10
 inDollar()                              //> 9840.0
 ```
+
+用 signal 感覺是不是比 publish/subscribe 簡潔多了？
+
+### 訊號與變數 (2)
+
+變數賦值 `v = v + 1` 與訊號更新 `s() = s() + 1` 之間有很大的不同。
+- 前者，`v` 的新值變成 `v` 的舊值加 1
+- 後者，要在任何時間定義訊號比自己大於1，這不可能成立
+
+## 練習
+
+考慮以下程式片段
+```scala
+val num = Var(1)
+val twice = Signal(num() * 2)
+num() = 2
+```
+
+與
+```scala
+val num = Var(1)
+val twice = Signal(num() * 2)
+num = Var(2)
+```
+
+兩者 `twice()` 得到的結果一樣嗎？
+- No, 因為第二段程式，`num = Var(2)` 改變了 `num` 存放的內容，但 `twice = Signal(num() * 2)` 只會對第一行 `num = Var(1)` 反應
+
+第一段程式畫成圖形
+```
+            +---- num()=2
+num     ----+     num=Var(1)
+
+            +---- 4
+            +
+twice   ----+     2 
+```
+
+第二段程式畫成圖形
+```
+num         +---- num=Var(2)
+num     ----+     num=Var(1)
+
+twice   ----+---- 2
+```
