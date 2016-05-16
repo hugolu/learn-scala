@@ -11,7 +11,7 @@ Their user-facing APIs are summarized in the next slides.
 ### Summary: The Signal API
 
 ```scala
-class Signal[T[(expr: => T) {
+class Signal[T](expr: => T) {
   def apply(): T = ???
 }
 
