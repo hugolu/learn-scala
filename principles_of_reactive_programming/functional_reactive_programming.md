@@ -45,3 +45,30 @@ def isReactangle(LL: Position, UR: Position): Signal[Booleam] =
 ```
 - LL(lower left), UR(upper right) 定義一個矩形的左下、右上的點
 - 如果滑鼠的點落在範圍之內 (LL <= pos <= UR)，`inReactangle()`的訊號為 `true`。反之，則為 `false`
+
+### 常數訊號 (constant signals)
+```scala
+val sig = Signal(3)
+```
+表示訊號恆為3
+
+### 隨時間變動的訊號 (time-varying signals)
+
+怎麼定義隨時間變化的訊號呢？
+
+- 可以外在定義訊號，像是 `mousePosition` 然後在做 `map`
+- 或是使用 `Var`
+
+### 可變訊號
+
+訊號的值不可變
+
+但是函式庫定義 `Signal` 子類別 `Var` 可以被改變。
+
+`Var` 提供 `update` 操作，重新定義訊號的值。
+
+```scala
+val sig = Signal(3)
+sig.update(5)
+```
+- 完成更新後，`sig` 將回傳5而非3。
