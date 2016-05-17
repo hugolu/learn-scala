@@ -35,31 +35,32 @@ object Var {
 - `class Var` 是 `class Signal` 子類，多了 `update` 方法，這方法接受 `expr` 參數，從現在開始可以用來求值
 - `object Var` 提供 `apply` 方法，用來創建 `Var`，例如 `Var(expr)`
 
-### Implementation Idea
+### 實作的想法
 
-Each Signal maintains
-- its current value,
-- the current expression that defines the signal value,
-- a set of *observers*: the other signals the depend on its value.
+每個 Signal 維護三個意圖
+- 當下 `Signal` 的值
+- 當下用來定義 `Signal` 值的表示式
+- 一組觀察者 (observers): 相依於它的值的其他 `Signal`
 
-Then, if the signal changes, all observers need to be re-evaluated.
+然後，如果它的值改變了，所有觀察者需要被重新求值 (re-evaluated)
 
-### Dependency Maintenance
+### 相依性維護
 
-How do we record dependencies in observers?
+如何紀錄觀察者的相依性？
 
-- When evaluating a signal-valued expression, need to know which signal caller get defined or updated by the expression.
-- If we know that, the executing a `sig()` means adding caller to the observers of `sig`.
-- When signal `sig`'s value changes, all previously observing signals are re-evaluated and the set `sig.observers` is cleared.
-- Re-evaluation will re-enter a calling signal caller in `sig.observers`, as long as caller's value still depends on `sig`.
+- 當訊號求值，需要知道哪些訊號呼叫者(signal caller)在表示式中被定義或被更新。
+- 如果能知道這些，當執行 `sig()` 時就表示把呼叫者加入 `sig` 的觀察者名單。
+- 當訊號值產生變化，所有先前觀察的訊號都要重新求值，然後清除 `sig.observers`。
+- 重新求值會再重新把呼叫訊號呼叫者加入 `sig.observers`，只要呼叫者的值仍然相依於 `sig`。
 
-### Who's Calling?
+### 誰在呼叫?
 
-How do we find out on whose behalf a signal expression is evaluated?
+要怎麼找出訊號的表示式被求值？
+(How do we find out on whose behalf a signal expression is evaluated?)
 
-One simple(simplistic?) way to do this is to maintain a global data structure referring to the current caller. (We will discuss and refine this later).
+一個簡化的方法是維護一個目前呼叫者的全域資料結構 (稍後討論優化)。
 
-The data structure is accessed in a stack-like fashion because one evaluation of a signal might trigger others.
+資料結構以堆疊方式存取，因為訊號求值可能會觸發其他訊號。
 
 ### Stackable Variables
 
