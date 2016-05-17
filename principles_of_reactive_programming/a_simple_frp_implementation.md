@@ -1,12 +1,11 @@
 # A Simple FRP Implementation
 
-### A Simple FRP Implementation
+### 一個簡單的 FRP 實作
 
-We now develop a simple implementation of Signals and Vars, which together make up the basis of our approach to functional reactive programming.
 
-The class are assumed to be in a package frp.
+承續[上一堂課](https://github.com/hugolu/learn-scala/blob/master/principles_of_reactive_programming/functional_reactive_programming.md)，現在來實作 `Signal` 跟 `Var`，成為函數式響應編程 (FRP) 的基礎。
 
-Their user-facing APIs are summarized in the next slides.
+這類別被包裝在 `frp` 中，接下來介紹使用介面 API。
 
 ### Summary: The Signal API
 
@@ -19,6 +18,8 @@ object Signal {
   def apply[T](expr: => T) = new Signal(expr)
 }
 ```
+- `class Signal` 接受 `expr` 參數，提供 `apply` 方法。`expr` 可以用在未來的時間點上求值
+- `object Signal` 提供 `apply` 方法，用來創建 `Signal`，例如 `Signal(expr)`
 
 ### Summary: The Var API
 
@@ -31,6 +32,8 @@ object Var {
   def apply[T](expr: => T) = new Var(expr)
 }
 ```
+- `class Var` 是 `class Signal` 子類，多了 `update` 方法，這方法接受 `expr` 參數，從現在開始可以用來求值
+- `object Var` 提供 `apply` 方法，用來創建 `Var`，例如 `Var(expr)`
 
 ### Implementation Idea
 
