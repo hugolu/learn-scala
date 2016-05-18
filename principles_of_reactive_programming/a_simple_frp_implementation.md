@@ -90,7 +90,7 @@ we also evaluate signal expression at the top-level when there is no other signa
 We use the "sentinel" object NoSignal as the caller for these expressions.
 
 Together:
-```scaller
+```scala
 object NoSignal extends Signal[Nothing](???) { ... }
 
 object Signal {
@@ -98,6 +98,7 @@ object Signal {
   def apply[T](expr: => T) = new Signal(expr)
 }
 ```
+
 ### The Signal Class
 
 ```scala
