@@ -55,7 +55,7 @@ object Var {
 
 ### 誰在呼叫?
 
-要怎麼找出訊號的表示式被求值？
+如何發現「訊號表示式被求值」？
 (How do we find out on whose behalf a signal expression is evaluated?)
 
 一個簡化的方法是維護一個目前呼叫者的全域資料結構 (稍後討論優化)。
@@ -64,7 +64,7 @@ object Var {
 
 ### Stackable Variables
 
-Here's a class for stackable variables:
+這是 `StackableVariable` 類別：
 ```scala
 class StackableVariable[T](init: T) {
   private var values: List[T] = List(init)
@@ -76,9 +76,9 @@ class StackableVariable[T](init: T) {
 }
 ```
 
-You access it like this
+可以像這樣存取
 ```scala
-val caller = new StackableVar(initialSig)
+val caller = new StackableVariable(initialSig)
 call.withValue(otherSig){...}
 ... caller.value ...
 ```
