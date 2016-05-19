@@ -208,11 +208,8 @@ object Var {
 
 ### 討論
 
-Our implementation of FRP is quite stunning in its simplicity.
+這個 FRP 實作簡單的讓人驚嘆，但你可能會爭論太簡單了。事實上它使用了最糟糕的「全域」狀態
 
-But you might argue that it is too simplistic.
-
-In particular, it makes use of the worst kind of state: global state.
 
 ```scala
 object Signal {
@@ -221,19 +218,19 @@ object Signal {
 }
 ```
 
-Our immediate problem is: What happens if we try to evaluate serval signal expression in parallel?
+當前的問題是：如果嘗試平行地對信號的表達求值會發生什麼？
 
-### Thread-Local State
 
-Our way to get around the problem of concurrent accesses to global state is to use synchronization.
+### 執行緒局部狀態 (Thread-Local State)
 
-But this block threads, can be slow, and can lead to deadlocks.
 
-Another solution is to replace global state by thead-local state.
-- Thread-local state means that each thread accesses a separate copy of a variable.
-- It is supported in Scala through class `scala.util.DynamicVariable`.
+使用同步方法繞過這個存取全域狀態的問題。但阻斷執行緒運行會讓程式變慢，也會導致死鎖(deadlocks)。
 
-### Using Thread-Local State
+另一個解法是用執行緒局部狀態取代全域狀態
+- 執行緒局部狀態表示每個執行緒存取變數的複製品
+- Scala 透過類別 `scala.util.DynamicVariable` 有支援
+
+### 使用執行緒局部狀態
 
 The API of DynamicVariable matches the one of StackableVariable.
 
