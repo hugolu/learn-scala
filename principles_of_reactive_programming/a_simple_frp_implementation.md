@@ -83,13 +83,10 @@ call.withValue(otherSig){...}
 ... caller.value ...
 ```
 
-### Set Up in Object Signal
+### `object Signal` 裡的設定
 
-we also evaluate signal expression at the top-level when there is no other signal that's defined or updated.
+我們也對上層對訊號表示式求值，那裡沒有訊號被定義或更新。使用 `NoSignal` 當作這些表示式的呼叫者。
 
-We use the "sentinel" object NoSignal as the caller for these expressions.
-
-Together:
 ```scala
 object NoSignal extends Signal[Nothing](???) { ... }
 
@@ -98,8 +95,10 @@ object Signal {
   def apply[T](expr: => T) = new Signal(expr)
 }
 ```
+- `StackableVariable[Signal[_]]` 表示 `StackableVariable` 可以接受任何類型的 `Signal` 
+- `NoSignal` 當作初始值，這是個特別的訊號，因為沒有值所以擴充自 `Signal[Nothing]`，也因為沒有實作所以使用 `(???)`
 
-### The Signal Class
+### `Signal` 類別
 
 ```scala
 class Signal[T](expr: => T) {
