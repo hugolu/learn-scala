@@ -107,16 +107,26 @@ class Signal[T](expr: => T) {
   private var myValue: T = _
   private var observers: Set[Signal[_]] = Set()
   update(expr)
-  
+```
+- `myExpr`存放表示式, `myValue`存放表示式求得的值, `observers` 存放觀察者清單
+- 初始化時，這些尚未確定，需透過 `update(expr)` 給值
+
+```scala
   protected def update(expr: T): Unit = {
     myExpr = () => expr
     computeValue()
   }
+```
+- `update(expr)` 設定 `myExpr` 表示式，然後呼叫 `computeValue()` 求值
 
+```scala
   protected def computeValue(): Unit = {
     myValue = caller.withValue(this)(myExpr())
   }
-  
+```
+- 簡單用目前訊號當作呼叫者計算目前表示式，並把結果寫到 `myValue`
+
+```scala
   def apply() = {
     observers += caller.value
     assert(!caller.value.observers.contains(this), "cyclic signal definition")
@@ -124,6 +134,10 @@ class Signal[T](expr: => T) {
   }
 }
 ```
+- `apply()` 回傳當前訊號的值
+- 把 `caller` 的值 (signal) 加到觀察者名單
+- 避免 `observers` 包含自己造成循環呼叫
+- 最後回傳 `myValue`
 
 ### Exercise
 
