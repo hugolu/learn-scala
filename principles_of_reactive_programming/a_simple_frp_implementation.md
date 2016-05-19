@@ -204,29 +204,9 @@ object Var {
   def apply[T](expr: => T) = new Var(expr)
 }
 ```
+- `Var` 父類別的 `update()` 使用 `protected` 保護，所以子類可存取 `super.update(expr)`，但外界不能直接使用 `Signal` 的 `update`
 
-### The Signal Class
-
-```scala
-class Signal[T](expr: => T) {
-  import signal._
-  private var myExpr: () => T = _
-  private var myValue: T = _
-  private var observers: Set[Signal[_]] = Set()
-  update(expr)
-  
-  protected def update(expr: => T): Unit = {
-    myExpr = () => expr
-    computeValue()
-  }
-  
-  protected def computeValue(): Unit = {
-    myValue = caller.withValue(this)(myExpr())
-  }
-}
-```
-
-### Discussion
+### 討論
 
 Our implementation of FRP is quite stunning in its simplicity.
 
