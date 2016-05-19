@@ -112,7 +112,7 @@ class Signal[T](expr: => T) {
 - 初始化時，這些尚未確定，需透過 `update(expr)` 給值
 
 ```scala
-  protected def update(expr: T): Unit = {
+  protected def update(expr: => T): Unit = {
     myExpr = () => expr
     computeValue()
   }
