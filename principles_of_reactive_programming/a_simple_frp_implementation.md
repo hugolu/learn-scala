@@ -137,15 +137,16 @@ class Signal[T](expr: => T) {
 - `apply()` 回傳當前訊號的值
 - 把 `caller` 的值 (signal) 加到觀察者名單
 - 避免 `observers` 包含自己造成循環呼叫
+  - 例如 `S() = S() + 1`，左邊的 `S()` 是呼叫者，加入右邊 `S()` 的觀察者清單，當右邊表示式求值更新到左邊 `S()` ，然後右邊 `S()` 又發生變化導致表示式重新求值，如此循環下去沒完沒了
 - 最後回傳 `myValue`
 
-### Exercise
+### 練習
 
-The Signal class still lacks an essential part. Which is it?
+`Signal` 類別還缺少哪個重要的部分？
 
-- Error handling
-- Reevaluating callers
-- Constructing observers
+- [ ] 錯誤處理 (Error handling)
+- [x] 對呼叫者重新求值 (Reevaluating callers)
+- [ ] 建構觀察者 (Constructing observers)
 
 ### Reevaluating Callers
 
