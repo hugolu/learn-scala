@@ -148,22 +148,24 @@ class Signal[T](expr: => T) {
 - [x] 對呼叫者重新求值 (Reevaluating callers)
 - [ ] 建構觀察者 (Constructing observers)
 
-### Reevaluating Callers
+### 對呼叫者重新求值
 
-A signal's current value can change when
-- somebody calls an update operation on a Var, or
-- the value of a dependent signal changes
- 
-Propagating requires a more refined implementation of computeValue:
+當以下情形發生，訊號當下的值可被改變
+- 有人對 `Var` 執行 `update` 操作
+- 相依訊號的值發生變化
 
+為了傳播變化要再精進 `computeValue` 的實作：
+
+這是舊的，
 ```scala
 protected def computeValue(): Unit =
   myValue = caller.withValue(this)(myExpr())
 ```
 
+這是新的，
 ```scala
 protected def computeValue(): Unit = {
-  newValue = caller.withValue(this)(myExpr())
+  val newValue = caller.withValue(this)(myExpr())
   if (myValue != newValue) {
     myValue = newValue
     val obs = observers
@@ -172,10 +174,14 @@ protected def computeValue(): Unit = {
   }
 }
 ```
+- 先求值計算出 `newValue`
+- 如果 `myValue` 與 `newValue` 不同
+  - 更新 `myValue`
+  - 取出觀察者清單暫存到 `obs`，清空觀察者清單，然後呼叫每個觀察者求值
 
-### Handling NoSignal
+### 處理 `NoSignal`
 
-computeValue needs to be disabled for NoSignal because we cannnot eveluate an expression of type Nothing:
+要讓 `computeValue` 對 `NoSignal` 沒有反應，因為無法對 `Nothing` 的表示式求值
 
 ```scala
 object NoSignal extends Signal[Nothing](???) {
@@ -183,11 +189,11 @@ object NoSignal extends Signal[Nothing](???) {
 }
 ```
 
-### Handling Vars
+### 處理 `Var`
 
-Recall the Var is a Signal which can be updated by the client program.
+回憶一下，`Var` 是個可以被更新的訊號
 
-In face, all necessary functionality is already present in class Signal; we just need to expose it:
+事實上，所有需要的功能都在 `class Signal` 了，只要顯露出來即可
 
 ```scala
 class Var[T](expr: => T) extends Signal[T](expr) {
