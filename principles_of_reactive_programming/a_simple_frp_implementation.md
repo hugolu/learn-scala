@@ -255,14 +255,10 @@ A cleaner solution involves implicit parameters.
 - This is purely functional. But it currently requires more boilerplate that the thread-local solution.
 - Future version of Scala might solve that problem.
 
-### Summary
+### 總結
 
-We have given a quick tour of functional reactive programming, with some usage examples and an implementation.
+我們用一些範例與實作，快速瀏覽了函數式響應程式設計。
 
-This is a just a taster, there's much more to be discovered.
+這只是嚐鮮，還有很多東西沒有挖掘。事實上，我們只涵蓋了 FRP 的特定風格：根據事件改變的離散訊號。
 
-In particular, we only covered one particular style of FRP: Discrete signals changed by events.
-
-Some variants of FRP also treat continuous signals.
-
-Values in these systems are often computed by sampling instead of event propagation. 
+某些 FRP 的變形也處理連續訊號。這些系統的值通常根據取樣來計算而不是事件的傳播。
