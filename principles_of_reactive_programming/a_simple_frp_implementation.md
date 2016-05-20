@@ -92,9 +92,11 @@ class StackableVariable[T](init: T) {
 可以像這樣存取
 ```scala
 val caller = new StackableVariable(initialSig)
-call.withValue(otherSig){ ... }
+caller.withValue(otherSig){ ... }
 ... caller.value ...
 ```
+- `caller` 是個有某初始訊號的 `StackableVariable` 
+- 使用 `withValue(otherSig){ ... }` 更新 `caller`，藉由傳入某些訊號與某些表示式
 
 ### `object Signal` 裡的設定
 
@@ -122,6 +124,7 @@ class Signal[T](expr: => T) {
   private var observers: Set[Signal[_]] = Set()
   update(expr)
 ```
+- `import Signal._` 這樣才看得見 `Signal.caller` 全域變數
 - `myExpr`存放表示式, `myValue`存放表示式求得的值, `observers` 存放觀察者清單 (用 `Set` 理由很簡單，不希望記錄到重複的觀察者)
 - 初始化時，這些尚未確定，需透過 `update(expr)` 給值
 
