@@ -269,12 +269,11 @@ object Var {
   def apply[T](expr: => T) = new Var(expr)
 }
 ```
-- `Var` 父類別的 `update()` 使用 `protected` 保護，所以子類可存取 `super.update(expr)`，但外界不能直接使用 `Signal` 的 `update`
+- `Var` 父類別的 `update()` 使用 `protected` 保護，子類可存取 `super.update(expr)`，但外界不能直接使用 `Signal` 的 `update`。所以覆寫父類別的 `update`，提供一個外界可存取的 `update` 方法
 
 ### 討論
 
 這個 FRP 實作簡單的讓人驚嘆，但你可能會爭論太簡單了。事實上它使用了最糟糕的「全域」狀態
-
 
 ```scala
 object Signal {
@@ -284,7 +283,6 @@ object Signal {
 ```
 
 當前的問題是：如果嘗試平行地對信號的表達求值會發生什麼？
-
 
 ### 執行緒局部狀態 (Thread-Local State)
 
