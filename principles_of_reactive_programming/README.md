@@ -2,11 +2,15 @@
 
 筆記兼翻譯 Coursera [Principles of Reactive Programming](https://class.coursera.org/reactive-002) 課程
 
+課程簡介與基礎回顧
+
 - [What is Reactive Programming?](what_is_reactive_programming.md)
 - [Recap: Functions and Pattern Matching](recap_functions_and_pattern_matching.md)
 - [Recap: Collections](recap_collections.md)
 - [Functional Random Generators](functional_random_generators.md)
 - [Monads](monads.md)
+
+討論狀態改變的影響
 
 - [Functions and State](functions_and_state.md)
 - [Identity and Change](identity_and_change.md)
@@ -15,9 +19,13 @@
 - [Discrete Event Simulation: API and Usage](discrete_event_simulation_api_and_usage.md)
 - [Discrete Event Simulation: Implementation and Test](discrete_event_simluation_implementation_and_test.md)
 
+討論處理事件的方式
+
 - [Imperative Event Handling: The Observer Pattern](imperative_event_handling_the_observer_pattern.md)
 - [Functional Reactive Programming](functional_reactive_programming.md)
 - [A Simple FRP Implementation](a_simple_frp_implementation.md)
+
+待完成
 
 - [Monads and Effects](monads_and_effects.md)
 - [Latency as an Effect](latency_as_an_effect.md)
