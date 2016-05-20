@@ -108,6 +108,7 @@ object Signal {
   def apply[T](expr: => T) = new Signal(expr)
 }
 ```
+- `caller` 放在 `object Signal` 裡面，作為一個全域變數，用來維護呼叫者名單
 - `StackableVariable[Signal[_]]` 表示 `StackableVariable` 可以接受任何類型的 `Signal` 
 - `NoSignal` 當作初始值，這是個特別的訊號，因為沒有值所以擴充自 `Signal[Nothing]`，也因為沒有實作所以使用 `(???)`
 
