@@ -291,13 +291,11 @@ object Signal {
 
 另一個解法是用執行緒局部狀態取代全域狀態
 - 執行緒局部狀態表示每個執行緒存取變數的複製品
-- Scala 透過類別 `scala.util.DynamicVariable` 有支援
+- Scala 透過類別 `scala.util.DynamicVariable` 支援執行緒局部變數
 
 ### 使用執行緒局部狀態
 
-The API of DynamicVariable matches the one of StackableVariable.
-
-So we can simply swap it into our Signal implementation:
+`DynamicVariable` API 吻合 `StackableVariable` API，所以簡單地替換剛剛 Signal 上的 `StackableVariable` 即可。
 
 ```scala
 object Signal {
