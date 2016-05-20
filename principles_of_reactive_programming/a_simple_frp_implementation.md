@@ -116,7 +116,7 @@ object Signal {
 
 ```scala
 class Signal[T](expr: => T) {
-  import signal._
+  import Signal._
   private var myExpr: () => T = _
   private var myValue: T = _
   private var observers: Set[Signal[_]] = Set()
@@ -276,3 +276,74 @@ A cleaner solution involves implicit parameters.
 這只是嚐鮮，還有很多東西沒有挖掘。事實上，我們只涵蓋了 FRP 的特定風格：根據事件改變的離散訊號。
 
 某些 FRP 的變形也處理連續訊號。這些系統的值通常根據取樣來計算而不是事件的傳播。
+
+___
+
+完整程式如下：
+```scala
+package myTest
+
+object myTest {
+  val a = Var(0)                                  //> a  : myTest.Var[Int] = myTest.Var@4ee6da7b
+  val b = Var(0)                                  //> b  : myTest.Var[Int] = myTest.Var@71419cf7
+  a() = b() + 1
+  a()                                             //> res0: Int = 1
+  b() = 2
+  a()                                             //> res1: Int = 3
+}
+
+class Signal[T](expr: => T) {
+  import Signal._
+  private var myExpr: () => T = _
+  private var myValue: T = _
+  private var observers: Set[Signal[_]] = Set()
+  update(expr)
+
+  protected def update(expr: => T): Unit = {
+    myExpr = () => expr
+    computeValue()
+  }
+
+  protected def computeValue(): Unit = {
+    val newValue = caller.withValue(this)(myExpr())
+    if (myValue != newValue) {
+      myValue = newValue
+      val obs = observers
+      observers = Set()
+      obs.foreach(_.computeValue())
+    }
+  }
+
+  def apply() = {
+    observers += caller.value
+    assert(!caller.value.observers.contains(this), "cyclic signal definition")
+    myValue
+  }
+}
+
+object Signal {
+  private val caller = new StackableVariable[Signal[_]](NoSignal)
+  def apply[T](expr: => T) = new Signal(expr)
+}
+
+class StackableVariable[T](init: T) {
+  private var values: List[T] = List(init)
+  def value: T = values.head
+  def withValue[R](newValue: T)(op: => R): R = {
+    values = newValue :: values
+    try op finally values = values.tail
+  }
+}
+
+class Var[T](expr: => T) extends Signal[T](expr) {
+  override def update(expr: => T): Unit = super.update(expr)
+}
+
+object Var {
+  def apply[T](expr: => T) = new Var(expr)
+}
+
+object NoSignal extends Signal[Nothing](???) {
+  override def computeValue() = ()
+}
+```
