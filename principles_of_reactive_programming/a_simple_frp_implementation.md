@@ -102,21 +102,12 @@ caller.withValue(otherSig){ ... }
 ```scala
 val a = Var(0)
 val b = Var(0)
-val c = Var(0)
 
 b() = a() + 1
-c() = b() + 1
-a() = 1
-b()                                             //> res0: Int = 2
-c()                                             //> res1: Int = 3
 ```
 - `b() = a() + 1`
   - `caller.values` = `b :: NoSignal`
   - `try op` 對 `a() + 1` 求值，得到 `1`
-  - `finally values = values.tail`，得到 `values = NoSignal` 結果
-- `c() = b() + 1`
-  - `caller.values` = `c :: NoSignal`
-  - `try op` 對 `b() + 1` 求值，得到 `2`
   - `finally values = values.tail`，得到 `values = NoSignal` 結果
 
 ### `Signal` 伴生物件的設定
@@ -178,6 +169,34 @@ class Signal[T](expr: => T) {
 - 避免 `observers` 包含自己造成循環呼叫
   - 例如 `S() = S() + 1`，左邊的 `S()` 是呼叫者，加入右邊 `S()` 的觀察者清單，當右邊表示式求值更新到左邊 `S()` ，然後右邊 `S()` 又發生變化導致表示式重新求值，如此循環下去沒完沒了
 - 最後回傳 `myValue`
+
+範例一：
+```scala
+val a = Var(0)
+val b = Var(0)
+val c = Var(0)
+ 
+b() = a() + 1
+c() = b() + 1
+c()                                             //> res1: Int = 2
+ 
+a() = 1
+c()                                             //> res1: Int = 3
+```
+| Expression | Val | myExpr | myValue | observers |
+|------------|-----|--------|---------|-----------|
+| `val a = Var(0)` | `a` | `0` | `0` | |
+| `val b = Var(0)` | `b` | `0` | `0` | |
+| `val c = Var(0)` | `c` | `0` | `0` | |
+| `b() = a() + 1`  | `a` | `0` | `0` | `b` |
+|                  | `b` | `a() + 1` | 1 | |
+| `c() = b() + 1`  | `b` | `a() + 1` | 1 | `c` |
+|                  | `c` | `b() + 1` | 2 | |
+| `c()`            | `c` | `b() + 1` | 2 | |
+| `a() = 1`        | `a` | `1` | `1` | `b` |
+|                  | `b` | `a() + 1` | 2 | `c` |
+|                  | `c` | `b() + 1` | 3 | |
+| `c()`            | `c` | `b() + 1` | 3 | |
 
 ### 練習
 
