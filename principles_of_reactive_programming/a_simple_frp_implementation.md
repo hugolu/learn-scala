@@ -86,11 +86,13 @@ class StackableVariable[T](init: T) {
   }
 }
 ```
+- `values = newValue :: values` 把新值 (新訊號) 加到 `values` 開頭
+- `try op finally values = values.tail` 執行 `op` 後把剛加入的新值移走
 
 可以像這樣存取
 ```scala
 val caller = new StackableVariable(initialSig)
-call.withValue(otherSig){...}
+call.withValue(otherSig){ ... }
 ... caller.value ...
 ```
 
