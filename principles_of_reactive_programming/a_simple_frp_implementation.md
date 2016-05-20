@@ -304,17 +304,18 @@ object Signal {
 }
 ```
 
-### Another Solution: Implicit Parameters
+### 其他解法: 隱含的參數 (Implicit Parameters)
 
-Thread-local state still comes with a number of disadvantages:
-- It's imperative nature often produce hidden dependencies which are hard to manage.
-- Its implementation on the JDK involves a global hash table lookup, which can be a performance problem.
+執行緒局部狀態仍然有一些缺點：
+- 命令式的本質常常產生難以管理的隱藏相應性
+- 在 SDK 的實作包含全域雜湊表查詢，造成效能問題
 - It does not play well in situations where threads are multiplexed between serval tasks.
+- 對於多任務下多工的執行緒，執行緒局部狀態無法處理得很好
 
-A cleaner solution involves implicit parameters.
-- Instead of maintaining a thread-local variable, pass its current value into a signal expression as an implicit parameter.
-- This is purely functional. But it currently requires more boilerplate that the thread-local solution.
-- Future version of Scala might solve that problem.
+一個比較乾淨的解法採用隱含參數 
+- 不去管理執行緒局部變數，而是把目前的值用隱含參數傳給訊號的表示式
+- 這是純函數式程式設計，但比執行緒局部變數解法需要更多樣板
+- 未來 Scala 的版本可能會解決這問題
 
 ### 總結
 
