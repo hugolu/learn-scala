@@ -198,6 +198,24 @@ c()                                             //> res1: Int = 3
 |                  | `c` | `b() + 1` | 3 | |
 | `c()`            | `c` | `b() + 1` | 3 | |
 
+範例二：
+```scala
+val a = Var(0)
+val b = Var(0)
+
+b() = a()
+a() = b()                                       //> java.lang.AssertionError: assertion failed: cyclic signal definition
+```
+`a() = b()`:
+- 先看 `a() =`
+  - `update()`: myExpr = `b()`
+  - `computeValue()`: `caller.withValue(this)(myExpr())`
+    - caller.value = a :: NoSignal
+    - try b() 嘗試對 b 求值
+- 再看 `b()`
+  - `apply()`: `observers += caller.value`，所以觀察者是 `a`
+  - `!caller.value.observers.contains(this)` 不包含 `b`，所以 assert 拉起 (??)
+
 ### 練習
 
 `Signal` 類別還缺少哪個重要的部分？
