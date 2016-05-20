@@ -73,7 +73,7 @@ b()               //> 3
 
 資料結構以堆疊方式存取，因為訊號求值可能會觸發其他訊號。
 
-### Stackable Variables
+### `StackableVariable`
 
 這是 `StackableVariable` 類別：
 ```scala
@@ -98,9 +98,30 @@ caller.withValue(otherSig){ ... }
 - `caller` 是個有某初始訊號的 `StackableVariable` 
 - 使用 `withValue(otherSig){ ... }` 更新 `caller`，藉由傳入某些訊號與某些表示式
 
-### `object Signal` 裡的設定
+範例：
+```scala
+val a = Var(0)
+val b = Var(0)
+val c = Var(0)
 
-也對上層對訊號表示式求值，那裡沒有訊號被定義或更新。使用 `NoSignal` 當作這些表示式的呼叫者。
+b() = a() + 1
+c() = b() + 1
+a() = 1
+b()                                             //> res0: Int = 2
+c()                                             //> res1: Int = 3
+```
+- `b() = a() + 1`
+  - `caller.values` = `b :: NoSignal`
+  - `try op` 對 `a() + 1` 求值，得到 `1`
+  - `finally values = values.tail`，得到 `values = NoSignal` 結果
+- `c() = b() + 1`
+  - `caller.values` = `c :: NoSignal`
+  - `try op` 對 `b() + 1` 求值，得到 `2`
+  - `finally values = values.tail`，得到 `values = NoSignal` 結果
+
+### `Signal` 伴生物件的設定
+
+對最上層對訊號表示式求值，因為那裡沒有訊號被定義或更新，所以使用 `NoSignal` 當作這些表示式的呼叫者。
 
 ```scala
 object NoSignal extends Signal[Nothing](???) { ... }
@@ -124,7 +145,7 @@ class Signal[T](expr: => T) {
   private var observers: Set[Signal[_]] = Set()
   update(expr)
 ```
-- `import Signal._` 這樣才看得見 `Signal.caller` 全域變數
+- `import Signal._` 這樣才看得見 `caller` 這個全域變數
 - `myExpr`存放表示式, `myValue`存放表示式求得的值, `observers` 存放觀察者清單 (用 `Set` 理由很簡單，不希望記錄到重複的觀察者)
 - 初始化時，這些尚未確定，需透過 `update(expr)` 給值
 
@@ -142,6 +163,7 @@ class Signal[T](expr: => T) {
   }
 ```
 - 簡單用目前訊號當作呼叫者計算目前表示式，並把結果寫到 `myValue`
+- 例如，操作 `a()=expr` 等同於 `a.update(expr)`，然後 `computeValue` 呼叫 `caller.withValue(this)(expr)` 把自己跟求值式傳給 `caller`
 
 ```scala
   def apply() = {
