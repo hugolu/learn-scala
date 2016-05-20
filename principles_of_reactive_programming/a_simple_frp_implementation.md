@@ -122,7 +122,7 @@ class Signal[T](expr: => T) {
   private var observers: Set[Signal[_]] = Set()
   update(expr)
 ```
-- `myExpr`存放表示式, `myValue`存放表示式求得的值, `observers` 存放觀察者清單
+- `myExpr`存放表示式, `myValue`存放表示式求得的值, `observers` 存放觀察者清單 (用 `Set` 理由很簡單，不希望記錄到重複的觀察者)
 - 初始化時，這些尚未確定，需透過 `update(expr)` 給值
 
 ```scala
