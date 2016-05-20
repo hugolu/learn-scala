@@ -7,7 +7,7 @@
 
 這類別被包裝在 `frp` 中，接下來介紹使用介面 API。
 
-### Summary: The Signal API
+### `Signal` API
 
 ```scala
 class Signal[T](expr: => T) {
@@ -19,9 +19,9 @@ object Signal {
 }
 ```
 - `class Signal` 接受 `expr` 參數，提供 `apply` 方法。`expr` 可以用在未來的時間點上求值
-- `object Signal` 提供 `apply` 方法，用來創建 `Signal`，例如 `Signal(expr)`
+- `object Signal` 提供 `apply` 方法，用來創建 `Signal`，用法如 `Signal(expr)`
 
-### Summary: The Var API
+### `Var` API
 
 ```scala
 class Var[T](expr: => T) extends Signal[T](expr) {
@@ -32,12 +32,12 @@ object Var {
   def apply[T](expr: => T) = new Var(expr)
 }
 ```
-- `class Var` 是 `class Signal` 子類，多了 `update` 方法，這方法接受 `expr` 參數，從現在開始可以用來求值
-- `object Var` 提供 `apply` 方法，用來創建 `Var`，例如 `Var(expr)`
+- `class Var` 是 `class Signal` 子類別，多了 `update` 方法，這方法接受 `expr` 參數用來求值
+- `object Var` 提供 `apply` 方法，用來創建 `Var`，用法如 `Var(expr)`
 
 ### 實作的想法
 
-每個 Signal 維護三個意圖
+每個 Signal 維護三個資料意圖
 - 當下 `Signal` 的值
 - 當下用來定義 `Signal` 值的表示式
 - 一組觀察者 (observers): 相依於它的值的其他 `Signal`
