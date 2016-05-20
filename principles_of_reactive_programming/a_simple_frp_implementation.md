@@ -200,21 +200,10 @@ c()                                             //> res1: Int = 3
 
 範例二：
 ```scala
-val a = Var(0)
-val b = Var(0)
-
-b() = a()
-a() = b()                                       //> java.lang.AssertionError: assertion failed: cyclic signal definition
+S() = S() + 1                                   //> java.lang.AssertionError: assertion failed: cyclic signal definition
 ```
-`a() = b()`:
-- 先看 `a() =`
-  - `update()`: myExpr = `b()`
-  - `computeValue()`: `caller.withValue(this)(myExpr())`
-    - caller.value = a :: NoSignal
-    - try b() 嘗試對 b 求值
-- 再看 `b()`
-  - `apply()`: `observers += caller.value`，所以觀察者是 `a`
-  - `!caller.value.observers.contains(this)` 不包含 `b`，所以 assert 拉起 (??)
+- `S() = ` 把 `S` 加到 caller.value
+- `S()` 檢查 `!caller.value.observers.contains(this)`，caller 不能不包含自己，所以 assert 拉起
 
 ### 練習
 
