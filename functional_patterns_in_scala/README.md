@@ -6,14 +6,14 @@
 
 | topic | source code |
 |-------|-------------|
-| Typeclasses | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/codecs.scala |
-| Scenario 0 | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/Scenario0.scala |
-| Semigroup | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/semigroups.scala |
-| Monoid | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/monoids.scala |
-| Foldable | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/foldables.scala |
-| Scenario 1 | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/Scenario1.scala |
-| Scenario 2 | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/Scenario2.scala |
-| Scenario 3 | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/Scenario3.scala |
-| Functor | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/functors.scala |
-| Applicative | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/applicatives.scala |
-| Monad | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/monads.scala |
+| [Typeclasses](typeclasses.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/codecs.scala |
+| [Scenario 0](scenario0.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/Scenario0.scala |
+| [Semigroup](semigroup.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/semigroups.scala |
+| [Monoid](monoid.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/monoids.scala |
+| [Foldable](foldable.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/foldables.scala |
+| [Scenario 1](scenario1.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/Scenario1.scala |
+| [Scenario 2](scenario2.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/Scenario2.scala |
+| [Scenario 3](scenario3.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/Scenario3.scala |
+| [Functor](functor.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/functors.scala |
+| [Applicative](applicative.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/applicatives.scala |
+| [Monad](monad.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/monads.scala |
