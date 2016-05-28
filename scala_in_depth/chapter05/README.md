@@ -46,4 +46,42 @@ res2: Int = 2
 
 ### 5.1.1 識別符 (identifier)
 
-探索隱喻解析機制前，先理解編譯器如何在特定範圍解析識別符。
+探索隱喻解析機制前，先理解編譯器如何在特定範圍解析識別符。識別符在隱喻選擇上扮演關鍵的角色。
+
+- 使用 *Entity* (實體) 表示型別、值、方法、類別。
+- 使用 *Binding* (綁定) 當作名字參考到實體
+
+```scala
+scala> class Foo{}
+defined class Foo
+
+scala> new Foo
+res1: Foo = Foo@6a6824be
+```
+- Foo 類別是一個 entity；這個類別 binding 一個名字 `Foo`
+- 使用名稱 `Foo` 表示型別，可以產生物件物件
+
+```scala
+scala> object test {
+     |   class Foo{}
+     | }
+defined object test
+
+scala> new Foo
+<console>:11: error: not found: type Foo
+       new Foo
+           ^
+
+scala> new test.Foo
+res1: test.Foo = test$Foo@707f7052
+
+scala> import test.Foo
+import test.Foo
+
+scala> new Foo
+res2: test.Foo = test$Foo@5b464ce8
+```
+- `Foo` 類別是 `object test` 的成員
+- 直接使用 `Foo` 在 local scope 找不到這個類別，`new Foo` 發生錯誤
+- 要用 `new test.Foo` 產生物件，或是
+- 使用 `import` 關鍵字把 `test.Foo` 綁定到 loccal scope 的 `Foo`，然後用 `new Foo` 才能產生物件
