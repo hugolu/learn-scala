@@ -97,3 +97,41 @@ res3: test.Foo = test$Foo@6500df86
 - 這個彈性在使用 Java package 得到很大的方便，例如
   - `import java.util.{List=>JList}`
   - `import java.{io=>jio}`
+
+### 5.1.2 範圍與綁定 (Scope and bindings)
+
+範圍 (Scope) 是決定 binding 是否可行的邊界。
+
+```scala
+scala> class Foo(x: Int) {
+     |   def tmp = {
+     |     x
+     |   }
+     | }
+defined class Foo
+
+scala> val foo = new Foo(3)
+foo: Foo = Foo@5680a178
+
+scala> foo.tmp
+res1: Int = 3
+```
+- `tmp` 方法定義在巢狀範圍內，內層仍然可以讀取外層的參數
+
+```scala
+scala> class Bar(x: Int) {
+     |   def tmp = {
+     |     var x = 2
+     |     x
+     |   }
+     | }
+defined class Bar
+
+scala> val bar = new Bar(3)
+bar: Bar = Bar@281e3708
+
+scala> bar.tmp
+res2: Int = 2
+```
+- `tmp` 方法裡面定義 `x` 同名變數，將遮蔽 (shadow) 巢狀範圍外層的 `x`
+
