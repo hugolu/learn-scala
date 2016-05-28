@@ -135,3 +135,68 @@ res2: Int = 2
 ```
 - `tmp` 方法裡面定義 `x` 同名變數，將遮蔽 (shadow) 巢狀範圍外層的 `x`
 
+#### 綁定的優先順序 (由高至低)
+1. 局部、繼承、同檔案內 `packet` 的定義與宣告
+2. 明確匯入
+3. 萬用自元匯入
+4. 使用 `package` 的定義與宣告
+
+相關程式碼 - [bindings](https://github.com/hugolu/learn-scala/tree/master/scala_in_depth/chapter05/bindings)
+
+externalbindings.scala:
+```scala
+package test
+
+object x {
+  override def toString = "Externally bound x object in package test."
+}
+```
+
+test.scala:
+```scala
+package test
+
+object Test {
+    def main(args: Array[String]) {
+        testSamePackage()
+        testWildcardImport()
+        testExplicitImport()
+        testInlineDefinition()
+    }
+
+    def testSamePackage() = {
+        println(x)
+    }
+
+    object Wildcard {
+        def x = "Wildcard Import x"
+    }
+    def testWildcardImport() = {
+        import Wildcard._
+        println(x)
+    }
+
+    object Explicit {
+        def x = "Explicit Import x"
+    }
+    def testExplicitImport() = {
+        import Explicit.x
+        import Wildcard._
+        println(x)
+    }
+
+    def testInlineDefinition() = {
+        val x = "Inline definition x"
+        import Explicit.x
+        import Wildcard._
+        println(x)
+    }
+}
+```
+
+| 呼叫 | 結果 | 最高優先權 |
+|------|------|------|
+| `testSamePackage` | Externally bound x object in package test. | 同 `package` 的宣告 |
+| `testWildcardImport` | Wildcard Import x | 萬用自元匯入 |
+| `testExplicitImport` | Explicit Import x | 明確匯入 |
+| `testInlineDefinition` | Inline definition x | 局部變數 |
