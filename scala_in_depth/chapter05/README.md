@@ -200,3 +200,10 @@ object Test {
 | `testWildcardImport` | Wildcard Import x | 萬用自元匯入 |
 | `testExplicitImport` | Explicit Import x | 明確匯入 |
 | `testInlineDefinition` | Inline definition x | 局部變數 |
+
+### 5.1.3 隱喻解析 (Implicit resolution)
+
+兩條規則，用來搜尋標記為隱喻的實體
+
+- 隱喻綁定沒有使用前綴，x 就是 `x` 不會是 `foo.x`
+- 如果上面找不到可用的實體，搜尋所有屬於隱喻範圍內物件的 `implicit` 成員
