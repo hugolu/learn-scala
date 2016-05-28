@@ -85,3 +85,15 @@ res2: test.Foo = test$Foo@5b464ce8
 - 直接使用 `Foo` 在 local scope 找不到這個類別，`new Foo` 發生錯誤
 - 要用 `new test.Foo` 產生物件，或是
 - 使用 `import` 關鍵字把 `test.Foo` 綁定到 loccal scope 的 `Foo`，然後用 `new Foo` 才能產生物件
+
+```scala
+scala> import test.{Foo => Bar}
+import test.{Foo=>Bar}
+
+scala> new Bar
+res3: test.Foo = test$Foo@6500df86
+```
+- Scala `import` 還可以給綁定的實體取任意名字
+- 這個彈性在使用 Java package 得到很大的方便，例如
+  - `import java.util.{List=>JList}`
+  - `import java.{io=>jio}`
