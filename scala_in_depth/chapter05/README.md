@@ -320,3 +320,8 @@ res0: Foo.Bar.type = Bar
 - 物件不能有隱喻伴生物件 (Scala objects can’t have companion objects for implicits.)
 - 隱喻關聯物件的型別要加上 `.type`，例如 `Bar.type`
 - 當呼叫 `implicitly[Foo.Bar.type]`，隱喻值透過外部型別 `Foo` 找到產生 `Bar.type` 的方法
+
+#### Package object
+
+對於定義在 package 裡面所有型別，任何定義在 package object 裡的隱喻都在隱喻範圍內。
+
