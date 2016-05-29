@@ -207,3 +207,25 @@ object Test {
 
 - 隱喻綁定沒有使用前綴，x 就是 `x` 不會是 `foo.x`
 - 如果上面找不到可用的實體，搜尋所有屬於隱喻範圍內物件的 `implicit` 成員
+
+```scala
+scala> def findAnInt(implicit x: Int) = x
+findAnInt: (implicit x: Int)Int
+
+scala> object test {
+     |   implicit val foo = 5
+     | }
+defined object test
+
+scala> findAnInt
+<console>:12: error: could not find implicit value for parameter x: Int
+       findAnInt
+       ^
+
+scala> implicit val bar = 6
+bar: Int = 6
+
+scala> findAnInt
+res1: Int = 6
+```
+- 規則一：隱喻綁定只會在局部範圍內找沒有前綴的實體 (available on the local scope with no prefix)
