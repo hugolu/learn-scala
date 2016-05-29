@@ -260,6 +260,7 @@ Companion Foo
 - 如果 `T` 是型別投影 `S#T`，`S` 的一部分也包含在型別 `T` 的部分內 (不懂?? 6.1.1 會詳述)
 
 #### 型別參數衍伸的隱喻範圍 (IMPLICIT SCOPE VIA TYPE PARAMETERS)
+
 ```scala
 scala> object holder {
      |   trait Foo
@@ -287,3 +288,22 @@ res2: List[holder.Foo] = List(Foo!!)
 - 定義: `def implicitly[T](implicit arg : T) = arg` 
 - 用這個函數在目前的隱喻範圍找尋型別 (6.2 會詳述)
 - 回傳定義在 `Foo` 伴生物件內的的隱喻列表 (implicit list)
+
+#### 巢狀隱喻範圍 (IMPLICIT SCOPE VIA NESTING)
+
+```scala
+scala> object Foo {
+     |   trait Bar
+     |   implicit def newBar = new Bar {
+     |     override def toString = "Implicit Bar"
+     |   }
+     | }
+defined object Foo
+
+scala> implicitly[Foo.Bar]
+res0: Foo.Bar = Implicit Bar
+```
+- 外部型別是 `Foo`，裡面定義特徵 `Bar`
+- `Foo` 物件裡面定義一個隱喻產生`Bar`實例的方法
+- 當呼叫`implicitly[Foo.Bar]`，隱喻值透過外部型別`Foo`找到產生`Bar`的方法
+
