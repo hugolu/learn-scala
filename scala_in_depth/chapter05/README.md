@@ -141,7 +141,7 @@ res2: Int = 2
 3. 萬用自元匯入
 4. 使用 `package` 的定義與宣告
 
-相關程式碼 - [bindings](https://github.com/hugolu/learn-scala/tree/master/scala_in_depth/chapter05/bindings)
+程式碼 - [bindings](bindings)
 
 externalbindings.scala:
 ```scala
@@ -325,6 +325,8 @@ res0: Foo.Bar.type = Bar
 
 對於定義在 package 裡面所有型別，任何定義在 package object 裡的隱喻都在隱喻範圍內。
 
+程式碼 - [implicit-resolution](implicit-resolution)
+
 package.scala:
 ```scala
 package object foo {
@@ -335,5 +337,12 @@ package foo {
     class Foo {
         override def toString = "Foo!"
     }
+}
+```
+test.scala:
+```scala
+object Test extends App {
+    def method(implicit x: foo.Foo) = println(x)
+    method
 }
 ```
