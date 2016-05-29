@@ -374,3 +374,37 @@ scala> foo(5)
 - 使用 `implicit` 關鍵字定義 `intToString` 方法，接收 `Int` 參數，回傳 `String` 值
 - `intToString`的型別是 `Int => String` 
 - `foo` 方法接受 `String` 參數，但傳入型別為 `Int`，編譯器會尋找能修正情況的 implicit view
+
+Implicit view 在兩種情況下使用：
+
+1. 如果表示式沒有符合編譯器的期待，編譯器會尋找能夠符合預期型別的 implicit view
+2. `e.t` 表示存取成員，如果 `e` 型別沒有 `t` 這個成員變數，編譯器尋找用來轉換 `e` 的 implicit view，讓轉換後的型別有 `t` 這個成員變數
+
+```scala
+scala> object test {
+     |   trait Foo
+     |   trait Bar
+     |   object Foo {
+     |     implicit def fooToBar(foo: Foo) = new Bar{
+     |       override def toString = "Bar!"
+     |     }
+     |   }
+     | }
+
+scala> import test._
+import test._
+
+scala> def bar(x: Bar) = println(x)
+bar: (x: test.Bar)Unit
+
+scala> var x = new Foo{}
+x: test.Foo = $anon$1@59e84876
+
+scala> bar(x)
+Bar!
+```
+- 伴生物件 `Foo` 包含一個將型別 `Foo` 轉換成型別 `Bar` 的 implicit view
+- 當編譯器要尋找能將 `Foo` 隱喻轉換成 `Bar` 的 implicit view 時，它會到伴生物件 `Foo` 裡面找
+
+> 經實驗，把 implicit view 放在伴生物件 `Bar` 中，scala 2.11.7 編譯器也能知道如何轉換
+
