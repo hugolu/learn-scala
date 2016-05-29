@@ -346,3 +346,31 @@ object Test extends App {
     method
 }
 ```
+
+## 5.2 用隱喻視圖擴充現有類別 (Enhancing existing classes with implicit views)
+
+implicit view 能自動轉換型別以滿足表示式。
+
+形式：`implicit def <myConversion-Name>(<argumentName>: OriginalType): ViewType`
+
+- 把 `OriginalType` 轉換成 `ViewType` 
+
+```scala
+scala> def foo(msg: String) = println(msg)
+foo: (msg: String)Unit
+
+scala> foo(5)
+<console>:12: error: type mismatch;
+ found   : Int(5)
+ required: String
+       foo(5)
+           ^
+
+scala> implicit def intToString(x: Int): String = x.toString
+
+scala> foo(5)
+5
+```
+- 使用 `implicit` 關鍵字定義 `intToString` 方法，接收 `Int` 參數，回傳 `String` 值
+- `intToString`的型別是 `Int => String` 
+- `foo` 方法接受 `String` 參數，但傳入型別為 `Int`，編譯器會尋找能修正情況的 implicit view
