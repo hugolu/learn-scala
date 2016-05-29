@@ -325,3 +325,15 @@ res0: Foo.Bar.type = Bar
 
 對於定義在 package 裡面所有型別，任何定義在 package object 裡的隱喻都在隱喻範圍內。
 
+package.scala:
+```scala
+package object foo {
+    implicit def foo = new Foo
+}
+
+package foo {
+    class Foo {
+        override def toString = "Foo!"
+    }
+}
+```
