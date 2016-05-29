@@ -258,3 +258,32 @@ Companion Foo
 - 如果 `T` 是型別參數，隱喻範圍包含部分型別。例如隱喻搜尋 `List[String]`，則 `List` 與 `String` 的伴生物件都在搜尋範圍內
 - 如果 Singleton 型別 `T` 在某物件內，這個物件也會在搜尋範圍內
 - 如果 `T` 是型別投影 `S#T`，`S` 的一部分也包含在型別 `T` 的部分內 (不懂?? 6.1.1 會詳述)
+
+#### 型別參數衍伸的隱喻範圍 (IMPLICIT SCOPE VIA TYPE PARAMETERS)
+```scala
+scala> object holder {
+     |   trait Foo
+     |   object Foo {
+     |     implicit val list = List(new Foo{ override def toString = "Foo!!" })
+     |   }
+     | }
+defined object holder
+
+scala> import holder.Foo
+import holder.Foo
+
+scala> def method(implicit list: List[Foo]) = println(list(0))
+method: (implicit list: List[holder.Foo])Unit
+
+scala> method
+Foo!!
+```
+- 型別參數為 `List[Foo]`，隱喻範圍包含 `List` 與 `Foo` 的伴生物件
+
+```scala
+scala> implicitly[List[holder.Foo]]
+res2: List[holder.Foo] = List(Foo!!)
+```
+- 定義: `def implicitly[T](implicit arg : T) = arg` 
+- 用這個函數在目前的隱喻範圍找尋型別 (6.2 會詳述)
+- 回傳定義在 `Foo` 伴生物件內的的隱喻列表 (implicit list)
