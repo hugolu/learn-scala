@@ -206,7 +206,7 @@ object Test {
 兩條規則，用來搜尋標記為隱喻的實體
 
 - 隱喻綁定沒有使用前綴，x 就是 `x` 不會是 `foo.x`
-- 如果上面找不到可用的實體，搜尋所有屬於隱喻範圍內物件的 `implicit` 成員
+- 如果上面找不到可用的實體，搜尋所有屬於隱喻範圍 (implicit scope) 內物件的 `implicit` 成員
 
 ```scala
 scala> def findAnInt(implicit x: Int) = x
@@ -229,3 +229,25 @@ scala> findAnInt
 res1: Int = 6
 ```
 - 規則一：隱喻綁定只會在局部範圍內找沒有前綴的實體 (available on the local scope with no prefix)
+
+```scala
+scala> object holder {
+     |   trait Foo
+     |   object Foo {
+     |     implicit val x = new Foo {
+     |       override def toString = "Companion Foo"
+     |     }
+     |   }
+     | }
+defined object holder
+
+scala> import holder.Foo
+import holder.Foo
+
+scala> def method(implicit foo: Foo) = println(foo)
+method: (implicit foo: holder.Foo)Unit
+
+scala> method
+Companion Foo
+```
+- 規則二：當編譯器靠規則一找不到可用的隱喻成員，會在隱喻範圍內搜尋伴生物件 (companion object) 內定義的隱喻成員。
