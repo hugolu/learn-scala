@@ -305,5 +305,18 @@ res0: Foo.Bar = Implicit Bar
 ```
 - 外部型別是 `Foo`，裡面定義特徵 `Bar`
 - `Foo` 物件裡面定義一個隱喻產生`Bar`實例的方法
-- 當呼叫`implicitly[Foo.Bar]`，隱喻值透過外部型別`Foo`找到產生`Bar`的方法
+- 當呼叫 `implicitly[Foo.Bar]`，隱喻值透過外部型別 `Foo` 找到產生 `Bar` 的方法
 
+```scala
+scala> object Foo {
+     |   object Bar { override def toString = "Bar" }
+     |   implicit def b: Bar.type = Bar
+     | }
+defined object Foo
+
+scala> implicitly[Foo.Bar.type]
+res0: Foo.Bar.type = Bar
+```
+- 物件不能有隱喻伴生物件 (Scala objects can’t have companion objects for implicits.)
+- 隱喻關聯物件的型別要加上 `.type`，例如 `Bar.type`
+- 當呼叫 `implicitly[Foo.Bar.type]`，隱喻值透過外部型別 `Foo` 找到產生 `Bar.type` 的方法
