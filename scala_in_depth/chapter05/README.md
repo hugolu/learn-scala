@@ -594,3 +594,98 @@ object ThreadPoolStrategy extends ThreadStrategy {
 - `() => future.get()` 回傳一個呼叫 `future.get` 的 anonymous closure，這個呼叫會先卡住直到有人執行它，並回傳 `func` 的回傳值 (這個機制還不熟...)
 - 另外，每次 `Callable` 裡面的 `call` 被呼叫，會順便印出執行緒的資訊
 
+##### 使用 SameThreadStrategy
+```scala
+object Test1 extends App {
+    implicit val ts = SameThreadStrategy
+
+    val x = new Matrix(Array(Array(1,2,3), Array(4,5,6)))
+    println(x)
+
+    val y = new Matrix(Array(Array(1), Array(1), Array(1)))
+    println(y)
+
+    val z = MatrixUtils.multiply(x, y)
+    println(z)
+}
+```
+- 提供 `implicit val ts = SameThreadStrategy` 使用單一執行緒
+
+```
+[info] Running Test1
+Matrix
+|1.0 | 2.0 | 3.0|
+|4.0 | 5.0 | 6.0|
+Matrix
+|1.0|
+|1.0|
+|1.0|
+Matrix
+|6.0|
+|15.0|
+```
+
+##### 使用 ThreadPoolStrategy
+```scala
+object Test2 extends App {
+    implicit val ts = ThreadPoolStrategy
+
+    val x = new Matrix(Array(Array(1,2,3), Array(4,5,6)))
+    println(x)
+
+    val y = new Matrix(Array(Array(1), Array(1), Array(1)))
+    println(y)
+
+    val z = MatrixUtils.multiply(x, y)
+    println(z)
+}
+```
+- 提供 `implicit val ts = ThreadPoolStrategy` 使用多執行緒
+
+```
+[info] Running Test2
+Matrix
+|1.0 | 2.0 | 3.0|
+|4.0 | 5.0 | 6.0|
+Matrix
+|1.0|
+|1.0|
+|1.0|
+Executing function on threads: pool-3-thread-1
+Executing function on threads: pool-3-thread-2
+Matrix
+|6.0|
+|15.0|
+```
+
+##### 使用預設參數
+```scala
+def multiply(a: Matrix, b: Matrix)(implicit threading: ThreadStrategy = SameThreadStrategy): Matrix = { ... }
+```
+```scala
+object Test3 extends App {
+    val x = new Matrix(Array(Array(1,2,3), Array(4,5,6)))
+    println(x)
+
+    val y = new Matrix(Array(Array(1), Array(1), Array(1)))
+    println(y)
+
+    val z = MatrixUtils.multiply(x, y)
+    println(z)
+}
+```
+- 使用預設參數 `SameThreadStrategy`
+
+```
+[info] Running Test3
+Matrix
+|1.0 | 2.0 | 3.0|
+|4.0 | 5.0 | 6.0|
+Matrix
+|1.0|
+|1.0|
+|1.0|
+Matrix
+|6.0|
+|15.0|
+```
