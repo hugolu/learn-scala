@@ -1,22 +1,22 @@
-# Chapter 5 用隱喻方式寫出有表達力的程式碼
+# Chapter 5 用隱式方式寫出有表達力的程式碼
 
 Scala 編譯器會在編譯期間推測使用者沒有明確寫出來的訊息
 
 - missing parameter: 方法或建構函數遺漏參數
 - missing conversion: 型別間沒有明確指出如何轉換，或是呼叫方法接收的物件需要轉換
 
-## 5.1 簡介隱喻 (implicit)
+## 5.1 簡介隱式 (implicit)
 
 `implicit` 關鍵字有兩種用法
 
-- 方法與參數定義：告訴編譯器解析隱喻時，可以使用這些方法或參數定義
-- 方法參數列表：告訴編譯器參數列表可能遺缺，編譯器應該在解析隱喻 (implicit resolution) 時把他們找出來
+- 方法與參數定義：告訴編譯器解析隱式時，可以使用這些方法或參數定義
+- 方法參數列表：告訴編譯器參數列表可能遺缺，編譯器應該在隱式解析 (implicit resolution) 時把他們找出來
 
 ```scala
 scala> def findAnInt(implicit x : Int) = x
 findAnInt: (implicit x: Int)Int
 ```
-定義 `findAnInt` 方法，用 `implicit` 標示 `x` 參數，表示如果呼叫者沒提供，編譯器要在隱喻範圍 (implicit scope) 搜尋 `Int` 的變數
+定義 `findAnInt` 方法，用 `implicit` 標示 `x` 參數，表示如果呼叫者沒提供，編譯器要在隱式範圍 (implicit scope) 搜尋 `Int` 的變數
 
 ```scala
 scala> findAnInt
@@ -24,19 +24,19 @@ scala> findAnInt
        findAnInt
        ^
 ```
-在沒有提供隱喻值情況下，呼叫沒提供參數會發生錯誤
+在沒有提供隱式值情況下，呼叫沒提供參數會發生錯誤
 
 ```scala
 scala> implicit val test = 5
 test: Int = 5
 ```
-使用 `implicit` 宣告 `test` (名字隨便取)，所以將來解析隱喻就能找到整數的隱喻值
+使用 `implicit` 宣告 `test` (名字隨便取)，所以將來解析隱式就能找到整數的隱式值
 
 ```scala
 scala> findAnInt
 res1: Int = 5
 ```
-呼叫 `findAnInt` 沒有提供參數，編譯器使用隱喻值
+呼叫 `findAnInt` 沒有提供參數，編譯器使用隱式值
 
 ```scala
 scala> findAnInt(2)
@@ -46,7 +46,7 @@ res2: Int = 2
 
 ### 5.1.1 識別符 (identifier)
 
-探索隱喻解析機制前，先理解編譯器如何在特定範圍解析識別符。識別符在隱喻選擇上扮演關鍵的角色。
+探索隱式解析機制前，先理解編譯器如何在特定範圍解析識別符。識別符在隱式選擇上扮演關鍵的角色。
 
 - 使用 *Entity* (實體) 表示型別、值、方法、類別。
 - 使用 *Binding* (綁定) 當作名字參考到實體
@@ -201,12 +201,12 @@ object Test {
 | `testExplicitImport` | Explicit Import x | 明確匯入 |
 | `testInlineDefinition` | Inline definition x | 局部變數 |
 
-### 5.1.3 隱喻解析 (Implicit resolution)
+### 5.1.3 隱式解析 (Implicit resolution)
 
-兩條規則，用來搜尋標記為隱喻的實體
+兩條規則，用來搜尋標記為隱式的實體
 
-- 隱喻綁定沒有使用前綴，x 就是 `x` 不會是 `foo.x`
-- 如果上面找不到可用的實體，搜尋所有屬於隱喻範圍 (implicit scope) 內物件的 `implicit` 成員
+- 隱式綁定沒有使用前綴，x 就是 `x` 不會是 `foo.x`
+- 如果上面找不到可用的實體，搜尋所有屬於隱式範圍 (implicit scope) 內物件的 `implicit` 成員
 
 ```scala
 scala> def findAnInt(implicit x: Int) = x
@@ -228,7 +228,7 @@ bar: Int = 6
 scala> findAnInt
 res1: Int = 6
 ```
-- 規則一：隱喻綁定只會在局部範圍內找沒有前綴的實體 (available on the local scope with no prefix)
+- 規則一：隱式綁定只會在局部範圍內找沒有前綴的實體 (available on the local scope with no prefix)
 
 ```scala
 scala> object holder {
@@ -250,16 +250,16 @@ method: (implicit foo: holder.Foo)Unit
 scala> method
 Companion Foo
 ```
-- 規則二：當編譯器靠規則一找不到可用的隱喻成員，會在隱喻範圍內搜尋伴生物件 (companion object) 內定義的隱喻成員。
+- 規則二：當編譯器靠規則一找不到可用的隱式成員，會在隱式範圍內搜尋伴生物件 (companion object) 內定義的隱式成員。
 
-型別 `T` 的隱喻範圍是一組跟 `T` 相關的伴生物件：
+型別 `T` 的隱式範圍是一組跟 `T` 相關的伴生物件：
 
 - `T` 的子型別
-- 如果 `T` 是型別參數，隱喻範圍包含部分型別。例如隱喻搜尋 `List[String]`，則 `List` 與 `String` 的伴生物件都在搜尋範圍內
+- 如果 `T` 是型別參數，隱式範圍包含部分型別。例如隱式搜尋 `List[String]`，則 `List` 與 `String` 的伴生物件都在搜尋範圍內
 - 如果 Singleton 型別 `T` 在某物件內，這個物件也會在搜尋範圍內
 - 如果 `T` 是型別投影 `S#T`，`S` 的一部分也包含在型別 `T` 的部分內 (不懂?? 6.1.1 會詳述)
 
-#### 型別參數衍伸的隱喻範圍 (IMPLICIT SCOPE VIA TYPE PARAMETERS)
+#### 型別參數衍伸的隱式範圍 (IMPLICIT SCOPE VIA TYPE PARAMETERS)
 
 ```scala
 scala> object holder {
@@ -279,17 +279,17 @@ method: (implicit list: List[holder.Foo])Unit
 scala> method
 Foo!!
 ```
-- 型別參數為 `List[Foo]`，隱喻範圍包含 `List` 與 `Foo` 的伴生物件
+- 型別參數為 `List[Foo]`，隱式範圍包含 `List` 與 `Foo` 的伴生物件
 
 ```scala
 scala> implicitly[List[holder.Foo]]
 res2: List[holder.Foo] = List(Foo!!)
 ```
 - 定義: `def implicitly[T](implicit arg : T) = arg` 
-- 用這個函數在目前的隱喻範圍找尋型別 (6.2 會詳述)
-- 回傳定義在 `Foo` 伴生物件內的的隱喻列表 (implicit list)
+- 用這個函數在目前的隱式範圍找尋型別 (6.2 會詳述)
+- 回傳定義在 `Foo` 伴生物件內的的隱式列表 (implicit list)
 
-#### 巢狀隱喻範圍 (IMPLICIT SCOPE VIA NESTING)
+#### 巢狀隱式範圍 (IMPLICIT SCOPE VIA NESTING)
 
 ```scala
 scala> object Foo {
@@ -304,8 +304,8 @@ scala> implicitly[Foo.Bar]
 res0: Foo.Bar = Implicit Bar
 ```
 - 外部型別是 `Foo`，裡面定義特徵 `Bar`
-- `Foo` 物件裡面定義一個隱喻產生`Bar`實例的方法
-- 當呼叫 `implicitly[Foo.Bar]`，隱喻值透過外部型別 `Foo` 找到產生 `Bar` 的方法
+- `Foo` 物件裡面定義一個隱式產生`Bar`實例的方法
+- 當呼叫 `implicitly[Foo.Bar]`，隱式值透過外部型別 `Foo` 找到產生 `Bar` 的方法
 
 ```scala
 scala> object Foo {
@@ -317,13 +317,13 @@ defined object Foo
 scala> implicitly[Foo.Bar.type]
 res0: Foo.Bar.type = Bar
 ```
-- 物件不能有隱喻伴生物件 (Scala objects can’t have companion objects for implicits.)
-- 隱喻關聯物件的型別要加上 `.type`，例如 `Bar.type`
-- 當呼叫 `implicitly[Foo.Bar.type]`，隱喻值透過外部型別 `Foo` 找到產生 `Bar.type` 的方法
+- 物件不能有隱式伴生物件 (Scala objects can’t have companion objects for implicits.)
+- 隱式關聯物件的型別要加上 `.type`，例如 `Bar.type`
+- 當呼叫 `implicitly[Foo.Bar.type]`，隱式值透過外部型別 `Foo` 找到產生 `Bar.type` 的方法
 
 #### Package object
 
-對於定義在 package 裡面所有型別，任何定義在 package object 裡的隱喻都在隱喻範圍內。
+對於定義在 package 裡面所有型別，任何定義在 package object 裡的隱式都在隱式範圍內。
 
 程式碼 - [implicit-resolution](implicit-resolution)
 
@@ -348,7 +348,7 @@ object Test extends App {
 }
 ```
 
-## 5.2 用隱喻視圖擴充現有類別 (Enhancing existing classes with implicit views)
+## 5.2 用隱式視圖擴充現有類別 (Enhancing existing classes with implicit views)
 
 implicit view 能自動轉換型別以滿足表示式。
 
@@ -405,11 +405,11 @@ scala> bar(x)
 Bar!
 ```
 - 伴生物件 `Foo` 包含一個將型別 `Foo` 轉換成型別 `Bar` 的 implicit view
-- 當編譯器要尋找能將 `Foo` 隱喻轉換成 `Bar` 的 implicit view 時，它會到伴生物件 `Foo` 裡面找
+- 當編譯器要尋找能將 `Foo` 隱式轉換成 `Bar` 的 implicit view 時，它會到伴生物件 `Foo` 裡面找
 
 > 經實驗，把 implicit view 放在伴生物件 `Bar` 中，scala 2.11.7 編譯器也能知道如何轉換
 
-隱喻風格讓我們能將一個函式庫調整成另一個，或是把便利的方法增加到型別內。
+隱式風格讓我們能將一個函式庫調整成另一個，或是把便利的方法增加到型別內。
 
 #### 將 java 函式庫轉換成 scala 函式庫
 
@@ -477,12 +477,12 @@ object Test extends App {
 
 implicit view 很好用，但有幾個考量點
 
-- 隱喻轉換可能帶來效能的問題，`HotSpot` 優化處理或許可以減輕或許不能
+- 隱式轉換可能帶來效能的問題，`HotSpot` 優化處理或許可以減輕或許不能
 - 使用太多 implicit view 會拉高新進開發人員的進入門檻
 
-## 5.3 預設使用隱喻參數 (Utilize implicit parameters with defaults)
+## 5.3 預設使用隱式參數 (Utilize implicit parameters with defaults)
 
-隱喻參數讓使用者不必重複定義參數，以下用計算 “MxN 矩陣乘法” 當範例
+隱式參數讓使用者不必重複定義參數，以下用計算 “MxN 矩陣乘法” 當範例
 
 - 單一執行緒
 - 多執行緒
@@ -690,17 +690,17 @@ Matrix
 |15.0|
 ```
 
-## 5.4 限制隱喻的範圍 (Limiting the scope of implicits)
+## 5.4 限制隱式的範圍 (Limiting the scope of implicits)
 
-隱喻可能出現在：
+隱式可能出現在：
 
 1. 任何相關連型別的**伴生物件**
 2. `scala.Predef._`
   - `Predef` 物件包含許多有用的轉換，例如 `java.lang.Integer => scala.Int` 轉換 java boxed type 與 scala unified type
-3. 藉由 `import` 帶入的隱喻範圍
-  - 這樣的隱喻難以追蹤，也難以文件化
+3. 藉由 `import` 帶入的隱式範圍
+  - 這樣的隱式難以追蹤，也難以文件化
 
-### 5.4.1 為匯入產生隱喻 (Creating implicits for import)
+### 5.4.1 為匯入產生隱式 (Creating implicits for import)
 
 透過 `import` 導入 implicit view 或 implicit parameter 要確保以下事項
 
@@ -719,7 +719,7 @@ object Time {
     }
 }
 ```
-- `Time` 物件包含一個類別 (`TimeRange`) 與一個隱喻轉換 (`longWrapper`)
+- `Time` 物件包含一個類別 (`TimeRange`) 與一個隱式轉換 (`longWrapper`)
 - `longWrapper` 可能跟 `scala.Predef.longWrapper` 發生衝突
 
 當 `import Time.longWrapper`，`1L to 10L` 會變成...
@@ -759,18 +759,18 @@ TimeRange(1,10)
 - 第三個 `1L to 10L`，因為明確 `import scala.Predef.longWrapper`，使用 `Predef` 的 `NumericRange`
 - 第四個 `1L to 10L`，因為明確 `import Time.longWrapper`，使用 `Time` 的 `TimeRange`
 
-為避免這類的衝突，最好的方式是避免跨 implicit view 的衝突，但有時候很難辦到。這種情況下，最好只有一個轉換使用隱喻，其他用明確的方式。
+為避免這類的衝突，最好的方式是避免跨 implicit view 的衝突，但有時候很難辦到。這種情況下，最好只有一個轉換使用隱式，其他用明確的方式。
 
-把隱喻標記為找得到 (discoverable)，有助程式可讀性。
+把隱式標記為找得到 (discoverable)，有助程式可讀性。
 
-在 Scala 社群，一般實踐中在兩個地方限制匯入隱喻
+在 Scala 社群，一般實踐中在兩個地方限制匯入隱式
 
 - Package objects
 - Singleton objects that have the postfix Implicits
 
-### 5.4.2 免稅隱喻 (Implicits without the import tax)
+### 5.4.2 免稅隱式 (Implicits without the import tax)
 
-不需 `import` 隱喻也能作用。第二個查找規則 - 檢查相關型別的伴生物件，允許不需明確使用 `import` 的隱喻轉換定義與值。以下用複數的範例說明
+不需 `import` 隱式也能作用。第二個查找規則 - 檢查相關型別的伴生物件，允許不需明確使用 `import` 的隱式轉換定義與值。以下用複數的範例說明
 
 - 程式碼 [ComplexNumber](ComplexNumber)
 
@@ -821,7 +821,7 @@ println(i * 5.0 + 1.0)
 ComplexNumber(1.0,5.0)
 ```
 - 只 `import complexmath.i`
-- 隱喻轉換由 `i` 物件觸發，編譯器在 `package object complexmath` 裡面找到 `realToComplex` 
+- 隱式轉換由 `i` 物件觸發，編譯器在 `package object complexmath` 裡面找到 `realToComplex` 
 
 ```scala
 import complexmath.i
@@ -846,16 +846,26 @@ For Reals(5.0)
 - 對 `Double` 呼叫 `real` 會出問題，因為跟 `ComplexNumber` 裡面的 `real` 方法衝突 (哪有??)
 - 為避免衝突，不使用 `import`，直接定義 `implicit def doubleToReal`
 
+##### 產生表達力強的程式碼，卻沒有隱式衝突的危險
+
+| 模式 | 舉例 |
+|------|------|
+| 為函式庫定義核心抽象部分 | `ComplexNumber` 類別 |
+| 在相關型別的 package object 內定義隱式轉換 | `Double => ComplexNumber` 轉換放在 `complexmath` package object |
+| 定義函式庫的進入點，之後隱式轉換不模擬兩可 | `i` |
+| 某些情況需要明確 `import` |  |
+
+
 ## 5.5 結論 (Summary)
 
-本章討論隱喻查找機制。Scala 提供兩種隱喻
+本章討論隱式查找機制。Scala 提供兩種隱式
 
 - implicit value: 提供方法參數
 - implicit view: 呼叫方法時進行型別轉換
 
-這兩種隱喻使用同樣的隱喻解析機制，分成兩階段
+這兩種隱式使用同樣的隱式解析機制，分成兩階段
 
-- 第一階段在目前範圍尋找沒有前綴的隱喻 
-- 第二階段在相關類型的伴生物件內找尋隱喻
+- 第一階段在目前範圍尋找沒有前綴的隱式
+- 第二階段在相關類型的伴生物件內找尋隱式
 
-隱喻很強大，但要小心使用。限制隱喻範圍，把隱喻定義在眾所皆知或容易找到的位置，將是成功使用隱喻的關鍵。
+隱式很強大，但要小心使用。限制隱式範圍，把隱式定義在眾所皆知或容易找到的位置，將是成功使用隱式的關鍵。
