@@ -410,6 +410,8 @@ Bar!
 
 隱喻風格讓我們能將一個函式庫調整成另一個，或是把便利的方法增加到型別內。
 
+#### 將 java 函式庫轉換成 scala 函式庫
+
 程式碼 - [ScalaSecurityImplicits](ScalaSecurityImplicits)
 
 ScalaSecurityImplicits.scala:
@@ -436,6 +438,43 @@ object Test extends App {
 ```
 - `java.security.AccessController` 的 `doPrivileged` 方法接受 `PrivilegedExceptionAction` 型別
 - 當傳遞匿名函數 `() => println("this is privileged")` 給 `doPrivileged` 時，不符合預期型別，編譯器會試圖找尋 implicit view，接著將匿名函數從 scala 物件包裝成 java 物件
+- 當使用 java 函式庫，寫個包裝類別的做法相當普遍，藉以增加更多進階的 scala 用法。
 
-當使用 java 函式庫，寫個包裝類別的做法相當普遍，藉以增加更多進階的 scala 用法。
+#### 為型別增添方法
 
+程式碼 - [FileWrapper](FileWrapper)
+
+FileWrapper.scala:
+```scala
+class FileWrapper(val file: java.io.File) {
+    def /(next: String) = new FileWrapper(new java.io.File(file, next))
+    override def toString = file.getCanonicalPath
+}
+
+object FileWrapper {
+    implicit def wrap(file: java.io.File) = new FileWrapper(file)
+    implicit def unwrap(wrapper: FileWrapper) = wrapper.file
+}
+```
+- `FileWrapper` 類別建構函數接收 `java.io.File`，並提供 `/` 方法產生另一個 `FileWrapper`
+- `FileWrapper` 伴生物件提供兩個 implicit view，轉換 `java.io.File` 與 `FileWrapper` 兩種型別
+
+test.scala:
+```scala
+import FileWrapper.wrap
+
+object Test extends App {
+    val cur = new java.io.File(".")
+    println(cur / "temp.txt")
+
+    def useFile(file : java.io.File) = println(file.getCanonicalPath)
+    useFile(cur / "temp.txt")
+}
+```
+- 當呼叫 `java.io.File` 的 `/` 方法，編譯器在這個類別內找不到方法，試圖尋找可用的 implicit view (`Function1[java.io.File, FileWrapper]`)，然後找到 `wrap` 函數將 `java.io.File` 包裝成 `FileWrapper`，最後呼叫 `/` 方法
+- 當傳遞 `FileWrapper` 物件給 `useFile` 函數，編譯器發現這個函數期望接收 `java.io.File` 物件，試圖尋找可用的 implicit view (`Function1[FileWrapper, java.io.File]`)，然後找到 `unwrap` 函數將 `FileWrapper` 物件脫殼得到 `java.io.File`，最後傳給 `useFile` 函數處理
+
+implicit view 很好用，但有幾個考量點
+
+- 隱喻轉換可能帶來效能的問題，`HotSpot` 優化處理或許可以減輕或許不能
+- 使用太多 implicit view 會拉高新進開發人員的進入門檻
