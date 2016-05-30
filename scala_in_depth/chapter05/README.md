@@ -692,6 +692,14 @@ Matrix
 
 ## 5.4 限制隱喻的範圍 (Limiting the scope of implicits)
 
+隱喻可能出現在：
+
+1. 任何相關連型別的**伴生物件**
+2. `scala.Predef._`
+  - `Predef` 物件包含許多有用的轉換，例如 `java.lang.Integer => scala.Int` 轉換 java boxed type 與 scala unified type
+3. 藉由 `import` 帶入的隱喻範圍
+  - 這樣的隱喻難以追蹤，也難以文件化
+
 ### 5.4.1 為匯入產生隱喻 (Creating implicits for import)
 
 ### 5.4.2 免稅隱喻 (Implicits without the import tax)
