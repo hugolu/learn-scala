@@ -768,8 +768,83 @@ TimeRange(1,10)
 - Package objects
 - Singleton objects that have the postfix Implicits
 
-
 ### 5.4.2 免稅隱喻 (Implicits without the import tax)
+
+不需 `import` 隱喻也能作用。第二個查找規則 - 檢查相關型別的伴生物件，允許不需明確使用 `import` 的隱喻轉換定義與值。以下用複數的範例說明
+
+- 程式碼 [ComplexNumber](ComplexNumber)
+
+##### ComplexNumber.scala
+```scala
+package complexmath
+
+case class ComplexNumber(real: Double, imaginary: Double) {
+    def *(other: ComplexNumber) =
+        ComplexNumber((real * other.real) + (imaginary * other.imaginary),
+                      (real * other.imaginary) + (imaginary * other.real))
+    def +(other: ComplexNumber) =
+        ComplexNumber(real + other.real, imaginary + other.imaginary)
+}
+```
+- 定義在 `complexmath` package 內
+- `ComplexNumber` 類別提供複數乘法(`*`)與加法(`+`)兩個方法
+
+測試結果
+```scala
+import complexmath._
+
+println(ComplexNumber(1, 0) * ComplexNumber(0, 1))
+println(ComplexNumber(1, 0) + ComplexNumber(0, 1))
+
+println(i * 1.0)
+```
+```
+ComplexNumber(0.0,1.0)
+ComplexNumber(1.0,1.0)
+ComplexNumber(0.0,1.0)
+```
+
+##### ComplexNumberImplicits.scala
+```scala
+package object complexmath {
+    implicit def realToComplex(r: Double) = new ComplexNumber(r, 0.0)
+    val i = ComplexNumber(0.0, 1.0)
+}
+```
+- 在 `complexmath` 的 package object 裡面定義 `i` 與 implicit view (`Double => ComplexNumber`)
+
+```scala
+import complexmath.i
+println(i * 5.0 + 1.0)
+```
+```
+ComplexNumber(1.0,5.0)
+```
+- 只 `import complexmath.i`
+- 隱喻轉換由 `i` 物件觸發，編譯器在 `package object complexmath` 裡面找到 `realToComplex` 
+
+```scala
+import complexmath.i
+println(1.0 + 5.0 * i)
+```
+```
+ComplexNumber(1.0,5.0)
+```
+- 作者說把 `i` 放在運算是最後會有問題，要 `import complexmath.realToComplex` (但用 scala 2.11.7 執行上沒問題)
+
+```scala
+import complexmath.i
+implicit def doubleToReal(x: Double) = new {
+    def real = "For Reals(" + x + ")"
+}
+
+println(5.0 real)
+```
+```
+For Reals(5.0)
+```
+- 對 `Double` 呼叫 `real` 會出問題，因為跟 `ComplexNumber` 裡面的 `real` 方法衝突 (哪有??)
+- 為避免衝突，不使用 `import`，直接定義 `implicit def doubleToReal`
 
 ## 5.5 結論 (Summary)
 
