@@ -353,7 +353,7 @@ implicit view 能自動轉換型別以滿足表示式。
 
 形式：`implicit def <myConversion-Name>(<argumentName>: OriginalType): ViewType`
 
-- 把 `OriginalType` 轉換成 `ViewType` 
+- 把 `OriginalType` 轉換成 `ViewType`；`OriginalType => ViewType`
 
 ```scala
 scala> def foo(msg: String) = println(msg)
