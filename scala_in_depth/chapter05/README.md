@@ -58,8 +58,8 @@ defined class Foo
 scala> new Foo
 res1: Foo = Foo@6a6824be
 ```
-- Foo 類別是一個 entity；這個類別 binding 一個名字 `Foo`
-- 使用名稱 `Foo` 表示型別，可以產生物件物件
+- Foo 類別是一個實體；這個類別綁定一個名字 `Foo`
+- 使用名稱 `Foo` 表示型別，用來產生物件
 
 ```scala
 scala> object test {
@@ -82,9 +82,9 @@ scala> new Foo
 res2: test.Foo = test$Foo@5b464ce8
 ```
 - `Foo` 類別是 `object test` 的成員
-- 直接使用 `Foo` 在 local scope 找不到這個類別，`new Foo` 發生錯誤
+- 直接使用 `Foo` 在區域範圍 (local scope) 找不到這個類別，`new Foo` 發生錯誤
 - 要用 `new test.Foo` 產生物件，或是
-- 使用 `import` 關鍵字把 `test.Foo` 綁定到 loccal scope 的 `Foo`，然後用 `new Foo` 才能產生物件
+- 使用 `import` 關鍵字把 `test.Foo` 綁定到區域範圍的 `Foo`，然後用 `new Foo` 才能產生物件
 
 ```scala
 scala> import test.{Foo => Bar}
@@ -93,14 +93,14 @@ import test.{Foo=>Bar}
 scala> new Bar
 res3: test.Foo = test$Foo@6500df86
 ```
-- Scala `import` 還可以給綁定的實體取任意名字
-- 這個彈性在使用 Java package 得到很大的方便，例如
+- `import` 還可以給綁定的實體取任意名字
+- 這個彈性讓使用 Java package 變得便利，例如
   - `import java.util.{List=>JList}`
   - `import java.{io=>jio}`
 
 ### 5.1.2 範圍與綁定 (Scope and bindings)
 
-範圍 (Scope) 是決定 binding 是否可行的邊界。
+範圍 (scope) 是決定綁定 (binding) 是否可行的邊界。
 
 ```scala
 scala> class Foo(x: Int) {
@@ -116,7 +116,7 @@ foo: Foo = Foo@5680a178
 scala> foo.tmp
 res1: Int = 3
 ```
-- `tmp` 方法定義在巢狀範圍內，內層仍然可以讀取外層的參數
+- `tmp` 方法定義在巢狀範圍內，內層可以讀取外層的參數
 
 ```scala
 scala> class Bar(x: Int) {
@@ -133,12 +133,12 @@ bar: Bar = Bar@281e3708
 scala> bar.tmp
 res2: Int = 2
 ```
-- `tmp` 方法裡面定義 `x` 同名變數，將遮蔽 (shadow) 巢狀範圍外層的 `x`
+- `tmp` 方法裡面定義 `x` 同名變數，遮蔽 (shadow) 巢狀範圍外層的 `x`
 
 #### 綁定的優先順序 (由高至低)
-1. 局部、繼承、同檔案內 `packet` 的定義與宣告
+1. 區域 (local)、繼承、同檔案內 `packet` 的定義與宣告
 2. 明確匯入
-3. 萬用自元匯入
+3. 萬用字元匯入
 4. 使用 `package` 的定義與宣告
 
 程式碼 - [bindings](bindings)
@@ -197,16 +197,16 @@ object Test {
 | 呼叫 | 結果 | 最高優先權 |
 |------|------|------|
 | `testSamePackage` | Externally bound x object in package test. | 同 `package` 的宣告 |
-| `testWildcardImport` | Wildcard Import x | 萬用自元匯入 |
+| `testWildcardImport` | Wildcard Import x | 萬用字元匯入 |
 | `testExplicitImport` | Explicit Import x | 明確匯入 |
-| `testInlineDefinition` | Inline definition x | 局部變數 |
+| `testInlineDefinition` | Inline definition x | 區域變數 |
 
 ### 5.1.3 隱式解析 (Implicit resolution)
 
-兩條規則，用來搜尋標記為隱式的實體
+用來搜尋標記為隱式的實體的兩條規則
 
-- 隱式綁定沒有使用前綴，x 就是 `x` 不會是 `foo.x`
-- 如果上面找不到可用的實體，搜尋所有屬於隱式範圍 (implicit scope) 內物件的 `implicit` 成員
+- 隱式綁定沒有使用前綴，`x` 就是 `x` 不會是 `foo.x`
+- 如果上面找不到可用的實體，接著搜尋所有屬於隱式範圍 (implicit scope) 內物件的 `implicit` 成員
 
 ```scala
 scala> def findAnInt(implicit x: Int) = x
@@ -228,7 +228,7 @@ bar: Int = 6
 scala> findAnInt
 res1: Int = 6
 ```
-- 規則一：隱式綁定只會在局部範圍內找沒有前綴的實體 (available on the local scope with no prefix)
+- 規則一：隱式綁定只會在區域範圍內找沒有前綴的實體 (available on the local scope with no prefix)
 
 ```scala
 scala> object holder {
@@ -252,7 +252,7 @@ Companion Foo
 ```
 - 規則二：當編譯器靠規則一找不到可用的隱式成員，會在隱式範圍內搜尋伴生物件 (companion object) 內定義的隱式成員。
 
-型別 `T` 的隱式範圍是一組跟 `T` 相關的伴生物件：
+#### 型別 `T` 的隱式範圍是一組跟 `T` 相關的伴生物件
 
 - `T` 的子型別
 - 如果 `T` 是型別參數，隱式範圍包含部分型別。例如隱式搜尋 `List[String]`，則 `List` 與 `String` 的伴生物件都在搜尋範圍內
@@ -285,9 +285,8 @@ Foo!!
 scala> implicitly[List[holder.Foo]]
 res2: List[holder.Foo] = List(Foo!!)
 ```
-- 定義: `def implicitly[T](implicit arg : T) = arg` 
-- 用這個函數在目前的隱式範圍找尋型別 (6.2 會詳述)
-- 回傳定義在 `Foo` 伴生物件內的的隱式列表 (implicit list)
+- `def implicitly[T](implicit arg : T) = arg`，這個函數會在目前的隱式範圍找尋型別
+- 呼叫 `implicitly`，回傳定義在 `Foo` 伴生物件內的的隱式列表 (implicit list)
 
 #### 巢狀隱式範圍 (IMPLICIT SCOPE VIA NESTING)
 
@@ -304,7 +303,7 @@ scala> implicitly[Foo.Bar]
 res0: Foo.Bar = Implicit Bar
 ```
 - 外部型別是 `Foo`，裡面定義特徵 `Bar`
-- `Foo` 物件裡面定義一個隱式產生`Bar`實例的方法
+- `Foo` 物件裡面定義一個隱式方法，產生`Bar`實例
 - 當呼叫 `implicitly[Foo.Bar]`，隱式值透過外部型別 `Foo` 找到產生 `Bar` 的方法
 
 ```scala
@@ -317,7 +316,7 @@ defined object Foo
 scala> implicitly[Foo.Bar.type]
 res0: Foo.Bar.type = Bar
 ```
-- 物件不能有隱式伴生物件 (Scala objects can’t have companion objects for implicits.)
+- scala 物件不能有伴生物件做隱式成員 (Scala objects can’t have companion objects for implicits.)
 - 隱式關聯物件的型別要加上 `.type`，例如 `Bar.type`
 - 當呼叫 `implicitly[Foo.Bar.type]`，隱式值透過外部型別 `Foo` 找到產生 `Bar.type` 的方法
 
