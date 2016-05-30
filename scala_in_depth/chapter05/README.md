@@ -547,7 +547,7 @@ object MatrixUtils {
     }
 }
 ```
-- `MatrixUtils` 物件提供 `multiply` 函數，接受兩個矩陣 `a` 與 `b` 
+- `MatrixUtils` 物件提供 `multiply` 函數 (Scala Currying Function)，接受兩個矩陣 `a` 與 `b`，以及 `threading` 參數決定要用單一/多重執行緒方式
 -  `assert(a.colRank == b.rowRank)` 檢查 `a` 的行數與 `b` 的列數是否相等
 -  `buffer = new Array[Array[Double]]` 產生一個二維陣列
 -  `computeValue` 計算 `a` 某列乘上 `b` 某行的乘積
@@ -590,4 +590,7 @@ object ThreadPoolStrategy extends ThreadStrategy {
     }
 }
 ```
-- 並行方式作法 - `ThreadPoolStrategy` 物件擁有一個執行者的儲存池，每次呼叫 `execute` 就產生一個 `future` 讓它在未來執行 `func` (這個機制還不熟...)
+- 並行方式作法 - `ThreadPoolStrategy` 物件擁有一個執行者的儲存池，呼叫 `execute` 就將要執行的 `func` 用 `Callable` 包起來放到執行者的儲存池，然後回傳一個 `future` 
+- `() => future.get()` 回傳一個呼叫 `future.get` 的 anonymous closure，這個呼叫會先卡住直到有人執行它，並回傳 `func` 的回傳值 (這個機制還不熟...)
+- 另外，每次 `Callable` 裡面的 `call` 被呼叫，會順便印出執行緒的資訊
+
