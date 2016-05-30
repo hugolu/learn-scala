@@ -708,9 +708,65 @@ Matrix
 - 名字沒有跟 `scala.Predef` 裡面的任何東西衝突
 - 使用者可以找得到 (discoverable)
 
+程式碼 - [Time](Time)
 
+##### Time.scala
+```scala
+object Time {
+    case class TimeRange(start: Long, end: Long)
+    implicit def longWrapper(start: Long) = new {
+        def to(end: Long) = TimeRange(start, end)
+    }
+}
+```
+- `Time` 物件包含一個類別 (`TimeRange`) 與一個隱喻轉換 (`longWrapper`)
+- `longWrapper` 可能跟 `scala.Predef.longWrapper` 發生衝突
 
+當 `import Time.longWrapper`，`1L to 10L` 會變成...
+- `1L` 轉變成一個 `AnyRef` 物件，裡面有一個 `to` 方法 (接收 `Long` 回傳 `TimeRange`)
+- `AnyRef.to(10L)` 回傳 `TimeRange(1L, 10L)` 物件
 
+##### test.scala
+```scala
+object Test extends App {
+    println(1L to 10L)
+
+    import Time._
+    println(1L to 10L)
+
+    def x() = {
+        import scala.Predef.longWrapper
+        println(1L to 10L)
+
+        def y() = {
+            import Time.longWrapper
+            println(1L to 10L)
+        }
+        y()
+    }
+    x()
+}
+```
+```
+[info] Running Test
+NumericRange(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+TimeRange(1,10)
+NumericRange(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+TimeRange(1,10)
+```
+- 第一個 `1L to 10L`，使用 `Predef` 的 `NumericRange`
+- 第二個 `1L to 10L`，因為 `import Time._`，使用 `Time` 的 `TimeRange`
+- 第三個 `1L to 10L`，因為明確 `import scala.Predef.longWrapper`，使用 `Predef` 的 `NumericRange`
+- 第四個 `1L to 10L`，因為明確 `import Time.longWrapper`，使用 `Time` 的 `TimeRange`
+
+為避免這類的衝突，最好的方式是避免跨 implicit view 的衝突，但有時候很難辦到。這種情況下，最好只有一個轉換使用隱喻，其他用明確的方式。
+
+把隱喻標記為找得到 (discoverable)，有助程式可讀性。
+
+在 Scala 社群，一般實踐中在兩個地方限制匯入隱喻
+
+- Package objects
+- Singleton objects that have the postfix Implicits
 
 
 ### 5.4.2 免稅隱喻 (Implicits without the import tax)
