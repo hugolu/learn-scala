@@ -408,3 +408,34 @@ Bar!
 
 > 經實驗，把 implicit view 放在伴生物件 `Bar` 中，scala 2.11.7 編譯器也能知道如何轉換
 
+隱喻風格讓我們能將一個函式庫調整成另一個，或是把便利的方法增加到型別內。
+
+程式碼 - [ScalaSecurityImplicits](ScalaSecurityImplicits)
+
+ScalaSecurityImplicits.scala:
+```scala
+import java.security._
+
+object ScalaSecurityImplicits {
+    implicit def functionToPrivilegedAction[A](func: Function0[A]) =
+        new PrivilegedAction[A] {
+            override def run() = func()
+        }
+}
+```
+- `functionToPrivilegedAction` 這個 implicit view 把 `Function0` 轉換成 `PrivilegedAction`
+
+test.scala:
+```scala
+import ScalaSecurityImplicits._
+import java.security._
+
+object Test extends App {
+    AccessController.doPrivileged( () => println("This is privileged.") )
+}
+```
+- `java.security.AccessController` 的 `doPrivileged` 方法接受 `PrivilegedExceptionAction` 型別
+- 當傳遞匿名函數 `() => println("this is privileged")` 給 `doPrivileged` 時，不符合預期型別，編譯器會試圖找尋 implicit view，接著將匿名函數從 scala 物件包裝成 java 物件
+
+當使用 java 函式庫，寫個包裝類別的做法相當普遍，藉以增加更多進階的 scala 用法。
+
