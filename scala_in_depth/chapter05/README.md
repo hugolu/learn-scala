@@ -143,7 +143,7 @@ res2: Int = 2
 
 程式碼 - [bindings](bindings)
 
-externalbindings.scala:
+##### externalbindings.scala
 ```scala
 package test
 
@@ -152,7 +152,7 @@ object x {
 }
 ```
 
-test.scala:
+##### test.scala
 ```scala
 package test
 
@@ -327,7 +327,7 @@ res0: Foo.Bar.type = Bar
 
 程式碼 - [implicit-resolution](implicit-resolution)
 
-package.scala:
+##### package.scala
 ```scala
 package object foo {
     implicit def foo = new Foo
@@ -339,7 +339,8 @@ package foo {
     }
 }
 ```
-test.scala:
+
+##### test.scala
 ```scala
 object Test extends App {
     def method(implicit x: foo.Foo) = println(x)
@@ -414,7 +415,7 @@ Bar!
 
 程式碼 - [ScalaSecurityImplicits](ScalaSecurityImplicits)
 
-ScalaSecurityImplicits.scala:
+##### ScalaSecurityImplicits.scala
 ```scala
 import java.security._
 
@@ -427,7 +428,7 @@ object ScalaSecurityImplicits {
 ```
 - `functionToPrivilegedAction` 這個 implicit view 把 `Function0` 轉換成 `PrivilegedAction`
 
-test.scala:
+##### test.scala
 ```scala
 import ScalaSecurityImplicits._
 import java.security._
@@ -444,7 +445,7 @@ object Test extends App {
 
 程式碼 - [FileWrapper](FileWrapper)
 
-FileWrapper.scala:
+##### FileWrapper.scala
 ```scala
 class FileWrapper(val file: java.io.File) {
     def /(next: String) = new FileWrapper(new java.io.File(file, next))
@@ -459,7 +460,7 @@ object FileWrapper {
 - `FileWrapper` 類別建構函數接收 `java.io.File`，並提供 `/` 方法產生另一個 `FileWrapper`
 - `FileWrapper` 伴生物件提供兩個 implicit view，轉換 `java.io.File` 與 `FileWrapper` 兩種型別
 
-test.scala:
+##### test.scala
 ```scala
 import FileWrapper.wrap
 
@@ -489,7 +490,7 @@ implicit view 很好用，但有幾個考量點
 
 程式碼 - [Matrix](Matrix)
 
-Matrix.scala:
+##### Matrix.scala
 ```scala
 import scala.collection.mutable.ArrayBuffer
 
@@ -517,3 +518,76 @@ class Matrix(private val repr: Array[Array[Double]]) {
 - `col` 方法回傳某 *行* 的值；`colRank` 取得行數
 - `toString` 印出矩陣內容
 
+##### MatrixUtils.scala
+```scala
+object MatrixUtils {
+    def multiply(a: Matrix, b: Matrix)(implicit threading: ThreadStrategy = SameThreadStrategy): Matrix = {
+
+        assert(a.colRank == b.rowRank)
+
+        val buffer = new Array[Array[Double]](a.rowRank)
+        for (i <- 0 until a.rowRank) {
+            buffer(i) = new Array[Double](b.colRank)
+        }
+
+        def computeValue(row: Int, col: Int): Unit = {
+            val pairwiseElements = a.row(row).zip(b.col(col))
+            val products = for ((x,y) <- pairwiseElements) yield x*y
+            val result = products.sum
+            buffer(row)(col) = result
+        }
+
+        val computations = for {
+            i <- 0 until a.rowRank
+            j <- 0 until b.colRank
+        } yield threading.execute { () => computeValue(i, j) }
+
+        computations.foreach(_())
+        new Matrix(buffer)
+    }
+}
+```
+- `MatrixUtils` 物件提供 `multiply` 函數，接受兩個矩陣 `a` 與 `b` 
+-  `assert(a.colRank == b.rowRank)` 檢查 `a` 的行數與 `b` 的列數是否相等
+-  `buffer = new Array[Array[Double]]` 產生一個二維陣列
+-  `computeValue` 計算 `a` 某列乘上 `b` 某行的乘積
+-  `computations` 所有行列相乘的計算
+-  `computations.foreach(_())` 真正進行計算的地方
+-  `new Matrix(buffer)` 回傳計算的結果
+
+```scala
+trait ThreadStrategy {
+    def execute[A](func: Function0[A]): Function0[A]
+}
+```
+- 介面 `ThreadStrategy` 定義一個 `execute` 方式，傳入型別 `A` 參數，回傳型別 `A` 結果
+- 呼叫 `execute` 可能會阻斷 (block) 當前的執行緒直到得到結果 (這很好理解，如果你不是用 multi-thread 或 concurrent 方式呼叫函數，當然要等函數執行完，才會回到呼叫位置繼續往下走)
+
+```scala
+/* Simple Strategy */
+object SameThreadStrategy extends ThreadStrategy {
+    def execute[A](func: Function0[A]) = func
+}
+```
+- 單一執行緒的做法 - 讓當前執行緒直接執行傳入的函數
+
+```scala
+/* Concurrent Strategy */
+import java.util.concurrent.{Callable, Executors}
+
+object ThreadPoolStrategy extends ThreadStrategy {
+    val pool = Executors.newFixedThreadPool(java.lang.Runtime.getRuntime.availableProcessors)
+
+    def execute[A](func: Function0[A]) = {
+        val future = pool.submit(new Callable[A] {
+            def call(): A = {
+                Console.println("Executing function on threads: " +
+                    Thread.currentThread.getName)
+                func()
+            }
+        })
+        () => future.get()
+    }
+}
+```
+- 並行方式作法 - `ThreadPoolStrategy` 物件擁有一個執行者的儲存池，每次呼叫 `execute` 就產生一個 `future` 讓它在未來執行 `func` (這個機制還不熟...)
