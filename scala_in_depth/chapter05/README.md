@@ -702,6 +702,17 @@ Matrix
 
 ### 5.4.1 為匯入產生隱喻 (Creating implicits for import)
 
+透過 `import` 導入 implicit view 或 implicit parameter 要確保以下事項
+
+- 沒有衝突發生
+- 名字沒有跟 `scala.Predef` 裡面的任何東西衝突
+- 使用者可以找得到 (discoverable)
+
+
+
+
+
+
 ### 5.4.2 免稅隱喻 (Implicits without the import tax)
 
 ## 5.5 結論 (Summary)
