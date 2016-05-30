@@ -478,3 +478,42 @@ implicit view 很好用，但有幾個考量點
 
 - 隱喻轉換可能帶來效能的問題，`HotSpot` 優化處理或許可以減輕或許不能
 - 使用太多 implicit view 會拉高新進開發人員的進入門檻
+
+## 5.3 預設使用隱喻參數 (Utilize implicit parameters with defaults)
+
+隱喻參數讓使用者不必重複定義參數，以下用計算 “MxN 矩陣乘法” 當範例
+
+- 單一執行緒
+- 多執行緒
+- 使用 implicit 定義預設計算方式
+
+程式碼 - [Matrix](Matrix)
+
+Matrix.scala:
+```scala
+import scala.collection.mutable.ArrayBuffer
+
+class Matrix(private val repr: Array[Array[Double]]) {
+    def row(idx: Int): Seq[Double] = {
+        repr(idx)
+    }
+
+    def col(idx: Int): Seq[Double] = {
+        repr.foldLeft(ArrayBuffer[Double]()) { (buffer, currentRow) =>
+            buffer.append(currentRow(idx))
+            buffer
+        } toArray
+    }
+
+    lazy val rowRank = repr.size
+    lazy val colRank = if (rowRank > 0) repr(0).size else 0
+
+    override def toString = "Matrix" + repr.foldLeft("") {
+        (msg, row) => msg + row.mkString("\n|", " | ", "|")
+    }
+}
+```
+- `row` 方法回傳某 *列* 的值；`rowRank` 取得列數
+- `col` 方法回傳某 *行* 的值；`colRank` 取得行數
+- `toString` 印出矩陣內容
+
