@@ -480,7 +480,7 @@ implicit view 很好用，但有幾個考量點
 - 隱式轉換可能帶來效能的問題，`HotSpot` 優化處理或許可以減輕或許不能
 - 使用太多 implicit view 會拉高新進開發人員的進入門檻
 
-## 5.3 預設使用隱式參數 (Utilize implicit parameters with defaults)
+## 5.3 使用隱式參數與預設值 (Utilize implicit parameters with defaults)
 
 隱式參數讓使用者不必重複定義參數，以下用計算 “MxN 矩陣乘法” 當範例
 
