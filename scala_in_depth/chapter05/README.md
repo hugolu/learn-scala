@@ -689,3 +689,11 @@ Matrix
 |6.0|
 |15.0|
 ```
+
+## 5.4 限制隱喻的範圍 (Limiting the scope of implicits)
+
+### 5.4.1 為匯入產生隱喻 (Creating implicits for import)
+
+### 5.4.2 免稅隱喻 (Implicits without the import tax)
+
+## 5.5 結論 (Summary)
