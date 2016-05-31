@@ -373,6 +373,8 @@ object Test extends App {
 }
 ```
 
+> 任何定義在 package object 裡的隱式綁定位於定義在該 package 裡所有類型都可見。這樣就有了一個方便的位置來存放隱式綁定，而用不著為 package 裡面每個類型都定義伴生物件。
+
 ## 5.2 用隱式視圖擴充現有類別 (Enhancing existing classes with implicit views)
 
 implicit view 能自動轉換型別以滿足表示式。
