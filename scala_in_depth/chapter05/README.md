@@ -250,7 +250,7 @@ method: (implicit foo: holder.Foo)Unit
 scala> method
 Companion Foo
 ```
-- 規則二：當編譯器靠規則一找不到可用的隱式成員，會在隱式作用域內搜尋伴生物件 (companion object) 內定義的隱式成員。
+- 規則二：當編譯器靠規則一找不到可用的隱式實體，會在隱式作用域內搜尋伴生物件 (companion object) 內定義的隱式實體。
 
 > 因為隱式作用域是第二優先等級，可以用隱士作用域來保存隱式實體，同時允許使用者在必要時候導入他們自己的隱式實體來覆蓋掉默認的。
 
@@ -320,7 +320,7 @@ defined object Foo
 scala> implicitly[Foo.Bar.type]
 res0: Foo.Bar.type = Bar
 ```
-- scala 物件不能有伴生物件做隱式成員 (Scala objects can’t have companion objects for implicits.)
+- scala 物件不能有伴生物件做隱式實體 (Scala objects can’t have companion objects for implicits.)
 - 隱式關聯物件的型別要加上 `.type`，例如 `Bar.type`
 - 當呼叫 `implicitly[Foo.Bar.type]`，隱式值透過外部型別 `Foo` 找到產生 `Bar.type` 的方法
 
