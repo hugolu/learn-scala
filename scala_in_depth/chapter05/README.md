@@ -252,6 +252,8 @@ Companion Foo
 ```
 - 規則二：當編譯器靠規則一找不到可用的隱式成員，會在隱式作用域內搜尋伴生物件 (companion object) 內定義的隱式成員。
 
+> 因為隱式作用域是第二優先等級，可以用隱士作用域來保存隱式實體，同時允許使用者在必要時候導入他們自己的隱式實體來覆蓋掉默認的。
+
 #### 型別 `T` 的隱式作用域是一組跟 `T` 相關的伴生物件
 
 - `T` 的子型別
@@ -287,6 +289,8 @@ res2: List[holder.Foo] = List(Foo!!)
 ```
 - `def implicitly[T](implicit arg : T) = arg`，這個函數會在目前的隱式作用域找尋型別
 - 呼叫 `implicitly`，回傳定義在 `Foo` 伴生物件內的的隱式列表 (implicit list)
+
+這種機制用來實現**類特徵** (class trait) 或稱**型別類** (type class)。type class 用類型參數來描述通用接口，以便能為任意類型創造(接口的)實現。
 
 #### 巢狀隱式作用域 (IMPLICIT SCOPE VIA NESTING)
 
