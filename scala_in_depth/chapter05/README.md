@@ -16,7 +16,7 @@ Scala 編譯器會在編譯期間推測使用者沒有明確寫出來的訊息
 scala> def findAnInt(implicit x : Int) = x
 findAnInt: (implicit x: Int)Int
 ```
-定義 `findAnInt` 方法，用 `implicit` 標示 `x` 參數，表示如果呼叫者沒提供，編譯器要在隱式範圍 (implicit scope) 搜尋 `Int` 的變數
+定義 `findAnInt` 方法，用 `implicit` 標示 `x` 參數，表示如果呼叫者沒提供，編譯器要在隱式作用域 (implicit scope) 搜尋 `Int` 的變數
 
 ```scala
 scala> findAnInt
@@ -46,7 +46,7 @@ res2: Int = 2
 
 ### 5.1.1 識別符 (identifier)
 
-探索隱式解析機制前，先理解編譯器如何在特定範圍解析識別符。識別符在隱式選擇上扮演關鍵的角色。
+探索隱式解析機制前，先理解編譯器如何在特定作用域解析識別符。識別符在隱式選擇上扮演關鍵的角色。
 
 - 使用 *Entity* (實體) 表示型別、值、方法、類別。
 - 使用 *Binding* (綁定) 當作名字參考到實體
@@ -82,9 +82,9 @@ scala> new Foo
 res2: test.Foo = test$Foo@5b464ce8
 ```
 - `Foo` 類別是 `object test` 的成員
-- 直接使用 `Foo` 在區域範圍 (local scope) 找不到這個類別，`new Foo` 發生錯誤
+- 直接使用 `Foo` 在區域作用域 (local scope) 找不到這個類別，`new Foo` 發生錯誤
 - 要用 `new test.Foo` 產生物件，或是
-- 使用 `import` 關鍵字把 `test.Foo` 綁定到區域範圍的 `Foo`，然後用 `new Foo` 才能產生物件
+- 使用 `import` 關鍵字把 `test.Foo` 綁定到區域作用域的 `Foo`，然後用 `new Foo` 才能產生物件
 
 ```scala
 scala> import test.{Foo => Bar}
@@ -98,9 +98,9 @@ res3: test.Foo = test$Foo@6500df86
   - `import java.util.{List=>JList}`
   - `import java.{io=>jio}`
 
-### 5.1.2 範圍與綁定 (Scope and bindings)
+### 5.1.2 作用域與綁定 (Scope and bindings)
 
-範圍 (scope) 是決定綁定 (binding) 是否可行的邊界。
+作用域 (scope) 是決定綁定 (binding) 是否可行的邊界。
 
 ```scala
 scala> class Foo(x: Int) {
@@ -116,7 +116,7 @@ foo: Foo = Foo@5680a178
 scala> foo.tmp
 res1: Int = 3
 ```
-- `tmp` 方法定義在巢狀範圍內，內層可以讀取外層的參數
+- `tmp` 方法定義在巢狀作用域內，內層可以讀取外層的參數
 
 ```scala
 scala> class Bar(x: Int) {
@@ -133,7 +133,7 @@ bar: Bar = Bar@281e3708
 scala> bar.tmp
 res2: Int = 2
 ```
-- `tmp` 方法裡面定義 `x` 同名變數，遮蔽 (shadow) 巢狀範圍外層的 `x`
+- `tmp` 方法裡面定義 `x` 同名變數，遮蔽 (shadow) 巢狀作用域外層的 `x`
 
 #### 綁定的優先順序 (由高至低)
 1. 區域 (local)、繼承、同檔案內 `packet` 的定義與宣告
@@ -206,7 +206,7 @@ object Test {
 用來搜尋標記為隱式的實體的兩條規則
 
 - 隱式綁定沒有使用前綴，`x` 就是 `x` 不會是 `foo.x`
-- 如果上面找不到可用的實體，接著搜尋所有屬於隱式範圍 (implicit scope) 內物件的 `implicit` 成員
+- 如果上面找不到可用的實體，接著搜尋所有屬於隱式作用域 (implicit scope) 內物件的 `implicit` 成員
 
 ```scala
 scala> def findAnInt(implicit x: Int) = x
@@ -228,7 +228,7 @@ bar: Int = 6
 scala> findAnInt
 res1: Int = 6
 ```
-- 規則一：隱式綁定只會在區域範圍內找沒有前綴的實體 (available on the local scope with no prefix)
+- 規則一：隱式綁定只會在區域作用域內找沒有前綴的實體 (available on the local scope with no prefix)
 
 ```scala
 scala> object holder {
@@ -250,16 +250,16 @@ method: (implicit foo: holder.Foo)Unit
 scala> method
 Companion Foo
 ```
-- 規則二：當編譯器靠規則一找不到可用的隱式成員，會在隱式範圍內搜尋伴生物件 (companion object) 內定義的隱式成員。
+- 規則二：當編譯器靠規則一找不到可用的隱式成員，會在隱式作用域內搜尋伴生物件 (companion object) 內定義的隱式成員。
 
-#### 型別 `T` 的隱式範圍是一組跟 `T` 相關的伴生物件
+#### 型別 `T` 的隱式作用域是一組跟 `T` 相關的伴生物件
 
 - `T` 的子型別
-- 如果 `T` 是型別參數，隱式範圍包含部分型別。例如隱式搜尋 `List[String]`，則 `List` 與 `String` 的伴生物件都在搜尋範圍內
-- 如果 Singleton 型別 `T` 在某物件內，這個物件也會在搜尋範圍內
+- 如果 `T` 是型別參數，隱式作用域包含部分型別。例如隱式搜尋 `List[String]`，則 `List` 與 `String` 的伴生物件都在搜尋作用域內
+- 如果 Singleton 型別 `T` 在某物件內，這個物件也會在搜尋作用域內
 - 如果 `T` 是型別投影 `S#T`，`S` 的一部分也包含在型別 `T` 的部分內 (不懂?? 6.1.1 會詳述)
 
-#### 型別參數衍伸的隱式範圍 (IMPLICIT SCOPE VIA TYPE PARAMETERS)
+#### 型別參數衍伸的隱式作用域 (IMPLICIT SCOPE VIA TYPE PARAMETERS)
 
 ```scala
 scala> object holder {
@@ -279,16 +279,16 @@ method: (implicit list: List[holder.Foo])Unit
 scala> method
 Foo!!
 ```
-- 型別參數為 `List[Foo]`，隱式範圍包含 `List` 與 `Foo` 的伴生物件
+- 型別參數為 `List[Foo]`，隱式作用域包含 `List` 與 `Foo` 的伴生物件
 
 ```scala
 scala> implicitly[List[holder.Foo]]
 res2: List[holder.Foo] = List(Foo!!)
 ```
-- `def implicitly[T](implicit arg : T) = arg`，這個函數會在目前的隱式範圍找尋型別
+- `def implicitly[T](implicit arg : T) = arg`，這個函數會在目前的隱式作用域找尋型別
 - 呼叫 `implicitly`，回傳定義在 `Foo` 伴生物件內的的隱式列表 (implicit list)
 
-#### 巢狀隱式範圍 (IMPLICIT SCOPE VIA NESTING)
+#### 巢狀隱式作用域 (IMPLICIT SCOPE VIA NESTING)
 
 ```scala
 scala> object Foo {
@@ -322,7 +322,7 @@ res0: Foo.Bar.type = Bar
 
 #### Package object
 
-對於定義在 package 裡面所有型別，任何定義在 package object 裡的隱式都在隱式範圍內。
+對於定義在 package 裡面所有型別，任何定義在 package object 裡的隱式都在隱式作用域內。
 
 程式碼 - [implicit-resolution](implicit-resolution)
 
@@ -689,14 +689,14 @@ Matrix
 |15.0|
 ```
 
-## 5.4 限制隱式的範圍 (Limiting the scope of implicits)
+## 5.4 限制隱式的作用域 (Limiting the scope of implicits)
 
 隱式可能出現在：
 
 1. 任何相關連型別的**伴生物件**
 2. `scala.Predef._`
   - `Predef` 物件包含許多有用的轉換，例如 `java.lang.Integer => scala.Int` 轉換 java boxed type 與 scala unified type
-3. 藉由 `import` 帶入的隱式範圍
+3. 藉由 `import` 帶入的隱式作用域
   - 這樣的隱式難以追蹤，也難以文件化
 
 ### 5.4.1 為匯入產生隱式 (Creating implicits for import)
@@ -864,7 +864,7 @@ For Reals(5.0)
 
 這兩種隱式使用同樣的隱式解析機制，分成兩階段
 
-- 第一階段在目前範圍尋找沒有前綴的隱式
+- 第一階段在目前作用域尋找沒有前綴的隱式
 - 第二階段在相關類型的伴生物件內找尋隱式
 
-隱式很強大，但要小心使用。限制隱式範圍，把隱式定義在眾所皆知或容易找到的位置，將是成功使用隱式的關鍵。
+隱式很強大，但要小心使用。限制隱式作用域，把隱式定義在眾所皆知或容易找到的位置，將是成功使用隱式的關鍵。
