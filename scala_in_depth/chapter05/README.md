@@ -292,6 +292,28 @@ res2: List[holder.Foo] = List(Foo!!)
 
 這種機制用來實現**類特徵** (class trait) 或稱**型別類** (type class)。type class 用類型參數來描述通用接口，以便能為任意類型創造(接口的)實現。
 
+```scala
+trait BinaryFormat[T] {
+    def asBinary(entity: T): Array[Bytes]
+}
+```
+- `BinaryFormat` 特徵定義了 `asBinary` 方法，接受類型參數的實例，返回代表該參數數值的位元陣列
+- 需要把物件序列化到硬碟的程式碼，可以通過隱式解析機制查找 `BinaryFormat` 特徵
+
+```scala
+trait Foo {}
+
+object Foo {
+    implicit lazy val binaryFormat = new BinaryFormat[Foo] {
+        def asBinary(entity: Foo) = "serializedFoo".toBytes
+    }
+}
+```
+- 在 `Foo` 特徵的伴生物件內定義一個讓 `Foo` 有序列化能力的隱式實體 `binaryFormat`
+- `Foo` 特徵為一個空特徵，伴生物件內定義了一個隱式實體，用來做序列化
+
+> 通過類型參數進行隱式查找讓我們可以實現優雅的類型特徵程式設計。
+
 #### 巢狀隱式作用域 (IMPLICIT SCOPE VIA NESTING)
 
 ```scala
