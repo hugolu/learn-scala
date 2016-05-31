@@ -695,13 +695,13 @@ Matrix
 
 ## 5.4 限制隱式的作用域 (Limiting the scope of implicits)
 
-隱式可能出現在：
+隱式實體可能出現在：
 
 1. 任何相關連型別的**伴生物件**
 2. `scala.Predef._`
   - `Predef` 物件包含許多有用的轉換，例如 `java.lang.Integer => scala.Int` 轉換 java boxed type 與 scala unified type
 3. 藉由 `import` 帶入的隱式作用域
-  - 這樣的隱式難以追蹤，也難以文件化
+  - 這樣的隱式實體難以追蹤，也難以文件化
 
 ### 5.4.1 為匯入產生隱式 (Creating implicits for import)
 
