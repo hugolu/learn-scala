@@ -201,6 +201,55 @@ res1: Foo.baz.U = hello, world!
 
 當遇到路徑依賴故障，想辦法讓編譯器知道依賴的型別是“穩定的”
 
+#### `Observer`
+通過路徑依賴類型，強制這個引用只能對元 `Observer` 實例有效
+
+Observable.scala:
+```python
+trait Observable {
+    type Handle
+
+    protected var callbacks = Map[Handle, this.type => Unit]()
+
+    def observe(callback: this.type => Unit): Handle = {
+        val handle = createHandle(callback)
+        callbacks += (handle -> callback)
+        handle
+    }
+
+    def unobserve(handle: Handle): Unit = {
+        callbacks -= handle
+    }
+
+    protected def createHandle(callback: this.type => Unit): Handle 
+
+    protected def notifyListeners(): Unit =
+        for(callback <- callbacks.values) callback(this)
+}
+```
+
+DefaultHandles.scala:
+```scala
+trait Defaulthandles extends Observable {
+    type Handle = (this.type => Unit)
+    protected def createHandle(callback: this.type => Unit): Handle =
+        callback
+}
+```
+
+IntStore.scala:
+```scala
+class IntStore(private var value: Int) extends Observable with Defaulthandles {
+    def get: Int = value
+    def set(newValue: Int): Unit = {
+        value = newValue
+        notifyListeners()
+    }
+
+     override def toString: String = "IntStore(" + value + ")"
+}
+```
+
 ## 6.2 型別限制 (Type constraints)
 
 ## 6.3 型別參數與高階型別 (Type parameters and higher-kinded types)
