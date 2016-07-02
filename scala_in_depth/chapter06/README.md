@@ -4,6 +4,32 @@
 
 ## 6.1 型別 (Types)
 
+要理解 Scala 的型別系統，要先理解什麼是型別、如何建立。
+- 型別就是編譯器需要知道的一組訊息，可以由使用者提供、或是編譯器檢查代碼時推斷
+- 定義型別的方式
+  - 定義 class, trait, object 
+  - 用 `type` 關鍵字定義型別
+
+```scala
+scala> class ClassName
+defined class ClassName
+
+scala> trait TraitName
+defined trait TraitName
+
+scala> object ObjectName
+defined object ObjectName
+
+scala> def foo(x: ClassName) = x
+foo: (x: ClassName)ClassName
+
+scala> def bar(x: TraitName) = x
+bar: (x: TraitName)TraitName
+
+scala> def baz(x: ObjectName.type) = x
+baz: (x: ObjectName.type)ObjectName.type
+```
+
 ### 6.1.1 型別與路徑 (Types and paths)
 
 ### 6.1.2 型別關鍵字 (The type keyword)
