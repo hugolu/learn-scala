@@ -81,6 +81,20 @@ res2: Null = null
 
 ### 6.1.2 型別關鍵字 (The type keyword)
 
+`type`可以用來構造具體型別 (concrete type) 或抽象型別 (abstract type)
+- 具體型別：引用已存在的型別 (existing type) 或使用結構化型別(structural type)
+  - 提供型別定義
+- 抽象型別：構造用來作為佔位符，以便以後由子型別重新定義
+  - 沒有提供約束 (constraints) 或賦值 (assignments)
+
+`type` 關鍵字只能在某種形式的上下文定義型別，在 class, trait, object 或前者之一的子上下文 (subcontext)
+
+```scala
+type AbstractType
+type ConcreteType = SomeFooType
+type ConcreteType = SomeFooType with SomeBarType // a compound type 
+```
+
 ### 6.1.3 結構化型別 (Structural types)
 
 ## 6.2 型別限制 (Type constraints)
