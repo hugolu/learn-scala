@@ -227,13 +227,22 @@ trait Observable {
         for(callback <- callbacks.values) callback(this)
 }
 ```
+- `Handle` 抽象型別：用來引用被註冊的觀察者 callback 函數 (`handle -> callback`)
+    - `callbacks` 是個 `Map`，key 是 `Handle`, value 是 callback type
+- `observe` 方法接受型別為 `this.type => Unit` 的參數，返回 `Handle` 型別
+    - `this.type` 指向當前物件的型別
+    - 與直接引用當前型別不同，`this.type` 會隨繼承而變化
+- `unobserve` 從 `callbacks` 移除 handle 指向的 callback function
+    - `handle` 是路徑依賴，只能與當前物件註冊過的
+    - 不同 `Observable` 的 handle 不可互換
+- `createHandle` 方法由子型別定義，讓觀察模式的實現者提供自己的 handle 機制
 
 DefaultHandles.scala:
 ```scala
 trait Defaulthandles extends Observable {
     type Handle = (this.type => Unit)
-    protected def createHandle(callback: this.type => Unit): Handle =
-        callback
+
+    protected def createHandle(callback: this.type => Unit): Handle = callback
 }
 ```
 
