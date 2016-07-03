@@ -239,16 +239,18 @@ trait Observable {
 
 DefaultHandles.scala:
 ```scala
-trait Defaulthandles extends Observable {
+trait DefaultHandles extends Observable {
     type Handle = (this.type => Unit)
 
     protected def createHandle(callback: this.type => Unit): Handle = callback
 }
 ```
+- `DefaultHandlees` 繼承 `Observable`
+- 定義 `Handle` 與 callback 的型別一樣
 
 IntStore.scala:
 ```scala
-class IntStore(private var value: Int) extends Observable with Defaulthandles {
+class IntStore(private var value: Int) extends Observable with DefaultHandles {
     def get: Int = value
     def set(newValue: Int): Unit = {
         value = newValue
@@ -257,6 +259,35 @@ class IntStore(private var value: Int) extends Observable with Defaulthandles {
 
      override def toString: String = "IntStore(" + value + ")"
 }
+```
+- 當 `IntStore` 內部值發生變化，`notifyListeners()` 就會通知觀察者
+- 光 `extends DefaultHandles` 即可，不懂為什麼要 `extends Observable with DefaultHandles`
+
+```scala
+scalascala> :load Observable.scala
+Loading Observable.scala...
+defined trait Observable
+
+scala> :load DefaultHandles.scala
+Loading DefaultHandles.scala...
+defined trait DefaultHandles
+
+scala> :load IntStore.scala
+Loading IntStore.scala...
+defined class IntStore
+
+scala> val x = new IntStore(5)
+x: IntStore = IntStore(5)
+
+scala> val handle = x.observe(println)
+handle: x.Handle = <function1>
+
+scala> x.set(2)
+IntStore(2)
+
+scala> x.unobserve(handle)
+
+scala> x.set(4)
 ```
 
 ## 6.2 型別限制 (Type constraints)
