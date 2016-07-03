@@ -205,7 +205,7 @@ res1: Foo.baz.U = hello, world!
 通過路徑依賴類型，強制這個引用只能對元 `Observer` 實例有效
 
 Observable.scala:
-```python
+```scala
 trait Observable {
     type Handle
 
