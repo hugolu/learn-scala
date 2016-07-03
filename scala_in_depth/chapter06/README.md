@@ -289,6 +289,36 @@ scala> x.unobserve(handle)
 
 scala> x.set(4)
 ```
+```scala
+scala> val x = new IntStore(5)
+x: IntStore = IntStore(5)
+
+scala> val y = new IntStore(5)
+y: IntStore = IntStore(5)
+
+scala> val callback = println(_ : Any)
+callback: Any => Unit = <function1>
+
+scala> val handle1 = x.observe(callback)
+handle1: x.Handle = <function1>
+
+scala> val handle2 = y.observe(callback)
+handle2: y.Handle = <function1>
+
+scala> handle1 == handle2
+res6: Boolean = true
+
+scala> x.unobserve(handle2)
+<console>:18: error: type mismatch;
+ found   : y.Handle
+    (which expands to)  y.type => Unit
+ required: x.Handle
+    (which expands to)  x.type => Unit
+       x.unobserve(handle2)
+                   ^
+```
+- 路徑依賴類型限制 handle 必須是從同個方法生成的 (The path-dependent typing restricts our handles from being generated from the same method.)
+- 儘管兩個 handle 在運行時是相等的，型別系統仍然阻止用錯誤的 handle 來取消觀察者 (Even though the handles are equal at runtime, the type system has prevented us from using the wrong handle to unregister an observer.)
 
 ## 6.2 型別限制 (Type constraints)
 
