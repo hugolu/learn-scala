@@ -333,7 +333,7 @@ scala> x.unobserve(handle2)
 ```scala
 class A {
     type B >: List[Int]
-    def foo(x : B) = x
+    def foo(a : B) = a
 }
 ```
 - `type B` 下界為 `List[Int]`
@@ -366,6 +366,43 @@ scala> val y = new A { type B = Set[Int] }
 所選的型別必須等於或低於上界約束的型別。(be equal to or a lower than the upper bound type)
 - 對 class 或 trait 來說，選中的型別必須是上界的 class 或 trait 的 subclass
 - 對 結構化型別 來說，選中的型別必須符合 結構化型別 的要求，可以帶更多訊息 (只能多、不能少)
+
+```scala
+class A {
+    type B <: Traversable[Int]`
+    def count(b : B) = b.foldLeft(0)(_ + _)
+}
+```
+- `type B` 上界約束為 `Traversable[Int]`
+- 未精煉 (unrefined) 型別 `B`，可以用 `Traversable[Int]` 定義的任何方法
+  - 上界約束最好的好處是，無需知道具體的精練類型就能呼叫上界類型的方法。
+
+```scala
+scala> val x = new A { type B = List[Int] }
+x: A{type B = List[Int]} = $anon$1@3f91b517
+
+scala> x.count(List(1,2))
+res0: Int = 3
+
+scala> x.count(Set(1,2))
+<console>:13: error: type mismatch;
+ found   : scala.collection.immutable.Set[Int]
+ required: x.B
+    (which expands to)  List[Int]
+       x.count(Set(1,2))
+                  ^
+```
+- 把 `type B` 精煉成 `List[Int]` 
+  - 不能再傳遞 `Traversable[Int]` 其他子類
+
+```scala
+scala> val y = new A { type B = Set[Int] }
+y: A{type B = Set[Int]} = $anon$1@4a03bb68
+
+scala> y.count(Set(1,2))
+res2: Int = 3
+```
+- `type B` 精煉成 `Set[Int]`，就只能接受 `Set[Int]`
 
 ## 6.3 型別參數與高階型別 (Type parameters and higher-kinded types)
 
