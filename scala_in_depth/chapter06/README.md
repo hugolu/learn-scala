@@ -320,11 +320,51 @@ scala> x.unobserve(handle2)
 - 路徑依賴類型限制 handle 必須是從同個方法生成的 (The path-dependent typing restricts our handles from being generated from the same method.)
 - 儘管兩個 handle 在運行時是相等的，型別系統仍然阻止用錯誤的 handle 來取消觀察者 (Even though the handles are equal at runtime, the type system has prevented us from using the wrong handle to unregister an observer.)
 
-## 6.2 型別限制 (Type constraints)
+## 6.2 型別約束 (Type constraints)
+
+型別約束是與型別相關的規則，一個變量要匹配一個型別必須符合的規則。有兩種形式
+- 下界 (子型別約束)
+- 上界 (超型別約束)
+
+### 下界 (Lower bound)
+
+所選擇的型別必須等於下界或是下界的超型別。 (be equal to or a supertype of the lower bound restriction)
+
+```scala
+class A {
+    type B >: List[Int]
+    def foo(x : B) = x
+}
+```
+- `type B` 下界為 `List[Int]`
+
+```scala
+scala> val x = new A { type B = Traversable[Int] }
+x: A{type B = Traversable[Int]} = $anon$1@458ad742
+
+scala> x.foo(Set(1))
+res0: x.B = Set(1)
+```
+- `x` 為 `class A` 的匿名子類
+    - `type B` 明確定義為 `Traversable[Int]`
+
+
+```scala
+scala> val y = new A { type B = Set[Int] }
+<console>:11: error: overriding type B in class A with bounds >: List[Int];
+ type B has incompatible type
+       val y = new A { type B = Set[Int] }
+```
+
+### 上界 (Upper bound)
+
+所選的型別必須等於或低於上界約束的型別。(be equal to or a lower than the upper bound type)
+- 對 class 或 trait 來說，選中的型別必須是上界的 class 或 trait 的 subclass
+- 對 結構化型別 來說，選中的型別必須符合 結構化型別 的要求，可以帶更多訊息 (只能多、不能少)
 
 ## 6.3 型別參數與高階型別 (Type parameters and higher-kinded types)
 
-### 6.3.1 型別參數限制 (Type parameter constraints)
+### 6.3.1 型別參數約束 (Type parameter constraints)
 
 ### 6.3.2 高階型別 (Higher-kinded types)
 
