@@ -414,6 +414,42 @@ res2: Int = 3
 
 ### 6.3.1 型別參數約束 (Type parameter constraints)
 
+型別參數是在普通參數之前加上中括號`[]`來定義。然後普通參數就可以用型別參數作為參數的型別。
+
+```scala
+def randomElement[T](list : List[T]) : T = {
+    val r = scala.util.Random
+    list(r.nextInt(list.size))
+}
+
+scala> randomElement[Int](List(1,2,3))
+res0: Int = 2
+
+scala> randomElement(List(1,2,3))
+res1: Int = 3
+```
+```scala
+scala> randomElement[String](List(1,2,3))
+<console>:12: error: type mismatch;
+ found   : Int(1)
+ required: String
+       randomElement[String](List(1,2,3))
+                                  ^
+<console>:12: error: type mismatch;
+ found   : Int(2)
+ required: String
+       randomElement[String](List(1,2,3))
+                                    ^
+<console>:12: error: type mismatch;
+ found   : Int(3)
+ required: String
+       randomElement[String](List(1,2,3))
+                                      ^
+```
+
+型別參數很像方法參數，只是他們是在**編譯時期**做的參數化。
+- 所有型別編成只在編譯時確保，所有型別訊息必須在編譯時期可知才有用
+
 ### 6.3.2 高階型別 (Higher-kinded types)
 
 ## 6.4 變異性 (Variance)
