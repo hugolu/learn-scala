@@ -495,6 +495,19 @@ scala> foo[Function1](x)
 ```
 - `foo` 不能接受 `Function1` 型別，因為 `Function1` 接受兩個型別參數，`foo` 方法只些受一個型別參數
 
+#### 類型 lambda
+```scala
+scala> foo[({type X[Y] = Function1[Y,Unit]})#X]((x : Int) => println(x))
+res3: Int => Unit = <function1>
+
+scala> foo(x)
+res4: Callback[Int] = <function1>
+
+scala> res4(1)
+3
+```
+> 這是要逼死誰啊～～～
+
 ## 6.4 變異性 (Variance)
 
 ### 6.4.1 進階變異性注解 (Advanced variance annotations)
