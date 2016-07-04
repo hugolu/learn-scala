@@ -455,6 +455,8 @@ scala> randomElement[String](List(1,2,3))
 高階函數接受其他函數作為參數；高階型別接受其他型別作為參數，構造出新的型別。
 - 在 scala 可以使用 `type` 建構出高階型別
 - 高階型別又稱 “型別構造器”
+
+#### 用於簡化複雜型別的型別簽名
 ```scala
 scala> type Callback[T] = Function1[T, Unit]
 defined type alias callback
@@ -469,10 +471,29 @@ scala> x(1)
   - 參數話之前，`Callback` 不是一個完整的型別
 - 編譯器會把 `Callback[Int]` 轉換成完整的型別 `(Int) => Unit`
 
+#### 用於使複雜型別符合想要呼叫的方法所要求的簡單型別簽名
+```scala
+scala> import scala.language.higherKinds
+import scala.language.higherKinds
 
+scala> def foo[M[_]](f : M[Int]) = f
+foo: [M[_]](f: M[Int])M[Int]
 
+scala> foo[Callback](x)
+res1: Callback[Int] = <function1>
 
+scala> res1(1)
+3
+```
+- `foo` 接受一個型別 `M`，一個未知的參數化型別，`_` 是個 placeholder，用來指代一個未知的存在型別 (existential type)
 
+```scala
+scala> foo[Function1](x)
+<console>:15: error: Function1 takes two type parameters, expected: one
+       foo[Function1](x)
+           ^
+```
+- `foo` 不能接受 `Function1` 型別，因為 `Function1` 接受兩個型別參數，`foo` 方法只些受一個型別參數
 
 ## 6.4 變異性 (Variance)
 
