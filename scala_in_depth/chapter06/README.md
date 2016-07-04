@@ -452,6 +452,28 @@ scala> randomElement[String](List(1,2,3))
 
 ### 6.3.2 高階型別 (Higher-kinded types)
 
+高階函數接受其他函數作為參數；高階型別接受其他型別作為參數，構造出新的型別。
+- 在 scala 可以使用 `type` 建構出高階型別
+- 高階型別又稱 “型別構造器”
+```scala
+scala> type Callback[T] = Function1[T, Unit]
+defined type alias callback
+
+scala> val x : Callback[Int] = y => println(y+2)
+x: Callback[Int] = <function1>
+
+scala> x(1)
+3
+```
+- `Callback` 高階型別，接收一個型別參數，構造出一個新的 `Function1` 型別
+  - 參數話之前，`Callback` 不是一個完整的型別
+- 編譯器會把 `Callback[Int]` 轉換成完整的型別 `(Int) => Unit`
+
+
+
+
+
+
 ## 6.4 變異性 (Variance)
 
 ### 6.4.1 進階變異性注解 (Advanced variance annotations)
