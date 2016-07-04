@@ -406,6 +406,12 @@ res2: Int = 3
 
 ## 6.3 型別參數與高階型別 (Type parameters and higher-kinded types)
 
+“類型參數” 是在呼叫方法、構造型別、擴展類型時，作為參數傳入的一個型別定義。
+
+“高階型別” 是接受其他型別作為參數構造出新型別。
+
+參數是建構與組合函數的關鍵要素，型別參數是建構與組合型別的關鍵要素。
+
 ### 6.3.1 型別參數約束 (Type parameter constraints)
 
 ### 6.3.2 高階型別 (Higher-kinded types)
