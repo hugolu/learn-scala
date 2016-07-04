@@ -337,6 +337,7 @@ class A {
 }
 ```
 - `type B` 下界為 `List[Int]`
+  - 限定型別 `B` 編譯時期信息必須是來自 `List` 或是 `List` 的超類 
 
 ```scala
 scala> val x = new A { type B = Traversable[Int] }
@@ -347,7 +348,10 @@ res0: x.B = Set(1)
 ```
 - `x` 為 `class A` 的匿名子類
     - `type B` 明確定義為 `Traversable[Int]`
-
+- `Traversable` 是 `List` 父類
+- `Set` 不是 `List` 的超類而是 `Traversable` 的子類，`Set` 可以多態形式當成 `Iterable` 或 `Traversable` 來引用。 (a Set could be polymorphically referred to as Iterable or Traversable.)
+  - 多態意味當需要編譯時型別為 `Traversable` 時，可以使用 `Set` 的實例，因為 `Set` 繼承自 `Traversable` 
+  - 當這麼做，沒有拋棄物件的任何行為，只是丟棄對該型別一部分編譯時訊息
 
 ```scala
 scala> val y = new A { type B = Set[Int] }
@@ -355,6 +359,7 @@ scala> val y = new A { type B = Set[Int] }
  type B has incompatible type
        val y = new A { type B = Set[Int] }
 ```
+- 不能將 `type B` 設置為 `Set[Int]`，去創建一個 `A` 的子類別
 
 ### 上界 (Upper bound)
 
