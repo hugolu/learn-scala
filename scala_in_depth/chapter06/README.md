@@ -510,9 +510,13 @@ scala> res4(1)
 
 ## 6.4 變異性 (Variance)
 
-- “變異性” 指的是高階型別中，型別參數變化的能力。
-- “變異性” 描述型別參數如何變化以產生順應型別 (conformant type)。如果可以把 `T[B]` 賦值給 `T[A]` 而不發生任何錯誤，就稱高階型別 `T[A]` 順應 `T[B]`。
-- “變異性” 規則主宰參數化型別的順應性。“變異性”有三種形式：不變(invariance)、協變(covariance)、逆變(contravariance)。
+- “變異性” 指的是高階型別中，型別參數變化的能力
+- “變異性” 描述型別參數如何變化以產生順應型別 (conformant type)
+    - 如果可以把 `T[B]` 賦值給 `T[A]` 而不發生任何錯誤，就稱高階型別 `T[A]` 順應 `T[B]`
+- “變異性” 規則主宰參數化型別的順應性。“變異性”有三種形式：不變(invariance)、協變(covariance)、逆變(contravariance)
+
+> `A` is said to conform to `B` if you can assign `B` to `A` without causing any error
+>    - `A` 順應於 `B`；`A` 遵守 `B` 的規則；`A` 可以滿足 `B` 的條件
 
 #### 不變(invariance)
 - 高階型別的型別參數不能改變
@@ -523,6 +527,28 @@ scala> res4(1)
 - 高階型別的型別參數替換為其父類的能力
 - 對於任何型別 `T`, `A`, `B`，如果 `T[A]` 順應於 `T[B]`，那麼 `A <: B` (`A` 是 `B` 的子類)
 - for any types `T`, `A` and `B` if `T[A]` conforms to `T[B]` then `A` <: `B`
+
+```scala
+scala> class T[+A] {}
+defined class T
+
+scala> val x = new T[AnyRef]
+x: T[AnyRef] = T@33833882
+
+scala> val y : T[Any] = x
+y: T[Any] = T@33833882
+
+scala> val z : T[String] = x
+<console>:12: error: type mismatch;
+ found   : T[AnyRef]
+ required: T[String]
+       val z : T[String] = x
+                           ^
+```
+- `T[+A]` 表示協變型別參數
+- `String <: AnyRef <: Any`，`AnyRef` 是 `Any` 子類，`String` 是 `AnyRef` 子類
+- `T[AnyRef]` 順應於 `T[Any]`，把 `T[AnyRef]` 賦值給 `T[Any]` 型別的變量，沒有問題
+- `T[AnyRef]` 不順應於 `T[String]`，把 `T[AnyRef]` 賦值給 `T[Sting]` 型別的變量，發生錯誤
 
 #### 逆變(contravariance)
 - 高階型別的型別參數替換為其子類的能力
