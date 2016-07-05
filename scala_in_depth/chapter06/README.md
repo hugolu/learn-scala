@@ -518,12 +518,12 @@ scala> res4(1)
 > `A` is said to conform to `B` if you can assign `B` to `A` without causing any error
 >    - `A` 順應於 `B`；`A` 遵守 `B` 的規則；`A` 可以滿足 `B` 的條件
 
-#### 不變(invariance)
+### 不變(invariance)
 - 高階型別的型別參數不能改變
 - 對於任何型別 `T`, `A`, `B`，如果 `T[A]` 順應於 `T[B]`，那麼 `A` 一定等於 `B`
 - for any types `T`, `A`, and `B` if `T[A]` conforms to `T[B]` then `A` must be the equivalent type of `B`
 
-#### 協變(covariance)
+### 協變(covariance)
 - 高階型別的型別參數替換為其父類的能力
 - 對於任何型別 `T`, `A`, `B`，如果 `T[A]` 順應於 `T[B]`，那麼 `A <: B` (`A` 是 `B` 的子類)
 - for any types `T`, `A` and `B` if `T[A]` conforms to `T[B]` then `A` <: `B`
@@ -550,7 +550,7 @@ scala> val z : T[String] = x
 - `T[AnyRef]` 順應於 `T[Any]`，把 `T[AnyRef]` 賦值給 `T[Any]` 型別的變量，沒有問題
 - `T[AnyRef]` 不順應於 `T[String]`，把 `T[AnyRef]` 賦值給 `T[Sting]` 型別的變量，發生錯誤
 
-#### 逆變(contravariance)
+### 逆變(contravariance)
 - 高階型別的型別參數替換為其子類的能力
 - 對於任何型別 `T`, `A`, `B`，如果 `T[A]` 順應於 `T[B]`，那麼 `A >: B` (`A` 是 `B` 的父類)
 - for any types `T`, `A` and `B`, if `T[A]` conforms to `T[B]` then `A >: B`
@@ -572,12 +572,41 @@ res1: Any = Hello, I received a test
 ```
 - `foo` 賦值給 `bar` (可以用 `foo` 來實現 `bar`)
 - `Any => String` 順應於 `String => Any` 
-  - `bar` 參數型別 `String`，傳遞給 `foo`，參數型別由 `String` 轉成 `Any`，沒問題
-  - `bar` 返回型別 `String`，返回給 `bar`，返回值由 `String` 轉成 `Any`，沒問題
+  - `bar` 參數型別 `String`，傳遞給 `foo`，參數型別由 `String` 轉成 `Any`
+  - `bar` 返回型別 `String`，返回給 `bar`，返回值由 `String` 轉成 `Any`
 
 `Function` 物件對返回型別是協變，對參數是逆變
   - 返回值：拿到一個函數的返回值並轉換為其超類
-  - 參數：可以傳入參數型別的子類
+  - 參數：函數的傳入值可以是傳入參數型別的子類
+
+#### Function object
+```scala
+trait Function[-Arg, +Return] {
+    def apply(arg : Arg) : Return
+}
+```
+- `Arg` 是函數的參數型別 (逆變)
+- `Return` 是函數的返回值型別 (協變)
+
+```scala
+val foo = new Function[Any, String] {
+    override def apply(arg : Any) : String = "Hello, I received a " + arg
+}
+foo: Function[Any,String] = $anon$1@3abfe836
+
+scala> foo("test")
+res0: String = Hello, I received a test
+```
+
+```scala
+scala> val bar : Function[String, Any] = foo
+bar: Function[String,Any] = $anon$1@3abfe836
+
+scala> bar("test")
+res1: Any = Hello, I received a test
+```
+- 傳給 `bar` 的參數的型別可以是 `foo` 的參數的型別子類
+把一個型別賦值給另一個型別，類似於多態的把一個子類賦值給父類的引用。
 
 ### 6.4.1 進階變異性注解 (Advanced variance annotations)
 
