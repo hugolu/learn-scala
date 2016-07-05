@@ -510,6 +510,25 @@ scala> res4(1)
 
 ## 6.4 變異性 (Variance)
 
+- “變異性” 指的是高階型別中，型別參數變化的能力。
+- “變異性” 描述型別參數如何變化以產生順應型別 (conformant type)。如果可以把 `T[B]` 賦值給 `T[A]` 而不發生任何錯誤，就稱高階型別 `T[A]` 順應 `T[B]`。
+- “變異性” 規則主宰參數化型別的順應性。“變異性”有三種形式：不變(invariance)、協變(covariance)、逆變(contravariance)。
+
+#### 不變(invariance)
+- 高階型別的型別參數不能改變
+- 對於任何型別 `T`, `A`, `B`，如果 `T[A]` 順應於 `T[B]`，那麼 `A` 一定等於 `B`
+- for any types `T`, `A`, and `B` if `T[A]` conforms to `T[B]` then `A` must be the equivalent type of `B`
+
+#### 協變(covariance)
+- 高階型別的型別參數替換為其父類的能力
+- 對於任何型別 `T`, `A`, `B`，如果 `T[A]` 順應於 `T[B]`，那麼 `A <: B` (`A` 是 `B` 的子類)
+- for any types `T`, `A` and `B` if `T[A]` conforms to `T[B]` then `A` <: `B`
+
+#### 逆變(contravariance)
+- 高階型別的型別參數替換為其子類的能力
+- 對於任何型別 `T`, `A`, `B`，如果 `T[A]` 順應於 `T[B]`，那麼 `A >: B` (`A` 是 `B` 的父類)
+- for any types `T`, `A` and `B`, if `T[A]` conforms to `T[B]` then `A >: B`
+
 ### 6.4.1 進階變異性注解 (Advanced variance annotations)
 
 ## 6.5 存在型別 (Existential types)
