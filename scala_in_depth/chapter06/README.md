@@ -610,6 +610,111 @@ res1: Any = Hello, I received a test
 
 ### 6.4.1 進階變異性注解 (Advanced variance annotations)
 
+```scala
+scala> List(1,2,3) ++ List("hello", "world")
+res0: List[Any] = List(1, 2, 3, hello, world)
+```
+- `List(1,2,3)` 型別是 `List[Int]`
+- `List("hello", "world")` 型別是 `List[String]`
+- `++` 把兩個列表接在一起，型別取兩者共同的父類別 `List[Any]`，怎麼辦到的？？
+
+```scala
+scala> trait List[+ItemType] {
+     | def ++(other : ItemType) : List[ItemType]
+     | }
+<console>:12: error: covariant type ItemType occurs in contravariant position in type ItemType of value other
+       def ++(other : ItemType) : List[ItemType]
+              ^
+```
+- 把 ItemType 放在逆變位置上，發生錯誤
+
+```scala
+scala> trait List[+ItemType] {
+     | def ++[OtherItemType](other : List[OtherItemType]) : List[ItemType]
+     | }
+defined trait List
+
+scala> class EmptyList[ItemType] extends List[ItemType] {
+     | def ++[OtherItemType](other : List[OtherItemType]) = other
+     | }
+<console>:12: error: type mismatch;
+ found   : List[OtherItemType]
+ required: List[ItemType]
+       def ++[OtherItemType](other : List[OtherItemType]) = other
+                                                            ^
+```
+- 使用 `++[OtherItemType]` 參數化 other 的型別
+- 定義 `EmptyList.++` 結果不匹配：因為 `OtherItemType` 與 `ItemType` 不相容
+
+
+```scala
+trait List[+ItemType] {
+    def ++[OtherItemType >: ItemType](other : List[OtherItemType]) : List[OtherItemType]
+}
+
+class EmptyList[ItemType] extends List[ItemType] {
+    def ++[OtherItemType >: ItemType](other : List[OtherItemType]) = other
+}
+```
+- 希望 `List[OtherItemType]` 能和當前 `List[Item]` 組合
+    - `ItemType` 是協變，可以將當前列表向上層轉換
+    - 把 `ItemType` 當作 `OtherItemType` 的下界約束
+    - 修改 `++` 讓返回值是 `OtherItemType`
+- 寫出的 `++` 方法定義很靈活，而且仍然型別安全
+
+```scala
+scala> val strings = new EmptyList[String]
+strings: EmptyList[String] = EmptyList@77afea7d
+
+scala> val ints = new EmptyList[Int]
+ints: EmptyList[Int] = EmptyList@5a42bbf4
+
+scala> val anys = new EmptyList[Any]
+anys: EmptyList[Any] = EmptyList@3834d63f
+
+scala> val anyrefs = new EmptyList[AnyRef]
+anyrefs: EmptyList[AnyRef] = EmptyList@7c30a502
+```
+
+```scala
+scala> strings ++ ints
+res0: List[Any] = EmptyList@5a42bbf4
+
+scala> strings ++ anys
+res1: List[Any] = EmptyList@3834d63f
+
+scala> strings ++ anyrefs
+res2: List[AnyRef] = EmptyList@7c30a502
+
+scala> strings ++ strings
+res3: List[String] = EmptyList@77afea7d
+
+scala> anyrefs ++ strings
+res4: List[AnyRef] = EmptyList@77afea7d
+```
+- `strings ++ ints`
+    - `String` 與 `Int` 的共同超類是 `Any`
+    - `OtherItemType : Any` (向上轉型)
+    - 組合 `List[String]` 與 `List[Any]` 得到 `List[Any]`
+- `strings ++ anys`
+    - `String` 與 `Any` 的共同超類是 `Any`
+    - `OtherItemType : Any`
+    - 組合 `List[String]` 與 `List[Any]` 得到 `List[Any]`
+- `strings ++ anyrefs`
+    - `String` 與 `AnyRef` 的共同超類是 `AnyRef`
+    - `OtherItemType : AnyRef`
+    - 組合 `List[String]` 與 `List[AnyRef]` 得到 `List[AnyRef]`
+- `strings ++ strings`
+    - `String` 與 `String` 的共同超類是 `String`
+    - `OtherItemType : String`
+    - 組合 `List[String]` 與 `List[String]` 得到 `List[String]`
+- `anyrefs ++ strings`
+    - `AnyRef` 與 `String` 的共同超類是 `AnyRef`
+    - `OtherItemType : AnyRef` (向上轉型)
+    - 組合 `List[AnyRef]` 與 `List[AnyRef]` 得到 `List[AnyRef]`
+
+一般來說，當類別方法碰到協變和逆變故障時，通常的解決方法是引入一個新的型別參數，在方法簽名裡用新引入的型別參數。
+
 ## 6.5 存在型別 (Existential types)
 
 ### 6.5.1 存在型別的正式句法 (The formal syntax of existential types)
