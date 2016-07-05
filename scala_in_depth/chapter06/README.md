@@ -555,6 +555,30 @@ scala> val z : T[String] = x
 - 對於任何型別 `T`, `A`, `B`，如果 `T[A]` 順應於 `T[B]`，那麼 `A >: B` (`A` 是 `B` 的父類)
 - for any types `T`, `A` and `B`, if `T[A]` conforms to `T[B]` then `A >: B`
 
+```scala
+scala> def foo(x : Any) : String = "Hello, I received a " + x
+foo: (x: Any)String
+
+scala> foo("test")
+res0: String = Hello, I received a test
+```
+
+```scala
+scala> def bar(x : String) : Any = foo(x)
+bar: (x: String)Any
+
+scala> bar("test")
+res1: Any = Hello, I received a test
+```
+- `foo` 賦值給 `bar` (可以用 `foo` 來實現 `bar`)
+- `Any => String` 順應於 `String => Any` 
+  - `bar` 參數型別 `String`，傳遞給 `foo`，參數型別由 `String` 轉成 `Any`，沒問題
+  - `bar` 返回型別 `String`，返回給 `bar`，返回值由 `String` 轉成 `Any`，沒問題
+
+`Function` 物件對返回型別是協變，對參數是逆變
+  - 返回值：拿到一個函數的返回值並轉換為其超類
+  - 參數：可以傳入參數型別的子類
+
 ### 6.4.1 進階變異性注解 (Advanced variance annotations)
 
 ## 6.5 存在型別 (Existential types)
