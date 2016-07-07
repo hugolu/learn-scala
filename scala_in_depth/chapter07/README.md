@@ -9,6 +9,19 @@
 - 編寫在需要時能重用的類別與方法
 
 ## 7.1 上下文邊界與視圖邊界 (Context bounds and view bounds)
+
+視圖邊界 (view bound) 用來要求一個可用的隱式視圖來轉換另一個型別為另個型別。
+```scala
+def foo[A < % B](x : A) = x
+```
+- 參數 `x` 的型別為 `A`，在呼叫的地方必須存在隱式轉換 `A => B`
+
+上下文邊界 (context bound) 聲明必須要有一個給定的型別的隱士值存在。
+```scala
+def foo[A : B](x : A) = x
+```
+- 參數 `x` 的型別為 `A`，且呼叫 `foo` 方法時必須有可用的隱式值 `B[A]` 存在。
+
 ### 7.1.1 何時使用隱式型別約束 (When to use implicit type constraints)
 
 ## 7.2  使用隱式轉換捕捉型別 (Capturing types with implicits)
