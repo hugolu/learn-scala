@@ -52,6 +52,11 @@ def sendMsgToEach[A : Serializable](receivers : Seq[Receiver[A]], a : A) = {
 上下文邊界與視圖邊界用於明確隱式參數的目的。隱式參數能用於從型別系統裡捕捉關係。
 
 ## 7.2  使用隱式轉換捕捉型別 (Capturing types with implicits)
+
+Manifest 是由編譯器在必要時生成的型別資訊，用來記錄當時編譯器對該類型所知的全部訊息。
+
+隱式型別約束是型別間的超類和等價關係 (supertype and qeuivalence relationship between types)。
+
 ### 7.2.1 捕捉型別用於運行時計算 (capturing types for runtime evaluation)
 ### 7.2.2 使用 Manifests (Using Manifests)
 ### 7.2.3 捕捉型別約束 (Capturing type constraints)
