@@ -23,6 +23,17 @@ def foo[A : B](x : A) = x
 - 參數 `x` 的型別為 `A`，且呼叫 `foo` 方法時必須有可用的隱式值 `B[A]` 存在。
 
 ### 7.1.1 何時使用隱式型別約束 (When to use implicit type constraints)
+隱式視圖常用於擴展已存在的類型。
+
+```scala
+scala> def first[T](x : Traversable[T]) = (x.head, x)
+first: [T](x: Traversable[T])(T, Traversable[T])
+
+scala> first(Array(1,2))
+res0: (Int, Traversable[Int]) = (1,WrappedArray(1, 2))
+```
+- 方法為集合的元素定義了型別參數 `T`，接受 `Traversable[T]` 型別的參數，返回集合第一個元素與集合本身。
+- 呼叫方法時，結果型別是 `Traversable[T]`，但運行時類型卻是 `WrappedArray` ⇒ 方法遺失了陣列初始型別的資訊。
 
 ## 7.2  使用隱式轉換捕捉型別 (Capturing types with implicits)
 ### 7.2.1 捕捉型別用於運行時計算 (capturing types for runtime evaluation)
