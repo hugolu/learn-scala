@@ -70,6 +70,43 @@ Scala 把運行時行為隱藏在 `Array[T]` 類別與相關方法後面，而�
 | `ClassManifest`   | 只保存給定型別的刪除了的類別 (it only stores the erased class of a given type) |
 
 ### 7.2.2 使用 Manifests (Using Manifests)
+
+Scala 必須根據運行時陣列型別生成不同的 bytecode 指令，所以編譯器需要 `Array` 帶有 `ClassManifest`
+
+```scala
+scala> def first[A](x : Array[A]) = Array(x(0))
+<console>:10: error: No ClassTag available for A
+       def first[A](x : Array[A]) = Array(x(0))
+                                         ^
+```
+- `first` 接受 `Array[A]` 型別的犯行陣列，嘗試構造一個新的陣列，包含舊陣列的第一個元素
+- 但沒有捕獲 `Manifest`，編譯器無法確定結果陣列運行時的類型
+
+```scala
+scala> def first[A : ClassManifest](x : Array[A]) = Array(x(0))
+
+scala> first(Array(1,2))
+res1: Array[Int] = Array(1)
+```
+- `A` 型別參數同時捕捉了隱世的 `ClassManifest`
+- 當呼叫 `Array[Int]`，編譯器為 `Int` 構造了一個 `ClassManifest` 用於構造對應的運行時陣列型別 (When called with an Array[Int], the compiler constructs a ClassManifest for the type Int, and this is used to construct a runtime array of the appropriate type.)
+
+```scala
+scala> first(Array(1,2))
+res1: Array[Int] = Array(1)
+
+scala> val x : Array[_] = Array(1,2)
+x: Array[_] = Array(1, 2)
+
+scala> first(x)
+<console>:13: error: No ClassManifest available for _$1.
+       first(x)
+            ^
+```
+- 要使用 `Manifest` 需要在把已知的特定類型傳遞給泛型方法前先補捉其 `Manifest`
+
+`Manifest` 是在編譯時期捕捉的。
+
 ### 7.2.3 捕捉型別約束 (Capturing type constraints)
 ### 7.2.4 特定方法 (Specialized methods)
 
