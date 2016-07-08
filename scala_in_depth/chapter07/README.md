@@ -35,6 +35,22 @@ res0: (Int, Traversable[Int]) = (1,WrappedArray(1, 2))
 - 方法為集合的元素定義了型別參數 `T`，接受 `Traversable[T]` 型別的參數，返回集合第一個元素與集合本身。
 - 呼叫方法時，結果型別是 `Traversable[T]`，但運行時類型卻是 `WrappedArray` ⇒ 方法遺失了陣列初始型別的資訊。
 
+在缺乏泛型與邊界的情況，多態通常造成型別訊息遺失。
+使用 scala，能在使用泛型方法的同時保持特定的型別。
+
+上下文邊界與視圖邊界允許用簡單的方式確保複雜的型別約束。應用他們的最佳場合是當方法不需要通過名字訪問捕獲的型別，但又需要在作用域里存在可用的隱式轉換的時候。
+
+```scala
+def sendMsgToEach[A : Serializable](receivers : Seq[Receiver[A]], a : A) = {
+    receivers foreach (_.send(a))
+}
+```
+- `sendMsgToEach` 接受帶有“可序列化”隱式上下文的類型 `A`，和類型 `A` 的 `Receiver` 的序列
+- `sendMsgToEach` 的實現對每個 `receiver` 呼叫 `send`，把 `message` 傳給它們
+- `sendMsgToEach` 方法不處理 `message`，但 `Receiver` 的 `send` 方法實現需要參數為 `Serializable` 型別
+
+上下文邊界與視圖邊界用於明確隱式參數的目的。隱式參數能用於從型別系統裡捕捉關係。
+
 ## 7.2  使用隱式轉換捕捉型別 (Capturing types with implicits)
 ### 7.2.1 捕捉型別用於運行時計算 (capturing types for runtime evaluation)
 ### 7.2.2 使用 Manifests (Using Manifests)
