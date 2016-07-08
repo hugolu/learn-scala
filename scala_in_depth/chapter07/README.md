@@ -58,6 +58,17 @@ Manifest 是由編譯器在必要時生成的型別資訊，用來記錄當時�
 隱式型別約束是型別間的超類和等價關係 (supertype and qeuivalence relationship between types)。
 
 ### 7.2.1 捕捉型別用於運行時計算 (capturing types for runtime evaluation)
+
+JVM 中，每個基礎型別都有不同的陣列型別，還有數個陣列型別是給物件的，例如 `Int[]`, `double[]`, `Object[]`。Java 區分這些型別，也要求程序也區分這些型別。Scala 允許編碼中使用泛型的 `Array[T]` 的型別，由於底層實現必須知道初始陣列的型別，因此 Scala 需要一種方法將訊息附加給泛型型別。
+
+Scala 把運行時行為隱藏在 `Array[T]` 類別與相關方法後面，而不是編碼成不同的型別。
+
+| 類型 | 解釋 |
+|------|------|
+| `Mainfest`        | 保存與型別 `T` 的反射類實例，以及 `T` 所有型別參數的 `Manifest` 值 |
+| `OptManifest`     | `OptManifest` 為可選。有提供，實例是 `Manifest` 的子類；如沒有，實例為 `NoManifest` 類 |
+| `ClassManifest`   | 只保存給定型別的刪除了的類別 (it only stores the erased class of a given type) |
+
 ### 7.2.2 使用 Manifests (Using Manifests)
 ### 7.2.3 捕捉型別約束 (Capturing type constraints)
 ### 7.2.4 特定方法 (Specialized methods)
