@@ -99,6 +99,43 @@ trait JdbcTemplate {
 
 ### 1.1.2 Examining functional concepts in Google Collections
 
+Java 的寫法
+```java
+interface Predicate<T> {
+    public boolean apply(T input);
+    public boolean equals(Object other);
+}
+
+class Iterables {
+    public static <T> Iterable<T> filter(Iterable<T> unfiltered, Predicate<? super T> predicate) {...}
+    public static <T> T find(Iterable<T> iterable, Predicate<? super T> predicate) {...}
+}
+```
+- `filter()` filters using predicate
+- `find()` finds using predicate
+
+Scala 的寫法
+```scala
+object Iterables {
+    def filter[T](unfiltered: Iterable[T], predicate: T => Boolean): Iterable[T] = {...}
+    def find[T](iterable: Iterable[T], predicate: T => Boolean): T = {...}
+}
+```
+- 沒有使用 `? super T` 型別標記
+    - 因為 scala 在宣告時定義型別變異性
+    - 變異性標記定義在 `Function1` 類別，不需要在每個使用類別的方法中宣告
+
+組合 `predicate`
+```scala
+object Predicates {
+    def or[T](f1: T => Boolean, f2: T => Boolean) = (t : T) => f1(t) || f2(t)
+    def and[T](f1: T => Boolean, f2: T => Boolean) = (t : T) => f1(t) && f2(t)
+    def notNull[T]: T => Boolean = _ != null
+}
+```
+- combining functions
+- delaying side effects - 直到傳入 `Iterable` 物件前，predicate 不會造成副作用
+
 ## 1.2 Static typing and expressiveness
 ### 1.2.1 Changing sides
 ### 1.2.2 Type inference
