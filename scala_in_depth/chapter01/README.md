@@ -137,6 +137,9 @@ object Predicates {
 - delaying side effects - 直到傳入 `Iterable` 物件前，predicate 不會造成副作用
 
 ## 1.2 Static typing and expressiveness
+
+靜態型別導致囉唆的程式碼 - 由 C 語言衍伸的語言，需要明確定義型別
+
 ### 1.2.1 Changing sides
 ### 1.2.2 Type inference
 ### 1.2.3 Dropping verbose syntax
