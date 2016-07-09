@@ -13,6 +13,30 @@ Scala 試著把三種不同的元素混合到一個語言裡。
     - 在 JVM 上執行，與 Java 語言整合，開發者可直接使用現有的 Java 函式庫
 
 ## 1.1 Functional programming meets object orientation
+
+物件導向編程強調程式的**名詞**，把動詞附著其上。
+- 一種由上而下的編程方式
+    - 每個物件有識別(self/this)、行為(methods)、狀態(members)
+    - 識別名詞與定義行為後，名詞間的互動隨即確定
+    - 實作互動的問題在於互動需要存在於物件內
+
+```scala
+class Bird
+class Cat {
+    def catch(b: Bird) : Unit = ...
+    def eat() : Unit = ...
+}
+
+val cat = new Cat
+val brid = new Brid
+
+cat.catch(bird)
+cat.eat()
+```
+- 物件導向式的寫法，著重在名詞與他們的動作 `Cat.eat()`, `Cat.catch()`...
+
+函數式編成強調程式的**動詞**，與組合操作的方法。
+
 ### 1.1.1 Discovering existing functional concepts
 ### 1.1.2 Examining functional concepts in Google Collections
 
