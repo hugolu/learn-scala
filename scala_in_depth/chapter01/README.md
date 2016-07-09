@@ -213,6 +213,12 @@ res1: List[Char] = List(a, b, c, d, e)
 
 ### 1.2.5 Using Scala’s implicit keyword
 
+隱喻是操作 Scala 型別系統的關鍵。主要用來自動轉換型別，或用以限制編譯時 metaprogramming。
+
+`implicit` 關鍵字用在兩個地方
+- 用來識別與產生要被自動傳遞的參數
+- 用來自動轉型
+
 ## 1.3 Transparently working with the JVM
 ### 1.3.1 Java in Scala
 ### 1.3.2 Scala in Java
