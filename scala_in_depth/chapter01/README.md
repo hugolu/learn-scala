@@ -158,7 +158,55 @@ Scala 把型別標記放到變數右邊
 | 惰性求值 | N/A | N/A | `lazy val x: Int` |
 
 ### 1.2.2 Type inference
+
+
+Scala 盡可能執行型別推論
+
+```scala
+val x: Int = 5
+val y = 5
+```
+
 ### 1.2.3 Dropping verbose syntax
+
+| 完整 | 等同 | 解釋 |
+|------|------|------|
+| `x.foo();`    | `x foo`   | 沒有參數的方法可以當成後置操作符 (postfix operator) |
+| `x.foo(y);`   | `x foo y` | 有一個參數的方法可以當成中置操作符 (infix operator) |
+| `x.::(y);`    | `y :: x`  | 特別規則：方法名稱最後是 `:`，要翻轉函數呼叫的順序 |
+
+所以...
+
+```scala
+def qsort[T <% Ordered[T]](list:List[T]):List[T] = {
+    list.match({
+        case Nil => Nil;
+        case val(before, after) = xs.partition({ i => i.<(x) });
+        qsort(before).++(qsort(after).::(x)));
+    });
+}
+```
+
+當程式碼相當明確時，複雜的語法可被丟掉
+
+
+```scala
+def qsort[T <% Ordered[T]](list: List[T]): List[T] = list match {
+    case Nil => Nil
+    case x::xs =>
+        val (before, after) = xs partition (_ < x)
+        qsort(before) ++ (x :: qsort(after))
+}
+```
+
+```scala
+scala> qsort(List(2,4,6,8,10,9,7,5,3,1))
+res0: List[Int] = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+
+scala> qsort(List('a', 'c', 'e', 'd', 'b'))
+res1: List[Char] = List(a, b, c, d, e)
+```
+
 ### 1.2.4 Implicits are an old concept
 ### 1.2.5 Using Scala’s implicit keyword
 
