@@ -220,7 +220,28 @@ res1: List[Char] = List(a, b, c, d, e)
 - 用來自動轉型
 
 ## 1.3 Transparently working with the JVM
+
 ### 1.3.1 Java in Scala
+在 Scala 能無縫使用 Java 函式庫。
+- Java 類別變成 Scala 類別
+- Java 介面變成 Scala 特徵
+- Java 靜態成員被加到偽 Scala 物件中
+
+```java
+class SimpleJavaClass {
+    private String name;
+    public SimpleJavaClass(String name) {
+        this.name = name;
+    }
+    public String getName() {
+        return name;
+    }
+    public static SimpleJavaClass create(String name) {
+        return new SimpleJavaClass(name);
+    }
+}
+```
+
 ### 1.3.2 Scala in Java
 ### 1.3.3 The benefits of a JVM
 
