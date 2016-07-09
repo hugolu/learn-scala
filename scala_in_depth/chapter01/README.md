@@ -140,7 +140,23 @@ object Predicates {
 
 靜態型別導致囉唆的程式碼 - 由 C 語言衍伸的語言，需要明確定義型別
 
+Scala 的一些設計決策有助於讓它更具表達性
+- 改變型別標記的位置
+- 型別推論
+- 可擴充的語法
+- 使用者定義的隱式轉換
+
 ### 1.2.1 Changing sides
+
+Scala 把型別標記放到變數右邊
+
+| 變數型別 | C++ | java | Scala |
+|----------|-----|------|-------|
+| 可變變數 | `int x` | `int x` | `var x: Int` |
+| 不變變數 | `const int x` | `final int x` | `val x: Int` |
+| 常數指標指向可變變數 | `volatile int * const x` | N/A | N/A |
+| 惰性求值 | N/A | N/A | `lazy val x: Int` |
+
 ### 1.2.2 Type inference
 ### 1.2.3 Dropping verbose syntax
 ### 1.2.4 Implicits are an old concept
