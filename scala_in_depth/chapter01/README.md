@@ -23,8 +23,8 @@ Scala 試著把三種不同的元素混合到一個語言裡。
 ```scala
 class Bird
 class Cat {
-    def catch(b: Bird) : Unit = ...
-    def eat() : Unit = ...
+    def catch(b: Bird): Unit = ...
+    def eat(): Unit = ...
 }
 
 val cat = new Cat
@@ -36,6 +36,32 @@ cat.eat()
 - 物件導向式的寫法，著重在名詞與他們的動作 `Cat.eat()`, `Cat.catch()`...
 
 函數式編成強調程式的**動詞**，與組合操作的方法。
+- 一種由下而上的編程方式
+    - 函數被看成數學，對輸入執行操作
+    - 變數被視為不可變更，有利於併發式編程
+    - 函數式編程盡可能延遲副作用，讓程式盡可能簡單
+
+```scala
+trait Cat
+trait Bird
+trait Catch
+trait FullTummy
+
+def catch(hunter: Cat, prey: Brid): Cat with Catch
+ef eat(consumer: Cat with Catch): Cat with FunnTummy
+
+val story = (catch _) andThen (eat _)
+story(new Cat, new Bird)
+```
+> 這個範例把人搞混了
+
+| 物件導向編程 | 函數式編程 |
+|--------------|------------|
+| 物件的組合   | 函數的組合 |
+| 封裝互動     | 延遲副作用 |
+| 迭代         | 遞歸       |
+| 命令是流程   | 惰性求值   |
+| N/A          | 模式匹配   |
 
 ### 1.1.1 Discovering existing functional concepts
 ### 1.1.2 Examining functional concepts in Google Collections
