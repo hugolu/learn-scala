@@ -208,6 +208,9 @@ res1: List[Char] = List(a, b, c, d, e)
 ```
 
 ### 1.2.4 Implicits are an old concept
+
+`scala.Predef` 物件自動載入 scala 的範圍，把它成員變數放到所有程式中。這是一個很方便的機制提供使用者方便的函數，像是用 `println` 取代 `Console.println` 或 `System.out.println`。
+
 ### 1.2.5 Using Scala’s implicit keyword
 
 ## 1.3 Transparently working with the JVM
