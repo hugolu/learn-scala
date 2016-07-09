@@ -64,6 +64,39 @@ story(new Cat, new Bird)
 | N/A          | 模式匹配   |
 
 ### 1.1.1 Discovering existing functional concepts
+
+Java 的寫法
+```java
+public interface JdbcTemplate {
+    List query(PreparedStatementCreator psc, RowMapper rowMapper)
+    ...
+}
+
+public interface PreparedStatementCreator {
+    PreparedStatement createPreparedStatement(Connection con) throw SQLException;
+}
+
+publi interface RowManager {
+    Object mapRow(ResultSet rs, int rowNum) throws SQLException;
+}
+```
+
+Scala 提供一級函數 - 讓我們可以改變 `JdbcTemplate` 查詢的方式
+```scala
+trait JdbcTemplate {
+    def query(psc: Connector => PreparedStatement, rowMapper: (ResultSet, Int) => AnyRef): List[AnyRef]
+}
+```
+- 行為變成 `query` 方法的參數
+- Scala 的 `AnyRef` 等同於 `java.lang.Object`
+
+因為 scala 支援泛型，可以修改介面讓使用者回傳特定型別
+```scala
+trait JdbcTemplate {
+    def query[ResultItem](psc: Connection => PreparedStatement, rowMapper: (ResultSet, Int) => ResultItem): List[ResultItem]
+}
+```
+
 ### 1.1.2 Examining functional concepts in Google Collections
 
 ## 1.2 Static typing and expressiveness
