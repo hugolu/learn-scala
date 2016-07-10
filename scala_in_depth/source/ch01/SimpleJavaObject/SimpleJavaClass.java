@@ -1,4 +1,4 @@
-class SimpleJavaClass {
+public class SimpleJavaClass {
     private String name;
     public SimpleJavaClass(String name) {
         this.name = name;
