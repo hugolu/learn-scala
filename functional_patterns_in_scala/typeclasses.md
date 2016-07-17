@@ -1,6 +1,27 @@
 # Typeclasses
 
-簡化的版本
+## 呼叫順序
+```scala
+trait Foo[A] {
+    def foo(x: A): Unit
+}
+
+object Foo {
+    def apply[A: Foo]: Foo[A] = implicitly[Foo[A]]
+    implicit val IntFoo = new Foo[Int] {
+        def foo(x: Int): Unit = println("Int: " + x.toString)
+    }
+    implicit val DoubleFoo = new Foo[Double] {
+        def foo(x: Double): Unit = println("Double: " + x.toString)
+    }
+}
+```
+```scala
+scala> Foo[Int].foo(123)
+Int: 123
+```
+
+## 簡化的版本
 ```scala
 trait Foo[A] {                                              // type class
     def times(x: A, time: Int): A
