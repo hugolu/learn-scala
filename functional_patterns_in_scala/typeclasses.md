@@ -20,6 +20,9 @@ object Foo {
 scala> Foo[Int].foo(123)
 Int: 123
 ```
+- `Foo[Int]` 觸發 `object Foo` apply，型別參數 A=Int
+- 呼叫 `implicitly[Foo[Int]]` 找出隱式作用域中可用的隱式實體 `implicit val IntFoo = new Foo[Int]`
+- 呼叫 `IntFoo` 的 `foo` 方法
 
 ## 簡化的版本
 ```scala
