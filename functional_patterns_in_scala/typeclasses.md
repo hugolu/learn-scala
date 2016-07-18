@@ -58,14 +58,15 @@ res2: String = CBA
 
 ## Codec
 
+### 定義 type class trait 的抽象介面
 ```scala
 trait Codec[A] {
   def encode(x: A, bv: ByteVector): Option[ByteVector]
   def decode(bv: ByteVector): Option[(A, ByteVector)]
 }
 ```
-- 定義 type class trait 的抽象介面
 
+### 定義 Codec companion object
 ```scala
 object Codec {
   def apply[A : Codec]: Codec[A] = implicitly[Codec[A]]
@@ -79,4 +80,19 @@ object Codec {
   }
 }
 ```
-- 定義 Codec companion object
+
+### 測試
+```scala
+  import Codec._
+  for {
+    bv <- 123 ~> ByteVector.empty
+    bv2 <- "hello" ~> bv
+    (i, bv3) <- Codec[Int].decode(bv2)
+    (s, bv4) <- Codec[String].decode(bv3)
+  } assert(i == 123 && s == "hello" && bv4 == ByteVector.empty)
+```
+- 使用 “for comprehension” 連續處理 `Option` 運算 (如果為 `None` 結束運算)
+- `bv <- 123 ~> ByteVector.empty`：將 `123` 與空陣列編碼成 `ByteVector`，儲存到 `bv`
+- `bv2 <- "hello" ~> bv`：將 `"hello"` 與 `bv` 編碼成 `ByteVector`，儲存到 `bv2`
+- `(i, bv3) <- Codec[Int].decode(bv2)`：使用 `Codec[Int].decode` 方法，取出 `123`
+- `(s, bv4) <- Codec[String].decode(bv3)`：使用 `Codec[String].decode` 方法，取出 `"hello"`
