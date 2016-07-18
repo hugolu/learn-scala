@@ -55,3 +55,28 @@ res1: Double = 654.321
 scala> !"ABC"
 res2: String = CBA
 ```
+
+## Codec
+
+```scala
+trait Codec[A] {
+  def encode(x: A, bv: ByteVector): Option[ByteVector]
+  def decode(bv: ByteVector): Option[(A, ByteVector)]
+}
+```
+- 定義 type class trait 的抽象介面
+
+```scala
+object Codec {
+  def apply[A : Codec]: Codec[A] = implicitly[Codec[A]]
+  
+  implicit val intCodec = new Codec[Int] { ... }
+  implicit val stringCodec = new Codec[String] { ... }
+  implicit val addressCodec = new Codec[Address] { ... }
+  
+  implicit class Ops[A : Codec](x: A) {
+    def ~>(bv: ByteVector): Option[ByteVector] = Codec[A].encode(x, bv)
+  }
+}
+```
+- 定義 Codec companion object
