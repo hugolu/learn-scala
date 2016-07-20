@@ -58,6 +58,7 @@ res2: String = CBA
 
 ## Codec
 
+
 ### 定義 type class trait 的抽象介面
 ```scala
 trait Codec[A] {
@@ -68,6 +69,8 @@ trait Codec[A] {
 
 ### 定義 Codec companion object
 ```scala
+case class Address(host: String, port: Int)
+
 object Codec {
   def apply[A : Codec]: Codec[A] = implicitly[Codec[A]]
   
@@ -96,3 +99,13 @@ object Codec {
 - `bv2 <- "hello" ~> bv`：將 `"hello"` 與 `bv` 編碼成 `ByteVector`，儲存到 `bv2`
 - `(i, bv3) <- Codec[Int].decode(bv2)`：使用 `Codec[Int].decode` 方法，取出 `123`
 - `(s, bv4) <- Codec[String].decode(bv3)`：使用 `Codec[String].decode` 方法，取出 `"hello"`
+
+```scala
+  val a = Address("localhost", 1234)
+  for {
+    bv <- a ~> ByteVector.empty
+    (a2, bv2) <- Codec[Address].decode(bv)
+  } assert(a == a2 && bv2 == ByteVector.empty)
+```
+- `bv <- a ~> ByteVector.empty`：將型別Address `a` 與空陣列編碼成 `ByteVector`，儲存到 `bv`
+- `(a2, bv2) <- Codec[Address].decode(bv)`：使用 `Codec[Address].decode` 方法，取出 `a`
