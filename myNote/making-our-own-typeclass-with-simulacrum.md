@@ -95,3 +95,27 @@ res0: Boolean = true
 ```
 
 成功了！相當漂亮。有個警告是編譯需要 Macro Paradise 插件。一旦編譯成功，CanTruthy 使用者不需要 Macro Paradise 插件就能使用 `CanTruthy[Int]`。
+
+# Symbolic operators
+
+
+對於 `CanTruthy`，注入的運算符號是一元運算，匹配到 typeclass 函數的名字。simulacrum 也可以使用 `@op` 註記定義運算子符號。
+
+```scala
+scala> @typeclass trait CanAppend[A] {
+     | @op("|+|") def append(a1: A, a2: A): A
+     | }
+defined trait CanAppend
+defined object CanAppend
+
+scala> implicit val intCanAppend: CanAppend[Int] = new CanAppend[Int] {
+     | def append(a1: Int, a2: Int): Int = a1 + a2
+     | }
+intCanAppend: CanAppend[Int] = $anon$1@11878862
+
+scala> import CanAppend.ops._
+import CanAppend.ops._
+
+scala> 1 |+| 2
+res2: Int = 3
+```
