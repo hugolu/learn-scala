@@ -94,7 +94,43 @@ res0: Boolean = true
 
 成功了！相當漂亮。有個警告是編譯需要 Macro Paradise 插件。一旦編譯成功，CanTruthy 使用者不需要 Macro Paradise 插件就能使用 `CanTruthy[Int]`。
 
-# Symbolic operators
+
+### 我的版本
+```scala
+scala> import simulacrum._
+import simulacrum._
+
+scala> :paste
+// Entering paste mode (ctrl-D to finish)
+
+@typeclass trait CanTruthy[A] {
+  def truthy(a: A): Boolean
+}
+object CanTruthy {
+  implicit val intCanTruthy: CanTruthy[Int] = new CanTruthy[Int] {
+    def truthy(a: Int): Boolean = a match {
+      case 0 => false
+      case _ => true
+    }
+  }
+}
+
+// Exiting paste mode, now interpreting.
+
+defined trait CanTruthy
+defined object CanTruthy
+
+scala> import CanTruthy.ops._
+import CanTruthy.ops._
+
+scala> 1.truthy
+res0: Boolean = true
+
+scala> 0.truthy
+res1: Boolean = false
+```
+
+## Symbolic operators
 
 
 對於 `CanTruthy`，注入的運算符號是一元運算，匹配到 typeclass 函數的名字。simulacrum 也可以使用 `@op` 註記定義運算子符號。
