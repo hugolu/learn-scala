@@ -38,6 +38,7 @@ object CanTruthy {
 defined trait CanTruthy
 defined object CanTruthy
 ```
+- `fromTruthy` 接收 `f: A => Boolean` 作為 `truthy` 方法實作，回傳 `CanTruthy[A]`
 
 上面的巨集會產生豐富的操作
 
@@ -75,9 +76,6 @@ object CanTruthy {
   }
 }
 ```
-
-To make sure it works, let’s define an instance for Int and use it. The eventual goal is to get 1.truthy to return true:
-
 
 為了確定能正常工作，定義一個 `Int` 實例並使用它。最終目的是執行 `1.truthy` 得到 `true`
 ```scala
