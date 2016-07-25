@@ -53,10 +53,31 @@ res10: scala.collection.immutable.Map[String,Int] = Map(a -> 1, b -> 2)
 ```
 - 初值給 `x`，使用 iterator 對 `Map` 所有元素執行 println，回傳 `a`
 
-### 有關 Map 的特性
+### Map `updated`
 ```scala
 scala> val x = Map("a" -> 1, "b" -> 2)
 
 scala> x.updated("a", 2)
 res15: scala.collection.immutable.Map[String,Int] = Map(a -> 2, b -> 2)
 ```
+
+### Option `def fold[B](ifEmpty: ⇒ B)(f: (A) ⇒ B): B`
+Returns the result of applying f to this scala.Option's value if the scala.Option is nonempty. Otherwise, evaluates expression ifEmpty.
+
+```scala
+scala> val a: Option[Int] = Some(1)
+a: Option[Int] = Some(1)
+
+scala> a.fold(2)(_+2)
+res25: Int = 3
+```
+- `a = Some(1)`，fold 結果為 `1+2` (applying f to this scala.Option's value)
+
+```scala
+scala> val b: Option[Int] = None
+b: Option[Int] = None
+
+scala> b.fold(2)(_+2)
+res26: Int = 2
+```
+- `b = None`，fold 結果為 `2` (evaluates expression ifEmpty)
