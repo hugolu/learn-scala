@@ -18,4 +18,45 @@ object Semigroup {
   implicit def mapSemigroup[A, B : Semigroup] = new Semigroup[Map[A, B]] { ... }
 }
 ```
-- 定義 `Semigroup[Int]`, `Semigroup[String]`, `Semigroup[Option[A]]`, `Semigroup[List[A]]`, `Semigroup[Map[A, B]]`
+- 定義 `Semigroup[Int]`，`append(x: Int, y: Int)` 回傳 x+y
+- 定義 `Semigroup[String]`，`append(x: String, y: String)` 回傳 x+y
+- 定義 `Semigroup[Option[A]]`，`append(x: Option[A], y: Option[A])` 回傳合併 Some 的值
+- 定義 `Semigroup[List[A]]`，`append(x: List[A], y: List[A])` 回傳列表相加的結果
+- 定義 `Semigroup[Map[A, B]]`，`append(x: Map[A, B], y: Map[A, B])` 回傳兩個 map 合併結果
+
+## 拆解 `append(x: Map[A, B], y: Map[A, B])` 實作
+
+### `def /:[B](z: B)(op: (B, (A, B)) ⇒ B): B` 
+Applies a binary operator to a start value and all elements of this traversable or iterator, going left to right.
+
+```scala
+scala> (5 /: List(1,2,3,4))(_+_)
+res6: Int = 15
+
+scala> List(1,2,3,4).foldLeft(5)(_+_)
+res7: Int = 15
+```
+- 初值給 `5`，使用 iterator 對 `List` 所有元素執行 `_+_`
+
+### 拆解 `(x /: y)`
+```scala
+scala> val x = Map("a" -> 1, "b" -> 2)
+x: scala.collection.immutable.Map[String,Int] = Map(a -> 1, b -> 2)
+
+scala> val y = Map("b" -> 3, "c" -> 4)
+y: scala.collection.immutable.Map[String,Int] = Map(b -> 3, c -> 4)
+
+scala> (x /: y)({ (a, b) => println(a, b); a })
+(Map(a -> 1, b -> 2),(b,3))
+(Map(a -> 1, b -> 2),(c,4))
+res10: scala.collection.immutable.Map[String,Int] = Map(a -> 1, b -> 2)
+```
+- 初值給 `x`，使用 iterator 對 `Map` 所有元素執行 println，回傳 `a`
+
+### 有關 Map 的特性
+```scala
+scala> val x = Map("a" -> 1, "b" -> 2)
+
+scala> x.updated("a", 2)
+res15: scala.collection.immutable.Map[String,Int] = Map(a -> 2, b -> 2)
+```
