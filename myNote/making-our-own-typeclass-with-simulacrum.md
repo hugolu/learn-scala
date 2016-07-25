@@ -1,7 +1,7 @@
 # Making our own typeclass with simulacrum
 
-來源：http://eed3si9n.com/herding-cats/making-our-own-typeclass-with-simulacrum.html
-
+- 文章来源：http://eed3si9n.com/herding-cats/making-our-own-typeclass-with-simulacrum.html
+- github：https://github.com/mpilquist/simulacrum
 
 定義模組化 typeclass 的習慣步驟看起來像：
 
