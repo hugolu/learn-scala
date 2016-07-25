@@ -1,11 +1,16 @@
 # Semigroup
 
+
+
 ```scala
+import simulacrum.{op, typeclass}
+
 @typeclass
 trait Semigroup[A] {
   @op("|+|") def append(x: A, y: A): A
 }
 ```
+- 關於 simulacrum 的說明，請參考 [herding cats — Making our own typeclass with simulacrum](http://eed3si9n.com/herding-cats/making-our-own-typeclass-with-simulacrum.html)
 - 定義 type class trait `Semigroup`
 
 ```scala
