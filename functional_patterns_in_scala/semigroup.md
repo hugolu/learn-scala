@@ -45,13 +45,23 @@ x: scala.collection.immutable.Map[String,Int] = Map(a -> 1, b -> 2)
 
 scala> val y = Map("b" -> 3, "c" -> 4)
 y: scala.collection.immutable.Map[String,Int] = Map(b -> 3, c -> 4)
+```
 
+```scala
 scala> (x /: y)({ (a, b) => println(a, b); a })
 (Map(a -> 1, b -> 2),(b,3))
 (Map(a -> 1, b -> 2),(c,4))
 res10: scala.collection.immutable.Map[String,Int] = Map(a -> 1, b -> 2)
 ```
 - 初值給 `x`，使用 iterator 對 `Map` 所有元素執行 println，回傳 `a`
+
+```scala
+scala> (x /: y)({ case(a, (k, v)) => println(a,k,v); a })
+(Map(a -> 1, b -> 2),b,3)
+(Map(a -> 1, b -> 2),c,4)
+res11: scala.collection.immutable.Map[String,Int] = Map(a -> 1, b -> 2)
+```
+- 透過 pattern match 拆解 `y` 得到 `(k, v)`
 
 ### Map `updated`
 ```scala
@@ -81,3 +91,12 @@ scala> b.fold(2)(_+2)
 res26: Int = 2
 ```
 - `b = None`，fold 結果為 `2` (evaluates expression ifEmpty)
+
+### 合併 `Map[String, Int]`
+```scala
+scala> val x = Map("a" -> 1, "b" -> 2)
+scala> val y = Map("b" -> 3, "c" -> 4)
+
+scala> (x /: y)({ case(a, (k, v)) => a.updated(k, a.get(k).fold(v)(_ + v)) })
+res28: scala.collection.immutable.Map[String,Int] = Map(a -> 1, b -> 5, c -> 4)
+```
