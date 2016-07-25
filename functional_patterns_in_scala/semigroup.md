@@ -24,6 +24,29 @@ object Semigroup {
 - 定義 `Semigroup[List[A]]`，`append(x: List[A], y: List[A])` 回傳列表相加的結果
 - 定義 `Semigroup[Map[A, B]]`，`append(x: Map[A, B], y: Map[A, B])` 回傳兩個 map 合併結果
 
+### 驗証 `|+|` 交換律
+```scala
+import Semigroup.ops._
+def associativity[A : Semigroup](x: A, y: A, z: A) = (x |+| (y |+| z)) == ((x |+| y) |+| z)
+assert(associativity(1, 2, 3))
+assert(associativity("a", "b", "c"))
+assert(associativity(Option(1), Option(2), Option(3)))
+assert(associativity(List("a"), List("b"), List("c")))
+assert(associativity(Map("a" -> 1), Map("a" -> 2), Map("a" -> 3)))
+```
+
+### 執行 `|+|` 運算
+```scala
+scala> List(1, 2, 3) |+| List(4, 5, 6)
+res1: List[Int] = List(1, 2, 3, 4, 5, 6)
+
+scala> Map("a" -> 1, "b" -> 2) |+| Map("b" -> 3, "c" -> 4)
+res2: scala.collection.immutable.Map[String,Int] = Map(a -> 1, b -> 5, c -> 4)
+
+scala> Map("a" -> List(1, 2), "b" -> List(2)) |+| Map("b" -> List(3), "c" -> List(4))
+res3: scala.collection.immutable.Map[String,List[Int]] = Map(a -> List(1, 2), b -> List(2, 3), c -> List(4))
+```
+---
 ## 拆解 `append(x: Map[A, B], y: Map[A, B])` 實作
 
 ### `def /:[B](z: B)(op: (B, (A, B)) ⇒ B): B` 
