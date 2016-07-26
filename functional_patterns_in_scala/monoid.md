@@ -8,6 +8,6 @@
 
 | 定律 | 公式 |
 |------|------|
-| 結合率 (associativity) | (x |+| y) |+| z = x |+| (y |+| z) |
-| 左恆等 (left identity) | Monoid[A].empty |+| x = x |
-| 右恆等 (right identity)| x |+| Monoid[A].empty = x |
+| 結合率 (associativity) | `(x |+| y) |+| z = x |+| (y |+| z)` |
+| 左恆等 (left identity) | `Monoid[A].empty |+| x = x` |
+| 右恆等 (right identity)| `x |+| Monoid[A].empty = x` |
