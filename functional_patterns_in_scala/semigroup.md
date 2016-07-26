@@ -1,6 +1,6 @@
 # Semigroup
 
-
+Semigroup 法則必須滿足結合率 (associativity)：`(x |+| y) |+| z = x |+| (y |+| z)`
 
 ```scala
 import simulacrum.{op, typeclass}
