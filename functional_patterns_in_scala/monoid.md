@@ -2,10 +2,12 @@
 
 延伸閱讀：[herding cats — Monoid](http://eed3si9n.com/herding-cats/Monoid.html)
 
-Monoid laws 
+### Monoid 法則
 
-In addition to the semigroup law, monoid must satify two more laws:
+除了滿足 Semigroup 法則，Monoid 必須滿足兩個額外的法則：
 
-- associativity (x |+| y) |+| z = x |+| (y |+| z)
-- left identity Monoid[A].empty |+| x = x
-- right identity x |+| Monoid[A].empty = x
+| 定律 | 公式 |
+|------|------|
+| 結合率 (associativity) | (x |+| y) |+| z = x |+| (y |+| z) |
+| 左恆等 (left identity) | Monoid[A].empty |+| x = x |
+| 右恆等 (right identity)| x |+| Monoid[A].empty = x |
