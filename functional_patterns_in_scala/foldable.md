@@ -28,6 +28,9 @@ object Foldable {
 ```scala
 def foldLeft[A, B](fa: List[A], zero: B)(f: (B, A) => B) = (zero /: fa)(f)
 ```
+- 定義 fold from left to right 的實作
+- List `def /:[B](z: B)(op: (B, A) ⇒ B): B`, B:zero, A:List由左至右的每個元素
+
 ```scala
 scala> Foldable[List].foldLeft(List(1, 2, 3), 0)({(x,y) => println(x,y); x+y})
 (0,1)
@@ -35,11 +38,16 @@ scala> Foldable[List].foldLeft(List(1, 2, 3), 0)({(x,y) => println(x,y); x+y})
 (3,3)
 res26: Int = 6
 ```
+- `x`: zero for each iteration
+- `y`: elements in list from left to right
 
 ### foldRight
 ```scala
 def foldRight[A, B](fa: List[A], zero: B)(f: (A, B) => B) = (fa :\ zero)(f)
 ```
+- 定義 fold from right to left 的實作
+- List `def :\[B](z: B)(op: (A, B) ⇒ B): B`, B:zero, A:List由左至右的每個元素
+
 ```scala
 scala> Foldable[List].foldRight(List(1, 2, 3), 0)({(x,y) => println(x,y); x+y})
 (3,0)
@@ -47,6 +55,8 @@ scala> Foldable[List].foldRight(List(1, 2, 3), 0)({(x,y) => println(x,y); x+y})
 (1,5)
 res25: Int = 6
 ```
+- `x`: elements in list from left to right
+- `y`: zero for each iteration
 
 ## `Foldable[Tree]`
 
