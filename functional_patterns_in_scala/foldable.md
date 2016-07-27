@@ -68,6 +68,31 @@ def foldLeft[A, B](fa: Tree[A], zero: B)(f: (B, A) => B) = fa match {
   case Leaf(v) => f(zero, v)
 }
 ```
+- 由左而右合併 fa (`Tree[A]`) 與 zero (`B`)
+- `f: (B, A) => B`，B: 上次合併結果, A: value
+- 如果是 leaf，`f`，合併 zero 與 v
+- 如果是 branch，先合併 left tree 與 zero，結果與 v 合併，最後再跟 right tree 合併
+
+```scala
+scala> Foldable[Tree].foldLeft(Branch(Leaf(1), 2, Leaf(3)), 0)(_ + _)
+```
+- zero = 0
+- tree = (1, 2, 3)
+- 合併過程：(((0 + 1) + 2) + 3) = 6
+
+```scala
+scala> Foldable[Tree].foldLeft(Branch(Branch(Leaf(1), 2, Leaf(3)), 4, Branch(Leaf(5), 6, Leaf(7))), 0)(_ + _)
+```
+- zero = 0
+- tree = ((1, 2, 3), 4, (5, 6, 7))
+- 合併過程：(((((((0 + 1) + 2) + 3) + 4) + 5) + 6) + 7) = 28
+
+```scala
+Foldable[Tree].foldLeft(Branch(Branch(Leaf(1), 2, Leaf(3)), 4, Branch(Leaf(5), 6, Leaf(7))), List.empty[Int])(_ :+ _)
+```
+- zero = 0
+- tree = ((1, 2, 3), 4, (5, 6, 7))
+- 合併過程：(((((((List() :+ 1) :+ 2) :+ 3) :+ 4) :+ 5) :+ 6) :+ 7) = List(1, 2, 3, 4, 5, 6, 7)
 
 ### foldRight
 ```scala
@@ -76,3 +101,14 @@ def foldRight[A, B](fa: Tree[A], zero: B)(f: (A, B) => B): B = fa match {
   case Leaf(v) => f(v, zero)
 }
 ```
+- 由右而左合併 fa (`Tree[A]`) 與 zero (`B`)
+- `f: (A, B) => B`，B: 上次合併結果, A: value
+- 如果是 leaf,`f`，合併 zero 與 v
+- 如果是 branch，先合併 right tree 與 zero，結果與 v 合併，最後再跟 left tree 合併
+
+```scala
+Foldable[Tree].foldRight(Branch(Branch(Leaf(1), 2, Leaf(3)), 4, Branch(Leaf(5), 6, Leaf(7))), List.empty[Int])(_ +: _)
+```
+- zero = 0
+- tree = ((1, 2, 3), 4, (5, 6, 7))
+- 合併過程：(1 +: (2 +: (3 +: (4 +: (5 +: (6 +: (7 +: List()))))))) = List(1, 2, 3, 4, 5, 6, 7)
