@@ -11,9 +11,7 @@
 | [Semigroup](semigroup.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/semigroups.scala |
 | [Monoid](monoid.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/monoids.scala |
 | [Foldable](foldable.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/foldables.scala |
-| [Scenario 1](scenario1.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/Scenario1.scala |
-| [Scenario 2](scenario2.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/Scenario2.scala |
-| [Scenario 3](scenario3.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/Scenario3.scala |
+| [Scenario 1,2,3](scenario123.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/Scenario1.scala https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/Scenario2.scala https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/Scenario3.scala  |
 | [Functor](functor.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/functors.scala |
 | [Applicative](applicative.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/applicatives.scala |
 | [Monad](monad.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/monads.scala |
