@@ -41,7 +41,40 @@ def getProductName(warehouseId: String, supplierId: String, productId: String): 
 ```
 
 ## NaivePublicApi
+```scala
+try {
+  val warehouse = getWarehouse(warehouseId).get
+  val supplier = getSupplier(warehouse, supplierId).get
+  val product = getProduct(supplier, productId).get
+  Some(product.name)
+}
+catch {
+  case NonFatal(e) => None
+}
+```
+- 呼叫 `getWarehouse(warehouseId).get` 得到 warehouse
+- 呼叫 `getSupplier(warehouse, supplierId).get` 得到 supplier
+- 呼叫 `getProduct(supplier, productId).get` 得到 product
+- 回傳 `Some(product.name)`
+- 以上任何步驟錯誤，回傳 `None`
 
 ## FlatMapPublicApi
+```scala
+getWarehouse(warehouseId).flatMap(warehouse =>
+  getSupplier(warehouse, supplierId).flatMap(supplier =>
+    getProduct(supplier, productId).map(product =>
+      product.name
+    )
+  )
+)
+```
 
 ## ForComprehensionPublicApi
+```scala
+for {
+  warehouse <- getWarehouse(warehouseId)
+  supplier <- getSupplier(warehouse, supplierId)
+  product <- getProduct(supplier, productId)
+} yield product.name
+```
+- 等同於 FlatMapPublicApi 的做法
