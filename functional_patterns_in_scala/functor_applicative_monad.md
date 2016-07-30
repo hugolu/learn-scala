@@ -29,3 +29,20 @@ res2: Option[Int] = Some(5)
 ![](http://adit.io/imgs/functors/applicative_just.png)
 
 ## Monads
+```scala
+scala> def half(n: Int): Option[Int] = if (n % 2 == 0) Some(n/2) else None
+half: (n: Int)Option[Int]
+
+scala> Some(3).flatMap(half)
+res3: Option[Int] = None
+
+scala> Some(4).flatMap(half)
+res4: Option[Int] = Some(2)
+```
+![](http://adit.io/imgs/functors/monad_just.png)
+
+```scala
+scala> None.flatMap(half)
+res5: Option[Int] = None
+```
+![](http://adit.io/imgs/functors/monad_nothing.png)
