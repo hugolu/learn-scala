@@ -46,3 +46,12 @@ scala> None.flatMap(half)
 res5: Option[Int] = None
 ```
 ![](http://adit.io/imgs/functors/monad_nothing.png)
+
+## 小結
+![](http://adit.io/imgs/functors/recap.png)
+
+型別 | 實現 | 說明 
+-----|------|------
+`Functor` | `map` | 運行“函數”在“封裝的值”上
+`Applicative` | `apply` | 運行“封裝的函數”在“封裝的值”上
+`Monad` | `flatMap` | 運行“返回封裝的函數”在“封裝的值”上
