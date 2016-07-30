@@ -16,6 +16,37 @@ res1: Option[Int] = None
 ```
 ![](http://adit.io/imgs/functors/fmap_nothing.png)
 
+### Functor Laws
+- Identity - The first functor law states that if we map the `id` function over a functor, the functor that we get back should be the same as the original functor.
+- Associativity - The second law says that composing two functions and then mapping the resulting function over a functor should be the same as first mapping one function over the functor and then mapping the other one.
+
+```scala
+import simulacrum.typeclass
+
+@typeclass
+trait Functor[F[_]] {
+    def map[A, B](fa: F[A])(f: A => B): F[B]
+}
+
+object Functor {
+    implicit val optionFunctor = new Functor[Option] {
+        def map[A, B](fa: Option[A])(f: A => B): Option[B] = fa.map(f)
+    }
+}
+
+object FunctorLaws extends App {
+    import Functor.ops._
+
+    def identity[F[_]: Functor, A](fa: F[A]) = fa.map(x => x) == fa
+    def associativity[F[_]: Functor, A, B, C](fa: F[A], f: A => B, g: B => C) = fa.map(f).map(g) == fa.map(f andThen g)
+
+    assert(identity(Option(1)))
+    assert(identity(None))
+    assert(associativity(Option("a"), (_: String).length, (_: Int) + 1))
+    assert(associativity(None, (_: String).length, (_: Int) + 1))
+}
+```
+
 ## Applicatives
 ```scala
 def ap[A,B](ff: Option[A => B])(fa: Option[A]): Option[B] = (fa, ff) match {
