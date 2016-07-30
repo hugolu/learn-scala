@@ -2,6 +2,9 @@
 
 ## 參考連結
 - [Functors, Applicatives, And Monads In Pictures](http://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html)
+- [herding cats — Functor](http://eed3si9n.com/herding-cats/Functor.html)
+- [herding cats — Applicative](http://eed3si9n.com/herding-cats/Applicative.html)
+- [herding cats — Monad](http://eed3si9n.com/herding-cats/Monad.html)
 
 ## Functors
 ```scala
@@ -117,9 +120,9 @@ res5: Option[Int] = None
 ![](http://adit.io/imgs/functors/monad_nothing.png)
 
 ### Monad Laws
-- left identity - `(Monad[F].pure(x) flatMap {f}) === f(x)`
-- right identity - `(m flatMap {Monad[F].pure(_)}) === m`
-- associativity - `(m flatMap f) flatMap g === m flatMap { x => f(x) flatMap {g} }`
+- Left identity - `(Monad[F].pure(x) flatMap {f}) === f(x)`
+- Right identity - `(m flatMap {Monad[F].pure(_)}) === m`
+- Associativity - `(m flatMap f) flatMap g === m flatMap { x => f(x) flatMap {g} }`
 
 ```scala
 import simulacrum.typeclass
