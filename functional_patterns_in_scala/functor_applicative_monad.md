@@ -20,6 +20,7 @@ res1: Option[Int] = None
 - Identity - The first functor law states that if we map the `id` function over a functor, the functor that we get back should be the same as the original functor.
 - Associativity - The second law says that composing two functions and then mapping the resulting function over a functor should be the same as first mapping one function over the functor and then mapping the other one.
 
+full source: https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/functors.scala
 ```scala
 import simulacrum.typeclass
 
@@ -41,9 +42,7 @@ object FunctorLaws extends App {
     def associativity[F[_]: Functor, A, B, C](fa: F[A], f: A => B, g: B => C) = fa.map(f).map(g) == fa.map(f andThen g)
 
     assert(identity(Option(1)))
-    assert(identity(None))
     assert(associativity(Option("a"), (_: String).length, (_: Int) + 1))
-    assert(associativity(None, (_: String).length, (_: Int) + 1))
 }
 ```
 
@@ -58,6 +57,45 @@ scala> ap(Some{x: Int => x + 3})(Some(2))
 res2: Option[Int] = Some(5)
 ```
 ![](http://adit.io/imgs/functors/applicative_just.png)
+
+### Applicative Laws
+- Identity -  `pure id <*> v = v`
+- Homomorphism: `pure f <*> pure x = pure (f x)`
+- Interchange: `u <*> pure y = pure ($ y) <*> u`
+
+full source: https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/applicatives.scala
+```scala
+import simulacrum.typeclass
+
+@typeclass
+trait Applicative[F[_]] extends Functor[F] {
+    def pure[A](a: A): F[A]
+    def ap[A, B](fa: F[A])(ff: F[A => B]): F[B]
+    override def map[A, B](fa: F[A])(f: A => B) = ap(fa)(pure(f))
+}
+
+object Applicative {
+    implicit val optionApplicative = new Applicative[Option] {
+        def pure[A](a: A) = Some(a)
+        def ap[A, B](fa: Option[A])(ff: Option[A => B]) = (fa, ff) match {
+            case (Some(a), Some(f)) => Some(f(a))
+            case _ => None
+        }
+    }
+}
+
+object ApplicativeLaws extends App {
+    import Applicative.ops._
+
+    def identity[F[_] : Applicative, A](fa: F[A]) = fa.ap(Applicative[F].pure((x: A) => x)) == fa
+    def homomorphism[F[_] : Applicative, A, B](a: A, f: A => B) = Applicative[F].pure(a).ap(Applicative[F].pure(f)) == Applicative[F].pure(f(a))
+    def interchange[F[_] : Applicative, A, B](a: A, ff: F[A => B]) = Applicative[F].pure(a).ap(ff) == ff.ap(Applicative[F].pure((f: A => B) => f(a)))
+
+    assert(identity(Option("a")))
+    assert(homomorphism[Option, String, Int]("abc", _.length))
+    assert(interchange[Option, String, Int]("abc", Some(_.length)))
+}
+```
 
 ## Monads
 ```scala
