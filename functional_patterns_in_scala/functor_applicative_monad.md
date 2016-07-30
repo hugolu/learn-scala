@@ -59,7 +59,7 @@ res2: Option[Int] = Some(5)
 ![](http://adit.io/imgs/functors/applicative_just.png)
 
 ### Applicative Laws
-- Identity -  `pure id <*> v = v`
+- Identity - `pure id <*> v = v`
 - Homomorphism: `pure f <*> pure x = pure (f x)`
 - Interchange: `u <*> pure y = pure ($ y) <*> u`
 
@@ -115,6 +115,40 @@ scala> None.flatMap(half)
 res5: Option[Int] = None
 ```
 ![](http://adit.io/imgs/functors/monad_nothing.png)
+
+### Monad Laws
+- left identity - `(Monad[F].pure(x) flatMap {f}) === f(x)`
+- right identity - `(m flatMap {Monad[F].pure(_)}) === m`
+- associativity - `(m flatMap f) flatMap g === m flatMap { x => f(x) flatMap {g} }`
+
+```scala
+import simulacrum.typeclass
+
+@typeclass
+trait Monad[F[_]] extends Applicative[F] {
+    def flatMap[A, B](fa: F[A])(f: A => F[B]): F[B]
+    override def ap[A, B](fa: F[A])(ff: F[A => B]) = flatMap(ff)(map(fa)(_))
+}
+
+object Monad {
+    implicit val optionMonad = new Monad[Option] {
+        def pure[A](a: A) = Some(a)
+        override def map[A, B](fa: Option[A])(f: A => B) = fa.map(f)
+        def flatMap[A, B](fa: Option[A])(f: A => Option[B]) = fa.flatMap(f)
+    }
+}
+
+object MonadLaws extends App {
+    import Monad.ops._
+    def leftIdentity[F[_] : Monad, A, B](a: A, f: A => F[B]) = Monad[F].pure(a).flatMap(f(_)) == f(a)
+    def rightIdentity[F[_] : Monad, A](fa: F[A]) = fa.flatMap(Monad[F].pure(_)) == fa
+    def associativity[F[_] : Monad, A, B, C](fa: F[A], f: A => F[B], g: B => F[C]) = fa.flatMap(f).flatMap(g) == fa.flatMap(f(_).flatMap(g))
+
+    assert(leftIdentity[Option, String, Int]("abc", s => Some(s.length)))
+    assert(rightIdentity[Option, String](Some("abc")))
+    assert(associativity[Option, String, Int, Int](Some("abc"), s => Some(s.length), x => Some(x + 1)))
+}
+```
 
 ## 小結
 ![](http://adit.io/imgs/functors/recap.png)
