@@ -56,8 +56,60 @@ scala> !"ABC"
 res2: String = CBA
 ```
 
-## Codec
+## typeclass
+定義模組化 typeclass 的習慣步驟看起來像：
 
+- 定義 typeclass trait Foo
+- 定義伴隨物件，包含輔助方法 apply 作用像是 implicitly，與定義 Foo 實例
+- 定義 FooOps 類別，定義一元(?)或二元操作子
+- 定義 FooSyntax trait，從 Foo 實例隱喻提供 FooOps
+
+坦白說，這些步驟大部份是複製貼上的樣板，除了第一個以外。輸入 Michael Pilquist 的 simulacrum。只要放上 @typeclass 標記，simulacrum 就能神奇的產生大部份 2-4 步驟。
+
+### 手刻版
+```scala
+trait Appendable[A] {
+    def append(x: A, y: A): A
+}
+
+object Appendable {
+    def apply[A: Appendable]: Appendable[A] = implicitly[Appendable[A]]
+
+    implicit val intAppendable = new Appendable[Int] {
+        def append(x: Int, y: Int): Int = x + y
+    }
+
+    implicit val stringAppendable = new Appendable[String] {
+        def append(x: String, y: String): String = x + y
+    }
+
+    implicit class Foo[A: Appendable](x: A) {
+        def |+|(y: A): A = Appendable[A].append(x, y)
+    }
+}
+```
+
+### 使用 simulacrum
+```scala
+import simulacrum.typeclass
+
+@typeclass
+trait Appendable[A] {
+    @op("|+|") def append(x: A, y: A): A
+}
+
+object Appendable {
+    implicit val intAppendable = new Appendable[Int] {
+        def append(x: Int, y: Int): Int = x + y
+    }
+
+    implicit val stringAppendable = new Appendable[String] {
+        def append(x: String, y: String): String = x + y
+    }
+}
+```
+
+## Codec
 
 ### 定義 type class trait 的抽象介面
 ```scala
