@@ -7,7 +7,7 @@
 - [herding cats — Using monoids to fold data structures](http://eed3si9n.com/herding-cats/using-monoids-to-fold.html)
 
 ## Semigroup
-It doesn’t matter if we do (3 * 4) * 5 or 3 * (4 * 5). Either way, the result is 60. The same goes for ++. … We call this property **associativity**. `*` is associative, and so is `++`, but `-`, for example, is not.
+It doesn’t matter if we do `(3 * 4) * 5` or `3 * (4 * 5)`. Either way, the result is `60`. The same goes for `++`. … We call this property **associativity**. `*` is associative, and so is `++`, but `-`, for example, is not.
 
 ```scala
 trait Semigroup[@sp(Int, Long, Float, Double) A] extends Any with Serializable {
@@ -23,7 +23,7 @@ scala> assert { List("la") ++ (List("di") ++ List("da")) == (List("la") ++ List(
 - Associativity - `(x |+| y) |+| z = x |+| (y |+| z)`
 
 ## Manoid
-It seems that both * together with 1 and ++ along with [] share some common properties:
+It seems that both `*` together with `1` and `++` along with `[]` share some common properties:
 
 - The function takes two parameters.
 - The parameters and the returned value have the same type.
@@ -65,3 +65,4 @@ Because there are so many data structures that work nicely with folds, the Folda
 scala> Foldable[List].foldLeft(List(1, 2, 3), 1) {_ * _}
 res0: Int = 6
 ```
+
