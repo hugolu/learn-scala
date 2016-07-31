@@ -12,6 +12,4 @@
 | [Monoid](monoid.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/monoids.scala |
 | [Foldable](foldable.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/foldables.scala |
 | [Scenario 1,2,3](scenario123.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/Scenario1.scala https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/Scenario2.scala https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/Scenario3.scala  |
-| [Functor](functor.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/functors.scala |
-| [Applicative](applicative.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/applicatives.scala |
-| [Monad](monad.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/monads.scala |
+| [Functor, Applicative, Monad](functor_applicative_monad.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/functors.scala https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/applicatives.scala https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/monads.scala |
