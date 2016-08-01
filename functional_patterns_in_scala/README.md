@@ -8,8 +8,6 @@
 |-------|-------------|
 | [Typeclasses](typeclasses.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/codecs.scala |
 | [Scenario 0](scenario0.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/Scenario0.scala |
-| [Semigroup](semigroup.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/semigroups.scala |
-| [Monoid](monoid.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/monoids.scala |
-| [Foldable](foldable.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/foldables.scala |
+| [Semigroup, Monoid, Foldable](semigroup_manoid_foldable.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/semigroups.scala https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/monoids.scala https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/foldables.scala |
 | [Scenario 1,2,3](scenario123.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/Scenario1.scala https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/Scenario2.scala https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/Scenario3.scala  |
 | [Functor, Applicative, Monad](functor_applicative_monad.md) | https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/functors.scala https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/applicatives.scala https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/monads.scala |
