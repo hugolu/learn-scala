@@ -22,6 +22,7 @@ scala> assert { List("la") ++ (List("di") ++ List("da")) == (List("la") ++ List(
 ### Semigroup Laws
 - Associativity - `(x |+| y) |+| z = x |+| (y |+| z)`
 
+full source: https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/semigroups.scala
 ```scala
 import simulacrum.typeclass
 
@@ -77,6 +78,7 @@ res3: List[Double] = List(0.5, 2.5)
 - Left identity - `Monoid[A].empty |+| x = x`
 - Right identity - `x |+| Monoid[A].empty = x`
 
+full source: https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/monoids.scala
 ```scala
 import simulacrum.typeclass
 
@@ -118,6 +120,7 @@ assert(rightIdentity(List("a")))
 ## Foldable
 Because there are so many data structures that work nicely with folds, the Foldable type class was introduced. Much like Functor is for things that can be mapped over, Foldable is for things that can be folded up!
 
+full source: https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/foldables.scala
 ```scala
 import simulacrum.typeclass
 
@@ -137,3 +140,8 @@ object Foldable {
 - `foldLeft` 第二個參數列 `f: (B, A) => B` 遵守 `def /:[B](z: B)(op: (B, A) ⇒ B): B` 慣例
 - `foldRigth` 第二個參數列 `f: (A, B) => B` 遵守 `def :\[B](z: B)(op: (A, B) ⇒ B): B` 慣例
 - 定義 `listFoldable[_]` 時 `_` 尚未決定，使用 `def` (call by name)
+
+```scala
+assert(Foldable[List].foldLeft(List(1, 2, 3), 0)(_+_) == 6)
+assert(Foldable[List].foldRight(List(1, 2, 3), 0)(_+_) == 6)
+```
