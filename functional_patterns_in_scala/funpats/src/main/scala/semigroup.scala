@@ -1,4 +1,4 @@
-import simulacrum.{typeclass, op}
+import simulacrum.typeclass
 
 @typeclass
 trait Semigroup[A] {
