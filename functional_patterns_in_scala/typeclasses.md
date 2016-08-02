@@ -64,7 +64,7 @@ scala> !"ABC"
 res2: String = CBA
 ```
 
-## typeclass
+## `@typeclass`
 定義模組化 typeclass 的習慣步驟看起來像：
 
 - 定義 typeclass trait Foo
@@ -72,7 +72,7 @@ res2: String = CBA
 - 定義 FooOps 類別，定義一元(?)或二元操作子
 - 定義 FooSyntax trait，從 Foo 實例隱喻提供 FooOps
 
-坦白說，這些步驟大部份是複製貼上的樣板，除了第一個以外。輸入 Michael Pilquist 的 simulacrum。只要放上 @typeclass 標記，simulacrum 就能神奇的產生大部份 2-4 步驟。
+坦白說，這些步驟大部份是複製貼上的樣板，除了第一個以外。匯入 Michael Pilquist 的 simulacrum，放上 `@typeclass` 標記，simulacrum 就能神奇的產生大部份 2-4 步驟。
 
 ### 手刻版
 ```scala
@@ -116,7 +116,7 @@ object Appendable {
     }
 }
 ```
-- `apply` 與 `implicit class Ops[A: Appendable]`
+- 自動產生 `apply` 與 `implicit class Ops[A: Appendable]`
 
 ## Codec
 
