@@ -161,3 +161,58 @@ object MonadLaws extends App {
 `Functor` | `map` | 運行“函數”在“封裝的值”上
 `Applicative` | `apply` | 運行“封裝的函數”在“封裝的值”上
 `Monad` | `flatMap` | 運行“返回封裝的函數”在“封裝的值”上
+
+## 優雅的呼叫鏈
+
+`half` 將輸入的整數 `n` 剖半，如果整數可除以二則回傳 `n/2`，否則回傳空值 `null`。使用 haskell 連續呼叫 `half`：
+```haskell
+> Just 20 >>= half >>= half >>= half
+Nothing
+```
+
+### nesting if
+```scala
+def half(n: Int): Int = if (n%2 == 0) n/2 else throw new Exception
+
+var num = 20
+val ans =
+    if (num % 2 == 0) {
+        num = half(num)
+        if (num % 2 == 0) {
+            num = half(num)
+            if (num % 2 == 0) {
+                half(num)
+            } else {
+                null
+            }
+        } else {
+            null
+        }
+    } else {
+        null
+    }
+```
+
+### try-catch
+```scala
+def half(n: Int): Int = if (n%2 == 0) n/2 else throw new Exception
+
+var num = 20
+val ans =
+    try {
+        half(half(half(num)))
+    } catch {
+        case e: Exception => null
+    }
+```
+
+### flatMap
+```scala
+def half(n: Int): Option[Int] = if (n%2 == 0) Some(n/2) else None
+
+scala> Option(20) flatMap half flatMap half
+res0: Option[Int] = Some(5)
+
+scala> Option(20) flatMap half flatMap half flatMap half
+res1: Option[Int] = None
+```
