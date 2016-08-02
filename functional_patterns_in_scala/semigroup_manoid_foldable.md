@@ -7,6 +7,8 @@
 - [herding cats — Using monoids to fold data structures](http://eed3si9n.com/herding-cats/using-monoids-to-fold.html)
 
 ## Semigroup
+用一句話說明：Semigroup 提供合併的概念，合併要滿足[結合律](https://zh.wikipedia.org/wiki/%E7%BB%93%E5%90%88%E5%BE%8B)。
+
 It doesn’t matter if we do `(3 * 4) * 5` or `3 * (4 * 5)`. Either way, the result is `60`. The same goes for `++`. … We call this property **associativity**. `*` is associative, and so is `++`, but `-`, for example, is not.
 
 ```scala
@@ -43,29 +45,19 @@ assert(associativity(List("a"), List("b"), List("c")))
 ```
 
 ## Monoid
+用一句話說明：Monoid 除了提供合併的概念，還有 zero 的慨念。(一個 monoid 加上 zero，還是相同的值)
+
 It seems that both `*` together with `1` and `++` along with `[]` share some common properties:
 
 - The function takes two parameters.
 - The parameters and the returned value have the same type.
 - There exists such a value that doesn’t change other values when used with the binary function. (`zero`)
 
-```scala
-scala> 4 * 1
-res0: Int = 4
-
-scala> 1 * 9
-res1: Int = 9
-```
-- `zero` of Int is `1`
-
-```scala
-scala> List(1, 2, 3) ++ Nil
-res2: List[Int] = List(1, 2, 3)
-
-scala> Nil ++ List(0.5, 2.5)
-res3: List[Double] = List(0.5, 2.5)
-```
-- `zero` of List is `Nil`
+Type | Op | Zero | Examples
+-----|----|------|---------
+Int  | +  | 0    | `1 + 0` == `0 + 1` == `1`
+Double  | *  | 1    | `4.3 * 1` == `1 * 4.3` == `4.3`
+List | ++ | Nil  | `List(1,2,3) ++ Nil` == `Nil ++ List(1,2,3)` == `List(1,2,3)`
 
 ### Manoid Laws
 - Associativity - `(x |+| y) |+| z = x |+| (y |+| z)`
@@ -112,6 +104,8 @@ assert(rightIdentity(List("a")))
 ```
 
 ## Foldable
+用一句話說明：Foldable 提供加總資料結構內所有元素的概念。
+
 Because there are so many data structures that work nicely with folds, the Foldable type class was introduced. Much like Functor is for things that can be mapped over, Foldable is for things that can be folded up!
 
 full source: https://github.com/weihsiu/funpats/blob/master/src/main/scala/funpats/foldables.scala
