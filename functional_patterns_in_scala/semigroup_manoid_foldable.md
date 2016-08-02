@@ -10,11 +10,6 @@
 It doesn’t matter if we do `(3 * 4) * 5` or `3 * (4 * 5)`. Either way, the result is `60`. The same goes for `++`. … We call this property **associativity**. `*` is associative, and so is `++`, but `-`, for example, is not.
 
 ```scala
-trait Semigroup[@sp(Int, Long, Float, Double) A] extends Any with Serializable {
-  def combine(x: A, y: A): A  // Associative operation taking which combines two values.
-  ...
-}
-
 scala> assert { (3 * 2) * (8 * 5) == 3 * (2 * (8 * 5)) }
 scala> assert { List("la") ++ (List("di") ++ List("da")) == (List("la") ++ List("di")) ++ List("da") }
 ```
@@ -52,26 +47,25 @@ It seems that both `*` together with `1` and `++` along with `[]` share some com
 
 - The function takes two parameters.
 - The parameters and the returned value have the same type.
-- There exists such a value that doesn’t change other values when used with the binary function.
+- There exists such a value that doesn’t change other values when used with the binary function. (`zero`)
 
 ```scala
-trait Monoid[@sp(Int, Long, Float, Double) A] extends Any with Semigroup[A] {
-  def empty: A  // Return the identity element for this monoid
-  ...
-}
-
 scala> 4 * 1
 res0: Int = 4
 
 scala> 1 * 9
 res1: Int = 9
+```
+- `zero` of Int is `1`
 
+```scala
 scala> List(1, 2, 3) ++ Nil
 res2: List[Int] = List(1, 2, 3)
 
 scala> Nil ++ List(0.5, 2.5)
 res3: List[Double] = List(0.5, 2.5)
 ```
+- `zero` of List is `Nil`
 
 ### Manoid Laws
 - Associativity - `(x |+| y) |+| z = x |+| (y |+| z)`
