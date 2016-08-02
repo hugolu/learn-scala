@@ -1,11 +1,12 @@
 # Typeclasses
 
-[Using Typeclasses](http://book.realworldhaskell.org/read/using-typeclasses.html): “Typeclasses are among the most powerful features in Haskell. They allow you to define generic interfaces that provide a common feature set over a wide variety of types. Typeclasses are at the heart of some basic language features such as equality testing and numeric operators.”
+“Typeclasses are among the most powerful features in Haskell. They allow you to define generic interfaces that provide a common feature set over a wide variety of types. Typeclasses are at the heart of some basic language features such as equality testing and numeric operators.” -- [Using Typeclasses](http://book.realworldhaskell.org/read/using-typeclasses.html)
 
 ### 需要 typeclass 的理由
 - 判斷顏色是否相等: `colorEq :: Color -> Color -> Bool`
 - 判斷字串是否相等: `stringEq :: [Char] -> [Char] -> Bool`
-- 問題在於使用「不同名稱的函式」處理「不同的型別」，但事實上都做「比較」的工作。這種寫法很沒效率也很困擾，不如使用 `==` 去比較任何東西更方便。藉由一個通用的函式可以比較任何事物，也能讓程式碼更加通用化：如果一段程式碼只做比較的工作，它應該能接收編譯器知道如何比較的任何資料型別。更甚者，如果新的資料型別稍後加入，現有的程式碼也不受影響。
+- 問題在於使用「不同名稱的函式」處理「不同的型別」，但事實上都做「比較」的工作。
+- 這種寫法很沒效率也很困擾，不如使用 `==` 來比較任何東西更為方便。藉由一個通用的函式比較任何事物，能讓程式碼更加通用化：如果一段程式碼只做比較的工作，它應該能接收編譯器知道如何比較的任何資料型別。更甚者，如果新的資料型別稍後加入，現有的程式碼也不受影響。
 
 ## 簡化版本
 目的：希望不透過繼承，擴充 `Int`、`Double`、`String` 的功能，把值顛倒過來
