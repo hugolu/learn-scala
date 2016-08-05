@@ -7,4 +7,60 @@
 
 Scala 是一種靜態類型語言，它的型別系統可能是所有程式語言中最複雜的。
 
-Scala 類型系統企圖透過型別推斷讓程式碼更精簡與更有表達力，並防止程序在執行時期處於無效狀態。在編譯時期強加限制，使得運行時不會發生失敗，這需要編寫程式時額外遵守一些規則，而這些規則使得一般人覺得 Scala 很複雜。
+Scala 型別系統企圖透過型別推斷讓程式碼更精簡與更有表達力，並防止程序在執行時期處於無效狀態。在編譯時期強加限制，使得運行時不會發生失敗，這需要編寫程式時額外遵守一些規則，而這些規則使得一般人覺得 Scala 很複雜。
+
+## Invarient 不變
+```scala
+class A {}
+class B extends A {}
+
+class C[T](t: T) {}
+
+val c1: C[A] = new C[A](new A)
+val c2: C[A] = new C[B](new B)  // won't compile
+val c3: C[B] = new C[A](new A)  // won't compile
+val c4: C[B] = new C[B](new B)
+```
+
+- 型別 `B` 是型別 `A` 的子型別
+- 定義參數化型別 `C[T]` 為不變 (invarient)
+
+## Covarient 協變
+```scala
+class A {}
+class B extends A {}
+
+class C[+T](t: T) {}
+
+val cb: C[B] = new C[B](new B)
+val ca: C[A] = cb
+```
+
+- 型別 `B` 是型別 `A` 的子型別
+- 定義參數化型別 `C[+T]` 為協變 (covarient)
+- 型別 `C[B]` 是型別 `C[A]` 的子型別
+- `cb` 可以賦值給 `ca`
+
+## Contravarient 逆變
+```scala
+class A {}
+class B extends A {}
+
+class C[-T](t: T) {}
+
+val ca: C[A] = new C[A](new A)
+val cb: C[B] = ca
+```
+
+- 型別 `B` 是型別 `A` 的子型別
+- 定義參數化型別 `C[-T]` 為逆變 (contravarient)
+- 型別 `C[A]` 是型別 `C[B]` 的子型別
+- `ca` 可以賦值給 `cb`
+
+## Lower Bound 下界
+
+## Upper Bound 上界
+
+## View Bound 視界
+
+## Context Bound 
