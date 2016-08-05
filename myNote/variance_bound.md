@@ -104,5 +104,23 @@ cb.bar(new B)							//#3
 - #3: 傳遞型別 `B` 的參數給 `cb.bar()`，呼叫實作 `ca.bar()` 處理，因為 #1，`ca.bar()` 可以接受型別 `B` 的參數
 
 ## View Bound 視界
+```scala
+class A { def hello = println("hello") }
+class B
+
+def use[T <% A](t: T) = t.hello
+```
+- 試圖綁定：要求以一個隱式轉換讓 `T` 能轉換為 `A` (讓 `T` 看起來像 `A`)
+
+```scala
+use(new A)	//> hello
+use(new B)	//won't compile: No implicit view available from B ⇒ A
+```
+
+```scala
+implicit def B2A(b: B) = new A
+use(new B)	//> hello
+```
+- 加入隱式轉換，編譯通過
 
 ## Context Bound 
