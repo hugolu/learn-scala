@@ -92,16 +92,16 @@ class A {}
 class B extends A {}
 
 class C[-T](t: T) {
-	def foo[S <: T](s: S) = {}
+	def bar[S <: T](s: S) = {}
 }
 
 val ca = new C[A](new A)	//#1
 val cb: C[B] = ca					//#2
-cb.foo(new B)							//#3
+cb.bar(new B)							//#3
 ```
-- #1: `C[A].foo` 接受型別參數 `A` 或 `A` 的子類 (包含 `B`)
+- #1: `C[A].bar` 接受型別參數 `A` 或 `A` 的子類 (包含 `B`)
 - #2: 將 `ca` 賦值給 `cb`
-- #3: 傳遞型別 `B` 的參數給 `cb.foo()`，呼叫實作 `ca.foo()` 處理，因為 #1，`ca.foo()` 可以接受型別 `B` 的參數
+- #3: 傳遞型別 `B` 的參數給 `cb.bar()`，呼叫實作 `ca.bar()` 處理，因為 #1，`ca.bar()` 可以接受型別 `B` 的參數
 
 ## View Bound 視界
 
