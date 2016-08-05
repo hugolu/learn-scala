@@ -124,3 +124,16 @@ use(new B)	//> hello
 - 加入隱式轉換，編譯通過
 
 ## Context Bound 
+Scala 2.8.0 引入 Context Bound，編寫 typeclass 會使用到。
+```scala
+def f[A : B](a: A) = g(a) // where g requires an implicit value of type B[A]
+```
+
+```scala
+def compare[A : Ordering](a: A, b: A) = implicitly[Ordering[A]].compare(a, b)
+                                                  //> compare: [A](a: A, b: A)(implicit evidence$2: Ordering[A])Int
+ 
+compare(1,2)                                      //> res0: Int = -1
+compare("hello","world")                          //> res1: Int = -15
+compare(3.1, 2.5)                                 //> res2: Int = 1
+```
