@@ -68,7 +68,7 @@ class C[+T](t: T) {
 }
 ```
 
-為了在協變中使用型別參數，須定義下界
+為了在協變中使用型別參數，須定義下界。使用 `[U >: T]`，其中 `T` 為下界，`U` 為 `T` 或 `T` 的超類
 ```scala
 class A {}
 class B extends A {}
@@ -76,10 +76,7 @@ class B extends A {}
 class C[+T](t: T) {
 	def foo[U >: T](u: U) = {}
 }
-```
 
-使用 `[U >: T]`，其中 `T` 為下界，`U` 為 `T` 或 `T` 的超類
-```scala
 val cb = new C[B](new B)  //#1
 val ca: C[A] = cb         //#2
 ca.foo(new A)             //#3
@@ -89,6 +86,22 @@ ca.foo(new A)             //#3
 - #3: 傳遞型別 `A` 的參數給 `ca.foo()`，呼叫實作 `cb.foo()` 處理，因為 #1，`cb.foo()` 可以接受型別 `A` 的參數
 
 ## Upper Bound 上界
+為了在逆變中使用型別參數，須定義上界。使用 `[S <: T]`，其中 `T` 為上界，`S` 為 `T` 或 `T` 的子類
+```scala
+class A {}
+class B extends A {}
+
+class C[-T](t: T) {
+	def foo[S <: T](s: S) = {}
+}
+
+val ca = new C[A](new A)	//#1
+val cb: C[B] = ca					//#2
+cb.foo(new B)							//#3
+```
+- #1: `C[A].foo` 接受型別參數 `A` 或 `A` 的子類 (包含 `B`)
+- #2: 將 `ca` 賦值給 `cb`
+- #3: 傳遞型別 `B` 的參數給 `cb.foo()`，呼叫實作 `ca.foo()` 處理，因為 #1，`ca.foo()` 可以接受型別 `B` 的參數
 
 ## View Bound 視界
 
