@@ -78,34 +78,26 @@ ___
 就实际运行机制而言，隐式参数与缺省参数是完全不一样的。缺省参数是函数定义方设定了一个缺省值，在调用者没有指明时将使用该缺省值。 隐式参数则不同，最终是会由调用方指定参数值，只是不一定在调用的语句里指定而已。编译器在发现缺少隐式参数时，会在程序范围内寻找符合类型的隐式值，如果找不到则编译会失败。
 
 ```scala
-scala> abstract class Logger {
-     |   def log(s: String)
-     | }
-defined class Logger
+abstract class Logger {
+    def log(s: String)
+}
 
-scala> class FileLogger extends Logger {
-     |   def log(s: String) = {println("File: " + s)}
-     | }
-defined class FileLogger
+class FileLogger extends Logger {
+    def log(s: String) = { println(s"File: $s") }
+}
 
-scala> class StdoutLogger extends Logger {
-     |   def log(s: String) = {println("Stdout: " + s)}
-     | }
-defined class StdoutLogger
+class StdoutLogger extends Logger {
+    def log(s: String) = { println(s"Stdout: $s") }
+}
 
-scala> def Add(a: Int, b: Int)(implicit logger: Logger) {
-     |   logger.log("%d + %d = %d".format(a, b, a+b))
-     | }
-Add: (a: Int, b: Int)(implicit logger: Logger)Unit
-
+def add(a: Int, b: Int)(implicit logger: Logger) {
+    logger.log(s"$a + $b = ${a+b}")
+}
+```
+```scala
 scala> implicit val log = new FileLogger
-logger: FileLogger = FileLogger@45d3972c
-
-scala> Add(1,2)
-File: 1 + 2 = 3
-
-scala> Add(2,3)(new StdoutLogger) //you may do it explicitly
-Stdout: 2 + 3 = 5
+scala> add(1,2)                     //> File: 1 + 2 = 3
+scala> add(2,3)(new StdoutLogger)   //> Stdout: 2 + 3 = 5
 ```
 
 如果上述代码没有```implicit val log = new FileLogger```这一句，在代码范围内也没有其他的Logger类型的implicit值，编译器会报错。
@@ -114,31 +106,15 @@ Stdout: 2 + 3 = 5
 
 以下示範default parameter與implicit parameter的差異
 ```scala
-scala> def sayhi(greeting: String = "Hello, World!") = {println(greeting)}
-sayhi: (greeting: String)Unit
+scala> def foo(str: String = "Hello, World!") = println(str)
 
-scala> sayhi()
-Hello, World!
-
-scala> sayhi
-<console>:12: error: missing arguments for method sayhi;
-follow this method with `_' if you want to treat it as a partially applied function
-       sayhi
-       ^
+scala> foo()        //> Hello, World!
+scala> foo          //error: missing arguments for method foo;
 ```
 ```scala
-scala> def sayhi(implicit greeting: String) = {println(greeting)}
-sayhi: (implicit greeting: String)Unit
+scala> def bar(implicit str: String) = println(str)
+scala> implicit val word = "Hello, World!"
 
-scala> implicit val greeting = "Hello, World!"
-greeting: String = Hello, World!
-
-scala> sayhi
-Hello, World!
-
-scala> sayhi()
-<console>:13: error: not enough arguments for method sayhi: (implicit greeting: String)Unit.
-Unspecified value parameter greeting.
-       sayhi()
-            ^
+scala> bar          //> Hello, World!
+scala> bar()        //error: not enough arguments for method bar: (implicit str: String)Unit.
 ```
