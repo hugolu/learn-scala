@@ -13,9 +13,7 @@ trait Ordering[T] extends Comparator[T] with PartialOrdering[T] with Serializabl
 ```
 
 ## `Ordered`
-```scala
-trait Ordered[A] extends Comparable[A]
-```
+[`Ordered`](http://www.scala-lang.org/api/current/index.html#scala.math.Ordered) 除了提供 `compare` 方法，還提供了 `<`, `>`, `<=`, `>=`
 
 ```scala
 case class Point(x: Int, y: Int) extends Ordered[Point] {
@@ -31,4 +29,12 @@ p1 < p2         //> true
 p1 <= p2        //> true
 p1 > p2         //> false
 p1 >= p2        //> false
+```
+
+[`Ordered`](http://www.scala-lang.org/api/current/index.html#scala.math.Ordered$) 伴生物件提供了T到Ordered[T]的隱式轉換 (隱式參數為 `Ordering[T]`)
+```scala
+object Ordered {
+  /* Lens from `Ordering[T]` to `Ordered[T]` */
+  implicit def orderingToOrdered[T](x: T)(implicit ord: Ordering[T]): Ordered[T] = new Ordered[T] { defcompare(that: T): Int = ord.compare(x, that) }
+}
 ```
