@@ -147,3 +147,13 @@ rdd.sortBy[Person](t => t).collect()    //> Array(name: rain, age: 22, name: rai
 rdd.top(2)                              //> Array(name: Lily, age: 15, name: rain, age: 24)
 rdd.takeOrdered(2)                      //> Array(name: rain, age: 22, name: rain, age: 24)
 ```
+
+#### 使用 `Ordering.by` 提供隱式參數
+```scala
+def by[T, S](f: (T) ⇒ S)(implicit ord: Ordering[S]): Ordering[T]
+```
+- Given f, a function from T into S, creates an Ordering[T] whose compare function is equivalent to: `def compare(x:T, y:T) = Ordering[S].compare(f(x), f(y))`
+
+```scala
+rdd.top(2)(Ordering.by[Person, (String, Int)]{ case Person(name, age) => (name, age) }) //> Array(name: rain, age: 24, name: rain, age: 22)
+```
