@@ -125,3 +125,25 @@ words.sortBy(x => (x.length, x.head)) //> Array(The, dog, fox, the, lazy, over, 
 ```
 - 把 word 轉為 (word.length, word.head)
 - scala.Ordering 提供 `Ordering[Tuple2[Int, Char]]` (先比較長度，在比較第一個字母)
+
+## RDD sort
+[RDD](http://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.rdd.RDD)的sortBy函数，提供根据指定的key对RDD做全局的(升冪)排序。
+
+```scala
+def sortBy[K](f: (T) ⇒ K, ascending: Boolean = true, numPartitions: Int = this.partitions.length)(implicit ord: Ordering[K], ctag: ClassTag[K]): RDD[T]
+def top(num: Int)(implicit ord: Ordering[T]): Array[T]
+def takeOrdered(num: Int)(implicit ord: Ordering[T]): Array[T]
+```
+- `sortBy` returns this RDD sorted by the given key function.
+- `top` returns the top k (largest) elements from this RDD as defined by the specified implicit Ordering[T] and maintains the ordering.
+- `takeOrdered` returns the first k (smallest) elements from this RDD as defined by the specified implicit Ordering[T] and maintains the ordering.
+
+仅需定义key的隐式转换即可：
+```scala
+val rdd = sc.parallelize(Array(Person("rain",24), Person("rain",22), Person("Lily",15)))
+
+implicit object PersonOrdering extends Ordering[Person] { ... }
+rdd.sortBy[Person](t => t).collect()    //> Array(name: rain, age: 22, name: rain, age: 24, name: Lily, age: 15)
+rdd.top(2)                              //> Array(name: Lily, age: 15, name: rain, age: 24)
+rdd.takeOrdered(2)                      //> Array(name: rain, age: 22, name: rain, age: 24)
+```
