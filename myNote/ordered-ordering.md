@@ -63,6 +63,13 @@ case class Person(name: String, age: Int) {
 ```
 
 為了讓 `Person` 物件具有可比較性，使用 `Ordered` 伴生物件的 `orderingToOrdered` 做隱式轉換，額外提供 `PersonOrdering` 做為 `Ordering[Person]` 的隱式參數
+
+```scala
+object Ordered {
+  implicit def orderingToOrdered[T](x: T)(implicit ord: Ordering[T]): Ordered[T]
+}
+```
+
 ```scala
 implicit object PersonOrdering extends Ordering[Person] {
   override def compare(p1: Person, p2: Person): Int = {
@@ -83,12 +90,13 @@ p1 < p2           //> True
 
 ### 排序
 [List](http://www.scala-lang.org/api/current/index.html#scala.collection.immutable.List) 提供以下排序函數
+
 - `def sortBy[B](f: (A) ⇒ B)(implicit ord: math.Ordering[B]): List[A]`
-  - Sorts this Seq according to the Ordering which results from transforming an implicitly given Ordering with a transformation function.
+  - Sorts this Seq according to **the Ordering** which results from transforming an implicitly given Ordering with a transformation function.
 - `def sortWith(lt: (A, A) ⇒ Boolean): List[A]`
-  - Sorts this sequence according to a comparison function.
+  - Sorts this sequence according to **a comparison function**.
 - `def sorted[B >: A](implicit ord: math.Ordering[B]): List[A]`
-  - Sorts this sequence according to an Ordering.
+  - Sorts this sequence according to **an Ordering**.
 
 ```scala
 val p1 =new Person("rain",24)
@@ -97,13 +105,19 @@ val p3 =new Person("Lily",15)
 val list = List(p1, p2, p3)   //> List(name: rain, age: 24, name: rain, age: 22, name: Lily, age: 15)
 ```
 
+#### `sorted`
 若调用`sorted`函数做排序，则需要指定`Ordering`隐式参数：
+
 ```scala
 implicit object PersonOrdering extends Ordering[Person] { ... }
+```
+```scala
 list.sorted                   //> List(name: rain, age: 22, name: rain, age: 24, name: Lily, age: 15)
 ```
 
+#### `sortWith`
 若使用`sortWith`，则需要定义返回值为`Boolean`的比较函数：
+
 ```scala
 list.sortWith { (p1: Person, p2: Person) =>
   p1.name == p2.name match {
@@ -113,12 +127,16 @@ list.sortWith { (p1: Person, p2: Person) =>
 }                             //> List(name: rain, age: 22, name: rain, age: 24, name: Lily, age: 15)
 ```
 
+#### `sortBy`
 若使用`sortBy`，需要指定`Ordering`隐式参数：
 ```scala
 implicit object PersonOrdering extends Ordering[Person] { ... }
+```
+```scala
 list.sortBy[Person](t => t)   //> List(name: rain, age: 22, name: rain, age: 24, name: Lily, age: 15)
 ```
 
+另一個範例：
 ```scala
 val words = "The quick brown fox jumped over the lazy dog".split(' ')
 words.sortBy(x => (x.length, x.head)) //> Array(The, dog, fox, the, lazy, over, brown, quick, jumped)
