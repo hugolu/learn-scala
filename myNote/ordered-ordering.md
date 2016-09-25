@@ -227,4 +227,5 @@ object Ordering {
 rdd.top(2)(Ordering.by[Person, (String, Int)]{ case Person(name, age) => (name, age) })
 //> Array(name: rain, age: 24, name: rain, age: 22)
 ```
-- 由 `Ordering.by` 提供 `top` 隱式參數
+- 由 `Ordering.by` 決定排序的對象 `f: (T) ⇒ S`
+- 藉由提供隱式參數 `Ordering[S]` 幫 `top` 進行排序
