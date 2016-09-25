@@ -139,9 +139,12 @@ list.sortBy[Person](t => t)   //> List(name: rain, age: 22, name: rain, age: 24,
 另一個範例：
 ```scala
 val words = "The quick brown fox jumped over the lazy dog".split(' ')
-words.sortBy(x => (x.length, x.head)) //> Array(The, dog, fox, the, lazy, over, brown, quick, jumped)
+
+words.sortBy[(Int, Char)](x => (x.length, x.head))  //> Array(The, dog, fox, the, lazy, over, brown, quick, jumped)
+words.sortBy(x => (x.length, x.head))
 ```
-- 把 word 轉為 (word.length, word.head)
+
+- 把 word 轉為 `(word.length, word.head) :(Int, Char)`
 - scala.Ordering 提供 `Ordering[Tuple2[Int, Char]]` (先比較長度，在比較第一個字母)
 
 ## RDD sort
