@@ -159,22 +159,72 @@ def takeOrdered(num: Int)(implicit ord: Ordering[T]): Array[T]
 - `top` returns the top k (largest) elements from this RDD as defined by the specified implicit Ordering[T] and maintains the ordering.
 - `takeOrdered` returns the first k (smallest) elements from this RDD as defined by the specified implicit Ordering[T] and maintains the ordering.
 
-仅需定义key的隐式转换即可：
 ```scala
 val rdd = sc.parallelize(Array(Person("rain",24), Person("rain",22), Person("Lily",15)))
-
-implicit object PersonOrdering extends Ordering[Person] { ... }
-rdd.sortBy[Person](t => t).collect()    //> Array(name: rain, age: 22, name: rain, age: 24, name: Lily, age: 15)
-rdd.top(2)                              //> Array(name: Lily, age: 15, name: rain, age: 24)
-rdd.takeOrdered(2)                      //> Array(name: rain, age: 22, name: rain, age: 24)
 ```
 
-#### 使用 `Ordering.by` 提供隱式參數
+定義 `Person` 的隱式轉換：
 ```scala
-def by[T, S](f: (T) ⇒ S)(implicit ord: Ordering[S]): Ordering[T]
+implicit object PersonOrdering extends Ordering[Person] { ... }
+```
+
+```scala
+rdd.sortBy[Person](t => t).collect()
+//> Array(name: rain, age: 22, name: rain, age: 24, name: Lily, age: 15)
+```
+- 依照 `Person` 排序
+
+```scala
+rdd.sortBy[Int](p => p.age).collect()
+//> Array(name: Lily, age: 15, name: rain, age: 22, name: rain, age: 24)
+```
+- 依照 `Person.age` 排序
+
+```scala
+rdd.sortBy[String](p => p.name).collect()
+//> Array(name: Lily, age: 15, name: rain, age: 24, name: rain, age: 22)
+```
+- 依照 `Person.name` 排序
+
+```scala
+rdd.sortBy[(String, Int)](p => (p.name, p.age)).collect()
+//> Array(name: Lily, age: 15, name: rain, age: 22, name: rain, age: 24)
+```
+- 依照 `(Person.name, Person.age)` 排序 (先 name, 後 age)
+
+```scala
+rdd.top(2)
+//> Array(name: Lily, age: 15, name: rain, age: 24)
+```
+- `top` 取最高兩個 (降冪排序)
+
+```scala
+rdd.takeOrdered(2)
+//> Array(name: rain, age: 22, name: rain, age: 24)
+```
+- `takeOrdered` 取最低兩個 (升冪排序)
+
+### 使用 `Ordering.by` 提供隱式參數
+```scala
+abstract class RDD[T] {
+  ...
+  def top(num: Int)(implicit ord: Ordering[T]): Array[T]
+  ...
+}
+```
+- Returns the top k (largest) elements from this RDD as defined by the specified implicit Ordering[T] and maintains the ordering.
+
+```scala
+object Ordering {
+  ...
+  def by[T, S](f: (T) ⇒ S)(implicit ord: Ordering[S]): Ordering[T]
+  ...
+}
 ```
 - Given f, a function from T into S, creates an Ordering[T] whose compare function is equivalent to: `def compare(x:T, y:T) = Ordering[S].compare(f(x), f(y))`
 
 ```scala
-rdd.top(2)(Ordering.by[Person, (String, Int)]{ case Person(name, age) => (name, age) }) //> Array(name: rain, age: 24, name: rain, age: 22)
+rdd.top(2)(Ordering.by[Person, (String, Int)]{ case Person(name, age) => (name, age) })
+//> Array(name: rain, age: 24, name: rain, age: 22)
 ```
+- 由 `Ordering.by` 提供 `top` 隱式參數
