@@ -35,7 +35,7 @@ p1 >= p2        //> false
 ```scala
 object Ordered {
   /* Lens from `Ordering[T]` to `Ordered[T]` */
-  implicit def orderingToOrdered[T](x: T)(implicit ord: Ordering[T]): Ordered[T] = new Ordered[T] { defcompare(that: T): Int = ord.compare(x, that) }
+  implicit def orderingToOrdered[T](x: T)(implicit ord: Ordering[T]): Ordered[T] = new Ordered[T] { def compare(that: T): Int = ord.compare(x, that) }
 }
 ```
 
@@ -66,7 +66,7 @@ case class Person(name: String, age: Int) {
 
 ```scala
 object Ordered {
-  implicit def orderingToOrdered[T](x: T)(implicit ord: Ordering[T]): Ordered[T]
+  implicit def orderingToOrdered[T](x: T)(implicit ord: Ordering[T]): Ordered[T] = new Ordered[T] { def compare(that: T): Int = ord.compare(x, that) }
 }
 ```
 
