@@ -16,22 +16,23 @@ trait Ordering[T] extends Comparator[T] with PartialOrdering[T] with Serializabl
 [`Ordered`](http://www.scala-lang.org/api/current/index.html#scala.math.Ordered) 除了提供 `compare` 方法，還提供了 `<`, `>`, `<=`, `>=`
 
 ```scala
-case class Point(x: Int, y: Int) extends Ordered[Point] {
-  def compare(that: Point) = (this.x*this.x + this.y*this.y) - (that.x*that.x + that.y*that.y)
+case class Person(name: String, age: Int) extends Ordered[Person] {
+  def compare(that: Person) = this.age - that.age
 }
 
-val p1 = Point(2,3)
-val p2 = Point(1,4)
+val p1 = Person("John", 14)
+val p2 = Person("Mick", 15)
 
-p1 compare p2   //> -4
-p1 compareTo p2 //> -4
+p1 compare p2   //> -1
+p1 compareTo p2 //> -1
 p1 < p2         //> true
 p1 <= p2        //> true
 p1 > p2         //> false
 p1 >= p2        //> false
 ```
 
-[`Ordered`](http://www.scala-lang.org/api/current/index.html#scala.math.Ordered$) 伴生物件提供了T到Ordered[T]的隱式轉換 (隱式參數為 `Ordering[T]`)
+[`Ordered`](http://www.scala-lang.org/api/current/index.html#scala.math.Ordered$) 伴生物件提供了`T`到`Ordered[T]`的隱式轉換 (隱式參數為 `Ordering[T]`)
+
 ```scala
 object Ordered {
   /* Lens from `Ordering[T]` to `Ordered[T]` */
@@ -65,12 +66,6 @@ case class Person(name: String, age: Int) {
 為了讓 `Person` 物件具有可比較性，使用 `Ordered` 伴生物件的 `orderingToOrdered` 做隱式轉換，額外提供 `PersonOrdering` 做為 `Ordering[Person]` 的隱式參數
 
 ```scala
-object Ordered {
-  implicit def orderingToOrdered[T](x: T)(implicit ord: Ordering[T]): Ordered[T] = new Ordered[T] { def compare(that: T): Int = ord.compare(x, that) }
-}
-```
-
-```scala
 implicit object PersonOrdering extends Ordering[Person] {
   override def compare(p1: Person, p2: Person): Int = {
     p1.name == p2.name match {
@@ -82,9 +77,11 @@ implicit object PersonOrdering extends Ordering[Person] {
 ```
 
 ```scala
+import Ordered._  // 提供了 T 到 Ordered[T] 的隱式轉換
+
 val p1 = Person("rain",13)
 val p2 = Person("rain",14)
-import Ordered._
+
 p1 < p2           //> True
 ```
 
