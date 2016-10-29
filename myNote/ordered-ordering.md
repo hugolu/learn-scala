@@ -96,9 +96,9 @@ p1 < p2           //> True
   - Sorts this sequence according to **an Ordering**.
 
 ```scala
-val p1 =new Person("rain",24)
-val p2 =new Person("rain",22)
-val p3 =new Person("Lily",15)
+val p1 = Person("rain",24)
+val p2 = Person("rain",22)
+val p3 = Person("Lily",15)
 val list = List(p1, p2, p3)   //> List(name: rain, age: 24, name: rain, age: 22, name: Lily, age: 15)
 ```
 
