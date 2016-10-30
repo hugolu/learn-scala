@@ -73,9 +73,9 @@ Sorting.quickSort(pairs)(Ordering[(Int, String)].on(x => (x._3, x._1)))
 
 ### 比較
 ```scala
-case class Person(name: String, age: Int) {
-  override def toString = "name: " + name + ", age: " + age
-}
+  case class Person(name: String, age: Int) {
+    override def toString = "name: " + name + ", age: " + age
+  }
 ```
 
 為了讓 `Person` 物件具有可比較性，使用 `Ordered` 伴生物件的 `orderingToOrdered` 做隱式轉換，額外提供 `PersonOrdering` 做為 `Ordering[Person]` 的隱式參數
@@ -145,7 +145,10 @@ list.sortWith { (p1: Person, p2: Person) =>
 implicit object PersonOrdering extends Ordering[Person] { ... }
 ```
 ```scala
-list.sortBy[Person](t => t)   //> List(name: rain, age: 22, name: rain, age: 24, name: Lily, age: 15)
+list.sortBy[Person](p => p)                       //> List(name: Rain, age: 22, name: Rain, age: 24, name: Lily, age: 15)
+list.sortBy[String](p => p.name)                  //> List(name: Lily, age: 15, name: Rain, age: 24, name: Rain, age: 22)
+list.sortBy[Int](p => p.age)                      //> List(name: Lily, age: 15, name: Rain, age: 22, name: Rain, age: 24)
+list.sortBy[(String, Int)](p => (p.name, p.age))  //> List(name: Lily, age: 15, name: Rain, age: 22, name: Rain, age: 24)
 ```
 
 另一個範例：
