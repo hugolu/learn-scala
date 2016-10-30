@@ -13,25 +13,29 @@ trait Ordering[T] extends Comparator[T] with PartialOrdering[T] with Serializabl
 ```
 
 ## `Ordered`
-[`Ordered`](http://www.scala-lang.org/api/current/index.html#scala.math.Ordered) 除了提供 `compare` 方法，還提供了 `<`, `>`, `<=`, `>=`
+[`trait Ordered[A]`](http://www.scala-lang.org/api/current/index.html#scala.math.Ordered) 除了提供 `compare` 方法，還提供了 `<`, `>`, `<=`, `>=`。實現 `Ordered` 的類，對象間可以相互比較。
 
 ```scala
 case class Person(name: String, age: Int) extends Ordered[Person] {
-  def compare(that: Person) = this.age - that.age
+  def compare(that: Person): Int =
+    this.name == that.name match {
+      case false => -this.name.compareTo(that.name)
+      case _ => this.age - that.age
+    }
 }
 
-val p1 = Person("John", 14)
-val p2 = Person("Mick", 15)
+val p1 = Person("Rain",24)
+val p2 = Person("Rain",22)
+val p3 = Person("Lily",15)
 
-p1 compare p2   //> -1
-p1 compareTo p2 //> -1
-p1 < p2         //> true
-p1 <= p2        //> true
-p1 > p2         //> false
-p1 >= p2        //> false
+p1 compareTo p2   //> 2
+p1 < p2           //> false
+
+p2 compareTo p3   //> -6
+p2 < p3           //> true
 ```
 
-[`Ordered`](http://www.scala-lang.org/api/current/index.html#scala.math.Ordered$) 伴生物件提供了`T`到`Ordered[T]`的隱式轉換 (隱式參數為 `Ordering[T]`)
+[`Ordered`](http://www.scala-lang.org/api/current/index.html#scala.math.Ordered$) 伴生物件提供了`T`到`Ordered[T]`的隱式轉換 (隱式參數為 `Ordering[T]`)。使用時機：當 T 被 sealed 修飾，無法透過繼承擴充為 Orered。
 
 ```scala
 object Ordered {
@@ -39,6 +43,7 @@ object Ordered {
   implicit def orderingToOrdered[T](x: T)(implicit ord: Ordering[T]): Ordered[T] = new Ordered[T] { def compare(that: T): Int = ord.compare(x, that) }
 }
 ```
+- 事實上是利用 `Ordering[T]` 所提供 `compare(x: T, y: T): Int` 進行比較
 
 ## `Ordering`
 Ordering 內建 `Ordering.by` 與 `Ordering.on` 可自行定義排序方式：
@@ -53,6 +58,8 @@ Sorting.quickSort(pairs)(Ordering.by[(String, Int, Int), Int](_._2))
 // sort by the 3rd element, then 1st
 Sorting.quickSort(pairs)(Ordering[(Int, String)].on(x => (x._3, x._1)))
 ```
+- `def by[T, S](f: (T) ⇒ S)(implicit ord: Ordering[S]): Ordering[T]`
+- `def on[U](f: (U) ⇒ T): Ordering[U]`
 
 ## 實際應用
 
@@ -96,8 +103,8 @@ p1 < p2           //> True
   - Sorts this sequence according to **an Ordering**.
 
 ```scala
-val p1 = Person("rain",24)
-val p2 = Person("rain",22)
+val p1 = Person("Rain",24)
+val p2 = Person("Rain",22)
 val p3 = Person("Lily",15)
 val list = List(p1, p2, p3)   //> List(name: rain, age: 24, name: rain, age: 22, name: Lily, age: 15)
 ```
