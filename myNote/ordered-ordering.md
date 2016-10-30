@@ -35,7 +35,7 @@ p2 compareTo p3   //> -6
 p2 < p3           //> true
 ```
 
-[`Ordered`](http://www.scala-lang.org/api/current/index.html#scala.math.Ordered$) 伴生物件提供了`T`到`Ordered[T]`的隱式轉換 (隱式參數為 `Ordering[T]`)。使用時機：當 T 被 sealed 修飾，無法透過繼承擴充為 Orered。
+[`object Ordered`](http://www.scala-lang.org/api/current/#scala.math.Ordered$) 伴生物件提供了`T`到`Ordered[T]`的隱式轉換 (隱式參數為 `Ordering[T]`)。使用時機：當 T 被 sealed 修飾，無法透過繼承擴充為 Orered。
 
 ```scala
 object Ordered {
@@ -48,18 +48,26 @@ object Ordered {
 ## `Ordering`
 Ordering 內建 `Ordering.by` 與 `Ordering.on` 可自行定義排序方式：
 
+- `def by[T, S](f: (T) ⇒ S)(implicit ord: Ordering[S]): Ordering[T]`
+- `def on[T](f: (T) ⇒ S): Ordering[T]`
+
+Given f, a function from T into S, creates an Ordering[T] whose compare function is equivalent to:
+- `def compare(x:T, y:T) = Ordering[S].compare(f(x), f(y))`
+  
 ```scala
 import scala.util.Sorting
 val pairs = Array(("a", 5, 2), ("c", 3, 1), ("b", 1, 3))
 
 // sort by 2nd element
 Sorting.quickSort(pairs)(Ordering.by[(String, Int, Int), Int](_._2))
+Sorting.quickSort(pairs)(Ordering[Int].on(_._2))
 
 // sort by the 3rd element, then 1st
+Sorting.quickSort(pairs)(Ordering.by[(String, Int, Int), (Int, String)](x => (x._3, x._1)))
 Sorting.quickSort(pairs)(Ordering[(Int, String)].on(x => (x._3, x._1)))
 ```
-- `def by[T, S](f: (T) ⇒ S)(implicit ord: Ordering[S]): Ordering[T]`
-- `def on[U](f: (U) ⇒ T): Ordering[U]`
+- `def quickSort[K](a: Array[K])(implicit arg0: math.Ordering[K]): Unit` 透過 Ordering[K] 提供物件比較方式，進行排序
+- `Ordering.by` 與 `Ordering.on` 作用結果相同，但後者用法比較簡潔
 
 ## 實際應用
 
