@@ -103,12 +103,12 @@ p1 < p2           //> True
 ### 排序
 [List](http://www.scala-lang.org/api/current/index.html#scala.collection.immutable.List) 提供以下排序函數
 
-- `def sortBy[B](f: (A) ⇒ B)(implicit ord: math.Ordering[B]): List[A]`
-  - Sorts this Seq according to **the Ordering** which results from transforming an implicitly given Ordering with a transformation function.
+- `def sorted[B >: A](implicit ord: math.Ordering[B]): List[A]`
+  - 根據物件自然順序排序 (提供 implicit Ordering)
 - `def sortWith(lt: (A, A) ⇒ Boolean): List[A]`
   - Sorts this sequence according to **a comparison function**.
-- `def sorted[B >: A](implicit ord: math.Ordering[B]): List[A]`
-  - Sorts this sequence according to **an Ordering**.
+- `def sortBy[B](f: (A) ⇒ B)(implicit ord: math.Ordering[B]): List[A]`
+  - Sorts this Seq according to **the Ordering** which results from transforming an implicitly given Ordering with a transformation function.
 
 ```scala
 val p1 = Person("Rain",24)
@@ -122,8 +122,7 @@ val list = List(p1, p2, p3)   //> List(Rain(24), Rain(22), Lily(23))
 
 ```scala
 implicit object PersonOrdering extends Ordering[Person] { ... }
-```
-```scala
+
 list.sorted                   //> List(Rain(22), Rain(24), Lily(23))
 ```
 
@@ -143,11 +142,11 @@ list.sortWith { (p1: Person, p2: Person) =>
 若使用`sortBy`，需要指定`Ordering`隐式参数：
 ```scala
 implicit object PersonOrdering extends Ordering[Person] { ... }
-```
-```scala
+
 list.sortBy[Person](p => p)                       //> List(Rain(22), Rain(24), Lily(23))
 list.sortBy(p => p)
-
+```
+```scala
 list.sortBy[String](p => p.name)                  //> List(Lily(23), Rain(24), Rain(22))
 list.sortBy(p => p.name)
 
