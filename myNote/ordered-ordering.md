@@ -26,7 +26,7 @@ case class Person(name: String, age: Int) extends Ordered[Person] {
 
 val p1 = Person("Rain",24)
 val p2 = Person("Rain",22)
-val p3 = Person("Lily",15)
+val p3 = Person("Lily",23)
 
 p1 compareTo p2   //> 2
 p1 < p2           //> false
@@ -73,9 +73,9 @@ Sorting.quickSort(pairs)(Ordering[(Int, String)].on(x => (x._3, x._1)))
 
 ### 比較
 ```scala
-  case class Person(name: String, age: Int) {
-    override def toString = "name: " + name + ", age: " + age
-  }
+case class Person(name: String, age: Int) {   
+  override def toString = s"$name($age)"
+}
 ```
 
 為了讓 `Person` 物件具有可比較性，使用 `Ordered` 伴生物件的 `orderingToOrdered` 做隱式轉換，額外提供 `PersonOrdering` 做為 `Ordering[Person]` 的隱式參數
@@ -94,8 +94,8 @@ implicit object PersonOrdering extends Ordering[Person] {
 ```scala
 import Ordered._  // 提供了 T 到 Ordered[T] 的隱式轉換
 
-val p1 = Person("rain",13)
-val p2 = Person("rain",14)
+val p1 = Person("Rain",13)
+val p2 = Person("Rain",14)
 
 p1 < p2           //> True
 ```
@@ -113,8 +113,8 @@ p1 < p2           //> True
 ```scala
 val p1 = Person("Rain",24)
 val p2 = Person("Rain",22)
-val p3 = Person("Lily",15)
-val list = List(p1, p2, p3)   //> List(name: rain, age: 24, name: rain, age: 22, name: Lily, age: 15)
+val p3 = Person("Lily",23)
+val list = List(p1, p2, p3)   //> List(Rain(24), Rain(22), Lily(23))
 ```
 
 #### `sorted`
@@ -124,7 +124,7 @@ val list = List(p1, p2, p3)   //> List(name: rain, age: 24, name: rain, age: 22,
 implicit object PersonOrdering extends Ordering[Person] { ... }
 ```
 ```scala
-list.sorted                   //> List(name: rain, age: 22, name: rain, age: 24, name: Lily, age: 15)
+list.sorted                   //> List(Rain(22), Rain(24), Lily(23))
 ```
 
 #### `sortWith`
@@ -136,7 +136,7 @@ list.sortWith { (p1: Person, p2: Person) =>
     case false => -p1.name.compareTo(p2.name) < 0
     case _ => p1.age - p2.age < 0
   }
-}                             //> List(name: rain, age: 22, name: rain, age: 24, name: Lily, age: 15)
+}                             //> List(Rain(22), Rain(24), Lily(23))
 ```
 
 #### `sortBy`
@@ -145,10 +145,20 @@ list.sortWith { (p1: Person, p2: Person) =>
 implicit object PersonOrdering extends Ordering[Person] { ... }
 ```
 ```scala
-list.sortBy[Person](p => p)                       //> List(name: Rain, age: 22, name: Rain, age: 24, name: Lily, age: 15)
-list.sortBy[String](p => p.name)                  //> List(name: Lily, age: 15, name: Rain, age: 24, name: Rain, age: 22)
-list.sortBy[Int](p => p.age)                      //> List(name: Lily, age: 15, name: Rain, age: 22, name: Rain, age: 24)
-list.sortBy[(String, Int)](p => (p.name, p.age))  //> List(name: Lily, age: 15, name: Rain, age: 22, name: Rain, age: 24)
+list.sortBy[Person](p => p)                       //> List(Rain(22), Rain(24), Lily(23))
+list.sortBy(p => p)
+
+list.sortBy[String](p => p.name)                  //> List(Lily(23), Rain(24), Rain(22))
+list.sortBy(p => p.name)
+
+list.sortBy[Int](p => p.age)                      //> List(Rain(22), Lily(23), Rain(24))
+list.sortBy(p => p.age)
+
+list.sortBy[(String, Int)](p => (p.name, p.age))  //> List(Lily(23), Rain(22), Rain(24))
+list.sortBy(p => (p.name, p.age))
+
+list.sortBy[(Int, String)](p => (p.age, p.name))  //List(Rain(22), Lily(23), Rain(24))
+list.sortBy(p => (p.age, p.name))
 ```
 
 另一個範例：
@@ -160,7 +170,7 @@ words.sortBy(x => (x.length, x.head))
 ```
 
 - 把 word 轉為 `(word.length, word.head) :(Int, Char)`
-- scala.Ordering 提供 `Ordering[Tuple2[Int, Char]]` (先比較長度，在比較第一個字母)
+- scala.Ordering 提供 `Ordering[Tuple2[Int, Char]]` (先比長度，再比第一個字母)
 
 ## RDD sort
 [RDD](http://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.rdd.RDD)的sortBy函数，提供根据指定的key对RDD做全局的(升冪)排序。
@@ -175,7 +185,7 @@ def takeOrdered(num: Int)(implicit ord: Ordering[T]): Array[T]
 - `takeOrdered` returns the first k (smallest) elements from this RDD as defined by the specified implicit Ordering[T] and maintains the ordering.
 
 ```scala
-val rdd = sc.parallelize(Array(Person("rain",24), Person("rain",22), Person("Lily",15)))
+val rdd = sc.parallelize(Array(Person("Rain",24), Person("Rain",22), Person("Lily",23)))
 ```
 
 定義 `Person` 的隱式轉換：
@@ -184,63 +194,35 @@ implicit object PersonOrdering extends Ordering[Person] { ... }
 ```
 
 ```scala
-rdd.sortBy[Person](t => t).collect()
-//> Array(name: rain, age: 22, name: rain, age: 24, name: Lily, age: 15)
+rdd.sortBy[Person](t => t).collect()                        //> Array(Rain(22), Rain(24), Lily(23))
+rdd.sortBy[Int](p => p.age).collect()                       //> Array(Rain(22), Lily(23), Rain(24))
+rdd.sortBy[String](p => p.name).collect()                   //> Array(Lily(23), Rain(24), Rain(22))
+rdd.sortBy[(String, Int)](p => (p.name, p.age)).collect()   //> Array(Lily(23), Rain(22), Rain(24))
 ```
-- 依照 `Person` 排序
-
 ```scala
-rdd.sortBy[Int](p => p.age).collect()
-//> Array(name: Lily, age: 15, name: rain, age: 22, name: rain, age: 24)
+rdd.top(2)            // 取最高兩個 (降冪排序)   //> Array(Lily(23), Rain(24))
+rdd.takeOrdered(2)    // 取最低兩個 (升冪排序)   //> Array(Rain(22), Rain(24))
 ```
-- 依照 `Person.age` 排序
-
-```scala
-rdd.sortBy[String](p => p.name).collect()
-//> Array(name: Lily, age: 15, name: rain, age: 24, name: rain, age: 22)
-```
-- 依照 `Person.name` 排序
-
-```scala
-rdd.sortBy[(String, Int)](p => (p.name, p.age)).collect()
-//> Array(name: Lily, age: 15, name: rain, age: 22, name: rain, age: 24)
-```
-- 依照 `(Person.name, Person.age)` 排序 (先 name, 後 age)
-
-```scala
-rdd.top(2)
-//> Array(name: Lily, age: 15, name: rain, age: 24)
-```
-- `top` 取最高兩個 (降冪排序)
-
-```scala
-rdd.takeOrdered(2)
-//> Array(name: rain, age: 22, name: rain, age: 24)
-```
-- `takeOrdered` 取最低兩個 (升冪排序)
 
 ### 使用 `Ordering.by` 提供隱式參數
 ```scala
 abstract class RDD[T] {
-  ...
   def top(num: Int)(implicit ord: Ordering[T]): Array[T]
-  ...
 }
 ```
 - Returns the top k (largest) elements from this RDD as defined by the specified implicit Ordering[T] and maintains the ordering.
 
 ```scala
 object Ordering {
-  ...
   def by[T, S](f: (T) ⇒ S)(implicit ord: Ordering[S]): Ordering[T]
-  ...
 }
 ```
 - Given f, a function from T into S, creates an Ordering[T] whose compare function is equivalent to: `def compare(x:T, y:T) = Ordering[S].compare(f(x), f(y))`
 
 ```scala
-rdd.top(2)(Ordering.by[Person, (String, Int)]{ case Person(name, age) => (name, age) })
-//> Array(name: rain, age: 24, name: rain, age: 22)
+rdd.top(2)(Ordering.by[Person, (String, Int)]{ case Person(name, age) => (name, age) }) //> Array(Rain(24), Rain(22))
+rdd.top(2)(Ordering.by{ case Person(name, age) => (name, age) })
+rdd.top(2)(Ordering.by(p  => (p.name, p.age)))
 ```
 - 由 `Ordering.by` 決定排序的對象 `f: (T) ⇒ S`
 - 藉由提供隱式參數 `Ordering[S]` 幫 `top` 進行排序
