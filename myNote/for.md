@@ -75,3 +75,45 @@ list3 foreach println                           //> 0 is even?
                                                 //| 2
 ```
 - `list3` 只是一個 `FilterMonadic`，只有透過 `foreach` 取值的時候才會真正去執行 `withFilter`
+
+----
+## for 擴展作用域與值定義
+```scala
+val fruits = List("Apple", "Banana", "Cherry")
+//fruits: List[String] = List(Apple, Banana, Cherry)
+
+for {
+  fruit <- fruits
+  upcasedFruit = fruit.toUpperCase()
+} println(upcasedFruit)
+//APPLE
+//BANANA
+//CHERRY
+```
+
+```scala
+val fruits = List(Some("Apple"), None, Some("Banana"), None, Some("Cherry"))
+//fruits: List[Option[String]] = List(Some(Apple), None, Some(Banana), None, Some(Cherry))
+
+// first for:
+for {
+  fruitOption <- fruits
+  if fruitOption != None
+  fruit <- fruitOption
+  upcasedFruit = fruit.toUpperCase()
+} println(upcasedFruit)
+
+// second for:
+for {
+  fruitOption <- fruits
+  fruit <- fruitOption
+  upcasedFruit = fruit.toUpperCase()
+} println(upcasedFruit)
+
+// third for:
+for {
+  Some(fruit) <- fruits
+  upcasedFruit = fruit.toUpperCase()
+} println(upcasedFruit)
+```
+- 這三個 for 推導式同義，第三個比前兩個優雅：只有當 `fruitOption` 是 `Some` 類型時，`Some(fruit) <- fruits` 才會成功執行並提取 `fruit`；所有操作一次完成，`None` 不再被處理。
