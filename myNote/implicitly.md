@@ -1,5 +1,7 @@
 # implicitly
 
+參考：Programming Scala, 2nd Edition
+
 [object Predef](http://www.scala-lang.org/api/current/#scala.Predef$) 定義了一個名為 `implicitly` 的方法。
 
 ```scala
