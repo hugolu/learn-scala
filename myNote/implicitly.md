@@ -25,3 +25,18 @@ Scala 提供了一個簡化版的語法 `sortBy2`。類型參數 `B: Ordering` �
 不過。我們能需要在方法中訪問 `Ordering` 對象實例。由於在 source code 中不再明確聲明 `Ordering` 對象實例，因次這個實例沒有自己的名稱。針對這個現象提供 `Predef.implicitly` 方法傳給函數所有標記為隱式參數的實例進行解析。`implicitly` 方法接受的是 `Ordering[B]` 的類型簽名。
 
 當我們需要類型為**參數化類型的隱式參數**時，當類型參數屬於當前作用域的其他一些類型時 (例如：`[B: Ordering]` 代表了類型為 `Ordering[B]` 的隱式參數)，可以將上下文定界 (context bound) 與 `implicitly` 方法結合其來，以簡潔的方式解決這個問題。
+
+```scala
+case class Box(size: Int)
+
+implicit object BoxOrdering extends Ordering[Box] {
+  override def compare(x: Box, y: Box) = x.size - y.size
+  override def toString = "BoxOrdering"
+}
+
+val list = List(Box(1), Box(3), Box(5), Box(4), Box(2))
+
+list.sortBy(b => b)
+list.sortBy(b => b)(BoxOrdering)
+list.sortBy(b => b)(implicitly[Ordering[Box]])
+```
