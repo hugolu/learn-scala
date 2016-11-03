@@ -5,6 +5,8 @@
 ## Abstract Factory
 參考資料：[抽象工廠](https://zh.wikipedia.org/wiki/%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82)
 
+用同一個介面來建立一整族相關或相依的物件，不需點名個物件真正所屬的具象類別。
+
 ![](https://upload.wikimedia.org/wikipedia/commons/9/9d/Abstract_factory_UML.svg)
 
 ```scala
