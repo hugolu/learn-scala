@@ -3,7 +3,7 @@
 明明是 functional programming，還玩 design pattern，我一定是瘋了，哈哈
 
 ## Abstract Factory
-參考資料：[抽象工廠](https://zh.wikipedia.org/wiki/%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82)
+參考資料：[Abstract factory pattern](https://en.wikipedia.org/wiki/Abstract_factory_pattern)
 
 用同一個介面來建立一整族相關或相依的物件，不需點名個物件真正所屬的具象類別。
 
@@ -46,4 +46,25 @@ c1.test // create MacButton and MacBorder
 
 val c2 = new Client(new WinFactory)
 c2.test // create WinButton and WinBorder
+```
+
+## Factory Method
+參考資料：[Factory method pattern](https://en.wikipedia.org/wiki/Factory_method_pattern
+
+定義可資生成物件的介面，但讓子類別去決定該具現出哪一種類別的物件。此模式讓類別將具現化程序交付給子類別去處置。
+
+![](https://upload.wikimedia.org/wikipedia/commons/a/a3/FactoryMethod.svg)
+
+```scala
+trait Product { abstract def fun: Unit }
+
+class ConcreteProduct extends Product { def fun = println("I'm ConcreteProductProduct") }
+
+trait Creator { def factoryMethod: Product }
+
+class ConcreteCreator extends Creator { def factoryMethod = new ConcreteProduct }
+
+val c = new ConcreteCreator
+val p = c.factoryMethod
+p.fun // I'm ConcreteProductProduct
 ```
