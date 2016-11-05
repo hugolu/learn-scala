@@ -10,19 +10,24 @@
 ![](https://upload.wikimedia.org/wikipedia/commons/9/9d/Abstract_factory_UML.svg)
 
 ```scala
+// Abstract Product
 trait Button
 trait Border
 
+// Concrete Product
 class MacButton extends Button { override def toString = "MacButton" }
 class MacBorder extends Border { override def toString = "MacBorder" }
+
 class WinButton extends Button { override def toString = "WinButton" }
 class WinBorder extends Border { override def toString = "WinBorder" }
 
+// Abstract Factory
 trait Factory {
   def createButton: Button
   def createBorder: Border
 }
 
+// Concrete Factory
 class MacFactory extends Factory {
   def createButton = new MacButton
   def createBorder = new MacBorder
@@ -33,6 +38,7 @@ class WinFactory extends Factory {
   def createBorder = new WinBorder
 }
 
+// Client
 class Client(factory: Factory) {
   def test = {
     val button = factory.createButton
@@ -41,6 +47,7 @@ class Client(factory: Factory) {
   }
 }
 
+// Test driver
 val c1 = new Client(new MacFactory)
 c1.test // create MacButton and MacBorder
 
@@ -104,14 +111,19 @@ println(car)  // Car [wheels=4, color=Red]
 ![](https://upload.wikimedia.org/wikipedia/commons/a/a3/FactoryMethod.svg)
 
 ```scala
+// Abstract Product 
 trait Product { abstract def fun: Unit }
 
+// Concrete Product
 class ConcreteProduct extends Product { def fun = println("I'm ConcreteProductProduct") }
 
+// Abstract Creator
 trait Creator { def factoryMethod: Product }
 
+// Concrete Creator
 class ConcreteCreator extends Creator { def factoryMethod = new ConcreteProduct }
 
+// Test driver
 val c = new ConcreteCreator
 val p = c.factoryMethod
 p.fun // I'm ConcreteProductProduct
