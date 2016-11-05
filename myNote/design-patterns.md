@@ -48,6 +48,54 @@ val c2 = new Client(new WinFactory)
 c2.test // create WinButton and WinBorder
 ```
 
+## Builder 
+參考資料：[Builder pattern](https://en.wikipedia.org/wiki/Builder_pattern)
+
+從複雜物件的佈局中抽取出生成程序，以便用同一個生成程序製造特種不同的物件佈局。
+
+![](https://upload.wikimedia.org/wikipedia/commons/f/f3/Builder_UML_class_diagram.svg)
+
+```scala
+// Product
+class Car {
+  var wheels: Int = _
+  var color: String = _
+
+  override def toString = s"Car [wheels=${wheels}, color=${color}]"
+  def setWheels(wheels: Int) { this.wheels = wheels }
+  def setColor(color: String) { this.color = color }
+}
+
+// Abstract Builder
+trait CarBuilder {
+  def setWheels(wheels: Int)
+  def setColor(color: String)
+  def getResult: Car
+}
+
+// Concrete Builder
+class CarBuilderImpl extends CarBuilder {
+  val car = new Car
+  def setWheels(wheels: Int) = car.setWheels(wheels)
+  def setColor(color: String) = car.setColor(color)
+  def getResult = car
+}
+
+// Director
+class CarBuilderDirector(builder: CarBuilder) {
+  def construct: Car = {
+    builder.setWheels(4)
+    builder.setColor("Red")
+    builder.getResult
+  }
+}
+
+// Test driver
+val director = new CarBuilderDirector(new CarBuilderImpl)
+val car = director.construct
+println(car)  // Car [wheels=4, color=Red]
+```
+
 ## Factory Method
 參考資料：[Factory method pattern](https://en.wikipedia.org/wiki/Factory_method_pattern
 
