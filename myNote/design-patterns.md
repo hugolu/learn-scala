@@ -128,3 +128,30 @@ val c = new ConcreteCreator
 val p = c.factoryMethod
 p.fun // I'm ConcreteProductProduct
 ```
+
+## Prototype
+参考资料：[Prototype pattern](https://en.wikipedia.org/wiki/Prototype_pattern)
+
+制定可用原型個體生成的物件類型，爾後只須複製此原型即可生成新物件。
+
+![](https://upload.wikimedia.org/wikipedia/commons/1/14/Prototype_UML.svg)
+
+```scacl
+// Prototype
+trait Cloneable[A] { self: A =>
+  def copy: A
+}
+
+// Concrete Prototype
+class Box(val size: Int) extends Cloneable[Box] {
+  def copy = new Box(size)
+}
+
+// Test driver
+val b1 = new Box(3) // b1: Box = Box@d5af0a5
+val b2 = b1.copy    // b2: Box = Box@79c5460e
+```
+
+An answer to [How to clone objects in Scala?](http://stackoverflow.com/questions/6417450/how-to-clone-objects-in-scala)
+- If that complex object is mutable or contain mutable parts, then the solution is the same as in Java. Check Java questions & posts about it and do that.
+- If everything is immutable, then you don't need and shouldn't clone anything. At best, you should make a shallow copy of the object, changing only the fields that need changing, and, at worst, you use something like lenses or zippers to copy some deep object and propagate the change upwards. See questions on Scala about lenses and zippers for that.
