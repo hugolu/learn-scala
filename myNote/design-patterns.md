@@ -97,7 +97,7 @@ println(car)  // Car [wheels=4, color=Red]
 ```
 
 ## Factory Method
-參考資料：[Factory method pattern](https://en.wikipedia.org/wiki/Factory_method_pattern
+參考資料：[Factory method pattern](https://en.wikipedia.org/wiki/Factory_method_pattern)
 
 定義可資生成物件的介面，但讓子類別去決定該具現出哪一種類別的物件。此模式讓類別將具現化程序交付給子類別去處置。
 
