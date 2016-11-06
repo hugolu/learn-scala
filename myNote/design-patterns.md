@@ -155,3 +155,15 @@ val b2 = b1.copy    // b2: Box = Box@79c5460e
 An answer to [How to clone objects in Scala?](http://stackoverflow.com/questions/6417450/how-to-clone-objects-in-scala)
 - If that complex object is mutable or contain mutable parts, then the solution is the same as in Java. Check Java questions & posts about it and do that.
 - If everything is immutable, then you don't need and shouldn't clone anything. At best, you should make a shallow copy of the object, changing only the fields that need changing, and, at worst, you use something like lenses or zippers to copy some deep object and propagate the change upwards. See questions on Scala about lenses and zippers for that.
+
+## Singleton
+參考資料：[Singleton pattern](https://en.wikipedia.org/wiki/Singleton_pattern)
+
+確保類別只會有一個物件實體存在，並提供單一存取窗口。
+
+![](https://upload.wikimedia.org/wikipedia/commons/d/dc/Singleton_pattern_uml.png)
+
+```scala
+object Singleton
+```
+
