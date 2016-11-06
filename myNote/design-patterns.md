@@ -167,3 +167,40 @@ An answer to [How to clone objects in Scala?](http://stackoverflow.com/questions
 object Singleton
 ```
 
+## Adapter
+參考資料：[Adapter pattern](https://en.wikipedia.org/wiki/Adapter_pattern)
+
+![Object Adapter pattern](https://upload.wikimedia.org/wikipedia/commons/d/d7/ObjectAdapter.png)
+
+![Class Adapter pattern](https://upload.wikimedia.org/wikipedia/commons/3/35/ClassAdapter.png)
+
+```scala
+// Adaptee
+class LegacyLine {
+  def draw(x1: Int, y1: Int, x2: Int, y2: Int) = println(s"line from ($x1, $y1) to ($x2, $y2)")
+}
+
+class LegacyRectangle {
+  def draw(x: Int, y: Int, w: Int, h: Int) = println(s"rectangle at ($x, $y) with width $w and height $h")
+}
+
+// Adapter
+trait Shape { def draw(x1: Int, y1: Int, x2: Int, y2: Int) }
+
+class Line extends Shape {
+  val adaptee: LegacyLine = new LegacyLine
+  def draw(x1: Int, y1: Int, x2: Int, y2: Int) = adaptee.draw(x1, y1, x2, y2)
+}
+
+class Rectangle extends Shape {
+  val adaptee: LegacyRectangle = new LegacyRectangle
+  def draw(x1: Int, y1: Int, x2: Int, y2: Int) = adaptee.draw(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x1 - x2), Math.abs(y1 - y2))
+}
+
+// Test driver
+val line = new Line
+val rectangle = new Rectangle
+
+line.draw(10, 20, 30, 60)       //line from (10, 20) to (30, 60)
+rectangle.draw(10, 20, 30, 60)  //rectangle at (10, 20) with width 20 and height 40
+```
