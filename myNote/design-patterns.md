@@ -161,7 +161,7 @@ An answer to [How to clone objects in Scala?](http://stackoverflow.com/questions
 
 確保類別只會有一個物件實體存在，並提供單一存取窗口。
 
-<img src="https://upload.wikimedia.org/wikipedia/commons/d/dc/Singleton_pattern_uml.png" width="600" />
+<img src="https://upload.wikimedia.org/wikipedia/commons/d/dc/Singleton_pattern_uml.png" />
 
 ```scala
 object Singleton
@@ -170,9 +170,8 @@ object Singleton
 ## Adapter
 參考資料：[Adapter pattern](https://en.wikipedia.org/wiki/Adapter_pattern)
 
-<img alt="Object Adapter pattern" src="https://upload.wikimedia.org/wikipedia/commons/d/d7/ObjectAdapter.png" width="600" />
-
-<ima alt="Class Adapter pattern" src="https://upload.wikimedia.org/wikipedia/commons/3/35/ClassAdapter.png" width="600" />
+<img alt="Object Adapter pattern" src="https://upload.wikimedia.org/wikipedia/commons/d/d7/ObjectAdapter.png" width="400" />
+<img alt="Class Adapter pattern" src="https://upload.wikimedia.org/wikipedia/commons/3/35/ClassAdapter.png" width="400" />
 
 ```scala
 // Adaptee
