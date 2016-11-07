@@ -204,3 +204,48 @@ val rectangle = new Rectangle
 line.draw(10, 20, 30, 60)       //line from (10, 20) to (30, 60)
 rectangle.draw(10, 20, 30, 60)  //rectangle at (10, 20) with width 20 and height 40
 ```
+
+## Bridge
+參考資料：[Bridge pattern](https://en.wikipedia.org/wiki/Bridge_pattern)
+
+將實作體系與抽象體系分離開來，讓兩者能各自更動各自演進。
+
+![](https://en.wikipedia.org/wiki/File:Bridge_UML_class_diagram.svg)
+
+```scala
+// Implementor
+trait DrawingAPI {
+  def drawCircle(x: Double, y: Double, radius: Double)
+}
+
+// Concrete Implementor
+class DrawingAPI1 extends DrawingAPI {
+  def drawCircle(x: Double, y: Double, radius: Double) = println(s"Circle1 at ($x, $y), adius: $radius")
+}
+
+class DrawingAPI2 extends DrawingAPI {
+  def drawCircle(x: Double, y: Double, radius: Double) = println(s"Circle2 at ($x, $y), adius: $radius")
+}
+
+// Abstraction
+abstract class Shape(drawingAPI: DrawingAPI) {
+  def draw()
+  def resizePercentage(pct: Double)
+}
+
+// Refined Abstraction
+class CircleShape(x: Double, y: Double, var radius: Double, drawingAPI: DrawingAPI) extends Shape(drawingAPI) {
+  def draw = drawingAPI.drawCircle(x, y, radius)
+  def resizePercentage(pct: Double) { radius *= pct }
+}
+
+// Client
+Seq (new CircleShape(1,3,7, new DrawingAPI1),
+     new CircleShape(5,7,11, new DrawingAPI2)
+) foreach { c =>
+  c.resizePercentage(2.5)
+  c.draw
+}
+// Circle1 at (1.0, 3.0), adius: 17.5
+// Circle2 at (5.0, 7.0), adius: 27.5
+```
