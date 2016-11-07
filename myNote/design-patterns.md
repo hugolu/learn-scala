@@ -249,3 +249,55 @@ Seq (new CircleShape(1,3,7, new DrawingAPI1),
 // Circle1 at (1.0, 3.0), adius: 17.5
 // Circle2 at (5.0, 7.0), adius: 27.5
 ```
+
+## Composite
+參考資料：[Composite pattern](https://en.wikipedia.org/wiki/Composite_pattern)
+
+將物件組織成樹狀結構，「部分-全體」階層關係，讓外界以一致性的方式對待個別物件與整體物件。
+
+![](https://upload.wikimedia.org/wikipedia/commons/5/5a/Composite_UML_class_diagram_%28fixed%29.svg)
+
+```scala
+// Component
+abstract class Inode(name: String) {
+  def ls(indent: Int = 0): Unit
+}
+
+// Leaf
+class File(name: String) extends Inode(name) {
+  def ls(indent: Int) = println("  "*indent + name)
+}
+
+// Composite
+import scala.collection.JavaConversions._
+class Directory(name: String) extends Inode(name) {
+  val inodes = new java.util.ArrayList[Inode]()
+  def add(inode: Inode) = inodes.add(inode)
+  def ls(indent: Int) = {
+    println("  "*indent + name)
+    inodes.foreach{inode => inode.ls(indent+1)}
+  }
+}
+
+// Client
+val d1 = new Directory("dir1")
+val d2 = new Directory("dir2") 
+val d3 = new Directory("dir3") 
+val f1 = new File("file1")
+val f2 = new File("file2")
+val f3 = new File("file3")
+
+d1.add(f1)
+d1.add(d2)
+d2.add(f2)
+d2.add(d3)
+d3.add(f3)
+
+d1.ls()
+// dir1
+//   file1
+//   dir2
+//     file2
+//     dir3
+//       file3
+```
