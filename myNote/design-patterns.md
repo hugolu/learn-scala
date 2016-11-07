@@ -7,7 +7,7 @@
 
 用同一個介面來建立一整族相關或相依的物件，不需點名個物件真正所屬的具象類別。
 
-![](https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Bridge_UML_class_diagram.svg/800px-Bridge_UML_class_diagram.svg.png)
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Bridge_UML_class_diagram.svg/800px-Bridge_UML_class_diagram.svg.png" width="600"/>
 
 ```scala
 // Abstract Product
@@ -60,7 +60,7 @@ c2.test // create WinButton and WinBorder
 
 從複雜物件的佈局中抽取出生成程序，以便用同一個生成程序製造特種不同的物件佈局。
 
-![](https://upload.wikimedia.org/wikipedia/commons/f/f3/Builder_UML_class_diagram.svg)
+<img src="https://upload.wikimedia.org/wikipedia/commons/f/f3/Builder_UML_class_diagram.svg" width="600" />
 
 ```scala
 // Product
@@ -108,7 +108,7 @@ println(car)  // Car [wheels=4, color=Red]
 
 定義可資生成物件的介面，但讓子類別去決定該具現出哪一種類別的物件。此模式讓類別將具現化程序交付給子類別去處置。
 
-![](https://upload.wikimedia.org/wikipedia/commons/a/a3/FactoryMethod.svg)
+<img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/FactoryMethod.svg" width="600" />
 
 ```scala
 // Abstract Product 
@@ -134,7 +134,7 @@ p.fun // I'm ConcreteProductProduct
 
 制定可用原型個體生成的物件類型，爾後只須複製此原型即可生成新物件。
 
-![](https://upload.wikimedia.org/wikipedia/commons/1/14/Prototype_UML.svg)
+<img src="https://upload.wikimedia.org/wikipedia/commons/1/14/Prototype_UML.svg" width="600" />
 
 ```scacl
 // Prototype
@@ -161,7 +161,7 @@ An answer to [How to clone objects in Scala?](http://stackoverflow.com/questions
 
 確保類別只會有一個物件實體存在，並提供單一存取窗口。
 
-![](https://upload.wikimedia.org/wikipedia/commons/d/dc/Singleton_pattern_uml.png)
+<img src="https://upload.wikimedia.org/wikipedia/commons/d/dc/Singleton_pattern_uml.png" width="600" />
 
 ```scala
 object Singleton
@@ -170,9 +170,9 @@ object Singleton
 ## Adapter
 參考資料：[Adapter pattern](https://en.wikipedia.org/wiki/Adapter_pattern)
 
-![Object Adapter pattern](https://upload.wikimedia.org/wikipedia/commons/d/d7/ObjectAdapter.png)
+<img alt="Object Adapter pattern" src="https://upload.wikimedia.org/wikipedia/commons/d/d7/ObjectAdapter.png" width="600" />
 
-![Class Adapter pattern](https://upload.wikimedia.org/wikipedia/commons/3/35/ClassAdapter.png)
+<ima alt="Class Adapter pattern" src="https://upload.wikimedia.org/wikipedia/commons/3/35/ClassAdapter.png" width="600" />
 
 ```scala
 // Adaptee
@@ -210,7 +210,7 @@ rectangle.draw(10, 20, 30, 60)  //rectangle at (10, 20) with width 20 and height
 
 將實作體系與抽象體系分離開來，讓兩者能各自更動各自演進。
 
-![](https://upload.wikimedia.org/wikipedia/commons/c/cf/Bridge_UML_class_diagram.svg)
+<img src="https://upload.wikimedia.org/wikipedia/commons/c/cf/Bridge_UML_class_diagram.svg" width="600" />
 
 ```scala
 // Implementor
@@ -255,7 +255,7 @@ Seq (new CircleShape(1,3,7, new DrawingAPI1),
 
 將物件組織成樹狀結構，「部分-全體」階層關係，讓外界以一致性的方式對待個別物件與整體物件。
 
-![](https://upload.wikimedia.org/wikipedia/commons/5/5a/Composite_UML_class_diagram_%28fixed%29.svg)
+<img src="https://upload.wikimedia.org/wikipedia/commons/5/5a/Composite_UML_class_diagram_%28fixed%29.svg" width="600" />
 
 ```scala
 // Component
