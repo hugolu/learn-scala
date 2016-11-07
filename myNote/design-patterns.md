@@ -7,7 +7,7 @@
 
 用同一個介面來建立一整族相關或相依的物件，不需點名個物件真正所屬的具象類別。
 
-![](https://upload.wikimedia.org/wikipedia/commons/9/9d/Abstract_factory_UML.svg)
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Bridge_UML_class_diagram.svg/800px-Bridge_UML_class_diagram.svg.png)
 
 ```scala
 // Abstract Product
@@ -210,7 +210,7 @@ rectangle.draw(10, 20, 30, 60)  //rectangle at (10, 20) with width 20 and height
 
 將實作體系與抽象體系分離開來，讓兩者能各自更動各自演進。
 
-![](https://en.wikipedia.org/wiki/File:Bridge_UML_class_diagram.svg)
+![](https://upload.wikimedia.org/wikipedia/commons/c/cf/Bridge_UML_class_diagram.svg)
 
 ```scala
 // Implementor
