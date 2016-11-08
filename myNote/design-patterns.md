@@ -256,6 +256,8 @@ Seq (new CircleShape(1,3,7, new DrawingAPI1),
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/5/5a/Composite_UML_class_diagram_%28fixed%29.svg" width="600" />
 
+<img src="pictures/composite.png" width="600" />
+
 ```scala
 // Component
 abstract class Inode(name: String) {
