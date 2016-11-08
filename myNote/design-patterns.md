@@ -300,3 +300,59 @@ d1.ls()
 //     dir3
 //       file3
 ```
+
+## Decorator
+將額外權責動態附加於物件身上，不必衍生子類別即可彈性擴增功能。
+
+<img src="pictures/decorator.png" width="800" />
+
+```scala
+// Component
+trait Component {
+  def doIt: Unit
+}
+
+// Concrete Component
+class ConcreteComponent extends Component {
+  def doIt = System.out.print('A')
+}
+
+// Decorator
+abstract class Decorator(component: Component) extends Component {
+  private val core = component
+  def doIt = core.doIt
+}
+
+// Concrete Decorator
+class ConcreteDecoratorX(component: Component) extends Decorator(component) {
+  private def doX = System.out.print('X')
+  override def doIt = {
+    super.doIt
+    doX
+  }
+}
+
+class ConcreteDecoratorY(component: Component) extends Decorator(component) {
+  private def doY = System.out.print('Y')
+  override def doIt = {
+    super.doIt
+    doY
+  }
+}
+
+class ConcreteDecoratorZ(component: Component) extends Decorator(component) {
+  private def doZ = System.out.print('Z')
+  override def doIt = {
+    super.doIt
+    doZ
+  }
+}
+
+// Test driver
+val list = List(
+  new ConcreteDecoratorX(new ConcreteComponent),
+  new ConcreteDecoratorY(new ConcreteDecoratorX(new ConcreteComponent)),
+  new ConcreteDecoratorZ(new ConcreteDecoratorY(new ConcreteDecoratorX(new ConcreteComponent))))
+
+list.foreach{ item => item.doIt; println() }
+```
