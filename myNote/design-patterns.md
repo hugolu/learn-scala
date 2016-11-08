@@ -254,9 +254,7 @@ Seq (new CircleShape(1,3,7, new DrawingAPI1),
 
 將物件組織成樹狀結構，「部分-全體」階層關係，讓外界以一致性的方式對待個別物件與整體物件。
 
-<img src="https://upload.wikimedia.org/wikipedia/commons/5/5a/Composite_UML_class_diagram_%28fixed%29.svg" width="600" />
-
-<img src="pictures/composite.png" width="600" />
+<img src="pictures/composite.png" width="800" />
 
 ```scala
 // Component
