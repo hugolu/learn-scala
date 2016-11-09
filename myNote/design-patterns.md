@@ -250,8 +250,6 @@ Seq (new CircleShape(1,3,7, new DrawingAPI1),
 ```
 
 ## Composite
-參考資料：[Composite pattern](https://en.wikipedia.org/wiki/Composite_pattern)
-
 將物件組織成樹狀結構，「部分-全體」階層關係，讓外界以一致性的方式對待個別物件與整體物件。
 
 <img src="pictures/composite.png" width="800" />
@@ -355,4 +353,44 @@ val list = List(
   new ConcreteDecoratorZ(new ConcreteDecoratorY(new ConcreteDecoratorX(new ConcreteComponent))))
 
 list.foreach{ item => item.doIt; println() }
+```
+
+## Facade
+替子系統裡的一堆介面定義一套統一的高階介面，讓子系統更易使用。
+
+<img src="pictures/facade.png" width="800">
+
+```scala
+// Subsystem
+class CPU {
+  def freeze() = println("CPU freezed")
+  def jump(addr: Int) = println(f"jump to ${addr}%x")
+  def execute() = println("CPU executing")
+}
+
+class Memory {
+  def load(addr: Int, data: Array[Byte]) = println(f"load ${data.mkString("(", ", ", ")")} to ${addr}%x")
+}
+
+class HardDrive {
+  def read(addr: Int, size: Int): Array[Byte] = Array(1,2,3,4)
+}
+
+// Facade
+class Computer {
+  private val processor = new CPU()
+  private val ram = new Memory()
+  private val hd = new HardDrive()
+
+  def start() = {
+    processor.freeze()
+    ram.load(0x80010000, hd.read(0x00000000, 512))
+    processor.jump(0x80010000)
+    processor.execute()
+  }
+}
+
+// Test driver
+val computer = new Computer()
+computer.start()
 ```
