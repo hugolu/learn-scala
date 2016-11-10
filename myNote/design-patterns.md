@@ -536,3 +536,48 @@ logger.message("Error occurs!", Logger.ERR)
 //> Sending via email: Error occurs!
 //> Sending to stderr: Error occurs!
 ```
+
+## Command
+將訊息封裝成物件，以便能用各種不同訊息、暫佇、紀錄、復原等方式加以參數化處理。
+
+<img src="pictures/command.png" width="800" />
+
+```scala
+// Command
+trait Command {
+  def execute(): Unit
+}
+
+// Concrete Command
+class FlipUpCommand(light: Light) extends Command {
+  def execute() = light.turnOn()
+}
+
+class FlipDownCommand(light: Light) extends Command {
+  def execute() = light.turnOff()
+}
+
+// Invoker
+class Switch {
+  private val history = new java.util.ArrayList[Command]()
+  def storeAndExecute(command: Command) = {
+    history.add(command)
+    command.execute()
+  }
+}
+
+// Receiver
+class Light {
+  def turnOn() = println("The light is on")
+  def turnOff() = println("The light is off")
+}
+
+// Test driver
+val lamp = new Light
+val switchUp = new FlipUpCommand(lamp)
+val switchDown = new FlipDownCommand(lamp)
+
+val switch = new Switch
+switch.storeAndExecute(switchUp)
+switch.storeAndExecute(switchDown)
+```
