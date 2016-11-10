@@ -581,3 +581,9 @@ val switch = new Switch
 switch.storeAndExecute(switchUp)
 switch.storeAndExecute(switchDown)
 ```
+
+## Interpreter
+針對標的語言定義出文法，以及可解讀這種語句的解譯器。
+
+<img src="pictures/interpreter.png" width="600" />
+
