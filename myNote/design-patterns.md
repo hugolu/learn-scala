@@ -587,3 +587,56 @@ switch.storeAndExecute(switchDown)
 
 <img src="pictures/interpreter.png" width="600" />
 
+```scala
+// Abstract Expression
+trait Expression {
+  def interpret(variables: Map[String, Expression]): Int
+}
+
+// Terminal Expression
+class Number(number: Int) extends Expression {
+  def interpret(variables: Map[String, Expression]) = number
+}
+
+object zero extends Expression {
+  def interpret(variables: Map[String, Expression]) = 0
+}
+
+// Nonterminal Expression
+class Variable(name: String) extends Expression {
+  def interpret(variables: Map[String, Expression]) = variables.getOrElse(name, zero).interpret(variables)
+}
+
+class Plus(leftOp: Expression, rightOp: Expression) extends Expression {
+  def interpret(variables: Map[String, Expression]) = leftOp.interpret(variables) + rightOp.interpret(variables)
+}
+
+class Minus(leftOp: Expression, rightOp: Expression) extends Expression {
+  def interpret(variables: Map[String, Expression]) = leftOp.interpret(variables) - rightOp.interpret(variables)
+}
+
+class Evaluator(expression: String) extends Expression {
+  private val expressionStack = scala.collection.mutable.Stack[Expression]()
+  expression.split(" ").foreach{ token => 
+    token match {
+      case "+" => expressionStack.push(new Plus(expressionStack.pop(), expressionStack.pop()))
+      case "-" => expressionStack.push(new Minus(expressionStack.pop(), expressionStack.pop()))
+      case _ => expressionStack.push(new Variable(token))
+    }
+  }
+  private val syntaxTree = expressionStack.pop()
+
+  def interpret(context: Map[String, Expression]) = syntaxTree.interpret(context)
+}
+
+// Test driver
+val expression = "w x z - +"
+val sentence = new Evaluator(expression)  // z + (w - x)
+
+val variables = scala.collection.mutable.Map[String, Expression]()
+variables.put("w", new Number(5))
+variables.put("x", new Number(10))
+variables.put("z", new Number(42))
+
+sentence.interpret(variables.toMap)       //> 37
+```
