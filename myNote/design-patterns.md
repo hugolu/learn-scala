@@ -476,3 +476,63 @@ image.displayImage()  //> Loading banana.jpg
                       //> Displaying banana.jpg
 image.displayImage()  //> Displaying banana.jpg
 ```
+
+## Chain of Responsibility
+讓多個物件都有機會處理某一訊息，以降低訊息發送者和接收者之間的耦合關係。它將接收者串連起來，讓訊息流經其中，直到被處理了為止。
+
+<img src="pictures/chain-of-responsibility.png" width="500" />
+
+```scala
+// Handler
+abstract class Logger(mask: Int) {
+  protected var next: Logger = null
+  def setNext(l: Logger): Logger = {
+    next = l
+    this
+  }
+
+  protected def writeMessage(msg: String): Unit
+  final def message(msg: String, priority: Int): Unit = {
+    if (priority <= mask) {
+      writeMessage(msg)
+    }
+    if (next != null) {
+      next.message(msg, priority)
+    }
+  }
+}
+
+object Logger {
+  val ERROR = 3
+  val NOTICE = 5
+  val DEBUG = 7
+}
+
+// Concrete Handlers
+class StdoutLogger(mask: Int) extends Logger(mask) {
+  def writeMessage(msg: String) = println(s"Sending to stdout: $msg")
+}
+
+class StderrLogger(mask: Int) extends Logger(mask) {
+  def writeMessage(msg: String) = println(s"Sending to stderr: $msg")
+}
+
+class EmailLogger(mask: Int) extends Logger(mask) {
+  def writeMessage(msg: String) = println(s"Sending via email: $msg")
+}
+
+// Test driver
+val logger = new StdoutLogger(Logger.DEBUG).setNext(new EmailLogger(Logger.NOTICE).setNext(new StderrLogger(Logger.ERR)))
+
+logger.message("Hello world.", Logger.DEBUG)
+//> Sending to stdout: Hello world.
+
+logger.message("Notict it!", Logger.NOTICE)
+//> Sending to stdout: Notict it!
+//> Sending via email: Notict it!
+
+logger.message("Error occurs!", Logger.ERR)
+//> Sending to stdout: Error occurs!
+//> Sending via email: Error occurs!
+//> Sending to stderr: Error occurs!
+```
