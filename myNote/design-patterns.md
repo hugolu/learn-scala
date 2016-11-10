@@ -394,3 +394,48 @@ class Computer {
 val computer = new Computer()
 computer.start()
 ```
+
+## Flyweight
+以共享機制有效地支援一大堆小規模的物件。
+
+<img src="pictures/flyweight.png" width="800" />
+
+```scala
+// Flyweight
+trait Glyph {
+  def draw(): Unit
+}
+
+// Concrete Flyweight
+class Character(c: Char) {
+  def draw() = System.out.print(c)
+}
+
+// Unshared Concrete Flyweight
+class Row {
+  val chars = scala.collection.mutable.ListBuffer[Character]()
+  def addChar(char: Character) = { chars += char }
+  def draw() = { chars.foreach(_.draw()) }
+}
+
+// Flyweight Factory
+class CharacterFactory {
+  val chars = scala.collection.mutable.LinkedHashMap[Char, Character]()
+  def getCharacter(c: Char) = chars.getOrElseUpdate(c, new Character(c))
+  def numChars = chars.size
+}
+
+// Client
+val factory = new CharacterFactory()
+val row = new Row()
+
+row.addChar(factory.getCharacter('b'))
+row.addChar(factory.getCharacter('a'))
+row.addChar(factory.getCharacter('n'))
+row.addChar(factory.getCharacter('a'))
+row.addChar(factory.getCharacter('n'))
+row.addChar(factory.getCharacter('a'))
+
+row.draw()        //> banana
+factory.numChars  //> 3
+```
