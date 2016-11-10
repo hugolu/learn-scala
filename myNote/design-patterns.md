@@ -439,3 +439,40 @@ row.addChar(factory.getCharacter('a'))
 row.draw()        //> banana
 factory.numChars  //> 3
 ```
+
+## Proxy
+替其他物件預留代理空位，藉此控制存取其他物件。
+
+<img src="pictures/proxy.png" width="800" />
+
+```scala
+// Subject
+trait Image {
+  def displayImage(): Unit
+}
+
+// Real Subject
+class RealImage(filename: String) extends Image {
+  def displayImage() = println(s"Displaying $filename")
+  private def loadImageFromDisk() = println(s"Loading $filename")
+  loadImageFromDisk()
+}
+
+// Proxy
+class ProxyImage(filename: String) extends Image {
+  var image: RealImage = null
+  def displayImage() = {
+    if (image == null) {
+      image = new RealImage(filename)
+    }
+    image.displayImage()
+  }
+}
+
+// Test driver
+val image = new ProxyImage("apple.jpg")
+
+image.displayImage()  //> Loading banana.jpg
+                      //> Displaying banana.jpg
+image.displayImage()  //> Displaying banana.jpg
+```
