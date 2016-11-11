@@ -629,14 +629,14 @@ class Evaluator(expression: String) extends Expression {
   def interpret(context: Map[String, Expression]) = syntaxTree.interpret(context)
 }
 
-// Test driver
-val expression = "w x z - +"
-val sentence = new Evaluator(expression)  // z + (w - x)
-
+// Context
 val variables = scala.collection.mutable.Map[String, Expression]()
 variables.put("w", new Number(5))
 variables.put("x", new Number(10))
 variables.put("z", new Number(42))
 
+// Test driver
+val expression = "w x z - +"
+val sentence = new Evaluator(expression)  // z + (w - x)
 sentence.interpret(variables.toMap)       //> 37
 ```
