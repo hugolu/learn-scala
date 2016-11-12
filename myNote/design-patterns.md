@@ -647,4 +647,48 @@ sentence.interpret(variables.toMap)       //> 37
 <img src="pictures/iterator.png" width="692" />
 
 ```scala
+// Iterator
+trait Iterator {
+  def first(): Object
+  def next(): Object
+  def isDone(): Boolean
+  def currentItem(): Object
+}
+
+// Concrete Iterator
+import java.util.ArrayList
+class ConcreteIterator(list: ArrayList[Object]) extends Iterator {
+  private var curr = 0;
+  def first() = list.get(0)
+  def next() = { curr += 1; if (curr < list.size) list.get(curr) else null }
+  def isDone() = (curr >= list.size)
+  def currentItem() = list.get(curr)
+}
+
+// Aggregate
+trait Aggregate {
+  def createIterator(): Iterator
+}
+
+// Concrete Aggregate
+class ConcreteAggregate(list: ArrayList[Object]) extends {
+  def createIterator() = new ConcreteIterator(list)
+}
+
+// Test driver
+val list = new ArrayList[Object]()
+list.add("apple")
+list.add("banana")
+list.add("cherry")
+
+val agg = new ConcreteAggregate(list)
+val iterator = agg.createIterator()
+println(iterator.first()) //> "apple"
+while(!iterator.isDone()) {
+  println(iterator.currentItem())
+  iterator.next()
+}
+//> "apple"
+//> "banana"
+//> "cherry"
 ```
