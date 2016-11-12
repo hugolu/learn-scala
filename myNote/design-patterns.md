@@ -692,3 +692,12 @@ while(!iterator.isDone()) {
 //> "banana"
 //> "cherry"
 ```
+Scala iterator 更簡單明暸:
+```scala
+val list = List("apple", "banana", "cherry")
+val iterator = list.iterator
+
+while(iterator.hasNext) {
+  println(iterator.next)
+}
+```
