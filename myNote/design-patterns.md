@@ -252,7 +252,7 @@ Seq (new CircleShape(1,3,7, new DrawingAPI1),
 ## Composite
 將物件組織成樹狀結構，「部分-全體」階層關係，讓外界以一致性的方式對待個別物件與整體物件。
 
-<img src="pictures/composite.png" width="800" />
+<img src="pictures/composite.png" width="916" />
 
 ```scala
 // Component
@@ -302,7 +302,7 @@ d1.ls()
 ## Decorator
 將額外權責動態附加於物件身上，不必衍生子類別即可彈性擴增功能。
 
-<img src="pictures/decorator.png" width="800" />
+<img src="pictures/decorator.png" width="919" />
 
 ```scala
 // Component
@@ -358,7 +358,7 @@ list.foreach{ item => item.doIt; println() }
 ## Facade
 替子系統裡的一堆介面定義一套統一的高階介面，讓子系統更易使用。
 
-<img src="pictures/facade.png" width="800">
+<img src="pictures/facade.png" width="960">
 
 ```scala
 // Subsystem
@@ -398,7 +398,7 @@ computer.start()
 ## Flyweight
 以共享機制有效地支援一大堆小規模的物件。
 
-<img src="pictures/flyweight.png" width="800" />
+<img src="pictures/flyweight.png" width="984" />
 
 ```scala
 // Flyweight
@@ -443,7 +443,7 @@ factory.numChars  //> 3
 ## Proxy
 替其他物件預留代理空位，藉此控制存取其他物件。
 
-<img src="pictures/proxy.png" width="800" />
+<img src="pictures/proxy.png" width="828" />
 
 ```scala
 // Subject
@@ -480,7 +480,7 @@ image.displayImage()  //> Displaying banana.jpg
 ## Chain of Responsibility
 讓多個物件都有機會處理某一訊息，以降低訊息發送者和接收者之間的耦合關係。它將接收者串連起來，讓訊息流經其中，直到被處理了為止。
 
-<img src="pictures/chain-of-responsibility.png" width="500" />
+<img src="pictures/chain-of-responsibility.png" width="484" />
 
 ```scala
 // Handler
@@ -540,7 +540,7 @@ logger.message("Error occurs!", Logger.ERR)
 ## Command
 將訊息封裝成物件，以便能用各種不同訊息、暫佇、紀錄、復原等方式加以參數化處理。
 
-<img src="pictures/command.png" width="800" />
+<img src="pictures/command.png" width="886" />
 
 ```scala
 // Command
@@ -585,7 +585,7 @@ switch.storeAndExecute(switchDown)
 ## Interpreter
 針對標的語言定義出文法，以及可解讀這種語句的解譯器。
 
-<img src="pictures/interpreter.png" width="600" />
+<img src="pictures/interpreter.png" width="602" />
 
 ```scala
 // Abstract Expression
@@ -639,4 +639,12 @@ variables.put("z", new Number(42))
 val expression = "w x z - +"
 val sentence = new Evaluator(expression)  // z + (w - x)
 sentence.interpret(variables.toMap)       //> 37
+```
+
+## Iterator
+無須知道聚合物間的內部細節，即可依序存取內含的每一個元素。
+
+<img src="pictures/iterator.png" width="692" />
+
+```scala
 ```
