@@ -701,3 +701,8 @@ while(iterator.hasNext) {
   println(iterator.next)
 }
 ```
+
+## Mediator
+定義可將一群物件物互動方式封裝起來的物件。因為物件彼此不直接指涉，所以耦合性低，容易逐一變更互動關係。
+
+<img src="pictures/mediator.png" width="781" />
