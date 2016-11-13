@@ -706,3 +706,65 @@ while(iterator.hasNext) {
 定義可將一群物件物互動方式封裝起來的物件。因為物件彼此不直接指涉，所以耦合性低，容易逐一變更互動關係。
 
 <img src="pictures/mediator.png" width="781" />
+
+```scala
+// Mediator
+trait Chatroom {
+  def register(participant: Participant)
+  def send(from: String, to: String, msg: String)
+}
+
+// Colleague
+abstract class Participant(val name: String) {
+  var chatroom: Chatroom = _
+  def send(to: String, msg: String) = chatroom.send(name, to, msg)
+  def receive(from: String, msg: String) = println(s"$from to $name: $msg")
+}
+
+// Concrete Mediator
+class ConcreteChatroom extends Chatroom {
+  val participants = scala.collection.mutable.Map[String, Participant]()
+  def register(participant: Participant) = {
+    participants.put(participant.name, participant)
+    participant.chatroom = this
+  }
+  def send(from: String, to: String, msg: String) = {
+    for (participant <- participants.get(to)) {
+      participant.receive(from, msg)
+    }
+  }
+}
+
+// Concrete Colleague
+class Boy(name: String) extends Participant(name) {
+  override def receive(from: String, msg: String) = {
+    super.receive(from, msg.toUpperCase)
+  }
+}
+
+class Girl(name: String) extends Participant(name) {
+  override def receive(from: String, msg: String) = {
+    super.receive(from, msg.toLowerCase)
+  }
+}
+
+// Test driver
+val John = new Boy("John")
+val Mike = new Boy("Mike")
+val Luke = new Boy("Luke")
+val Mary = new Girl("Mary")
+val Anna = new Girl("Anna")
+val Cara = new Girl("Cara")
+
+val chatroom = new ConcreteChatroom()
+val participants = List(John, Mike, Luke, Mary, Anna, Cara)
+participants.foreach(chatroom.register(_))
+
+John.send("Mary", "Hi")       //> John to Mary: hi
+Mike.send("Mary", "Hello")    //> Mike to Mary: hello
+Luke.send("Anna", "Yo")       //> Luke to Anna: yo
+Mary.send("John", "Hi")       //> Mary to John: HI
+Anna.send("Luke", "Hey")      //> Anna to Luke: HEY
+Cara.send("John", "Morning")  //> Cara to John: MORNING
+John.send("Nobody", "???")    //>
+```
