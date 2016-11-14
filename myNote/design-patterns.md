@@ -809,3 +809,65 @@ originator.setMemento(caretaker.getMemento()) //> Orginator: restore state to St
 originator.setMemento(caretaker.getMemento()) //> Orginator: restore state to State 2
 originator.setMemento(caretaker.getMemento()) //> Orginator: restore state to State 1
 ```
+
+## Observer
+定義一對多的物件依存關係，讓物件狀態一有變動，就自動通知其他相依物件做該做的更新動作。
+
+<img src="pictures/observer.png" width="840">
+
+```scala
+// Observer
+trait Observer {
+  def update()
+}
+
+// Subject
+trait Subject {
+  private val observers = scala.collection.mutable.Set[Observer]()
+  def attach(observer: Observer) = observers.add(observer)
+  def detach(observer: Observer) = observers.remove(observer)
+  def notifyObservers() = observers.foreach(_.update())
+}
+
+// Concrete Subject
+class ConcreteSubject(state: Int) extends Subject {
+  private var myState: Int = state
+  def getState() = myState
+  def setState(newState: Int) = {
+    myState = newState
+    notifyObservers()
+  }
+}
+
+// Concrete Observer
+class BinObserver(subject: ConcreteSubject) extends Observer {
+  def update() = println(s"BinObserver: ${subject.getState().toBinaryString}")
+  subject.attach(this)
+}
+
+class OctObserver(subject: ConcreteSubject) extends Observer {
+  def update() = println(s"OctObserver: ${subject.getState().toOctalString}")
+  subject.attach(this)
+}
+
+class HexObserver(subject: ConcreteSubject) extends Observer {
+  def update() = println(s"HexObserver: ${subject.getState().toHexString}")
+  subject.attach(this)
+}
+
+// Test driver
+val subject = new ConcreteSubject(0)
+val binObserver = new BinObserver(subject)
+val octObserver = new OctObserver(subject)
+val hexObserver = new HexObserver(subject)
+
+subject.setState(10)
+//> OctObserver: 12
+//> HexObserver: a
+//> BinObserver: 1010
+
+subject.setState(20)
+//> OctObserver: 24
+//> HexObserver: 14
+//> BinObserver: 10100
+```
