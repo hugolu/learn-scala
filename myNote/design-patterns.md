@@ -756,3 +756,56 @@ Anna.send("Luke", "Hey")      //> Anna to Luke: HEY
 Cara.send("John", "Morning")  //> Cara to John: MORNING
 John.send("Nobody", "???")    //>
 ```
+
+## Memento
+在不違反封裝性的前提下，捕捉物件的內部狀態並儲存在外面，以便日後回復至此一狀態。
+
+<img src="pictures/memento.png" width="766">
+
+```scala
+// Memento
+class Memento(state: String) {
+  def getState(): String = state
+}
+
+// Originator
+class Originator {
+  private var myState: String = _
+
+  def setState(state: String) = {
+    println(s"Originator: set state to $state")
+    myState = state
+  }
+  def createMemento() = {
+    println("Originator: create a memento")
+    new Memento(myState)
+  }
+  def setMemento(memento: Memento) = {
+    myState = memento.getState()
+    println(s"Orginator: restore state to $myState")
+  }
+}
+
+// Caretaker
+class Caretaker {
+  private val savedStates = scala.collection.mutable.Stack[Memento]()
+  def addMemento(memento: Memento) = savedStates.push(memento)
+  def getMemento() = savedStates.pop()
+}
+
+// Test driver
+val caretaker = new Caretaker()
+val originator = new Originator()
+
+originator.setState("State 1")
+caretaker.addMemento(originator.createMemento())
+originator.setState("State 2")
+caretaker.addMemento(originator.createMemento())
+originator.setState("State 3")
+caretaker.addMemento(originator.createMemento())
+originator.setState("State 4")
+
+originator.setMemento(caretaker.getMemento()) //> Orginator: restore state to State 3
+originator.setMemento(caretaker.getMemento()) //> Orginator: restore state to State 2
+originator.setMemento(caretaker.getMemento()) //> Orginator: restore state to State 1
+```
