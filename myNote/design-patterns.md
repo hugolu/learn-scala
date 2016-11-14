@@ -871,3 +871,53 @@ subject.setState(20)
 //> HexObserver: 14
 //> BinObserver: 10100
 ```
+
+## State
+讓物件的外顯行為隨內部狀態的改變而改變，彷彿連類別也變了似的。
+
+<img src="pictures/state.png" width="662">
+
+```scala
+// State
+trait State {
+  def handle(context: Context)
+}
+
+// Context
+class Context(state: State) {
+  private var myState = state
+  def request() = myState.handle(this)
+  def changeState(newState: State) = { myState = newState }
+}
+
+// Concreate State
+object Hungry extends State {
+  def handle(context: Context) = {
+    println("Eat something")
+    context.changeState(Asleep)
+  }
+}
+
+object Asleep extends State {
+  def handle(context: Context) = {
+    println("Go to sleep")
+    context.changeState(Boring)
+  }
+}
+
+object Boring extends State {
+  def handle(context: Context) = {
+    println("Feel boring")
+    context.changeState(Hungry)
+  }
+}
+
+// Test driver
+val man = new Context(Hungry)
+man.request() //> Eat something
+man.request() //> Go to sleep
+man.request() //> Feel boring
+man.request() //> Eat something
+man.request() //> Go to sleep
+man.request() //> Feel boring
+```
