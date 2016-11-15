@@ -921,3 +921,50 @@ man.request() //> Eat something
 man.request() //> Go to sleep
 man.request() //> Feel boring
 ```
+
+## Strategy
+定義一整族的演算法，將每一個演算法封裝起來，可互換使用，更可在不影響外界的情況下個別抽換所引用的演算法。
+
+<img src="pictures/strategy.png" width="721">
+
+```scala
+// Strategy
+trait Sort {
+  def sort(list: List[Int]): List[Int]
+}
+
+// Concrete Strategy
+class QuickSort extends Sort {
+  def sort(list: List[Int]): List[Int] = list match {
+    case Nil => Nil
+    case x::xs =>
+      val (small, large) = xs.partition(_ < x)
+      sort(small) ::: (x :: sort(large))
+  }
+}
+
+class InsertSort extends Sort {
+  def insert(x: Int, xs: List[Int]): List[Int] = xs match {
+    case Nil => List(x)
+    case y::ys => if (x < y) x::insert(y, ys) else y::insert(x, ys)
+  }
+  def sort(list: List[Int]): List[Int] = list match {
+    case Nil => Nil
+    case x::xs => insert(x, sort(xs))
+  }
+}
+
+// Context
+class Context(algorithm: Sort) {
+  var myAlgorithm = algorithm
+  def changeAlgorithm(algorithm: Sort) = { myAlgorithm = algorithm }
+  def doAlgorithm() = algorithm.sort(List(1,3,5,2,4))
+}
+
+// Test driver
+val ctx = new Context(new QuickSort)
+ctx.doAlgorithm() //> List(1, 2, 3, 4, 5)
+
+ctx.changeAlgorithm(new InsertSort)
+ctx.doAlgorithm() //> List(1, 2, 3, 4, 5)
+```
