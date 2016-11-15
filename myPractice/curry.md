@@ -23,3 +23,26 @@ def curry[A, B, C](f: (A, B) => C): (A => (B => C)) = new Function1[A, (B => C)]
 }
 ```
 
+## 練習二
+實現 uncurry - 把 curry function `f` 轉換為正常帶有兩個參數的函數
+
+```scala
+def f(x: Int)(y: Int): Int = x + y
+f(1)(2) //> 3
+
+def uncurry[A, B, C](f: A => B => C): (A, B) => C = {
+  def g(a: A, b: B): C = f(a)(b)
+  g _
+}
+
+val g = uncurry(f)
+g(1, 2) //> 3
+```
+
+比較正式的轉換函數如下：
+```scala
+def uncurry[A, B, C](f: A => B => C): (A, B) => C = new Function2[A, B, C] {
+  def apply(a: A, b: B): C = f(a)(b)
+}
+```
+
