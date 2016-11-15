@@ -968,3 +968,47 @@ ctx.doAlgorithm() //> List(1, 2, 3, 4, 5)
 ctx.changeAlgorithm(new InsertSort)
 ctx.doAlgorithm() //> List(1, 2, 3, 4, 5)
 ```
+
+## Template
+對於操作，只先定義好演算法的輪廓，某些步驟則留給子類別去填補，以便在不改變演算法整體構造的情況下讓子類別去精練某些步驟。
+
+<img src="pictures/template.png" width="527">
+
+```scala
+// Abstract Class
+abstract class Document(lines: List[String]) {
+  def cookWord(word: String): String
+  def cookLine(line: String): String
+  def display() = {
+    lines.foreach { line =>
+      val words = line.split(" ").map(cookWord(_))
+      val newLine = cookLine(words.mkString(" "))
+      println(newLine)
+    }
+  }
+}
+
+// Concrete Class
+class TextDocument(lines: List[String]) extends Document(lines) {
+  def cookWord(word: String): String = word.toUpperCase
+  def cookLine(line: String): String = line + " :)"
+}
+
+class HtmlDocument(lines: List[String]) extends Document(lines) {
+  def cookWord(word: String): String = word.toLowerCase
+  def cookLine(line: String): String = "<p>" + line + "</p>"
+}
+
+// Test driver
+val doc = List("Hello World", "This is a test")
+
+val textDoc = new TextDocument(doc)
+textDoc.display()
+//> HELLO WORLD :)
+//> THIS IS A TEST :)
+
+val htmlDoc = new HtmlDocument(doc)
+htmlDoc.display()
+//> <p>hello world</p>
+//> <p>this is a test</p>
+```
