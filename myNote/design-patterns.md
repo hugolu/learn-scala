@@ -1012,3 +1012,64 @@ htmlDoc.display()
 //> <p>hello world</p>
 //> <p>this is a test</p>
 ```
+
+## Visitor
+定義能逐一施行於物件結構裡各個元素的操作，讓你不必修改作用於對象的類別介面，就能定義新的操作。
+
+<img src="pictures/visitor.png" width="814" />
+
+```scala
+// Element
+trait Element {
+  def accept(v: Visitor)
+}
+
+// Concrete Element
+class One extends Element {
+  def accept(v: Visitor) = v.visit(this)
+  def one() = "One"
+}
+
+class Two extends Element {
+  def accept(v: Visitor) = v.visit(this)
+  def two() = "Two"
+}
+
+class Three extends Element {
+  def accept(v: Visitor) = v.visit(this)
+  def three() = "Three"
+}
+
+// Visitor
+trait Visitor {
+  def visit(element: One)
+  def visit(element: Two)
+  def visit(element: Three)
+}
+
+// Concrete Visitor
+class UpperCaseVisitor extends Visitor {
+  def visit(element: One) = println(element.one().toUpperCase)
+  def visit(element: Two) = println(element.two().toUpperCase)
+  def visit(element: Three) = println(element.three().toUpperCase)
+}
+
+class LowerCaseVisitor extends Visitor {
+  def visit(element: One) = println(element.one().toLowerCase)
+  def visit(element: Two) = println(element.two().toLowerCase)
+  def visit(element: Three) = println(element.three().toLowerCase)
+}
+
+// Test driver
+val elements = List(new One, new Two, new Three)
+
+elements.foreach(_.accept(new UpperCaseVisitor))
+//> ONE
+//> TWO
+//> THREE
+
+elements.foreach(_.accept(new LowerCaseVisitor))
+//> one
+//> two
+//> three
+```
