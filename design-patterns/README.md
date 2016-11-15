@@ -2,6 +2,17 @@
 
 明明是 functional programming，還玩 design pattern，我一定是瘋了，哈哈
 
+之後會依照以下格式，個別筆記每個模式
+- 名字 Name
+- 目的 Intent
+- 動機 Motivation
+- 時機 Application
+- 結構 Structure
+- 與眾 Participants
+- 合作 Collaboration
+- 效果 Consequences
+- 範例 Sample code
+
 ## Abstract Factory
 用同一個介面來建立一整族相關或相依的物件，不需點名個物件真正所屬的具象類別。
 
