@@ -1,6 +1,18 @@
-# Curry
+# Chapter 2 在 Scala 中使用函數式編程
 
-## 練習一
+## 練習 2.1
+寫一個遞歸函數，來獲取第n個 Fibonacci number，前兩個為 0 和 1，第 n 個數總是等於它前兩個的和 - 序列開始為 0, 1, 1, 2, 3, 5。應該定義為局部 (local) 尾遞歸函數。
+```scala
+def fib(n: Int): Int
+```
+
+## 練習 2.2
+實現 isSorted 方法，檢測 Array[A] 是否按照給訂的比較函數排序：
+```scala
+def isSorted[A](as: Array[A], ordered: (A, A) => Boolean): Boolean
+```
+
+## 練習 2.3
 實現 Curry - 把帶有兩個參數的函數 `f` 轉換為只有一個參數的 curry function
 
 ```scala
@@ -23,7 +35,7 @@ def curry[A, B, C](f: (A, B) => C): (A => (B => C)) = new Function1[A, (B => C)]
 }
 ```
 
-## 練習二
+## 練習 2.4
 實現 Uncurry - 把 curry function `f` 轉換為正常帶有兩個參數的函數
 
 ```scala
@@ -46,7 +58,7 @@ def uncurry[A, B, C](f: A => B => C): (A, B) => C = new Function2[A, B, C] {
 }
 ```
 
-## 練習三
+## 練習 2.5
 實現高階函數 `compose` 與 `andThen`，組合兩個函數為一個
 
 ```scala
