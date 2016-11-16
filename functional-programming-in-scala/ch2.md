@@ -5,6 +5,17 @@
 ```scala
 def fib(n: Int): Int
 ```
+```scala
+def fib(n: Int): Int = {
+  @annotation.tailrec
+  def go(m: Int, a: Int, b: Int): Int = 
+    if (m == n) a
+    else go(m+1, b, a+b)
+  go(0, 0, 1)
+}
+
+Range(0,10).map(fib(_)) //> Vector(0, 1, 1, 2, 3, 5, 8, 13, 21, 34)
+```
 
 ## 練習 2.2
 實現 isSorted 方法，檢測 Array[A] 是否按照給訂的比較函數排序：
