@@ -12,6 +12,24 @@ def fib(n: Int): Int
 def isSorted[A](as: Array[A], ordered: (A, A) => Boolean): Boolean
 ```
 
+```scala
+def isSorted[A](as: Array[A], ordered: (A, A) => Boolean): Boolean = {
+  @annotation.tailrec
+  def compare(n: Int): Boolean =
+    if ((n+1) >= as.length) true
+    else if (ordered(as(n), as(n+1)) == false) false
+    else compare(n+1)
+
+  compare(0)
+}
+
+isSorted(Array(1,2,3), (x:Int, y:Int) => x < y) //> true
+isSorted(Array(1,3,2), (x:Int, y:Int) => x < y) //> false
+
+isSorted(Array(3,2,1), (x:Int, y:Int) => x > y) //> true
+isSorted(Array(3,1,2), (x:Int, y:Int) => x > y) //> false
+```
+
 ## 練習 2.3
 實現 Curry - 把帶有兩個參數的函數 `f` 轉換為只有一個參數的 curry function
 
