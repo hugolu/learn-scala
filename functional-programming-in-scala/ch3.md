@@ -189,6 +189,18 @@ def foldRight[A,B](l: List[A], z: B)(f: (A, B) => B): B = l match {
 ```
 
 ## 練習 3.11
+用 `foldLeft` 寫 `sum`, `product`, `length` 的函數。
+```scala
+def sum(ints: List[Int]): Int = foldLeft(ints, 0)(_+_)
+sum(List(1,2,3,4))                //> 10
+
+def product(ds: List[Double]): Double = foldLeft(ds, 1.0)(_*_)
+product(List(1.0, 2.0, 3.0, 4.0)) //> 24
+
+def length[A](as: List[A]): Int = foldLeft(as, 0)((n,_)=>n+1)
+length(List("a", "b", "c", "d"))  //> 4
+```
+
 ## 練習 3.12
 ## 練習 3.13
 ## 練習 3.14
