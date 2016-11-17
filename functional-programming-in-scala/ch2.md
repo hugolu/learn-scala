@@ -42,7 +42,10 @@ isSorted(Array(3,1,2), (x:Int, y:Int) => x > y) //> false
 ```
 
 ## 練習 2.3
-實現 Curry - 把帶有兩個參數的函數 `f` 轉換為只有一個參數的 curry function
+實現 Curry - 把帶有兩個參數的函數 `f` 轉換為只有一個參數的 curry function。
+```scala
+def curry[A,B,C](f: (A, B) => C): A => (B => C)
+```
 
 ```scala
 def f(a: Int, b: Int): Int = a + b
@@ -65,7 +68,10 @@ def curry[A, B, C](f: (A, B) => C): (A => (B => C)) = new Function1[A, (B => C)]
 ```
 
 ## 練習 2.4
-實現 Uncurry - 把 curry function `f` 轉換為正常帶有兩個參數的函數
+實現 Uncurry - 把 curry function `f` 轉換為正常帶有兩個參數的函數。注意，因為右箭號 `=>` 是右結合的，`A => (B => C)` 可以寫成 `A => B => C`。
+```scala
+￼def uncurry[A,B,C](f: A => B => C): (A, B) => C
+```
 
 ```scala
 def f(x: Int)(y: Int): Int = x + y
@@ -88,7 +94,11 @@ def uncurry[A, B, C](f: A => B => C): (A, B) => C = new Function2[A, B, C] {
 ```
 
 ## 練習 2.5
-實現高階函數 `compose` 與 `andThen`，組合兩個函數為一個
+實現高階函數 `compose` 與 `andThen`，組合兩個函數為一個函數。
+```scala
+def compose[A,B,C](f: B => C, g: A => B): A => C
+def andThen[A,B,C](g: A => B, f: B => C): A => C
+```
 
 ```scala
 def f(str: String): Int = str.size
