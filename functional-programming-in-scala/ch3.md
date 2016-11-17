@@ -119,3 +119,27 @@ init(List(1,2,3,4)) //> Cons(1,Cons(2,Cons(3,Nil)))
 ```
 - 因為必須遍歷整個列表才能完成 `init`，所以時間開銷與列表大小成正比。
 
+## 練習 3.7
+在入参是 0.0. 時用 `foldRight` 實現 `product` 是否可以立即停止的歸併返回 0.0? 為什麼可以或不可以？
+```scala
+def foldRight[A,B](l: List[A], z: B)(f: (A, B) => B): B =
+  l match {
+    case Nil => z
+    case Cons(x, xs) => f(x, foldRight(xs, z)(f))
+  }
+
+def sum2(l: List[Int]) = foldRight(l, 0.0)(_ + _)
+def product2(l: List[Double]) = foldRight(l, 1.0)(_ * _)
+```
+
+因為 `foldRight` 透過遞歸實現，如果沒有短路條件，就會遍歷整個列表。改成下面這樣，遇到 0.0 時會立即停止。
+```scala
+def foldRight2[A,B](l: List[A], z: B)(short: A => Boolean)(f: (A, B) => B): B =
+  l match {
+    case Nil => z
+    case Cons(x, xs) => if (short(x)) f(x, z) else f(x, foldRight(xs, z)(short)(f))
+  }
+
+def sum3(l: List[Int]) = foldRight(l, 0.0)(_ => false)(_ + _)
+def product3(l: List[Double]) = foldRight(l, 1.0)(_ == 0.0)(_ * _)
+```
