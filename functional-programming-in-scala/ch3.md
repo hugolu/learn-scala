@@ -143,3 +143,51 @@ def foldRight2[A,B](l: List[A], z: B)(short: A => Boolean)(f: (A, B) => B): B =
 def sum3(l: List[Int]) = foldRight(l, 0.0)(_ => false)(_ + _)
 def product3(l: List[Double]) = foldRight(l, 1.0)(_ == 0.0)(_ * _)
 ```
+
+## 練習 3.8
+當你對 `foldRight` 傳入 `Nil` 和 `Cons` 時，看看發生什麼？例如： `foldRight(List(1,2,3,4)), Nil:List[Int])(Cons(_,_))`。說到 `foldRight` 和 `List` 數據結構之間的關係，有什麼想法？
+
+```scala
+List(1,2,3,4)                                       //> Cons(1,Cons(2,Cons(3,Cons(4,Nil))))
+foldRight(List(1,2,3,4), Nil: List[Int])(Cons(_,_)) //> Cons(1,Cons(2,Cons(3,Cons(4,Nil))))
+```
+- 很有趣，本來要做 reduce 的，但因為合併的函數又可以產生 `List`，所以對列表 foldRight 的結果又是列表自己。這個列表是透過 Cons 重新產生的。
+
+## 練習 3.9
+使用 `foldRight` 計算 `List` 的長度
+```scala
+def length[A](as: List[A]): Int
+```
+
+```scala
+def length[A](as: List[A]): Int = foldRight(as, 0)((_,n)=>n+1)
+
+length(Nil)         //> 0
+length(List(1,2,3)) //> 3
+```
+
+## 練習 3.10
+實現的 `foleRight` 不是尾遞迴，如果 List 很大可能發生 StackOverflowError。以尾遞迴方式改寫成
+```scala
+def foldLeft[A, B](as: List[A], z: B)(f: (A, B) => B): B
+```
+
+## 練習 3.11
+## 練習 3.12
+## 練習 3.13
+## 練習 3.14
+## 練習 3.15
+## 練習 3.16
+## 練習 3.17
+## 練習 3.18
+## 練習 3.19
+## 練習 3.20
+## 練習 3.21
+## 練習 3.22
+## 練習 3.23
+## 練習 3.24
+## 練習 3.25
+## 練習 3.26
+## 練習 3.27
+## 練習 3.28
+## 練習 3.29
