@@ -67,3 +67,36 @@ setHead(Nil, 0)           //> Cons(0,Nil)
 setHead(List(1,2,3), 0)   //> Cons(0,Cons(2,Cons(3,Nil)))
 ```
 
+## 練習 3.4
+把 `tail` 泛化為 `drop` 函數，用於從列表中刪除前 n 個元素。注意，這個函數的時間開銷只需要與 `drop` 的元素個數成正比 - 不需要複製整個列表。
+```scala
+def drop[A](l: List[A], n: Int): List[A]
+```
+
+```scala
+def drop[A](l: List[A], n: Int): List[A] = 
+  if (n == 0) l
+  else l match {
+      case Nil => Nil
+      case Cons(x, xs) => drop(xs, n-1)
+    }
+    
+drop(List(1,2,3), 0)  //> Cons(1,Cons(2,Cons(3,Nil)))
+drop(List(1,2,3), 2)  //> Cons(3,Nil)
+drop(List(1,2,3), 4)  //> Nil
+```
+
+## 練習 3.5
+實現 `dropWhile` 函數，刪除列表中前綴全部符合的元素。
+```scala
+def dropWhile[A](l: List[A], f: A => Boolean): List[A]
+```
+
+```scala
+def dropWhile[A](l: List[A], f: A => Boolean): List[A] = l match {
+  case Nil => Nil
+  case Cons(x, xs) => if (f(x)) dropWhile(xs, f) else Cons(x, dropWhile(xs, f))
+ }
+ 
+dropWhile(List(1,2,3,4,5), (x: Int) => x % 2 == 0)  //> Cons(1,Cons(3,Cons(5,Nil)))
+```
