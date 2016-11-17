@@ -100,3 +100,22 @@ def dropWhile[A](l: List[A], f: A => Boolean): List[A] = l match {
  
 dropWhile(List(1,2,3,4,5), (x: Int) => x % 2 == 0)  //> Cons(1,Cons(3,Cons(5,Nil)))
 ```
+
+## 練習 3.6
+不是所有的實現都這麼令人滿意，實現一個 `init` 函數，返回一個列表，它包含原列表中刪除了最後一個元素之外的所有元素。比如，傳入 `List(1,2,3,4)` 給 `init` 函數會返回 `List(1,2,3)`，為什麼這個元素不能實現同 `tail` 一樣的常量級的時間開銷？
+```scala
+def init[A](l: List[A]): List[A]
+```
+
+```scala
+def init[A](l: List[A]): List[A] = l match {
+  case Nil => Nil
+  case Cons(x, Nil) => Nil
+  case Cons(x, xs) => Cons(x, init(xs))
+}
+
+init(Nil)           //> Nil
+init(List(1,2,3,4)) //> Cons(1,Cons(2,Cons(3,Nil)))
+```
+- 因為必須遍歷整個列表才能完成 `init`，所以時間開銷與列表大小成正比。
+
