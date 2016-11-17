@@ -28,3 +28,42 @@ List(1, 2, 3)                 //> Cons(1,Cons(2,Cons(3,Nil)))
 sum(List(1, 2, 3))            //> 6
 product(List(1.0, 2.0, 3.0))  //> 6.0
 ```
+
+## 練習 3.1
+下面匹配表達式結果是什麼？
+```scala
+val x = List(1,2,3,4,5) match {
+  case Cons(x, Cons(2, Cons(4, _))) => x
+  case Nil => 42
+  case Cons(x, Cons(y, Cons(3, Cons(4, _)))) => x + y
+  case Cons(h, t) => h + sum(t)
+  case _ => Nil
+}
+//> 3
+```
+
+## 練習 3.2
+實現 `tail` 函數，刪除一個 `List` 的第一個元素。注意這個函數的時間開銷是常量級的。
+
+```scala
+def tail(list: List[Int]): List[Int] = list match {
+  case Nil => Nil
+  case Cons(x, xs) => xs
+}
+
+tail(Nil)           //> Nil
+tail(List(1,2,3))   //> Cons(2,Cons(3,Nil))
+```
+
+## 練習 3.3
+用相同的思路，實現函數 `setHead` 用一個不同的值替代列表中的第一個元素。
+```scala
+def setHead(list: List[Int], head: Int): List[Int] = list match {
+  case Nil => Cons(head, Nil)
+  case Cons(x, xs) => Cons(head, xs)
+}
+
+setHead(Nil, 0)           //> Cons(0,Nil)
+setHead(List(1,2,3), 0)   //> Cons(0,Cons(2,Cons(3,Nil)))
+```
+
