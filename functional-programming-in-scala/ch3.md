@@ -188,6 +188,11 @@ def foldRight[A,B](l: List[A], z: B)(f: (A, B) => B): B = l match {
   }
 ```
 
+```scala
+foldRight(List(1,2,3), "0")((a,b) => s"(${a.toString}+$b)") //> (1+(2+(3+0)))
+foldLeft(List(1,2,3), "0")((b,a) => s"($b+${a.toString})")  //> (((0+1)+2)+3)
+```
+
 ## 練習 3.11
 用 `foldLeft` 寫 `sum`, `product`, `length` 的函數。
 ```scala
@@ -202,7 +207,7 @@ length(List("a", "b", "c", "d"))  //> 4
 ```
 
 ## 練習 3.12
-寫一個對原列表元素顛倒的函數 (List(1,2,3) ⇒ List(3,2,1))，看看是否可用一種擇疊實現。
+寫一個對原列表元素顛倒的函數 (List(1,2,3) ⇒ List(3,2,1))，看看是否可用一種 fold 實現。
 
 ```scala
 def reverse[A](list: List[A]): List[A] = {
@@ -216,10 +221,12 @@ def reverse[A](list: List[A]): List[A] = {
 
 reverse(List(1,2,3))  //> Cons(3,Cons(2,Cons(1,Nil)))
 ```
-```scala
-def reverse2[A](list: List[A]): List[A] = foldLeft(list, Nil: List[A]){ (z, a) => Cons(a, z) }
 
-reverse2(List(1,2,3)) //> Cons(3,Cons(2,Cons(1,Nil)))
+使用 fold 實現：
+```scala
+def reverse[A](list: List[A]): List[A] = foldLeft(list, Nil: List[A]){ (z, a) => Cons(a, z) }
+
+reverse(List(1,2,3)) //> Cons(3,Cons(2,Cons(1,Nil)))
 ```
 
 ## 練習 3.13 (超級難)
@@ -227,6 +234,22 @@ reverse2(List(1,2,3)) //> Cons(3,Cons(2,Cons(1,Nil)))
 ```scala
 def foldRightViaFoldLeft[A,B](l: List[A], z: B)(f: (A,B) => B): B
 def foldLeftViaFoldRight[A,B](l: List[A], z: B)(f: (B,A) => B): B
+```
+
+```scala
+def foldRightViaFoldLeft[A,B](l: List[A], z: B)(f: (A,B) => B): B = 
+  foldLeft(reverse(l), z)((b, a) = f(a, b))
+```
+- 這個其實有點詐砲，先使用 `foldLeft` 實作的 `reverse` 將數列翻轉，然後再用 `foldLeft` 由左而右遞歸數列，其中套用 `f()` 也對調 a, b 參數
+
+```scala
+def foldRightViaFoldLeft_dbg[A,B](l: List[A], z: B)(f: (A,B) => B): B = 
+  foldLeft(reverse(l), z){(b, a) => println(s"f($a, $b)=${f(a, b)}"); f(a, b)}
+
+foldRightViaFoldLeft_dbg(List(1,2,3), 0)(_+_)
+//> f(3, 0)=3
+//> f(2, 3)=5
+//> f(1, 5)=6
 ```
 
 ## 練習 3.14
