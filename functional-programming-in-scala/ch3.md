@@ -222,7 +222,13 @@ def reverse2[A](list: List[A]): List[A] = foldLeft(list, Nil: List[A]){ (z, a) =
 reverse2(List(1,2,3)) //> Cons(3,Cons(2,Cons(1,Nil)))
 ```
 
-## 練習 3.13
+## 練習 3.13 (超級難)
+根據 `foldLeft` 實現 `foldRight`，這會很又用，因為以尾遞迴方式實現不管列表多大都不會發生 stack overflow。能不能根據 `foldRight` 實現 `foldLeft`？還有其他變通方式嗎？
+```scala
+def foldRightViaFoldLeft[A,B](l: List[A], z: B)(f: (A,B) => B): B
+def foldLeftViaFoldRight[A,B](l: List[A], z: B)(f: (B,A) => B): B
+```
+
 ## 練習 3.14
 ## 練習 3.15
 ## 練習 3.16
