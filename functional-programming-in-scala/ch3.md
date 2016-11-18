@@ -202,6 +202,26 @@ length(List("a", "b", "c", "d"))  //> 4
 ```
 
 ## 練習 3.12
+寫一個對原列表元素顛倒的函數 (List(1,2,3) ⇒ List(3,2,1))，看看是否可用一種擇疊實現。
+
+```scala
+def reverse[A](list: List[A]): List[A] = {
+  @annotation.tailrec
+  def swap(as: List[A], bs: List[A]): List[A] = bs match {
+    case Nil => as
+    case Cons(x, xs) => swap(Cons(x, as), xs)
+  }
+  swap(Nil, list)
+}
+
+reverse(List(1,2,3))  //> Cons(3,Cons(2,Cons(1,Nil)))
+```
+```scala
+def reverse2[A](list: List[A]): List[A] = foldLeft(list, Nil: List[A]){ (z, a) => Cons(a, z) }
+
+reverse2(List(1,2,3)) //> Cons(3,Cons(2,Cons(1,Nil)))
+```
+
 ## 練習 3.13
 ## 練習 3.14
 ## 練習 3.15
