@@ -252,6 +252,32 @@ foldRightViaFoldLeft_dbg(List(1,2,3), 0)(_+_)
 //> f(1, 5)=6
 ```
 
+用 `foldRight` 實作 `foldLeft` 或是 `foldLeft` 實作 `foldRight` 太抽象，偷看解答。
+```scala
+def foldRightViaFoldLeft_1[A,B](l: List[A], z: B)(f: (A,B) => B): B =
+  foldLeft(l, (b:B) => b)((g,a) => b => g(f(a,b)))(z)
+
+def foldLeftViaFoldRight[A,B](l: List[A], z: B)(f: (B,A) => B): B =
+  foldRight(l, (b:B) => b)((a,g) => b => g(f(b,a)))(z)
+```
+
+光看解答都很難想出怎麼做到的，只好退而求其次用更簡單的範例思考。怎麼用 `apply` 做出 `applyRev2`, 怎麼用 `applyRev` 做出 `apply2`?
+```scala
+def apply[A,B](a:A, z:B)(f: (A,B)=>B): B = f(a,z)
+apply("x","y")(_+_)     // xy
+
+def applyRev[A,B](a:A, z:B)(f: (B,A)=>B): B = f(z,a)
+applyRev("x","y")(_+_)  //> yx
+
+def applyRev2[A,B](a:A, z:B)(f: (B,A)=>B): B =
+  apply(a, (b:B)=>b)((a,g) => b => g(f(b,a)))(z)
+applyRev2("x","y")(_+_) //> yx
+
+def apply2[A,B](a:A, z:B)(f: (A,B)=>B): B =
+  applyRev(a, (b:B)=>b)((g,a) => b => g(f(a,b)))(z)
+apply2("x","y")(_+_)    //> xy
+```
+
 ## 練習 3.14
 ## 練習 3.15
 ## 練習 3.16
