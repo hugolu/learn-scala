@@ -301,21 +301,36 @@ iteration | `(g,a)` | applied `a` | applied `g`
 - 求值：`((b:String)=>f(1,f(2,f(3,b))))("0")` = `f(1,f(2,f(3,"0")))` = `"(1,(2,(3,0)))"`
 
 ## 練習 3.14
-根據 `foldLeft` 或 `foldRight` 實現 append 函數
+根據 `foldLeft` 或 `foldRight` 實現 append 函數。根據答案，`append` 定義為
 ```scala
-def appendViaFoldRight[A](l:List[A], z:A) =
-  foldRight(l, Cons(z,Nil))((a,b) => Cons(a,b))
+def append[A](l:List[A], r:List[A])
+```
 
-appendViaFoldRight(List(1,2,3),4) //> Cons(1,Cons(2,Cons(3,Cons(4,Nil))))
+```scala
+def appendViaFoldRight[A](l:List[A], r:List[A]) =
+  foldRight(l, r)((a,b) => Cons(a,b))
+
+appendViaFoldRight(List(1,2),List(3,4)) //> Cons(1,Cons(2,Cons(3,Cons(4,Nil))))
 ```
 ```scala
-def appendViaFoldLeft[A](l:List[A], z:A) = 
-  foldLeft(l, (b:List[A])=>b)((g,a) => b => g(Cons(a,b)))(Cons(z,Nil))
+def appendViaFoldLeft[A](l:List[A], r:List[A]) = 
+  foldLeft(l, (b:List[A])=>b)((g,a) => b => g(Cons(a,b)))(r)
 
-appendViaFoldLeft(List(1,2,3),4)  //> Cons(1,Cons(2,Cons(3,Cons(4,Nil))))
+appendViaFoldLeft(List(1,2),List(3,4))  //> Cons(1,Cons(2,Cons(3,Cons(4,Nil))))
 ```
 
 ## 練習 3.15
+寫一個函數將一組列表連接成一個單個列表。他的運行效率應該隨所有列表的總長度線性增長。試著用已經定義過的函數。
+```scala
+def concate[A](l: List[List[A]]): List[A]
+```
+```scala
+def concate[A](l: List[List[A]]): List[A] =
+  foldLeft(l,Nil:List[A])(appendViaFoldLeft(_,_))
+  
+concate(List(List(1,2), List(3,4), List(5,6)))  //> Cons(1,Cons(2,Cons(3,Cons(4,Cons(5,Cons(6,Nil))))))
+```
+
 ## 練習 3.16
 ## 練習 3.17
 ## 練習 3.18
