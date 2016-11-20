@@ -284,9 +284,9 @@ def f(a: Int, b: String): String = s"($a,$b)"
 def fun(a:Int, g: String=>String): String=>String = (b: String) => g(f(a, b))
 
 val f0 = (s:String) => s  //> (s: String) => s
-val f1 = fun(1, f0)       //> (b: String) => f0(s"(1,$b)")
-val f2 = fun(2, f1)       //> (b: String) => f1(s"(2,$b)")
-val f3 = fun(3, f2)       //> (b: String) => f2(s"(3,$b)")
+val f1 = fun(1, f0)       //> (b: String) => f0(s"(1,$b)")  // "(1,$b)"
+val f2 = fun(2, f1)       //> (b: String) => f1(s"(2,$b)")  // "(1,(2,$b))"
+val f3 = fun(3, f2)       //> (b: String) => f2(s"(3,$b)")  // "(1,(2,(3,$b)))"
 
 f3("0") //> f2("(3,0)") //> f1("(2,(3,0))") //> f0("(1,(2,(3,0)))") //> "(1,(2,(3,0)))"
 f(1,f(2,f(3,"0")))  //> "(1,(2,(3,0)))"
