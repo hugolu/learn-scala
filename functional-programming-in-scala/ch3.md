@@ -1,6 +1,6 @@
 # 函數式數據結構
 
-## 小抄
+## `List` 小抄
 ```scala
 sealed trait List[+A]
 case object Nil extends List[Nothing]
@@ -465,8 +465,45 @@ hasSubsequence(List(1,2,3,4), List(4))    //> true
 hasSubsequence(List(1,2,3,4), List(1,3))  //> false
 ```
 
+## `Tree` 小抄
+```scala
+sealed trait Tree[+A]
+case class Leaf[A](value: A) extends Tree[A]
+case class Branch[A](left: Tree[A], right: Tree[A]) extends Tree[A]
+
+Branch(Branch(Leaf("A"),Leaf("B")), Branch(Leaf("C"),Leaf("D")))
+```
+
 ## 練習 3.25
+寫一個 size 函數，統計一棵樹中節點數 (Tree & Branch)
+```scala
+def size[A](tree: Tree[A]): Int = tree match {
+  case Branch(a,b) => 1 + size(a) + size(b)
+  case Leaf(_) => 1
+}
+
+val tree = Branch(Branch(Leaf("A"),Leaf("B")), Branch(Leaf("C"),Leaf("D")))
+size(tree) //> 7
+```
+
 ## 練習 3.26
+寫一個 maximum 函數，返回 Tree[Int] 中最大的元素。
+```scala
+def maximum(tree: Tree[Int]) = {
+  def first[Int](tree: Tree[Int]): Int = tree match {
+    case Leaf(a) => a
+    case Branch(a,b) => first(a)
+  }
+  def max(tree: Tree[Int], a: Int): Int = tree match {
+    case Leaf(b) => b.max(a)
+    case Branch(b,c) => max(b,(max(c,a)))
+  }
+  max(tree, first(tree))
+}
+
+val numTree = Branch(Branch(Leaf(1),Leaf(2)), Branch(Leaf(3),Leaf(4)))
+maximum(numTree)  //> 4
+```
 ## 練習 3.27
 ## 練習 3.28
 ## 練習 3.29
