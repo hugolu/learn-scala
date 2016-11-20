@@ -301,6 +301,20 @@ iteration | `(g,a)` | applied `a` | applied `g`
 - 求值：`((b:String)=>f(1,f(2,f(3,b))))("0")` = `f(1,f(2,f(3,"0")))` = `"(1,(2,(3,0)))"`
 
 ## 練習 3.14
+根據 `foldLeft` 或 `foldRight` 實現 append 函數
+```scala
+def appendViaFoldRight[A](l:List[A], z:A) =
+  foldRight(l, Cons(z,Nil))((a,b) => Cons(a,b))
+
+appendViaFoldRight(List(1,2,3),4) //> Cons(1,Cons(2,Cons(3,Cons(4,Nil))))
+```
+```scala
+def appendViaFoldLeft[A](l:List[A], z:A) = 
+  foldLeft(l, (b:List[A])=>b)((g,a) => b => g(Cons(a,b)))(Cons(z,Nil))
+
+appendViaFoldLeft(List(1,2,3),4)  //> Cons(1,Cons(2,Cons(3,Cons(4,Nil))))
+```
+
 ## 練習 3.15
 ## 練習 3.16
 ## 練習 3.17
