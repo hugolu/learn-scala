@@ -360,7 +360,34 @@ doubleToString(List(1.1, 2.2, 3.3)) //> Cons(1.1,Cons(2.2,Cons(3.3,Nil)))
 ```
 
 ## 練習 3.18
+寫一個泛化的 `map` 函數，對列表中的每個元素進行修改，並維持列表結構。
+```scala
+def map[A,B](as: List[A])(f: A=>B): List[B]
+```
+```scala
+def map[A,B](as: List[A])(f: A=>B): List[B] = as match {
+  case Nil => Nil
+  case Cons(x, xs) => Cons(f(x), map(xs)(f))
+}
+
+map(List(1,2,3))(_+1)               //> Cons(2,Cons(3,Cons(4,Nil)))
+map(List(1.1,2.2,3.3))(_.toString)  //> Cons(1.1,Cons(2.2,Cons(3.3,Nil)))
+```
+
 ## 練習 3.19
+寫一個 `filter` 函數，從列表中刪除所有不滿足斷言的元素，用它來刪除一個 `List[Int]` 中所有奇數
+```scala
+def filter[A](as: List[A])(f: A=>Boolean): List[A]
+```
+```scala
+def filter[A](as: List[A])(f: A=>Boolean): List[A] = as match {
+  case Nil => Nil
+  case Cons(x, xs) => if (f(x)) Cons(x, filter(xs)(f)) else filter(xs)(f)
+}
+
+filter(List(1,2,3,4,5))(_%2==0) //> Cons(2,Cons(4,Nil))
+```
+
 ## 練習 3.20
 ## 練習 3.21
 ## 練習 3.22
