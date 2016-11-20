@@ -252,7 +252,7 @@ foldRightViaFoldLeft_dbg(List(1,2,3), 0)(_+_)
 //> f(1, 5)=6
 ```
 
-用 `foldRight` 實作 `foldLeft` 或是 `foldLeft` 實作 `foldRight` 太抽象，偷看解答。
+用 `foldRight` 實作 `foldLeft` 或是 `foldLeft` 實作 `foldRight` 太抽象，直接偷看解答。
 ```scala
 def foldRightViaFoldLeft_1[A,B](l: List[A], z: B)(f: (A,B) => B): B =
   foldLeft(l, (b:B) => b)((g,a) => b => g(f(a,b)))(z)
@@ -276,6 +276,21 @@ applyRev2("x","y")(_+_) //> yx
 def apply2[A,B](a:A, z:B)(f: (A,B)=>B): B =
   applyRev(a, (b:B)=>b)((g,a) => b => g(f(a,b)))(z)
 apply2("x","y")(_+_)    //> xy
+```
+
+另外，怎麼套用某個方向的 fold 得到另一個方向的 fold? 以下 f1, f2, f3 產生順序，模擬 foldLeft 的呼叫順序 (1, 2, 3)。
+```scala
+def f(a: Int, b: String): String = s"($a,$b)"
+def fun(a:Int, g: String=>String): String=>String = (b: String) => g(f(a, b))
+
+val f0 = (s:String) => s  //> (s: String) => s
+val f1 = fun(1, f0)       //> (b: String) => f0(s"(1,$b)")
+val f2 = fun(2, f1)       //> (b: String) => f1(s"(2,$b)")
+val f3 = fun(3, f2)       //> (b: String) => f2(s"(3,$b)")
+
+f1("0") //> f0("(1,0)") //> "(1,0)"
+f2("0") //> f1("(2,0)") //> f0("(1,(2,0))") //> "(1,(2,0))"
+f3("0") //> f2("(3,0)") //> f1("(2,(3,0))") //> f0("(1,(2,(3,0)))") //> "(1,(2,(3,0)))"
 ```
 
 ## 練習 3.14
