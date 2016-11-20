@@ -441,6 +441,30 @@ zipWith(List(1,2,3), List(4,5,6))(_*_)  //> Cons(4,Cons(10,Cons(18,Nil)))
 ```
 
 ## 練習 3.24
+實現 `hasSubsequence` 方法，檢測一個 `List` 子序列是否包含另一個 `List`。例如 `List(1,2,3,4)` 的子序列有 `List(1,2)`, `List(2,3)`, `List(4)` 等。
+```scala
+def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean
+```
+```scala
+def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean = {
+  def startWith[A](sup: List[A], sub: List[A]): Boolean = (sup, sub) match {
+    case (_, Nil) => true
+    case (Nil, _) => false
+    case (Cons(x, xs), Cons(y, ys)) => if (x == y) startWith(xs,ys) else false
+  }
+  if (startWith(sup, sub)) true else sup match {
+    case Nil => false
+    case Cons(x, xs) => hasSubsequence(xs, sub)
+  }
+}
+
+hasSubsequence(List(1,2,3,4), List(2,3))  //> true
+hasSubsequence(List(1,2,3,4), List(3,4))  //> true
+hasSubsequence(List(1,2,3,4), List(4,5))  //> false
+hasSubsequence(List(1,2,3,4), List(4))    //> true
+hasSubsequence(List(1,2,3,4), List(1,3))  //> false
+```
+
 ## 練習 3.25
 ## 練習 3.26
 ## 練習 3.27
