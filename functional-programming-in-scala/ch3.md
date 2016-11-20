@@ -414,9 +414,32 @@ filter2(List(1,2,3,4,5))(_%2==0)  //> Cons(2,Cons(4,Nil))
 ## 練習 3.22
 寫一個函數，接受兩個列表，通過對相對應的元素的相加構造出一個新的列表。例如 List(1,2,3) 與 List(4,5,6) 得到 List(5,7,9)
 ```scala
+def zipInts(l: List[Int], r: List[Int]): List[Int] = (l,r) match {
+  case (Nil, Nil) => List(0)
+  case (Cons(x,xs), Nil) => Cons(x+0, zipInts(xs, Nil))
+  case (Nil, Cons(y,ys)) => Cons(0+y, zipInts(Nil, ys))
+  case (Cons(x,xs), Cons(y,ys)) => Cons(x+y, zipInts(xs, ys))
+}
+
+zipInts(List(1,2,3), List(4,5,6)) //> Cons(5,Cons(7,Cons(9,Cons(0,Nil))))
 ```
 
 ## 練習 3.23
+針對剛剛的函數泛化，不只針對整數或相加操作。
+```scala
+def zipWith[A,B,C](a: List[A], b: List[B])(f: (A,B) => C): List[C]
+```
+```scala
+def zipWith[A,B,C](a: List[A], b: List[B])(f: (A,B) => C): List[C] = (a,b) match {
+  case (Nil, _) => Nil
+  case (_, Nil) => Nil
+  case (Cons(x,xs), Cons(y,ys)) => Cons(f(x,y), zipWith(xs, ys)(f))
+}
+
+zipWith(List(1,2,3), List(4,5,6))(_+_)  //> Cons(5,Cons(7,Cons(9,Nil)))
+zipWith(List(1,2,3), List(4,5,6))(_*_)  //> Cons(4,Cons(10,Cons(18,Nil)))
+```
+
 ## 練習 3.24
 ## 練習 3.25
 ## 練習 3.26
