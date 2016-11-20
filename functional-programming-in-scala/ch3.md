@@ -242,17 +242,7 @@ def foldRightViaFoldLeft[A,B](l: List[A], z: B)(f: (A,B) => B): B =
 ```
 - 這個其實有點詐砲，先使用 `foldLeft` 實作的 `reverse` 將數列翻轉，然後再用 `foldLeft` 由左而右遞歸數列，其中套用 `f()` 也對調 a, b 參數
 
-```scala
-def foldRightViaFoldLeft_dbg[A,B](l: List[A], z: B)(f: (A,B) => B): B = 
-  foldLeft(reverse(l), z){(b, a) => println(s"f($a, $b)=${f(a, b)}"); f(a, b)}
-
-foldRightViaFoldLeft_dbg(List(1,2,3), 0)(_+_)
-//> f(3, 0)=3
-//> f(2, 3)=5
-//> f(1, 5)=6
-```
-
-用 `foldRight` 實作 `foldLeft` 或是 `foldLeft` 實作 `foldRight` 太抽象，直接偷看解答。
+用 `foldRight` 實作 `foldLeft` 或是 `foldLeft` 實作 `foldRight` 太抽象，直接看解答。
 ```scala
 def foldRightViaFoldLeft_1[A,B](l: List[A], z: B)(f: (A,B) => B): B =
   foldLeft(l, (b:B) => b)((g,a) => b => g(f(a,b)))(z)
@@ -261,7 +251,9 @@ def foldLeftViaFoldRight[A,B](l: List[A], z: B)(f: (B,A) => B): B =
   foldRight(l, (b:B) => b)((a,g) => b => g(f(b,a)))(z)
 ```
 
-光看解答都很難想出怎麼做到的，只好退而求其次用更簡單的範例思考。怎麼用 `apply` 做出 `applyRev2`, 怎麼用 `applyRev` 做出 `apply2`?
+光看解答都很難想出怎麼做到的，只能退而求其次用更簡單的範例思考。
+
+先思考怎麼互換函數參數。怎麼用 `apply` 做出 `applyRev2`, 怎麼用 `applyRev` 做出 `apply2`：
 ```scala
 def apply[A,B](a:A, z:B)(f: (A,B)=>B): B = f(a,z)
 apply("x","y")(_+_)     // xy
@@ -269,28 +261,44 @@ apply("x","y")(_+_)     // xy
 def applyRev[A,B](a:A, z:B)(f: (B,A)=>B): B = f(z,a)
 applyRev("x","y")(_+_)  //> yx
 
-def applyRev2[A,B](a:A, z:B)(f: (B,A)=>B): B =
-  apply(a, (b:B)=>b)((a,g) => b => g(f(b,a)))(z)
-applyRev2("x","y")(_+_) //> yx
-
 def apply2[A,B](a:A, z:B)(f: (A,B)=>B): B =
   applyRev(a, (b:B)=>b)((g,a) => b => g(f(a,b)))(z)
 apply2("x","y")(_+_)    //> xy
+
+def applyRev2[A,B](a:A, z:B)(f: (B,A)=>B): B =
+  apply(a, (b:B)=>b)((a,g) => b => g(f(b,a)))(z)
+applyRev2("x","y")(_+_) //> yx
 ```
 
-另外，怎麼套用某個方向的 fold 得到另一個方向的 fold? 以下 f1, f2, f3 產生順序，模擬 foldLeft 的呼叫順序 (1, 2, 3)。
+另外，怎麼套用某個方向的 fold 得到另一個方向的 fold?
+
+先觀察 `foldLeft` 的 zero 的型別是 `String` 
 ```scala
-def f(a: Int, b: String): String = s"($a,$b)"
-def fun(a:Int, g: String=>String): String=>String = (b: String) => g(f(a, b))
-
-val f0 = (s:String) => s  //> (s: String) => s
-val f1 = fun(1, f0)       //> (b: String) => f0(s"(1,$b)")  // "(1,$b)"
-val f2 = fun(2, f1)       //> (b: String) => f1(s"(2,$b)")  // "(1,(2,$b))"
-val f3 = fun(3, f2)       //> (b: String) => f2(s"(3,$b)")  // "(1,(2,(3,$b)))"
-
-f3("0") //> f2("(3,0)") //> f1("(2,(3,0))") //> f0("(1,(2,(3,0)))") //> "(1,(2,(3,0)))"
-f(1,f(2,f(3,"0")))  //> "(1,(2,(3,0)))"
+val f = (b:String, a:Int) => s"($b,$a)"
+foldLeft(List(1,2,3), "0")((b:String,a:Int) => f(b,a))
+//> (((0,1),2),3)
 ```
+
+iteration | `(a,b)` | applied `a` | applied `b` 
+----------|---------|-------------|------------
+1         | `(1,"0")`           | `f(b,1)`  | `f("0",1)`
+2         | `(2,f("0",1))`      | `f(b,2)`  | `f(f("0",1),2)`
+3         | `(3,f(f("0",1),2)`  | `f(b,3)`  | `f(f(f("0",1),2),3)`
+- 求值：`f(f(f("0",1),2),3)` = `"(((0,1),2),3)"`
+
+再觀察 `foldLeft` 的 zero 的型別是 `String=>String`
+```scala
+val f = (a:Int, b:String) => s"($a,$b)"
+foldLeft(List(1,2,3), (b:String)=>b)((g: String=>String, a:Int) => (b:String) => g(f(a,b)))("0")
+//> (1,(2,(3,0)))
+```
+
+iteration | `(g,a)` | applied `a` | applied `g`
+----------|---------|-------------|------------
+1         | `((b:String)=>b,1)`           | `(b:String)=>g(f(1,b))` | `(b:String)=>f(1,b)`
+2         | `((b:String)=>f(1,b),2)`      | `(b:String)=>g(f(2,b))` | `(b:String)=>f(1,f(2,b))`
+3         | `((b:Sting)=>f(1,f(2,b)),3)`  | `(b:String)=>g(f(3,b))` | `(b:String)=>f(1,f(2,f(3,b)))`
+- 求值：`((b:String)=>f(1,f(2,f(3,b))))("0")` = `f(1,f(2,f(3,"0")))` = `"(1,(2,(3,0)))"`
 
 ## 練習 3.14
 ## 練習 3.15
