@@ -332,6 +332,16 @@ concate(List(List(1,2), List(3,4), List(5,6)))  //> Cons(1,Cons(2,Cons(3,Cons(4,
 ```
 
 ## 練習 3.16
+寫一個函數，用來轉換一個整數列表，對每個元素 +1
+```scala
+def addOne(l: List[Int]): List[Int] = l match {
+  case Nil => Nil
+  case Cons(x,xs) => Cons(x+1, addOne(xs))
+}
+
+addOne(List(1,2,3)) //> Cons(2,Cons(3,Cons(4,Nil)))
+```
+
 ## 練習 3.17
 ## 練習 3.18
 ## 練習 3.19
