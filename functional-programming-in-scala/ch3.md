@@ -389,8 +389,33 @@ filter(List(1,2,3,4,5))(_%2==0) //> Cons(2,Cons(4,Nil))
 ```
 
 ## 練習 3.20
+寫一個 `flatMap` 函數，跟 `map` 類似，除了傳入的函數 `f` 返回列表而非單個結果。`f` 對每個元素返回的列表會被塞到 `flapMap` 最終所要返回的列表。
+```scala
+def flatMap[A,B](as: List[A], f: A=>List[B]): List[B]
+```
+```scala
+def flatMap[A,B](as: List[A])(f: A=>List[B]): List[B] = as match {
+  case Nil => Nil
+  case Cons(x, xs) => append(f(x), flatMap(xs)(f))
+}
+
+flatMap(List(1,2,3))(x=>List(x,x+1))  //> Cons(1,Cons(2,Cons(2,Cons(3,Cons(3,Cons(4,Nil))))))
+```
+
 ## 練習 3.21
+用 `flatMap` 實現 `filter`
+```scala
+def filter2[A](as: List[A])(f: A=>Boolean): List[A] =
+  flatMap(as){ a:A => if (f(a)) List(a) else Nil }
+
+filter2(List(1,2,3,4,5))(_%2==0)  //> Cons(2,Cons(4,Nil))
+```
+
 ## 練習 3.22
+寫一個函數，接受兩個列表，通過對相對應的元素的相加構造出一個新的列表。例如 List(1,2,3) 與 List(4,5,6) 得到 List(5,7,9)
+```scala
+```
+
 ## 練習 3.23
 ## 練習 3.24
 ## 練習 3.25
