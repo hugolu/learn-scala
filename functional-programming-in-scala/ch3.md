@@ -486,6 +486,14 @@ val tree = Branch(Branch(Leaf("A"),Leaf("B")), Branch(Leaf("C"),Leaf("D")))
 size(tree) //> 7
 ```
 
+以下作者解答：
+```scala
+def size[A](t: Tree[A]): Int = t match {
+  case Leaf(_) => 1
+  case Branch(l,r) => 1 + size(l) + size(r)
+}
+```
+
 ## 練習 3.26
 寫一個 maximum 函數，返回 Tree[Int] 中最大的元素。
 ```scala
@@ -504,6 +512,15 @@ def maximum(tree: Tree[Int]) = {
 val numTree = Branch(Branch(Leaf(1),Leaf(2)), Branch(Leaf(3),Leaf(4)))
 maximum(numTree)  //> 4
 ```
+
+以下作者解答：
+```scala
+def maximum(t: Tree[Int]): Int = t match {
+  case Leaf(n) => n
+  case Branch(l,r) => maximum(l) max maximum(r)
+}
+```
+
 ## 練習 3.27
 寫一個 depth 函數，返回一棵樹從跟節點到任何葉節點最大路徑長度。
 ```scala
@@ -521,6 +538,14 @@ depth(t1) //> 3
 depth(t2) //> 3
 ```
 
+以下作者解答：
+```scala
+def depth[A](t: Tree[A]): Int = t match {
+  case Leaf(_) => 0
+  case Branch(l,r) => 1 + (depth(l) max depth(r))
+}
+```
+
 ## 練習 3.28
 寫一個 `map` 函數，類似於 `List` 中的同名函數，接收一個函數，對樹中每個元素進行修改。
 ```scala
@@ -531,6 +556,14 @@ def map[A,B](tree: Tree[A])(f: A=>B): Tree[B] = tree match {
 
 val numTree = Branch(Branch(Leaf(1),Leaf(2)), Branch(Leaf(3),Leaf(4)))
 map(numTree)(_+1) //> Branch(Branch(Leaf(2),Leaf(3)),Branch(Leaf(4),Leaf(5)))
+```
+
+以下作者解答：
+```scala
+def map[A,B](t: Tree[A])(f: A => B): Tree[B] = t match {
+  case Leaf(a) => Leaf(f(a))
+  case Branch(l,r) => Branch(map(l)(f), map(r)(f))
+}
 ```
 
 ## 練習 3.29
@@ -549,4 +582,12 @@ def foldLeft[A,B](tree: Tree[A], z: B)(f: (B,A)=>B): B = tree match {
 val tree = Branch(Branch(Leaf("A"),Leaf("B")), Branch(Leaf("C"),Leaf("D")))
 foldRight(tree, "0")((a,b)=>s"($a,$b)") //> (A,(B,(C,(D,0))))
 foldLeft(tree, "0")((b,a)=>s"($b,$a)")  //> ((((0,A),B),C),D)
+```
+
+以下作者解答：
+```scala
+def fold[A,B](t: Tree[A])(f: A => B)(g: (B,B) => B): B = t match {
+  case Leaf(a) => f(a)
+  case Branch(l,r) => g(fold(l)(f)(g), fold(r)(f)(g))
+}
 ```
