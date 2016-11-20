@@ -505,5 +505,21 @@ val numTree = Branch(Branch(Leaf(1),Leaf(2)), Branch(Leaf(3),Leaf(4)))
 maximum(numTree)  //> 4
 ```
 ## 練習 3.27
+寫一個 depth 函數，返回一棵樹從跟節點到任何葉節點最大路徑長度。
+```scala
+def depth[A](tree: Tree[A]): Int = {
+  def maxDepth(tree: Tree[A], n: Int): Int = tree match {
+    case Leaf(_) => n
+    case Branch(a,b) => maxDepth(a, n+1).max(maxDepth(b, n+1))
+  }
+  maxDepth(tree, 0)
+}
+
+val t1 = Branch(Leaf(1),Branch(Leaf(2),Branch(Leaf(3),Leaf(4))))
+val t2 = Branch(Branch(Branch(Leaf(1),Leaf(2)),Leaf(3)),Leaf(4))
+depth(t1) //> 3
+depth(t2) //> 3
+```
+
 ## 練習 3.28
 ## 練習 3.29
