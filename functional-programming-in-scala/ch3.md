@@ -522,4 +522,31 @@ depth(t2) //> 3
 ```
 
 ## 練習 3.28
+寫一個 `map` 函數，類似於 `List` 中的同名函數，接收一個函數，對樹中每個元素進行修改。
+```scala
+def map[A,B](tree: Tree[A])(f: A=>B): Tree[B] = tree match {
+  case Leaf(a) => Leaf(f(a))
+  case Branch(a,b) => Branch(map(a)(f), map(b)(f))
+}
+
+val numTree = Branch(Branch(Leaf(1),Leaf(2)), Branch(Leaf(3),Leaf(4)))
+map(numTree)(_+1) //> Branch(Branch(Leaf(2),Leaf(3)),Branch(Leaf(4),Leaf(5)))
+```
+
 ## 練習 3.29
+泛化 `size`, `maximun`, `depth`, `map`，寫一個 `fold` 函數，對它們的相似抽象。按照庚家通用的函數標準來重新實現它們。
+```scala
+def foldRight[A,B](tree: Tree[A], z: B)(f: (A,B)=>B): B = tree match {
+  case Leaf(a) => f(a, z)
+  case Branch(a, b) => foldRight(a, foldRight(b, z)(f))(f)
+}
+
+def foldLeft[A,B](tree: Tree[A], z: B)(f: (B,A)=>B): B = tree match {
+  case Leaf(a) => f(z, a)
+  case Branch(a, b) => foldLeft(b, foldLeft(a, z)(f))(f)
+}
+
+val tree = Branch(Branch(Leaf("A"),Leaf("B")), Branch(Leaf("C"),Leaf("D")))
+foldRight(tree, "0")((a,b)=>s"($a,$b)") //> (A,(B,(C,(D,0))))
+foldLeft(tree, "0")((b,a)=>s"($b,$a)")  //> ((((0,A),B),C),D)
+```
