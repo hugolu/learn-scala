@@ -127,3 +127,33 @@ def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = (a,b) m
 def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] =
   a flatMap (aa => b map (bb => f(aa,bb)))
 ```
+
+## 練習 4.4
+寫一個 `Sequence` 函數，將一個 `Option` 列表結合為一個 `Option`。這個結果 `Option` 包含原 `Option` 列表所有元素值。如果原 `Option` 列表出現一個 `None`，函數結果也應該返回 `None`；否則結果應該是所有（使用 `Some` 包裝的）元素值的列表。
+```scala
+def sequence[A](a: List[Option[A]]): Option[List[A]]
+```
+
+## 練習 4.5
+實現一個函數，直接使用 `map` 和 `Seqence`，但效率更好，只遍歷一次列表。事實上，按照 `traverse` 來實現 `sequence`。
+
+## 練習 4.6
+實現 `Either` 版本的 `map`, `flatMap`, `orElse` 和 `map2` 函數。
+```scala
+trait Either[+E, +A] {
+  def map[B](f: A => B): Either[E, B]
+  def flatMap[EE >: E, B](f: A => Either[EE, B]): Either[EE, B]
+  def orElse[EE >: E, B >: A](b: => Either[EE, B]): Either[EE, B]
+  def map2[EE >: E, B, C](b: Either[EE, B])(f: (A, B) => C): Either[EE, C]
+}
+```
+
+## 練習 4.7
+對 `Either` 實現 `sequence` 和 `traverse`，如果遇到錯誤返回第一個錯誤。
+```scala
+def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]]
+def traverse[E, A, B](as: List[A])(f: A => Either[E, B]): Either[E, List[B])
+```
+
+## 練習 4.8
+在這個實現裡，即使 `name` 和 `age` 都無效，`map2` 也只能報出一個錯誤。為了讓兩個錯誤都能報出來，你需要做些什麼改變？會改變 `map2` 或 `mkPerson` 的簽名嗎？或者會通過一些輔助結構創建一種新的數據結構比 `Either` 更好地滿足這一個需求嗎？這種更好的數據結構類型的 `orElse`, `traverse`, `sequence` 行為與 `Either` 有何不同？
