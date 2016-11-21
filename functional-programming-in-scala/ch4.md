@@ -108,3 +108,22 @@ variance(Seq(1,2,3,4,5): Seq[Double]) //> Some(2.0)
 variance(Seq(3,3,3,3,3): Seq[Double]) //> Some(0.0)
 variance(Seq(): Seq[Double])          //> None
 ```
+
+## 練習 4.3
+寫一個泛型函數 map2，使用一個二元函數來組合兩個 `Option` 值。如果兩個 `Option` 都為 `None`，也返回 `None`。
+```scala
+def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C]
+```
+
+```scala
+def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = (a,b) match {
+  case (Some(aa),Some(bb)) => Some(f(aa,bb))
+  case _ => None
+}
+```
+
+作者的解答：
+```scala
+def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] =
+  a flatMap (aa => b map (bb => f(aa,bb)))
+```
