@@ -89,3 +89,22 @@ case class Some[+A](get: A) extends Option[A]
 case object None extends Option[Nothing]
 ```
 
+## 練習 4.2
+根據 `flatMap` 實現一個 `variance` 方差函數。如果一個序列的平均值是 `m`，方差是對序列中每個元素 `x` 進行 `math.pow(x-m,2)`。
+```scala
+def variance(xs: Seq[Double]): Option[Double]
+```
+
+```scala
+def mean(xs: Seq[Double]): Option[Double] = xs match {
+  case Nil => None
+  case _ => Some(xs.sum/xs.size)
+}
+
+def variance(xs: Seq[Double]): Option[Double] =
+  mean(xs) flatMap (m => mean(xs.map(x => math.pow(x-m,2))))
+
+variance(Seq(1,2,3,4,5): Seq[Double]) //> Some(2.0)
+variance(Seq(3,3,3,3,3): Seq[Double]) //> Some(0.0)
+variance(Seq(): Seq[Double])          //> None
+```
