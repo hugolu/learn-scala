@@ -156,8 +156,46 @@ def sequence[A](as: List[Option[A]]): Option[List[A]] = as match {
 }
 ```
 
+## `Try`
+```scala
+def Try[A](a: => A): Option[A] = 
+  try Some(a)
+  catch { case e: Exception => None }
+
+Try("12345".toInt)  //> Some(12345)
+Try("hello".toInt)  //> None
+```
+
+## `traverse`
+```scala
+def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] = 
+a match {
+  case Nil => Some(Nil)
+  case h :: t => f(h) flatMap (hh => traverse(t)(f) map (tt => hh :: tt))
+}
+
+traverse(List("123", "456", "789"))(str => Try(str.toInt))  //> Option[List[Int]] = Some(List(123, 456, 789))
+traverse(List("123", "xxx", "789"))(str => Try(str.toInt))  //> Option[List[Int]] = None
+```
+
+作者的作法：
+```scala
+def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] =
+  a match {
+    case Nil => Some(Nil)
+    case h::t => map2(f(h), traverse(t)(f))(_ :: _)
+  }
+
+def traverse_1[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] =
+  a.foldRight[Option[List[B]]](Some(Nil))((h,t) => map2(f(h),t)(_ :: _))
+```
+
 ## 練習 4.5
-實現一個函數，直接使用 `map` 和 `Seqence`，但效率更好，只遍歷一次列表。事實上，按照 `traverse` 來實現 `sequence`。
+實現一個函數，它直接使用 `map` 和 `seqence`，但效率更好，只遍歷一次列表。事實上，按照 `traverse` 來實現 `sequence`。
+```scala
+def sequence[A](as: List[Option[A]]): Option[List[A]] =
+  traverse(as)(a=>a)
+```
 
 ## 練習 4.6
 實現 `Either` 版本的 `map`, `flatMap`, `orElse` 和 `map2` 函數。
