@@ -108,6 +108,11 @@ variance(Seq(1,2,3,4,5): Seq[Double]) //> Some(2.0)
 variance(Seq(3,3,3,3,3): Seq[Double]) //> Some(0.0)
 variance(Seq(): Seq[Double])          //> None
 ```
+1. 對元素 `x` 進行平均差平方 `math.pow(x-m,2)`
+2. 針對每個元素... `xs map (x => math.pow(x-m,2))`
+3. 將上面結果平均... `mean(xs map (x => math.pow(x-m,2)))`
+4. 算出序列平均值... `mean(xs)`
+5. 把序列平均值代入步驟三... `mean(xs) flatMap (m => ...)`
 
 ## 練習 4.3
 寫一個泛型函數 map2，使用一個二元函數來組合兩個 `Option` 值。如果兩個 `Option` 都為 `None`，也返回 `None`。
