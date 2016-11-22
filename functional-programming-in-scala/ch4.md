@@ -148,6 +148,14 @@ sequence(List(Some(1), Some(2), Some(3))) //> Option[List[Int]] = Some(List(1, 2
 sequence(List(Some(1), None, Some(3)))    //> Option[List[Int]] = None
 ```
 
+作者的解答：
+```scala
+def sequence[A](as: List[Option[A]]): Option[List[A]] = as match {
+  case Nil => Some(Nil)
+  case h :: t => h flatMap (hh => sequence(t) map (tt => hh :: tt))
+}
+```
+
 ## 練習 4.5
 實現一個函數，直接使用 `map` 和 `Seqence`，但效率更好，只遍歷一次列表。事實上，按照 `traverse` 來實現 `sequence`。
 
