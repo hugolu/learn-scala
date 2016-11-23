@@ -197,6 +197,13 @@ def sequence[A](as: List[Option[A]]): Option[List[A]] =
   traverse(as)(a=>a)
 ```
 
+## `Either` 小抄
+```scala
+sealed trait Either[+E, +A]
+case class Left[+E](value: E) extends Either[E, Nothing]
+case class Right[+A](value: A) extends Either[Nohting, A]
+```
+
 ## 練習 4.6
 實現 `Either` 版本的 `map`, `flatMap`, `orElse` 和 `map2` 函數。
 ```scala
