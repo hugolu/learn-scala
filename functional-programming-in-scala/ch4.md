@@ -272,5 +272,33 @@ def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]]
 def traverse[E, A, B](as: List[A])(f: A => Either[E, B]): Either[E, List[B])
 ```
 
+```scala
+def sequence[E,A](es: List[Either[E,A]]): Either[E, List[A]] =
+  es match {
+    case Nil => Right(Nil)
+    case h :: t => h flatMap (hh => sequence(t) map (tt => hh :: tt))
+  }
+
+sequence(List(safeDiv(6,1), safeDiv(6,2), safeDiv(6,3)))  //> Right(List(6, 3, 2))
+sequence(List(safeDiv(6,1), safeDiv(6,0), safeDiv(6,3)))  //> Left(java.lang.ArithmeticException: / by zero)
+```
+
+```scala
+def traverse[E,A,B](es: List[A])(f: A => Either[E, B]): Either[E, List[B]] =
+  es match {
+    case Nil => Right(Nil)
+    case h :: t => f(h) flatMap (hh => traverse(t)(f) map (tt => hh :: tt))
+  }
+
+traverse(List(1,2,3))(safeDiv(6, _))  //> Right(List(6, 3, 2))
+traverse(List(1,0,3))(safeDiv(6, _))  //> Left(java.lang.ArithmeticException: / by zero)
+```
+
+作者的做法：
+```scala
+def sequence[E,A](es: List[Either[E,A]]): Either[E, List[A]] =
+  traverse(es)(e => e)
+```
+
 ## 練習 4.8
 在這個實現裡，即使 `name` 和 `age` 都無效，`map2` 也只能報出一個錯誤。為了讓兩個錯誤都能報出來，你需要做些什麼改變？會改變 `map2` 或 `mkPerson` 的簽名嗎？或者會通過一些輔助結構創建一種新的數據結構比 `Either` 更好地滿足這一個需求嗎？這種更好的數據結構類型的 `orElse`, `traverse`, `sequence` 行為與 `Either` 有何不同？
