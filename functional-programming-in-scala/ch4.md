@@ -215,6 +215,56 @@ trait Either[+E, +A] {
 }
 ```
 
+```scala
+sealed trait Either[+E, +A] {
+  def map[B](f: A => B): Either[E, B] =
+    this match {
+      case Right(a) => Right(f(a))
+      case Left(e) => Left(e)
+    }
+
+  def flatMap[EE >: E, B](f: A => Either[EE, B]): Either[EE, B] =
+    this match {
+      case Right(a) => f(a)
+      case Left(e) => Left(e)
+    }
+
+  def orElse[EE >: E, AA >: A](b: => Either[EE,AA]): Either[EE, AA] =
+    this match {
+      case Left(_) => b
+      case Right(a) => Right(a)
+    }
+  def map2[EE >: E, B, C](b: Either[EE, B])(f: (A,B) => C): Either[EE, C] =
+    for {
+      a <- this
+      bb <- b
+    } yield f(a, bb)
+}
+case class Left[+E](value: E) extends Either[E, Nothing]
+case class Right[+A](value: A) extends Either[Nothing, A]
+```
+```scala
+def safeDiv(x: Int, y: Int): Either[Exception, Int] =
+  try Right(x/y)
+  catch { case e: Exception => Left(e) }
+
+val right = safeDiv(2, 1) //> Right(2)
+val left = safeDiv(2, 0)  //> Left(java.lang.ArithmeticException: / by zero)
+```
+```scala
+right.map(_+1)                      //> Right(3)
+left.map(_+1)                       //> Left(java.lang.ArithmeticException: / by zero)
+
+right.flatMap(n => safeDiv(10, n))  //> Right(5)
+left.flatMap(n => safeDiv(10, n))   //> Left(java.lang.ArithmeticException: / by zero)
+
+right.orElse(Right(3))              //> Right(2)
+left.orElse(Right(3))               //> Right(3)
+
+right.map2(Right(3))((a,b)=>a+b)    //> Right(5)
+left.map2(Right(3))((a,b)=>a+b)     //> Left(java.lang.ArithmeticException: / by zero)
+```
+
 ## 練習 4.7
 對 `Either` 實現 `sequence` 和 `traverse`，如果遇到錯誤返回第一個錯誤。
 ```scala
