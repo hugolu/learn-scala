@@ -19,3 +19,9 @@ object Stream {
     if (as.isEmpty) empty else cons(as.head, apply(as.tail: _*))
 }
 ```
+
+## 練習 5.1
+寫一個可以將 `Stream` 轉換成 `List` 的函數，它會被強制求值，可以在 REPL 下看到值得內容。
+```scala
+def toList: List[A]
+```
