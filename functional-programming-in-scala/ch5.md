@@ -25,3 +25,24 @@ object Stream {
 ```scala
 def toList: List[A]
 ```
+
+外部函數：
+```scala
+def toList[A](s: Stream[A]): List[A] = s match {
+  case Empty => Nil: List[A]
+  case Cons(h, t) => h() :: toList(t())
+}
+```
+ - 這個無法做到 tail-recursion 
+
+作者作法 (寫成 `Stream` 的方法)
+```scala
+def toList: List[A] = {
+  @annotation.tailrec
+  def go(s: Stream[A], acc: List[A]): List[A] = s match {
+    case Cons(h,t) => go(t(), h() :: acc)
+    case _ => acc
+  }
+  go(this, List()).reverse
+}
+```
