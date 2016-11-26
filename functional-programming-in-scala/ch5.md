@@ -23,27 +23,28 @@ object Stream {
 ## 練習 5.1
 寫一個可以將 `Stream` 轉換成 `List` 的函數，它會被強制求值，可以在 REPL 下看到值得內容。
 ```scala
-def toList: List[A]
+def toList[A](s: Stream[A]): List[A]
 ```
 
-外部函數：
 ```scala
 def toList[A](s: Stream[A]): List[A] = s match {
   case Empty => Nil: List[A]
   case Cons(h, t) => h() :: toList(t())
 }
-```
- - 這個無法做到 tail-recursion 
 
-作者作法 (寫成 `Stream` 的方法)
+toList(Stream(1,2,3)) //> List(1, 2, 3)
+```
+- 這個無法做到 tail-recursion 
+
+改寫作者作法：
 ```scala
-def toList: List[A] = {
+def toList[A](s: Stream[A]): List[A] = {
   @annotation.tailrec
   def go(s: Stream[A], acc: List[A]): List[A] = s match {
     case Cons(h,t) => go(t(), h() :: acc)
     case _ => acc
   }
-  go(this, List()).reverse
+  go(s, List()).reverse
 }
 ```
 
@@ -78,3 +79,21 @@ def toListViaFoldRightViaFoldLeft[A](s: Stream[A]): List[A] =
 toListViaFoldRightViaFoldLeft(Stream(1,2,3))  //> List(1, 2, 3)
 ```
 - 這個可以做到 tail-recursion，不過拐了好幾個彎 XD
+
+改寫作者加速版的做法：
+```scala
+def toListFast[A](s: Stream[A]): List[A] = {
+  val buf = new collection.mutable.ListBuffer[A]
+  @annotation.tailrec
+  def go(s: Stream[A]): List[A] = s match {
+    case Cons(h,t) =>
+      buf += h()
+      go(t())
+    case _ => buf.toList
+  }
+  go(s)
+}
+
+toListFast(Stream(1,2,3)) //> List(1, 2, 3)
+```
+- 使用 mutable list 暫存運算中間結果，最後再轉成 immutable list。mutable list 的影響範圍沒有超過 `toListFast`，`toListFast` 仍可視為純函數。
