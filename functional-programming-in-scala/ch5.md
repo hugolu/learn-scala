@@ -46,3 +46,35 @@ def toList: List[A] = {
   go(this, List()).reverse
 }
 ```
+
+回憶 `List::foldRight` 的做法：
+```scala
+def foldRight[A, B](s: Stream[A], z: B)(f: (A, B) => B): B = s match {
+  case Empty => z
+  case Cons(h, t) => f(h(), foldRight(t(), z)(f))
+}
+
+def toListViaFoleRight[A](s: Stream[A]): List[A] =
+  foldRight(s, List[A]())(_::_)
+
+toListViaFoleRight(Stream(1,2,3)) //> List(1, 2, 3)
+```
+- 很可惜，這個也無法 tail-recursion
+
+回憶 `List::foldLeft` 的做法：
+```scala
+@annotation.tailrec
+def foldLeft[A, B](s: Stream[A], z: B)(f: (B, A) => B): B = s match {
+  case Empty => z
+  case Cons(h, t) => foldLeft(t(), f(z, h()))(f)
+}
+
+def foldRightViaFoldLeft[A, B](s: Stream[A], z: B)(f: (A, B) => B): B =
+  foldLeft(s, (b: B) => b)((g, a) => (b: B) => g(f(a, b)))(z)
+
+def toListViaFoldRightViaFoldLeft[A](s: Stream[A]): List[A] =
+  foldRightViaFoldLeft(s, List[A]())(_::_)
+
+toListViaFoldRightViaFoldLeft(Stream(1,2,3))  //> List(1, 2, 3)
+```
+- 這個可以做到 tail-recursion，不過拐了好幾個彎 XD
