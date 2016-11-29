@@ -1,23 +1,48 @@
 # 嚴格求值與惰性求值
 
-## Non-strictness
+## Non-strictness functions
 ```scala
 def if2[A](cond: Boolean, onTrue: () => A, onFalse: () => A): A = if(cond) onTrue() else onFalse()
+//> if2: [A](cond: Boolean, onTrue: () => A, onFalse: () => A)A
 
 if2(true, () => println("true"), () => println("false"))  //> true
 if2(false, () => println("true"), () => println("false")) //> false
 ```
 ```scala
 def if3[A](cond: Boolean, onTrue: Function0[A], onFalse: Function0[A]): A = if(cond) onTrue() else onFalse()
+//> if3: [A](cond: Boolean, onTrue: () => A, onFalse: () => A)A
 
 if3(true, () => println("true"), () => println("false"))  //> true
 if3(false, () => println("true"), () => println("false")) //> false
 ```
 ```scala
 def if4[A](cond: Boolean, onTrue: => A, onFalse: => A): A = if(cond) onTrue else onFalse
+//> if4: [A](cond: Boolean, onTrue: => A, onFalse: => A)A
 
 if4(true, println("true"), println("false"))  //> true
 if4(false, println("true"), println("false")) //> false
+```
+
+## Non-stricness in Class parameters
+```scala
+class Foo(n: => Int) { def getN = n }
+
+val foo = new Foo({ println("hello"); 100 })  //> foo: Foo = Foo@5b1efaaf
+foo.getN  //> hello //> 100
+```
+```scala
+case class Bar(n: => Int)
+//> <console>:1: error: `val' parameters may not be call-by-name
+//> case class Bar(n: => Int)
+//>                   ^
+```
+> 因為技術限制，參數必須是明確強制求值的 thunk，而非傳名參數。
+
+```scala
+case class Buz(n: () => Int)
+
+val buz = Buz( () => { println("hello"); 100 }) //> buz: Buz = Buz(<function0>)
+buz.n() //> hello //> 100
 ```
 
 ## `Stream` 小抄
