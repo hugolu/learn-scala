@@ -1,5 +1,25 @@
 # 嚴格求值與惰性求值
 
+## Non-strictness
+```scala
+def if2[A](cond: Boolean, onTrue: () => A, onFalse: () => A): A = if(cond) onTrue() else onFalse()
+
+if2(true, () => println("true"), () => println("false"))  //> true
+if2(false, () => println("true"), () => println("false")) //> false
+```
+```scala
+def if3[A](cond: Boolean, onTrue: Function0[A], onFalse: Function0[A]): A = if(cond) onTrue() else onFalse()
+
+if3(true, () => println("true"), () => println("false"))  //> true
+if3(false, () => println("true"), () => println("false")) //> false
+```
+```scala
+def if4[A](cond: Boolean, onTrue: => A, onFalse: => A): A = if(cond) onTrue else onFalse
+
+if4(true, println("true"), println("false"))  //> true
+if4(false, println("true"), println("false")) //> false
+```
+
 ## `Stream` 小抄
 ```scala
 sealed trait Stream[+A]
