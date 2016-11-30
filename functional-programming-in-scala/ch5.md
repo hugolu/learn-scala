@@ -181,3 +181,18 @@ def drop[A](s: Stream[A], n: Int): Stream[A] = s match {
 
 toList(drop(Stream(1,2,3,4,5,6),3)) // List(4, 5, 6)
 ```
+
+## 練習 5.3
+寫一個函數 `takeWhile` 返回 `Stream` 中從起始連續滿足給訂斷言的所有元素。
+```scala
+def takeWhile[A](s: Stream[A], p: A => Boolean): Stream[A]
+```
+```scala
+import Stream._
+def takeWhile[A](s: Stream[A])(p: A => Boolean): Stream[A] = s match {
+  case Cons(h, t) if (p(h()) == true) => cons(h(), takeWhile(t())(p))
+  case _ => empty
+}
+
+toList(takeWhile(Stream(1,2,3,4,5))(_ < 4)) //> List(1, 2, 3)
+```
