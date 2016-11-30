@@ -45,6 +45,21 @@ val buz = Buz( () => { println("hello"); 100 }) //> buz: Buz = Buz(<function0>)
 buz.n() //> hello //> 100
 ```
 
+將求過的值儲存在 closure 的 lazy 變數
+```scala
+case class Buz(n: () => Int)
+
+def mkBuz(n: => Int) = {
+  lazy val _n = n
+  Buz(() => _n)
+}
+
+val buz = mkBuz({println("hello"); 1})
+
+buz.n() //> hello //> 1
+buz.n()           //> 1
+```
+
 ## `Stream` 小抄
 ```scala
 sealed trait Stream[+A]
