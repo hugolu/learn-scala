@@ -1,9 +1,71 @@
 # 嚴格求值與惰性求值
 
+## Non-strictness functions
+```scala
+def if2[A](cond: Boolean, onTrue: () => A, onFalse: () => A): A = if(cond) onTrue() else onFalse()
+//> if2: [A](cond: Boolean, onTrue: () => A, onFalse: () => A)A
+
+if2(true, () => println("true"), () => println("false"))  //> true
+if2(false, () => println("true"), () => println("false")) //> false
+```
+```scala
+def if3[A](cond: Boolean, onTrue: Function0[A], onFalse: Function0[A]): A = if(cond) onTrue() else onFalse()
+//> if3: [A](cond: Boolean, onTrue: () => A, onFalse: () => A)A
+
+if3(true, () => println("true"), () => println("false"))  //> true
+if3(false, () => println("true"), () => println("false")) //> false
+```
+```scala
+def if4[A](cond: Boolean, onTrue: => A, onFalse: => A): A = if(cond) onTrue else onFalse
+//> if4: [A](cond: Boolean, onTrue: => A, onFalse: => A)A
+
+if4(true, println("true"), println("false"))  //> true
+if4(false, println("true"), println("false")) //> false
+```
+
+## Non-stricness in Class parameters
+```scala
+class Foo(n: => Int) { def getN = n }
+
+val foo = new Foo({ println("hello"); 100 })  //> foo: Foo = Foo@5b1efaaf
+foo.getN  //> hello //> 100
+```
+```scala
+case class Bar(n: => Int)
+//> <console>:1: error: `val' parameters may not be call-by-name
+//> case class Bar(n: => Int)
+//>                   ^
+```
+> 因為技術限制，參數必須是明確強制求值的 thunk，而非傳名參數。
+
+```scala
+case class Buz(n: () => Int)
+
+val buz = Buz( () => { println("hello"); 100 }) //> buz: Buz = Buz(<function0>)
+buz.n() //> hello //> 100
+```
+
+將求過的值儲存在 closure 的 lazy 變數
+```scala
+case class Buz(n: () => Int)
+
+def mkBuz(n: => Int) = {
+  lazy val _n = n
+  Buz(() => _n)
+}
+
+val buz = mkBuz({println("hello"); 1})
+
+buz.n() //> hello //> 1
+buz.n()           //> 1
+```
+
 ## `Stream` 小抄
 ```scala
 sealed trait Stream[+A]
-case object Empty extends Stream[Nothing]
+case object Empty extends Stream[Nothing] {
+  // 物件的方法放這裡...
+}
 case class Cons[+A](h: () => A, t: () => Stream[A]) extends Stream[A]
 
 object Stream {
@@ -22,17 +84,15 @@ object Stream {
 
 ## 練習 5.1
 寫一個可以將 `Stream` 轉換成 `List` 的函數，它會被強制求值，可以在 REPL 下看到值得內容。
-```scala
-def toList[A](s: Stream[A]): List[A]
-```
 
 ```scala
-def toList[A](s: Stream[A]): List[A] = s match {
+def toList: List[A] = this match {
   case Empty => Nil: List[A]
-  case Cons(h, t) => h() :: toList(t())
+  case Cons(h, t) => h() :: t().toList
 }
-
-toList(Stream(1,2,3)) //> List(1, 2, 3)
+```
+```scala
+Stream(1,2,3).toList  //> List(1, 2, 3)
 ```
 - 這個無法做到 tail-recursion 
 
@@ -120,4 +180,19 @@ def drop[A](s: Stream[A], n: Int): Stream[A] = s match {
 }
 
 toList(drop(Stream(1,2,3,4,5,6),3)) // List(4, 5, 6)
+```
+
+## 練習 5.3
+寫一個函數 `takeWhile` 返回 `Stream` 中從起始連續滿足給訂斷言的所有元素。
+```scala
+def takeWhile[A](s: Stream[A], p: A => Boolean): Stream[A]
+```
+```scala
+import Stream._
+def takeWhile[A](s: Stream[A])(p: A => Boolean): Stream[A] = s match {
+  case Cons(h, t) if (p(h()) == true) => cons(h(), takeWhile(t())(p))
+  case _ => empty
+}
+
+toList(takeWhile(Stream(1,2,3,4,5))(_ < 4)) //> List(1, 2, 3)
 ```
