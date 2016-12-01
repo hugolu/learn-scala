@@ -8,6 +8,30 @@ sealed trait Stream[+A] {
     case Empty => Nil: List[A]
     case Cons(h, t) => h() :: t().toList
   }
+
+  def toListTailrec: List[A] = {
+    @annotation.tailrec
+    def go(s: Stream[A], acc: List[A]): List[A] = s match {
+      case Cons(h, t) => go(t(), h() :: acc)
+      case _ => acc
+    }
+    go(this, List[A]()).reverse
+  }
+
+  def toListFast: List[A] = {
+    val buf = new collection.mutable.ListBuffer[A]
+    @annotation.tailrec
+    def go(s: Stream[A]): List[A] = s match {
+      case Cons(h, t) => buf += h(); go(t())
+      case _ => buf.toList
+    }
+    go(this)
+  }
+
+  def foldRight[B](z: B)(f: (A, B) => B): B = this match {
+    case Empty => z
+    case Cons(h, t) => f(h(), t().foldRight(z)(f)
+  }
 }
 
 case object Empty extends Stream[Nothing] {
