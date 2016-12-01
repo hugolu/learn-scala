@@ -86,77 +86,57 @@ object Stream {
 寫一個可以將 `Stream` 轉換成 `List` 的函數，它會被強制求值，可以在 REPL 下看到值得內容。
 
 ```scala
-def toList: List[A] = this match {
-  case Empty => Nil: List[A]
-  case Cons(h, t) => h() :: t().toList
-}
-```
-```scala
-Stream(1,2,3).toList  //> List(1, 2, 3)
+  def toList: List[A] = this match {
+    case Empty => Nil: List[A]
+    case Cons(h, t) => h() :: t().toList
+  }
 ```
 - 這個無法做到 tail-recursion 
 
-改寫作者作法：
+作者作法：
 ```scala
-def toList[A](s: Stream[A]): List[A] = {
-  @annotation.tailrec
-  def go(s: Stream[A], acc: List[A]): List[A] = s match {
-    case Cons(h,t) => go(t(), h() :: acc)
-    case _ => acc
+  def toListTailrec: List[A] = {
+    @annotation.tailrec
+    def go(s: Stream[A], acc: List[A]): List[A] = s match {
+      case Cons(h, t) => go(t(), h() :: acc)
+      case _ => acc
+    }
+    go(this, List[A]()).reverse
   }
-  go(s, List()).reverse
-}
-```
 
-回憶 `List::foldRight` 的做法：
-```scala
-def foldRight[A, B](s: Stream[A], z: B)(f: (A, B) => B): B = s match {
-  case Empty => z
-  case Cons(h, t) => f(h(), foldRight(t(), z)(f))
-}
-
-def toListViaFoleRight[A](s: Stream[A]): List[A] =
-  foldRight(s, List[A]())(_::_)
-
-toListViaFoleRight(Stream(1,2,3)) //> List(1, 2, 3)
-```
-- 很可惜，這個也無法 tail-recursion
-
-回憶 `List::foldLeft` 的做法：
-```scala
-@annotation.tailrec
-def foldLeft[A, B](s: Stream[A], z: B)(f: (B, A) => B): B = s match {
-  case Empty => z
-  case Cons(h, t) => foldLeft(t(), f(z, h()))(f)
-}
-
-def foldRightViaFoldLeft[A, B](s: Stream[A], z: B)(f: (A, B) => B): B =
-  foldLeft(s, (b: B) => b)((g, a) => (b: B) => g(f(a, b)))(z)
-
-def toListViaFoldRightViaFoldLeft[A](s: Stream[A]): List[A] =
-  foldRightViaFoldLeft(s, List[A]())(_::_)
-
-toListViaFoldRightViaFoldLeft(Stream(1,2,3))  //> List(1, 2, 3)
-```
-- 這個可以做到 tail-recursion，不過拐了好幾個彎 XD
-
-改寫作者加速版的做法：
-```scala
-def toListFast[A](s: Stream[A]): List[A] = {
-  val buf = new collection.mutable.ListBuffer[A]
-  @annotation.tailrec
-  def go(s: Stream[A]): List[A] = s match {
-    case Cons(h,t) =>
-      buf += h()
-      go(t())
-    case _ => buf.toList
+  def toListFast: List[A] = {
+    val buf = new collection.mutable.ListBuffer[A]
+    @annotation.tailrec
+    def go(s: Stream[A]): List[A] = s match {
+      case Cons(h, t) => buf += h(); go(t())
+      case _ => buf.toList
+    }
+    go(this)
   }
-  go(s)
-}
-
-toListFast(Stream(1,2,3)) //> List(1, 2, 3)
 ```
 - 使用 mutable list 暫存運算中間結果，最後再轉成 immutable list。mutable list 的影響範圍沒有超過 `toListFast`，`toListFast` 仍可視為純函數。
+
+回憶 `List::foldRight` 與 `List::foldLeft` 的做法：
+```scala
+  def foldRight[B](z: B)(f: (A, B) => B): B = this match {
+    case Empty => z
+    case Cons(h, t) => f(h(), t().foldRight(z)(f))
+  }
+
+  def toListViaFoldRight: List[A] =
+    foldRight(List[A]())(_::_)
+
+  def foldLeft[B](z: B)(f: (B, A) => B): B = this match {
+    case Empty => z
+    case Cons(h, t) => t().foldLeft(f(z, h()))(f)
+  }
+
+  def foldRightViaFoldLeft[B](z: B)(f: (A, B) => B): B =
+    foldLeft((b: B) => b)((g, a) => (b: B) => g(f(a, b)))(z)
+
+  def toListViaFoldRightViaFoldLeft: List[A] =
+    foldRightViaFoldLeft(List[A]())(_::_)
+```
 
 ## 練習 5.2
 寫一個函數 `take(n)` 返回 `Stream` 中前 n 個元素，寫一個函數 `drop(n)` 返回 `Stream` 中前第 n 個元素之後的元素：
