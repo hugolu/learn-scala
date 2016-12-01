@@ -63,7 +63,9 @@ buz.n()           //> 1
 ## `Stream` 小抄
 ```scala
 sealed trait Stream[+A]
-case object Empty extends Stream[Nothing]
+case object Empty extends Stream[Nothing] {
+  // 物件的方法放這裡...
+}
 case class Cons[+A](h: () => A, t: () => Stream[A]) extends Stream[A]
 
 object Stream {
@@ -82,17 +84,15 @@ object Stream {
 
 ## 練習 5.1
 寫一個可以將 `Stream` 轉換成 `List` 的函數，它會被強制求值，可以在 REPL 下看到值得內容。
-```scala
-def toList[A](s: Stream[A]): List[A]
-```
 
 ```scala
-def toList[A](s: Stream[A]): List[A] = s match {
+def toList: List[A] = this match {
   case Empty => Nil: List[A]
-  case Cons(h, t) => h() :: toList(t())
+  case Cons(h, t) => h() :: t().toList
 }
-
-toList(Stream(1,2,3)) //> List(1, 2, 3)
+```
+```scala
+Stream(1,2,3).toList  //> List(1, 2, 3)
 ```
 - 這個無法做到 tail-recursion 
 
