@@ -1,6 +1,13 @@
+import Stream._
+
 sealed trait Stream[+A] {
   def head: A
   def tail: Stream[A]
+
+  def toList: List[A] = this match {
+    case Empty => Nil: List[A]
+    case Cons(h, t) => h() :: t().toList
+  }
 }
 
 case object Empty extends Stream[Nothing] {
@@ -16,6 +23,14 @@ case class Cons[+A](h: () => A, t: () => Stream[A]) extends Stream[A] {
 }
 
 object Stream {
+  def empty[A]: Stream[A] = Empty
+
+  def cons[A](h: => A, t: => Stream[A]): Stream[A] = {
+    lazy val head = h
+    lazy val tail = t
+    Cons(() => head, () => tail)
+  }
+
   def apply[A](as: A*): Stream[A] =
-    if (as.isEmpty) Empty else Cons(() => as.head, () => apply(as.tail: _*))
+    if (as.isEmpty) empty else cons(as.head, apply(as.tail: _*))
 }
