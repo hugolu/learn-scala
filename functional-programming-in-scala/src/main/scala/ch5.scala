@@ -1,3 +1,4 @@
+package fpinscala.Ch5
 import Stream._
 
 sealed trait Stream[+A] {
@@ -30,7 +31,7 @@ sealed trait Stream[+A] {
 
   def foldRight[B](z: B)(f: (A, B) => B): B = this match {
     case Empty => z
-    case Cons(h, t) => f(h(), t().foldRight(z)(f)
+    case Cons(h, t) => f(h(), t().foldRight(z)(f))
   }
 }
 
