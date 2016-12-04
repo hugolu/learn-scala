@@ -126,9 +126,13 @@ object Stream {
   def toListViaFoldRight: List[A] =
     foldRight(List[A]())(_::_)
 
-  def foldLeft[B](z: B)(f: (B, A) => B): B = this match {
-    case Empty => z
-    case Cons(h, t) => t().foldLeft(f(z, h()))(f)
+  def foldLeft[B](z: B)(f: (B, A) => B): B = {
+    @annotation.tailrec
+    def fold[A,B](s: Stream[A], z: B)(f: (B, A) => B): B = s match {
+      case Empty => z
+      case Cons(h, t) => fold(t(), f(z, h()))(f)
+    }
+    fold(this, z)(f)
   }
 
   def foldRightViaFoldLeft[B](z: B)(f: (A, B) => B): B =
@@ -137,6 +141,7 @@ object Stream {
   def toListViaFoldRightViaFoldLeft: List[A] =
     foldRightViaFoldLeft(List[A]())(_::_)
 ```
+> foldRight, foldLeft, foldRightviaFoldLeft... 有點 overkill 了
 
 ## 練習 5.2
 寫一個函數 `take(n)` 返回 `Stream` 中前 n 個元素，寫一個函數 `drop(n)` 返回 `Stream` 中前第 n 個元素之後的元素：
