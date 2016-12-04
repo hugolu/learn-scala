@@ -8,5 +8,7 @@ class Ch5Tests extends FunSuite {
     assert(s.toList == l)
     assert(s.toListTailrec == l)
     assert(s.toListFast == l)
+    assert(s.toListViaFoldRight == l)
+    assert(s.toListViaFoldRightViaFoldLeft == l)
   }
 }

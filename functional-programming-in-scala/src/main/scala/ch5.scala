@@ -33,6 +33,24 @@ sealed trait Stream[+A] {
     case Empty => z
     case Cons(h, t) => f(h(), t().foldRight(z)(f))
   }
+
+  def toListViaFoldRight: List[A] =
+    foldRight(List[A]())(_::_)
+
+  def foldLeft[B](z: B)(f: (B, A) => B): B = {
+    @annotation.tailrec
+    def fold[A,B](s: Stream[A], z: B)(f: (B, A) => B): B = s match {
+      case Empty => z
+      case Cons(h, t) => fold(t(), f(z, h()))(f)
+    }
+    fold(this, z)(f)
+  }
+
+  def foldRightViaFoldLeft[B](z: B)(f: (A, B) => B): B =
+    foldLeft((b: B) => b)((g, a) => (b: B) => g(f(a, b)))(z)
+
+  def toListViaFoldRightViaFoldLeft: List[A] =
+    foldRightViaFoldLeft(List[A]())(_::_)
 }
 
 case object Empty extends Stream[Nothing] {
