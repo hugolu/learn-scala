@@ -11,4 +11,16 @@ class Ch5Tests extends FunSuite {
     assert(s.toListViaFoldRight == l)
     assert(s.toListViaFoldRightViaFoldLeft == l)
   }
+
+  test("take first N elements") {
+    val s = Stream(1,2,3,4,5)
+    assert(s.take(3).toList == List(1,2,3))
+    assert(s.take(6).toList == List(1,2,3,4,5))
+  }
+
+  test("drop first N elements") {
+    val s = Stream(1,2,3,4,5)
+    assert(s.drop(3).toList == List(4,5))
+    assert(s.drop(6) == Empty)
+  }
 }
