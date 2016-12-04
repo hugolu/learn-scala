@@ -146,25 +146,16 @@ object Stream {
 ## 練習 5.2
 寫一個函數 `take(n)` 返回 `Stream` 中前 n 個元素，寫一個函數 `drop(n)` 返回 `Stream` 中前第 n 個元素之後的元素：
 ```scala
-def take[A](s: Stream[A], n: Int): Stream[A]
-def drop[A](s: Stream[A], n: Int): Stream[A]
-```
-```scala
-def take[A](s: Stream[A], n: Int): Stream[A] = s match {
-  case Cons(h, t) if n > 1 => cons(h(), take(t(), n-1))
-  case Cons(h, _) if n == 1 => cons(h(), empty)
-  case _ => empty
-}
+  def take(n: Int): Stream[A] = this match {
+    case Cons(h, t) if n > 1 => cons(h(), t().take(n-1))
+    case Cons(h, _) if n == 1 => cons(h(), empty)
+    case _ => empty
+  }
 
-toList(take(Stream(1,2,3,4,5,6),3)) //> List(1, 2, 3)
-```
-```scala
-def drop[A](s: Stream[A], n: Int): Stream[A] = s match {
-  case Cons(_, t) if n > 0 => drop(t() , n - 1)
-  case _ => s
-}
-
-toList(drop(Stream(1,2,3,4,5,6),3)) // List(4, 5, 6)
+  def drop(n: Int): Stream[A] = this match {
+    case Cons(_, t) if n > 0 => t().drop(n-1)
+    case _ => this
+  }
 ```
 
 ## 練習 5.3
