@@ -166,3 +166,19 @@ object Stream {
     case _ => empty
   }
 ```
+
+## 練習 5.4
+寫一個函數 `forAll`，檢查 `Stream` 中所有元素是否與給定的斷言匹配。遇到不匹配的值應立即終止遍歷。
+```scala
+  def forAll(p: A => Boolean): Boolean = this match {
+    case Cons(h, t) => if (p(h()) == false) false else t().forAll(p)
+    case _ => true
+  }
+```
+
+作者作法：
+```scala
+  def forAllViaFoldRight(p: A => Boolean): Boolean =
+    foldRight(true)((a, b) => p(a) && b)
+```
+> 奇怪，這個好像沒有做到「遇到不匹配的值應立即終止遍歷」
