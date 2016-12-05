@@ -67,6 +67,14 @@ sealed trait Stream[+A] {
     case Cons(h, t) if (p(h()) == true) => cons(h(), t().takeWhile(p))
     case _ => empty
   }
+
+  def forAll(p: A => Boolean): Boolean = this match {
+    case Cons(h, t) => if (p(h()) == false) false else t().forAll(p)
+    case _ => true
+  }
+
+  def forAllViaFoldRight(p: A => Boolean): Boolean =
+    foldRight(true)((a, b) => p(a) && b)
 }
 
 case object Empty extends Stream[Nothing] {

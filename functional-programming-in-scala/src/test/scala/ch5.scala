@@ -28,4 +28,14 @@ class Ch5Tests extends FunSuite {
     val s = Stream(1,2,3,4,5)
     assert(s.takeWhile(_ < 4).toList == List(1,2,3))
   }
+
+  test("forAll") {
+    val s = Stream(1,2,3,4,5)
+
+    assert(s.forAll(_ < 10) == true)
+    assert(s.forAll(_ % 2 == 0) == false)
+
+    assert(s.forAllViaFoldRight(_ < 10) == true)
+    assert(s.forAllViaFoldRight(_ % 2 == 0) == false)
+  }
 }
