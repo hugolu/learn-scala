@@ -182,3 +182,13 @@ object Stream {
     foldRight(true)((a, b) => p(a) && b)
 ```
 > 奇怪，這個好像沒有做到「遇到不匹配的值應立即終止遍歷」
+
+## 練習 5.5
+使用 `foldRight` 實現 `takeWhile`。
+
+## 練習 5.6
+使用 `foldRight` 實現 `headOption`。
+
+## 練習 5.7
+用 `foldRight` 實現 `map`, `filter`, `append, `flatMap` 方法，參數應該是非嚴格求值的。
+
