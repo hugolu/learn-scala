@@ -29,9 +29,9 @@ sealed trait Stream[+A] {
     go(this)
   }
 
-  def foldRight[B](z: B)(f: (A, B) => B): B = this match {
-    case Empty => z
+  def foldRight[B](z: => B)(f: (A, B) => B): B = this match {
     case Cons(h, t) => f(h(), t().foldRight(z)(f))
+    case _ => z
   }
 
   def toListViaFoldRight: List[A] =
@@ -67,6 +67,9 @@ sealed trait Stream[+A] {
     case Cons(h, t) if (p(h()) == true) => cons(h(), t().takeWhile(p))
     case _ => empty
   }
+
+  def takeWhileViaFoldRight(p: A => Boolean): Stream[A] =
+    foldRight(empty[A])((a, b) => if (p(a)) cons(a, b) else empty)
 
   def forAll(p: A => Boolean): Boolean = this match {
     case Cons(h, t) => if (p(h()) == false) false else t().forAll(p)

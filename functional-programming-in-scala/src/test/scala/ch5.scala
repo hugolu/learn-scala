@@ -25,8 +25,9 @@ class Ch5Tests extends FunSuite {
   }
 
   test("take while predicate") {
-    val s = Stream(1,2,3,4,5)
-    assert(s.takeWhile(_ < 4).toList == List(1,2,3))
+    val s = Stream(1,3,5,4,2)
+    assert(s.takeWhile(_ < 4).toList == List(1,3))
+    assert(s.takeWhileViaFoldRight(_ < 4).toList == List(1,3))
   }
 
   test("forAll") {
