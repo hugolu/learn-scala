@@ -185,10 +185,15 @@ object Stream {
 
 ## 練習 5.5
 使用 `foldRight` 實現 `takeWhile`。
+```scala
+  def takeWhileViaFoldRight(p: A => Boolean): Stream[A] =
+    foldRight(empty[A])((a, b) => if (p(a)) cons(a, b) else empty)
+```
+- 這個版本沒有做到「遇到不匹配的值立即終止遍歷」
 
 ## 練習 5.6
 使用 `foldRight` 實現 `headOption`。
 
 ## 練習 5.7
-用 `foldRight` 實現 `map`, `filter`, `append, `flatMap` 方法，參數應該是非嚴格求值的。
+用 `foldRight` 實現 `map`, `filter`, `append`, `flatMap` 方法，參數應該是非嚴格求值的。
 
