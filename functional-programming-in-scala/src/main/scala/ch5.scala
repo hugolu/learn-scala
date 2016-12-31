@@ -78,6 +78,18 @@ sealed trait Stream[+A] {
 
   def forAllViaFoldRight(p: A => Boolean): Boolean =
     foldRight(true)((a, b) => p(a) && b)
+
+  def headOption: Option[A] =
+    foldRight(None: Option[A])((a, b) => Some(a))
+
+  def map[B](f: A => B): Stream[B] =
+    foldRight(empty[B])((a, b) => cons(f(a), b))
+
+  def filter(f: A => Boolean): Stream[A] =
+    foldRight(empty[A])((a, b) => if (f(a)) cons(a, b) else b)
+
+  def append[B >: A](s: Stream[B]): Stream[B] =
+    foldRight(s)((a, b) => cons(a, b))
 }
 
 case object Empty extends Stream[Nothing] {

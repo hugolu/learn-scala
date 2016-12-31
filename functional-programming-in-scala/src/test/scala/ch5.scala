@@ -39,4 +39,37 @@ class Ch5Tests extends FunSuite {
     assert(s.forAllViaFoldRight(_ < 10) == true)
     assert(s.forAllViaFoldRight(_ % 2 == 0) == false)
   }
+
+  test("headOption") {
+    val s = Stream(1,2,3,4,5)
+    val e = Stream[Int]()
+
+    assert(s.headOption == Some(1))
+    assert(e.headOption == None)
+  }
+
+  test("map") {
+    val s = Stream("apple", "banana", "cherry")
+    val e = Stream[String]()
+
+    assert(s.map(_.size).toList == List(5,6,6))
+    assert(e.map(_.size) == Empty)
+  }
+
+  test("filter") {
+    val s = Stream(1,2,3,4,5)
+    val e = Stream[Int]()
+
+    assert(s.filter(_ % 2 == 0).toList == List(2,4))
+    assert(s.filter(_ % 2 != 0).toList == List(1,3,5))
+    assert(e.filter(_ % 2 == 0) == Empty)
+    assert(e.filter(_ % 2 != 0) == Empty)
+  }
+
+  test("append") {
+    val s1 = Stream(1,2,3)
+    val s2 = Stream(4,5,6)
+
+    assert(s1.append(s2).toList == List(1,2,3,4,5,6))
+  }
 }
