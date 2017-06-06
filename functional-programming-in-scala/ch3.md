@@ -131,6 +131,7 @@ def foldRight[A,B](l: List[A], z: B)(f: (A, B) => B): B =
 def sum2(l: List[Int]) = foldRight(l, 0.0)(_ + _)
 def product2(l: List[Double]) = foldRight(l, 1.0)(_ * _)
 ```
+> 实现 `foldRight` 前先思考这个函数的效果，以`List(1,2,3)`为例，会先处理3，让后2，最后1，但实作时解析List内容顺序为1，2，3。当拿到1时，还不能马上套用`f(A,B)`，因为`B`的内容`foldRight(List(2,3), z)(f)`还没决定...，一直调用直到`foldRight(Nil, z)(f)`得到`z`，再返回上一层调用`fildRight(3, z)`...，最后回到一开始的调用`fildRight(1, z')`。
 
 因為 `foldRight` 透過遞歸實現，如果沒有短路條件，就會遍歷整個列表。改成下面這樣，遇到 0.0 時會立即停止。
 ```scala
